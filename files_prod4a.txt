@@ -1,0 +1,1 @@
+/pnfs/dune/persistent/users/hyliao/protodune/proton/v09_22_02/ana/PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1_newformat2/mcproton_all.root
