@@ -2,6 +2,7 @@
 
 #[1]Generate the file list for analysis
 class_name="ProtonThinSlice"
+#class_name="ProtonEvtClassification"
 class_namex=$class_name"X"
 echo $class_namex
 
