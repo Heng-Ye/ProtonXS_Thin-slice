@@ -37,6 +37,18 @@ void plotincE(TString fin, TString fout_path){
 	gr_reco_trueincE->GetXaxis()->SetRangeUser(-1, 23);
 	gr_reco_trueincE->GetYaxis()->SetTitle("Reco KE - True KE (MeV)");
 
+	//fit a flat line
+   	TF1 f1("f1","pol0",-1,25);
+   	f1.SetParameters(0,0);
+	f1.SetLineColor(2);
+	f1.SetLineWidth(2);
+	f1.SetLineStyle(7);
+	gr_reco_trueincE->Fit("f1");
+	f1.Draw("same");
+
+	float p0=f1.GetParameter(0);
+	float err_p0=f1.GetParError(0);
+	cout<<"\n\n\npo:"<<p0<<" +- "<<err_p0<<"\n\n\n"<<endl;
 	c1->Print(Form("%s/incE.eps",fout_path.Data()));
 	c2->Print(Form("%s/incEdiff.eps",fout_path.Data()));
 
