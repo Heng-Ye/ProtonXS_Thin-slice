@@ -104,6 +104,7 @@ void ProtonThinSlice::Loop() {
 		reco_sliceID = -1;
 	
 		//only select protons	
+		//if (primary_truth_Pdg!=pdg) continue; //only interested in protons
 		if (beamtrackPdg!=pdg) continue; //only interested in protons
 		//std::cout<<"beamtrackPdg:"<<beamtrackPdg<<std::endl;
 		n_tot++;
@@ -129,7 +130,9 @@ void ProtonThinSlice::Loop() {
 		cout<<"primary_truth_EndProcess:"<<primary_truth_EndProcess->c_str()<<endl;
 		cout<<"Isendpoint_outsidetpc:"<<Isendpoint_outsidetpc<<endl;
 		cout<<"IsBeamMatch:"<<IsBeamMatch<<endl;
-		cout<<"IsCosmic:"<<IsCosmic<<" (primary_truth_byE_origin="<<primary_truth_byE_origin<<")"<<endl;	
+		cout<<"IsCosmic:"<<IsCosmic<<" (primary_truth_byE_origin="<<primary_truth_byE_origin<<")"<<endl;
+		cout<<"primary_truth_Pdg:"<<primary_truth_Pdg<<endl;
+		cout<<"beamtrackPdg:"<<beamtrackPdg<<endl;	
 
 		//Truth label of Primarytrack_End ------------------------------------------------------------------------------------------------//
 		bool IsPureInEL=false; //inel
@@ -702,7 +705,7 @@ void ProtonThinSlice::Loop() {
 
 		//evt selection cuts
 		bool PassAllCuts=false; //all bq cut+reco inel cut
-		bool PassAllCuts_INC=false; //all bq cut
+		bool PassCuts_INC=false; //all bq cut
 		if (IsPandoraSlice&&IsCaloSize) {
 			//reco slice ID
 			reco_sliceID = int(reco_endz/thinslicewidth);
@@ -712,14 +715,14 @@ void ProtonThinSlice::Loop() {
 			cout<<"reco_endz:"<<reco_endz<<"  reco_sliceID:"<<reco_sliceID<<endl;
 
 			if (IsBQ&&IsRecoInEL) {
-				PassAllCuts=true;
+				PassAllCuts=true; //for INT 
 			}
 			if (IsBQ) {
-				PassAllCuts_INC=true;
+				PassCuts_INC=true; //for INC
 			}
 		}
 
-		//INC histograms
+		//INC histograms ------------------------------------------------------------//
 		for (int ij = 0; ij<=true_sliceID; ++ij){
 			if (ij<nthinslices) ++true_incidents[ij];
 		}
@@ -730,7 +733,7 @@ void ProtonThinSlice::Loop() {
 		else { //if NOT test sample
 			uf.eff_den_Inc->Fill(true_sliceID);
 		} //if NOT test sample
-		if (PassAllCuts_INC&&IsBeamMatch) { //if passing all basic cuts
+		if (PassCuts_INC&&IsBeamMatch) { //if passing all basic cuts
 			if (isTestSample) { //if test sample
 				h_recosliceid_cuts->Fill(reco_sliceID);
 				h_truesliceid_cuts->Fill(true_sliceID);
@@ -748,7 +751,7 @@ void ProtonThinSlice::Loop() {
 			}
 		} //if NOT passing all cuts
 
-		//INT histograms
+		//INT histograms ------------------------------------------------------------//
 		if (IsPureInEL) { //pure inel
 			if (isTestSample){
 				h_truesliceid_inelastic_all->Fill(true_sliceID);
@@ -773,7 +776,7 @@ void ProtonThinSlice::Loop() {
 			} //if not pass all basic cuts
 		} //pure inel
 		
-		if (PassAllCuts) { //if pass all cuts
+		if (PassCuts_INC) { //if pass all cuts
 			if (isTestSample){ //if test sample
 				h_recosliceid_allevts_cuts->Fill(reco_sliceID);
 			} //if test sample
