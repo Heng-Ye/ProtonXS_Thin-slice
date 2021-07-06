@@ -55,18 +55,26 @@ void ProtonThinSlice::Loop() {
 	if (fChain == 0) return;
 
 	//various counters --------------------------------------------------------------------------------------------------------------------//
-	int n_tot=0; //no cut
 	int n_processmap_error=0; //sansity check: processmap
 	int n_true_end=0; //sansity check: true-end label
-	int n_el=0;
-	int n_inel=0;
-	int n_mcs=0;
-	int n_misid=0, n_misid_intoutside=0, n_misid_inttpc=0, n_pandora_misid=0, n_calosz_misid=0, n_bq_misid=0, n_recoinel_misid=0;
 
-	int n_pandora=0, n_pandora_el=0, n_pandora_inel=0, n_pandora_mcs=0, n_pandora_mid=0; //pandora slice
-	int n_calosz=0, n_calosz_el=0, n_calosz_inel=0, n_calosz_mcs=0, n_calosz_mid=0; //calo size
-	int n_bq=0, n_bq_el=0, n_bq_inel=0, n_bq_mcs=0, n_bq_mid=0; //calo size
-	int n_recoinel=0, n_recoinel_el=0, n_recoinel_inel=0, n_recoinel_mcs=0, n_recoinel_mid=0; //recoinel
+	int n_tot=0; //no cut
+	int n_sg=0, n_bkg=0, n_up=0, n_mis=0;
+	int n_el=0, n_inel=0, n_mcs=0, n_upel=0, n_upinel=0, n_upmcs=0, n_misel=0, n_misinel=0, n_mismcs=0;
+	int n_pan=0; //pandora cut
+	int n_el_pan=0, n_inel_pan=0, n_mcs_pan=0, n_upel_pan=0, n_upinel_pan=0, n_upmcs_pan=0, n_misel_pan=0, n_misinel_pan=0, n_mismcs_pan=0;
+	int n_calsz=0; //calosz cut
+	int n_el_calsz=0, n_inel_calsz=0, n_mcs_calsz=0, n_upel_calsz=0, n_upinel_calsz=0, n_upmcs_calsz=0, n_misel_calsz=0, n_misinel_calsz=0, n_mismcs_calsz=0;
+	int n_bq=0; //bq cut
+	int n_el_bq=0, n_inel_bq=0, n_mcs_bq=0, n_upel_bq=0, n_upinel_bq=0, n_upmcs_bq=0, n_misel_bq=0, n_misinel_bq=0, n_mismcs_bq=0;
+	int n_recoinel=0; //reco inel cut
+	int n_el_recoinel=0, n_inel_recoinel=0, n_mcs_recoinel=0, n_upel_recoinel=0, n_upinel_recoinel=0, n_upmcs_recoinel=0, n_misel_recoinel=0, n_misinel_recoinel=0, n_mismcs_recoinel=0;
+
+	//int n_misid=0, n_misid_intoutside=0, n_misid_inttpc=0, n_pandora_misid=0, n_calosz_misid=0, n_bq_misid=0, n_recoinel_misid=0;
+	//int n_pandora=0, n_pandora_el=0, n_pandora_inel=0, n_pandora_mcs=0, n_pandora_mid=0; //pandora slice
+	//int n_calosz=0, n_calosz_el=0, n_calosz_inel=0, n_calosz_mcs=0, n_calosz_mid=0; //calo size
+	//int n_bq=0, n_bq_el=0, n_bq_inel=0, n_bq_mcs=0, n_bq_mid=0; //calo size
+	//int n_recoinel=0, n_recoinel_el=0, n_recoinel_inel=0, n_recoinel_mcs=0, n_recoinel_mid=0; //recoinel
 	
 	//unfolding config. -------------------------//
 	Unfold uf(nthinslices+2, -1, nthinslices+1);
@@ -101,29 +109,16 @@ void ProtonThinSlice::Loop() {
 		n_tot++;
 
 		//Event Selection Cut -- Part 1 ----------------------------------//
-		//pandora slice cut (can pandora reconstruct this track)
-		bool IsPandoraSlice=false; //pandora slice
-		if (isprimarytrack==1&&isprimaryshower==0) { //pandora slice
-			IsPandoraSlice=true; 
-		} //pandora slice
-		
-		//calo size cut
-		bool IsCaloSize=false;
-		if (!primtrk_hitz->empty()) { //if calo size not empty
-			IsCaloSize=true;
-		} //if calo size not empty
-
-		//beam match: if recostructed the right track
-		bool IsBeamMatch=false;
-		if (primary_truth_Isbeammatched==1) { //beam match signals 
-			IsBeamMatch=true;
-		} //beam match signals
-
-		//beam of cosmic
-		bool IsCosmic=false;
-		if (primary_truth_byE_origin==2) {
-			IsCosmic=true;
-		}
+		bool IsBeamMatch=false; //if recostructed the right track (recoID=truthID)
+		bool IsPandoraSlice=false; //pandora slice cut (can pandora reconstruct this track)
+		bool IsCaloSize=false; //if calo size not empty
+		bool IsCosmic=false; //beam or cosmic
+		bool IsIntersection=false; //if any track intersect with our reco track		
+		if (primary_truth_Isbeammatched==1) IsBeamMatch=true;
+		if (isprimarytrack==1&&isprimaryshower==0) IsPandoraSlice=true; 
+		if (!primtrk_hitz->empty()) IsCaloSize=true;
+		if (primary_truth_byE_origin==2) IsCosmic=true;
+		if (timeintersection->size()) IsIntersection=true;
 		//----------------------------------------------------------------//
 	
 		cout<<"\n"<<endl;
@@ -174,8 +169,6 @@ void ProtonThinSlice::Loop() {
 			IsPureMCS=1;
 		}
 
-
-
 		//if (strcmp(primary_truth_EndProcess->c_str(),"hIoni")==0) {
 			//IsPureEL=true;
 		//}
@@ -207,6 +200,7 @@ void ProtonThinSlice::Loop() {
 		}
 		cout<<"trueEnd z/y/x:"<<true_endz<<"/"<<true_endy<<"/"<<true_endx<<endl;
 		cout<<"trueSt z/y/x:"<<true_stz<<"/"<<true_sty<<"/"<<true_stx<<endl;
+		cout<<"IsTrueEndOutside:"<<IsTrueEndOutside<<endl;
 		//Get reco info ----------------------------------------------------------------------------------//
 
 		//reco pos info & cut
@@ -259,8 +253,8 @@ void ProtonThinSlice::Loop() {
 		if ((pow(((x0_tmp-mean_x)/dev_x),2)+pow(((y0_tmp-mean_y)/dev_y),2))<=1.) IsXY=true;
 
 		//Intersection cut
-		bool IsIntersection=false;		
-		if (timeintersection->size()) IsIntersection=true; //over-lapping track cut
+		//bool IsIntersection=false;		
+		//if (timeintersection->size()) IsIntersection=true; //over-lapping track cut
 
 		//beam quality cut
 		bool IsBQ=false;
@@ -379,6 +373,9 @@ void ProtonThinSlice::Loop() {
 			dKE_rrange_ff_recostop->Fill(kereco_range-ke_ff);
 			dKE_rrange2_ff_recostop->Fill(kereco_range2-ke_ff);
 
+			KE_range_ff_recostop->Fill(kereco_range, ke_ff);
+			KE_range_calo_recostop->Fill(kereco_range, kereco_calo);
+
 		}
 		//cout<<"\n"<<endl;
 
@@ -393,89 +390,306 @@ void ProtonThinSlice::Loop() {
 		sort(zreco_widreco.begin(),zreco_widreco.end(),myComparison); //sorting based on the first column
 		//sort(zreco_ke.begin(),zreco_ke.end(),myComparison); //sorting based on the first column
 
+		//countings -------------------------------------------------------//
+		if (IsPandoraSlice) n_pan++;
+		if (IsPandoraSlice&&IsCaloSize) n_calsz++;
+		if (IsPandoraSlice&&IsCaloSize&&IsBQ) n_bq++;
+		if (IsPandoraSlice&&IsCaloSize&&IsBQ&&IsRecoInEL) n_recoinel++;
 
-		//countings ----------------------------------------------//
-		if (IsBeamMatch) { //beam-matched labels
-			if (IsPureEL) { //pure el
-				n_el++; //no-cut
-				if (IsPandoraSlice) { //pandora
-					n_pandora_el++;
-					if (IsCaloSize) { //calosz
-						n_calosz_el++;
-						if (IsBQ) { //bq
-							n_bq_el++;
-							if (IsRecoInEL) { //reco inel
-								n_recoinel_el++;
-							} //reco inel
-						} //bq
-					} //calosz
-				} //pandora
-			} //pure el
+		if (IsBeamMatch) n_sg++;
+		if (!IsBeamMatch) n_bkg++;
+		if (!IsBeamMatch&&IsTrueEndOutside) n_up++;
+		if (!IsBeamMatch&&!IsTrueEndOutside) n_mis++;
 
-			if (IsPureInEL) { //pure inel
-				n_inel++; //no-cut
-				if (IsPandoraSlice) { //pandora
-					n_pandora_inel++;
-					if (IsCaloSize) { //calosz
-						n_calosz_inel++;
-						if (IsBQ) { //bq
-							n_bq_inel++;
-							if (IsRecoInEL) { //reco inel
-								n_recoinel_inel++;
-							} //reco inel
-						} //bq
-					} //calosz
-				} //pandora
-			} //pure inel
 
-			if (IsPureMCS) { //pure mcs
-				n_mcs++; //no-cut
-				if (IsPandoraSlice) { //pandora
-					n_pandora_mcs++;
-					if (IsCaloSize) { //calosz
-						n_calosz_mcs++;
-						if (IsBQ) { //bq
-							n_bq_mcs++;
-							if (IsRecoInEL) { //reco inel
-								n_recoinel_mcs++;
-							} //reco inel
-						} //bq
-					} //calosz
-				} //pandora
-			} //pure mcs
-		} //beam-matched labels
+		//[0]pure inel
+		if (IsBeamMatch&&IsPureInEL) { //pure inel
+			n_inel++;
+			zend_true_inel_NoCut->Fill(true_endz);
+			zend_reco_inel_NoCut->Fill(reco_endz);
+			dzend_inel_NoCut->Fill(reco_endz-true_endz);
+			if (IsPandoraSlice) { //pandora
+				n_inel_pan++;
+				zend_true_inel_PanS->Fill(true_endz);
+				zend_reco_inel_PanS->Fill(reco_endz);
+				dzend_inel_PanS->Fill(reco_endz-true_endz);
+				if (IsCaloSize) { //calosz
+					n_inel_calsz++;
+					zend_true_inel_CaloSz->Fill(true_endz);
+					zend_reco_inel_CaloSz->Fill(reco_endz);
+					dzend_inel_CaloSz->Fill(reco_endz-true_endz);
+					if (IsBQ) { //bq
+						n_inel_bq++;
+						zend_true_inel_BQ->Fill(true_endz);
+						zend_reco_inel_BQ->Fill(reco_endz);
+						dzend_inel_BQ->Fill(reco_endz-true_endz);
+						if (IsRecoInEL) { //reco inel
+							n_inel_recoinel++;
+							zend_true_inel_RecoInel->Fill(true_endz);
+							zend_reco_inel_RecoInel->Fill(reco_endz);
+							dzend_inel_RecoInel->Fill(reco_endz-true_endz);
+						} //reco inel
+					} //bq
+				} //calosz
+			} //pandora
+		} //pure inel		
 
-		if (!IsBeamMatch) { //beam not-matched evts 
-			n_misid++; //no-cut
-			if (IsTrueEndOutside) n_misid_intoutside++;
-			if (!IsTrueEndOutside) n_misid_inttpc++;
-				if (IsPandoraSlice) { //pandora
-					n_pandora_misid++;
-					if (IsCaloSize) { //calosz
-						n_calosz_misid++;
-						if (IsBQ) { //bq
-							n_bq_misid++;
-							if (IsRecoInEL) { //reco inel
-								n_recoinel_misid++;
-							} //reco inel
-						} //bq
-					} //calosz
-				} //pandora
-		} //beam not-matched evts
+		//[1]pure el
+		if (IsBeamMatch&&IsPureEL) { //pure el
+			n_el++;
+			zend_true_el_NoCut->Fill(true_endz);
+			zend_reco_el_NoCut->Fill(reco_endz);
+			dzend_el_NoCut->Fill(reco_endz-true_endz);
+			if (IsPandoraSlice) { //pandora
+				n_el_pan++;
+				zend_true_el_PanS->Fill(true_endz);
+				zend_reco_el_PanS->Fill(reco_endz);
+				dzend_el_PanS->Fill(reco_endz-true_endz);
+				if (IsCaloSize) { //calosz
+					n_el_calsz++;
+					zend_true_el_CaloSz->Fill(true_endz);
+					zend_reco_el_CaloSz->Fill(reco_endz);
+					dzend_el_CaloSz->Fill(reco_endz-true_endz);
+					if (IsBQ) { //bq
+						n_el_bq++;
+						zend_true_el_BQ->Fill(true_endz);
+						zend_reco_el_BQ->Fill(reco_endz);
+						dzend_el_BQ->Fill(reco_endz-true_endz);
+						if (IsRecoInEL) { //reco inel
+							n_el_recoinel++;
+							zend_true_el_RecoInel->Fill(true_endz);
+							zend_reco_el_RecoInel->Fill(reco_endz);
+							dzend_el_RecoInel->Fill(reco_endz-true_endz);
+						} //reco inel
+					} //bq
+				} //calosz
+			} //pandora
+		} //pure el		
 
-		if (IsPandoraSlice) { //pandora
-			n_pandora++;
-			if (IsCaloSize) { //calosz
-				n_calosz++;
-				if (IsBQ) { //bq
-					n_bq++;
-					if (IsRecoInEL) { //reco inel
-						n_recoinel++;
-					} //reco inel
+		//[2]pure mcs
+		if (IsBeamMatch&&IsPureMCS) { //pure mcs
+			n_mcs++;
+			zend_true_mcs_NoCut->Fill(true_endz);
+			zend_reco_mcs_NoCut->Fill(reco_endz);
+			dzend_mcs_NoCut->Fill(reco_endz-true_endz);
+			if (IsPandoraSlice) { //pandora
+				n_mcs_pan++;
+				zend_true_mcs_PanS->Fill(true_endz);
+				zend_reco_mcs_PanS->Fill(reco_endz);
+				dzend_mcs_PanS->Fill(reco_endz-true_endz);
+				if (IsCaloSize) { //calosz
+					n_mcs_calsz++;
+					zend_true_mcs_CaloSz->Fill(true_endz);
+					zend_reco_mcs_CaloSz->Fill(reco_endz);
+					dzend_mcs_CaloSz->Fill(reco_endz-true_endz);
+					if (IsBQ) { //bq
+						n_mcs_bq++;
+						zend_true_mcs_BQ->Fill(true_endz);
+						zend_reco_mcs_BQ->Fill(reco_endz);
+						dzend_mcs_BQ->Fill(reco_endz-true_endz);
+						if (IsRecoInEL) { //reco inel
+							n_mcs_recoinel++;
+							zend_true_mcs_RecoInel->Fill(true_endz);
+							zend_reco_mcs_RecoInel->Fill(reco_endz);
+							dzend_mcs_RecoInel->Fill(reco_endz-true_endz);
+						} //reco inel
+					} //bq
+				} //calosz
+			} //pandora
+		} //pure mcs
 
-				} //bq
-			} //calosz
-		} //pandora
+		//[3]pure inel:upstream-int
+		if (!IsBeamMatch&&IsTrueEndOutside&&IsPureInEL) { //pure inel:upstream-int
+			n_upinel++;
+			zend_true_upinel_NoCut->Fill(true_endz);
+			zend_reco_upinel_NoCut->Fill(reco_endz);
+			dzend_upinel_NoCut->Fill(reco_endz-true_endz);
+			if (IsPandoraSlice) { //pandora
+				n_upinel_pan++;
+				zend_true_upinel_PanS->Fill(true_endz);
+				zend_reco_upinel_PanS->Fill(reco_endz);
+				dzend_upinel_PanS->Fill(reco_endz-true_endz);
+				if (IsCaloSize) { //calosz
+					n_upinel_calsz++;
+					zend_true_upinel_CaloSz->Fill(true_endz);
+					zend_reco_upinel_CaloSz->Fill(reco_endz);
+					dzend_upinel_CaloSz->Fill(reco_endz-true_endz);
+					if (IsBQ) { //bq
+						n_upinel_bq++;
+						zend_true_upinel_BQ->Fill(true_endz);
+						zend_reco_upinel_BQ->Fill(reco_endz);
+						dzend_upinel_BQ->Fill(reco_endz-true_endz);
+						if (IsRecoInEL) { //reco inel
+							n_upinel_recoinel++;
+							zend_true_upinel_RecoInel->Fill(true_endz);
+							zend_reco_upinel_RecoInel->Fill(reco_endz);
+							dzend_upinel_RecoInel->Fill(reco_endz-true_endz);
+						} //reco inel
+					} //bq
+				} //calosz
+			} //pandora
+		} //pure inel:upstream-int		
+
+		//[4]pure el:upstream-int
+		if (!IsBeamMatch&&IsTrueEndOutside&&IsPureEL) { //pure el:upstream-int
+			n_upel++;
+			zend_true_upel_NoCut->Fill(true_endz);
+			zend_reco_upel_NoCut->Fill(reco_endz);
+			dzend_upel_NoCut->Fill(reco_endz-true_endz);
+			if (IsPandoraSlice) { //pandora
+				n_upel_pan++;
+				zend_true_upel_PanS->Fill(true_endz);
+				zend_reco_upel_PanS->Fill(reco_endz);
+				dzend_upel_PanS->Fill(reco_endz-true_endz);
+				if (IsCaloSize) { //calosz
+					n_upel_calsz++;
+					zend_true_upel_CaloSz->Fill(true_endz);
+					zend_reco_upel_CaloSz->Fill(reco_endz);
+					dzend_upel_CaloSz->Fill(reco_endz-true_endz);
+					if (IsBQ) { //bq
+						n_upel_bq++;
+						zend_true_upel_BQ->Fill(true_endz);
+						zend_reco_upel_BQ->Fill(reco_endz);
+						dzend_upel_BQ->Fill(reco_endz-true_endz);
+						if (IsRecoInEL) { //reco inel
+							n_upel_recoinel++;
+							zend_true_upel_RecoInel->Fill(true_endz);
+							zend_reco_upel_RecoInel->Fill(reco_endz);
+							dzend_upel_RecoInel->Fill(reco_endz-true_endz);
+						} //reco inel
+					} //bq
+				} //calosz
+			} //pandora
+		} //pure el:upstream-int	
+
+		//[5]pure mcs:upstream-int
+		if (!IsBeamMatch&&IsTrueEndOutside&&IsPureMCS) { //pure mcs:upstream-int
+			n_upmcs++;
+			zend_true_upmcs_NoCut->Fill(true_endz);
+			zend_reco_upmcs_NoCut->Fill(reco_endz);
+			dzend_upmcs_NoCut->Fill(reco_endz-true_endz);
+			if (IsPandoraSlice) { //pandora
+				n_upmcs_pan++;
+				zend_true_upmcs_PanS->Fill(true_endz);
+				zend_reco_upmcs_PanS->Fill(reco_endz);
+				dzend_upmcs_PanS->Fill(reco_endz-true_endz);
+				if (IsCaloSize) { //calosz
+					n_upmcs_calsz++;
+					zend_true_upmcs_CaloSz->Fill(true_endz);
+					zend_reco_upmcs_CaloSz->Fill(reco_endz);
+					dzend_upmcs_CaloSz->Fill(reco_endz-true_endz);
+					if (IsBQ) { //bq
+						n_upmcs_bq++;
+						zend_true_upmcs_BQ->Fill(true_endz);
+						zend_reco_upmcs_BQ->Fill(reco_endz);
+						dzend_upmcs_BQ->Fill(reco_endz-true_endz);
+						if (IsRecoInEL) { //reco inel
+							n_upmcs_recoinel++;
+							zend_true_upmcs_RecoInel->Fill(true_endz);
+							zend_reco_upmcs_RecoInel->Fill(reco_endz);
+							dzend_upmcs_RecoInel->Fill(reco_endz-true_endz);
+						} //reco inel
+					} //bq
+				} //calosz
+			} //pandora
+		} //pure mcs:upstream-int	
+
+		//[6]pure inel+int. inside tpc
+		if (!IsBeamMatch&&!IsTrueEndOutside&&IsPureInEL) { //pure inel
+			n_misinel++;
+			zend_true_misinel_NoCut->Fill(true_endz);
+			zend_reco_misinel_NoCut->Fill(reco_endz);
+			dzend_misinel_NoCut->Fill(reco_endz-true_endz);
+			if (IsPandoraSlice) { //pandora
+				n_misinel_pan++;
+				zend_true_misinel_PanS->Fill(true_endz);
+				zend_reco_misinel_PanS->Fill(reco_endz);
+				dzend_misinel_PanS->Fill(reco_endz-true_endz);
+				if (IsCaloSize) { //calosz
+					n_misinel_calsz++;
+					zend_true_misinel_CaloSz->Fill(true_endz);
+					zend_reco_misinel_CaloSz->Fill(reco_endz);
+					dzend_misinel_CaloSz->Fill(reco_endz-true_endz);
+					if (IsBQ) { //bq
+						n_misinel_bq++;
+						zend_true_misinel_BQ->Fill(true_endz);
+						zend_reco_misinel_BQ->Fill(reco_endz);
+						dzend_misinel_BQ->Fill(reco_endz-true_endz);
+						if (IsRecoInEL) { //reco inel
+							n_misinel_recoinel++;
+							zend_true_misinel_RecoInel->Fill(true_endz);
+							zend_reco_misinel_RecoInel->Fill(reco_endz);
+							dzend_misinel_RecoInel->Fill(reco_endz-true_endz);
+						} //reco inel
+					} //bq
+				} //calosz
+			} //pandora
+		} //pure inel		
+
+		//[7]pure el+int. inside tpc+misid
+		if (!IsBeamMatch&&!IsTrueEndOutside&&IsPureEL) { //pure el
+			n_misel++;
+			zend_true_misel_NoCut->Fill(true_endz);
+			zend_reco_misel_NoCut->Fill(reco_endz);
+			dzend_misel_NoCut->Fill(reco_endz-true_endz);
+			if (IsPandoraSlice) { //pandora
+				n_misel_pan++;
+				zend_true_misel_PanS->Fill(true_endz);
+				zend_reco_misel_PanS->Fill(reco_endz);
+				dzend_misel_PanS->Fill(reco_endz-true_endz);
+				if (IsCaloSize) { //calosz
+					n_misel_calsz++;
+					zend_true_misel_CaloSz->Fill(true_endz);
+					zend_reco_misel_CaloSz->Fill(reco_endz);
+					dzend_misel_CaloSz->Fill(reco_endz-true_endz);
+					if (IsBQ) { //bq
+						n_misel_bq++;
+						zend_true_misel_BQ->Fill(true_endz);
+						zend_reco_misel_BQ->Fill(reco_endz);
+						dzend_misel_BQ->Fill(reco_endz-true_endz);
+						if (IsRecoInEL) { //reco inel
+							n_misel_recoinel++;
+							zend_true_misel_RecoInel->Fill(true_endz);
+							zend_reco_misel_RecoInel->Fill(reco_endz);
+							dzend_misel_RecoInel->Fill(reco_endz-true_endz);
+						} //reco inel
+					} //bq
+				} //calosz
+			} //pandora
+		} //pure el		
+
+		//[8]pure mcs+int. inside tpc+misid
+		if (!IsBeamMatch&&!IsTrueEndOutside&&IsPureMCS) { //pure mcs
+			n_mismcs++;
+			zend_true_mismcs_NoCut->Fill(true_endz);
+			zend_reco_mismcs_NoCut->Fill(reco_endz);
+			dzend_mismcs_NoCut->Fill(reco_endz-true_endz);
+			if (IsPandoraSlice) { //pandora
+				n_mismcs_pan++;
+				zend_true_mismcs_PanS->Fill(true_endz);
+				zend_reco_mismcs_PanS->Fill(reco_endz);
+				dzend_mismcs_PanS->Fill(reco_endz-true_endz);
+				if (IsCaloSize) { //calosz
+					n_mismcs_calsz++;
+					zend_true_mismcs_CaloSz->Fill(true_endz);
+					zend_reco_mismcs_CaloSz->Fill(reco_endz);
+					dzend_mismcs_CaloSz->Fill(reco_endz-true_endz);
+					if (IsBQ) { //bq
+						n_mismcs_bq++;
+						zend_true_mismcs_BQ->Fill(true_endz);
+						zend_reco_mismcs_BQ->Fill(reco_endz);
+						dzend_mismcs_BQ->Fill(reco_endz-true_endz);
+						if (IsRecoInEL) { //reco inel
+							n_mismcs_recoinel++;
+							zend_true_mismcs_RecoInel->Fill(true_endz);
+							zend_reco_mismcs_RecoInel->Fill(reco_endz);
+							dzend_mismcs_RecoInel->Fill(reco_endz-true_endz);
+						} //reco inel
+					} //bq
+				} //calosz
+			} //pandora
+		} //pure mcs
+		//countings -------------------------------------------------------//
 
 
 		//thin-slice method ----------------------------------------------------//
@@ -488,6 +702,7 @@ void ProtonThinSlice::Loop() {
 
 		//evt selection cuts
 		bool PassAllCuts=false; //all bq cut+reco inel cut
+		bool PassAllCuts_INC=false; //all bq cut
 		if (IsPandoraSlice&&IsCaloSize) {
 			//reco slice ID
 			reco_sliceID = int(reco_endz/thinslicewidth);
@@ -499,9 +714,12 @@ void ProtonThinSlice::Loop() {
 			if (IsBQ&&IsRecoInEL) {
 				PassAllCuts=true;
 			}
+			if (IsBQ) {
+				PassAllCuts_INC=true;
+			}
 		}
 
-		//inc histograms
+		//INC histograms
 		for (int ij = 0; ij<=true_sliceID; ++ij){
 			if (ij<nthinslices) ++true_incidents[ij];
 		}
@@ -512,7 +730,7 @@ void ProtonThinSlice::Loop() {
 		else { //if NOT test sample
 			uf.eff_den_Inc->Fill(true_sliceID);
 		} //if NOT test sample
-		if (PassAllCuts&&IsBeamMatch) { //if passing all basic cuts
+		if (PassAllCuts_INC&&IsBeamMatch) { //if passing all basic cuts
 			if (isTestSample) { //if test sample
 				h_recosliceid_cuts->Fill(reco_sliceID);
 				h_truesliceid_cuts->Fill(true_sliceID);
@@ -530,7 +748,7 @@ void ProtonThinSlice::Loop() {
 			}
 		} //if NOT passing all cuts
 
-		//int histograms
+		//INT histograms
 		if (IsPureInEL) { //pure inel
 			if (isTestSample){
 				h_truesliceid_inelastic_all->Fill(true_sliceID);
@@ -659,6 +877,77 @@ void ProtonThinSlice::Loop() {
          
         //counting -- summary -----------------------------------------------------//
 	cout<<"\nn_tot:"<<n_tot<<endl;
+	cout<<"n_sg:"<<n_sg<<endl;
+	cout<<"n_el:"<<n_el<<endl;
+	cout<<"n_inel:"<<n_inel<<endl;
+	cout<<"n_mcs:"<<n_mcs<<endl;
+	cout<<"n_bkg:"<<n_bkg<<endl;
+	cout<<"n_up:"<<n_up<<endl;
+	cout<<"n_upel:"<<n_upel<<endl;
+	cout<<"n_upinel:"<<n_upinel<<endl;
+	cout<<"n_upmcs:"<<n_upmcs<<endl;
+	cout<<"n_mis:"<<n_mis<<endl;
+	cout<<"n_misel:"<<n_misel<<endl;
+	cout<<"n_misinel:"<<n_misinel<<endl;
+	cout<<"n_mismcs:"<<n_mismcs<<endl;
+	cout<<"diff:"<<n_tot-n_el-n_inel-n_mcs-n_upel-n_upinel-n_upmcs-n_misel-n_misinel-n_mismcs<<endl;
+	cout<<"\n"<<endl;
+
+	
+	cout<<"n_pan:"<<n_pan<<endl;
+	cout<<"n_el_pan:"<<n_el_pan<<endl;
+	cout<<"n_inel_pan:"<<n_inel_pan<<endl;
+	cout<<"n_mcs_pan:"<<n_mcs_pan<<endl;
+	cout<<"n_upel_pan:"<<n_upel_pan<<endl;
+	cout<<"n_upinel_pan:"<<n_upinel_pan<<endl;
+	cout<<"n_upmcs_pan:"<<n_upmcs_pan<<endl;
+	cout<<"n_misel_pan:"<<n_misel_pan<<endl;
+	cout<<"n_misinel_pan:"<<n_misinel_pan<<endl;
+	cout<<"n_mismcs_pan:"<<n_mismcs_pan<<endl;
+	cout<<"diff:"<<n_pan-n_el_pan-n_inel_pan-n_mcs_pan-n_upel_pan-n_upinel_pan-n_upmcs_pan-n_misel_pan-n_misinel_pan-n_mismcs_pan<<endl;
+	cout<<"\n"<<endl;
+
+	cout<<"n_calsz:"<<n_calsz<<endl;
+	cout<<"n_el_calsz:"<<n_el_calsz<<endl;
+	cout<<"n_inel_calsz:"<<n_inel_calsz<<endl;
+	cout<<"n_mcs_calsz:"<<n_mcs_calsz<<endl;
+	cout<<"n_upel_calsz:"<<n_upel_calsz<<endl;
+	cout<<"n_upinel_calsz:"<<n_upinel_calsz<<endl;
+	cout<<"n_upmcs_calsz:"<<n_upmcs_calsz<<endl;
+	cout<<"n_misel_calsz:"<<n_misel_calsz<<endl;
+	cout<<"n_misinel_calsz:"<<n_misinel_calsz<<endl;
+	cout<<"n_mismcs_calsz:"<<n_mismcs_calsz<<endl;
+	cout<<"diff:"<<n_calsz-n_el_calsz-n_inel_calsz-n_mcs_calsz-n_upel_calsz-n_upinel_calsz-n_upmcs_calsz-n_misel_calsz-n_misinel_calsz-n_mismcs_calsz<<endl;
+	cout<<"\n"<<endl;
+
+	cout<<"n_bq:"<<n_bq<<endl;
+	cout<<"n_el_bq:"<<n_el_bq<<endl;
+	cout<<"n_inel_bq:"<<n_inel_bq<<endl;
+	cout<<"n_mcs_bq:"<<n_mcs_bq<<endl;
+	cout<<"n_upel_bq:"<<n_upel_bq<<endl;
+	cout<<"n_upinel_bq:"<<n_upinel_bq<<endl;
+	cout<<"n_upmcs_bq:"<<n_upmcs_bq<<endl;
+	cout<<"n_misel_bq:"<<n_misel_bq<<endl;
+	cout<<"n_misinel_bq:"<<n_misinel_bq<<endl;
+	cout<<"n_mismcs_bq:"<<n_mismcs_bq<<endl;
+	cout<<"diff:"<<n_bq-n_el_bq-n_inel_bq-n_mcs_bq-n_upel_bq-n_upinel_bq-n_upmcs_bq-n_misel_bq-n_misinel_bq-n_mismcs_bq<<endl;
+	cout<<"\n"<<endl;
+
+	cout<<"n_recoinel:"<<n_recoinel<<endl;
+	cout<<"n_el_recoinel:"<<n_el_recoinel<<endl;
+	cout<<"n_inel_recoinel:"<<n_inel_recoinel<<endl;
+	cout<<"n_mcs_recoinel:"<<n_mcs_recoinel<<endl;
+	cout<<"n_upel_recoinel:"<<n_upel_recoinel<<endl;
+	cout<<"n_upinel_recoinel:"<<n_upinel_recoinel<<endl;
+	cout<<"n_upmcs_recoinel:"<<n_upmcs_recoinel<<endl;
+	cout<<"n_misel_recoinel:"<<n_misel_recoinel<<endl;
+	cout<<"n_misinel_recoinel:"<<n_misinel_recoinel<<endl;
+	cout<<"n_mismcs_recoinel:"<<n_mismcs_recoinel<<endl;
+	cout<<"diff:"<<n_recoinel-n_el_recoinel-n_inel_recoinel-n_mcs_recoinel-n_upel_recoinel-n_upinel_recoinel-n_upmcs_recoinel-n_misel_recoinel-n_misinel_recoinel-n_mismcs_recoinel<<endl;
+
+
+
+/*
 	cout<<"n_true_end:"<<n_true_end<<endl;
 	cout<<"n_processmap_error:"<<n_processmap_error<<endl;
 	cout<<"  n_inel:"<<n_inel<<endl;
@@ -700,7 +989,7 @@ void ProtonThinSlice::Loop() {
 	cout<<"  n_recoinel_misid:"<<n_recoinel_misid<<endl;
 	cout<<"  -->n_recoinel_inel+n_recoinel_el+n_recoinel_mcs+n_recoinel_misid="<<n_recoinel_inel+n_recoinel_el+n_recoinel_mcs+n_recoinel_misid<<endl;
 	cout<<"\n"<<endl;
-
+*/
 
 
 }
