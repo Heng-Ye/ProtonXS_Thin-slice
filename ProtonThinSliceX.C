@@ -870,6 +870,15 @@ void ProtonThinSlice::Loop() {
 				if (IsPureInEL) ztrue_ketrue_TrueInEL->Fill(thisZ, this_incE);
 			} //loop over true hits
 		} //if true container not empty
+
+		if (IsPandoraSlice&&IsCaloSize&&IsBQ) {  
+			ntrklen->Fill(range_reco/csda_val_spec);
+			if (IsPureInEL) ntrklen_PureInel->Fill(range_reco/csda_val_spec); 
+			if (IsPureEL) ntrklen_PureEl->Fill(range_reco/csda_val_spec); 
+			if (IsPureMCS) ntrklen_PureMCS->Fill(range_reco/csda_val_spec); 
+		}
+
+
 	
 	} //main entry loop
 
