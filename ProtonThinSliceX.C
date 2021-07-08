@@ -704,7 +704,7 @@ void ProtonThinSlice::Loop() {
 		cout<<"true_endz:"<<true_endz<<"  true_sliceID:"<<true_sliceID<<endl;
 
 		//evt selection cuts
-		bool PassAllCuts=false; //all bq cut+reco inel cut
+		bool PassCuts_INT=false; //all bq cut+reco inel cut
 		bool PassCuts_INC=false; //all bq cut
 		if (IsPandoraSlice&&IsCaloSize) {
 			//reco slice ID
@@ -715,7 +715,7 @@ void ProtonThinSlice::Loop() {
 			cout<<"reco_endz:"<<reco_endz<<"  reco_sliceID:"<<reco_sliceID<<endl;
 
 			if (IsBQ&&IsRecoInEL) {
-				PassAllCuts=true; //for INT 
+				PassCuts_INT=true; //for INT 
 			}
 			if (IsBQ) {
 				PassCuts_INC=true; //for INC
@@ -760,7 +760,7 @@ void ProtonThinSlice::Loop() {
 				uf.eff_den_Int->Fill(true_sliceID);
 			} //NOT test sample for unfolding
 
-			if (PassAllCuts&&IsBeamMatch) { //if pass all basic cuts
+			if (PassCuts_INT&&IsBeamMatch) { //if pass all basic cuts
 				if (isTestSample){
 					h_recosliceid_inelastic_cuts->Fill(reco_sliceID);
 					h_truesliceid_inelastic_cuts->Fill(true_sliceID);
