@@ -13,194 +13,354 @@
 
 //class ThinSlice {
 
-	//public:
+//public:
 
-		int reco_sliceID;
-		int true_sliceID;
+int reco_sliceID;
+int true_sliceID;
 
-		TH1D *reco_incE[nthinslices];
-		TH1D *true_incE[nthinslices];
-		TH1D *reco_AngCorr;
-		TH1D *true_AngCorr;
+TH1D *reco_incE[nthinslices];
+TH1D *true_incE[nthinslices];
+TH1D *reco_AngCorr;
+TH1D *true_AngCorr;
 
-		TH1D *h_truesliceid_all;
-		TH1D *h_truesliceid_uf;
-		TH1D *h_truesliceid_cuts;
-		TH1D *h_truesliceid_inelastic_all;
-		TH1D *h_truesliceid_inelastic_uf;
-		TH1D *h_truesliceid_inelastic_cuts;
-		TH1D *h_recosliceid_allevts_cuts;
-		TH1D *h_recosliceid_cuts;
-		TH1D *h_recosliceid_inelastic_cuts;
+TH1D *h_truesliceid_all;
+TH1D *h_truesliceid_uf;
+TH1D *h_truesliceid_cuts;
+TH1D *h_truesliceid_inelastic_all;
+TH1D *h_truesliceid_inelastic_uf;
+TH1D *h_truesliceid_inelastic_cuts;
+TH1D *h_recosliceid_allevts_cuts;
+TH1D *h_recosliceid_cuts;
+TH1D *h_recosliceid_inelastic_cuts;
 
-
-		TH1D *zend_true;
-		TH1D *zend_inel_true;
-		TH1D *zend_el_true;
-		TH1D *zend_mcs_true;
-		TH1D *zend_bkg_true;
-
-		TH1D *zend_inel_true_beamQ;
-		TH1D *zend_el_true_beamQ;
-		TH1D *zend_mcs_true_beamQ;
-		TH1D *zend_bkg_true_beamQ;
-
-		TH1D *zend_inel_true_caloSz;
-		TH1D *zend_el_true_caloSz;
-		TH1D *zend_mcs_true_caloSz;
-		TH1D *zend_bkg_true_caloSz;
-
-		TH1D *zend_inel_true_RecoInel;
-		TH1D *zend_el_true_RecoInel;
-		TH1D *zend_mcs_true_RecoInel;
-		TH1D *zend_bkg_true_RecoInel;
-
-		TH1D *zend_inel_true_XY;
-		TH1D *zend_el_true_XY;
-		TH1D *zend_mcs_true_XY;
-		TH1D *zend_bkg_true_XY;
-
-		TH1D *trklen_inel_true_XY;
-		TH1D *trklen_el_true_XY;
-		TH1D *trklen_mcs_true_XY;
-		TH1D *trklen_bkg_true_XY;
-
-		TH1D *dzend_inel;
-		TH1D *dzend_el;
-		TH1D *dzend_mcs;
-		TH1D *dzend_bkg;
-
-		TH1D *dzend_inel_beamQ;
-		TH1D *dzend_el_beamQ;
-		TH1D *dzend_mcs_beamQ;
-		TH1D *dzend_bkg_beamQ;
-
-		TH1D *dzend_inel_caloSz;
-		TH1D *dzend_el_caloSz;
-		TH1D *dzend_mcs_caloSz;
-		TH1D *dzend_bkg_caloSz;
-
-		TH1D *dzend_inel_RecoInel;
-		TH1D *dzend_el_RecoInel;
-		TH1D *dzend_mcs_RecoInel;
-		TH1D *dzend_bkg_RecoInel;
-
-		TH1D *dzend_inel_XY;
-		TH1D *dzend_el_XY;
-		TH1D *dzend_mcs_XY;
-		TH1D *dzend_bkg_XY;
-
-		TH2D *zend_2d_inel;
-		TH2D *zend_2d_el;
-		TH2D *zend_2d_mcs;
-		TH2D *zend_2d_bkg;
-
-		TH2D *zend_2d_inel_XY;
-		TH2D *zend_2d_el_XY;
-		TH2D *zend_2d_mcs_XY;
-		TH2D *zend_2d_bkg_XY;
-
-		TH1D *zend_reco;
-
-		TH1D *trklen_inel_true;
-		TH1D *trklen_el_true;
-		TH1D *trklen_mcs_true;
-		TH1D *trklen_bkg_true;
-
-		TH1D *trklen_inel_reco;
-		TH1D *trklen_el_reco;
-		TH1D *trklen_mcs_reco;
-		TH1D *trklen_bkg_reco;
+//reco inel cut
+TH1D *ntrklen;
+TH1D *ntrklen_PureInel;
+TH1D *ntrklen_PureEl;
+TH1D *ntrklen_PureMCS;
 
 
-		TH2D *zend_ke_inel_true_XY;
-		TH2D *zend_ke_el_true_XY;
-		TH2D *zend_ke_mcs_true_XY;
-		TH2D *zend_ke_bkg_true_XY;
+//truthEndZ ---------------------//
+//no cut
+TH1D *zend_true;
+TH1D *zend_true_inel_NoCut;
+TH1D *zend_true_el_NoCut;
+TH1D *zend_true_mcs_NoCut;
+TH1D *zend_true_midcosmic_NoCut;
+TH1D *zend_true_midpi_NoCut;
+TH1D *zend_true_midp_NoCut;
+TH1D *zend_true_midmu_NoCut;
+TH1D *zend_true_mideg_NoCut;
+TH1D *zend_true_midother_NoCut;
+
+//pandora slice cut
+TH1D *zend_true_inel_PanS;
+TH1D *zend_true_el_PanS;
+TH1D *zend_true_mcs_PanS;
+TH1D *zend_true_midcosmic_PanS;
+TH1D *zend_true_midpi_PanS;
+TH1D *zend_true_midp_PanS;
+TH1D *zend_true_midmu_PanS;
+TH1D *zend_true_mideg_PanS;
+TH1D *zend_true_midother_PanS;
+
+//calosz cut
+TH1D *zend_true_inel_CaloSz;
+TH1D *zend_true_el_CaloSz;
+TH1D *zend_true_mcs_CaloSz;
+TH1D *zend_true_midcosmic_CaloSz;
+TH1D *zend_true_midpi_CaloSz;
+TH1D *zend_true_midp_CaloSz;
+TH1D *zend_true_midmu_CaloSz;
+TH1D *zend_true_mideg_CaloSz;
+TH1D *zend_true_midother_CaloSz;
+
+//beam quality cut
+TH1D *zend_true_inel_BQ;
+TH1D *zend_true_el_BQ;
+TH1D *zend_true_mcs_BQ;
+TH1D *zend_true_midcosmic_BQ;
+TH1D *zend_true_midpi_BQ;
+TH1D *zend_true_midp_BQ;
+TH1D *zend_true_midmu_BQ;
+TH1D *zend_true_mideg_BQ;
+TH1D *zend_true_midother_BQ;
+
+//RecoInel cut
+TH1D *zend_true_inel_RecoInel;
+TH1D *zend_true_el_RecoInel;
+TH1D *zend_true_mcs_RecoInel;
+TH1D *zend_true_midcosmic_RecoInel;
+TH1D *zend_true_midpi_RecoInel;
+TH1D *zend_true_midp_RecoInel;
+TH1D *zend_true_midmu_RecoInel;
+TH1D *zend_true_mideg_RecoInel;
+TH1D *zend_true_midother_RecoInel;
+
+//recoEndZ ---------------------//
+//no cut
+//TH1D *zend_reco;
+TH1D *zend_reco_inel_NoCut;
+TH1D *zend_reco_el_NoCut;
+TH1D *zend_reco_mcs_NoCut;
+TH1D *zend_reco_midcosmic_NoCut;
+TH1D *zend_reco_midpi_NoCut;
+TH1D *zend_reco_midp_NoCut;
+TH1D *zend_reco_midmu_NoCut;
+TH1D *zend_reco_mideg_NoCut;
+TH1D *zend_reco_midother_NoCut;
+
+//pandora slice cut
+TH1D *zend_reco_inel_PanS;
+TH1D *zend_reco_el_PanS;
+TH1D *zend_reco_mcs_PanS;
+TH1D *zend_reco_midcosmic_PanS;
+TH1D *zend_reco_midpi_PanS;
+TH1D *zend_reco_midp_PanS;
+TH1D *zend_reco_midmu_PanS;
+TH1D *zend_reco_mideg_PanS;
+TH1D *zend_reco_midother_PanS;
+
+//calosz cut
+TH1D *zend_reco_inel_CaloSz;
+TH1D *zend_reco_el_CaloSz;
+TH1D *zend_reco_mcs_CaloSz;
+TH1D *zend_reco_midcosmic_CaloSz;
+TH1D *zend_reco_midpi_CaloSz;
+TH1D *zend_reco_midp_CaloSz;
+TH1D *zend_reco_midmu_CaloSz;
+TH1D *zend_reco_mideg_CaloSz;
+TH1D *zend_reco_midother_CaloSz;
+
+//beam quality cut
+TH1D *zend_reco_inel_BQ;
+TH1D *zend_reco_el_BQ;
+TH1D *zend_reco_mcs_BQ;
+TH1D *zend_reco_midcosmic_BQ;
+TH1D *zend_reco_midpi_BQ;
+TH1D *zend_reco_midp_BQ;
+TH1D *zend_reco_midmu_BQ;
+TH1D *zend_reco_mideg_BQ;
+TH1D *zend_reco_midother_BQ;
+
+//RecoInel cut
+TH1D *zend_reco_inel_RecoInel;
+TH1D *zend_reco_el_RecoInel;
+TH1D *zend_reco_mcs_RecoInel;
+TH1D *zend_reco_midcosmic_RecoInel;
+TH1D *zend_reco_midpi_RecoInel;
+TH1D *zend_reco_midp_RecoInel;
+TH1D *zend_reco_midmu_RecoInel;
+TH1D *zend_reco_mideg_RecoInel;
+TH1D *zend_reco_midother_RecoInel;
+
+//(reco-truth)EndZ ---------------------//
+//no cut
+TH1D *dzend;
+TH1D *dzend_inel_NoCut;
+TH1D *dzend_el_NoCut;
+TH1D *dzend_mcs_NoCut;
+TH1D *dzend_midcosmic_NoCut;
+TH1D *dzend_midpi_NoCut;
+TH1D *dzend_midp_NoCut;
+TH1D *dzend_midmu_NoCut;
+TH1D *dzend_mideg_NoCut;
+TH1D *dzend_midother_NoCut;
+
+//pandora slice cut
+TH1D *dzend_inel_PanS;
+TH1D *dzend_el_PanS;
+TH1D *dzend_mcs_PanS;
+TH1D *dzend_midcosmic_PanS;
+TH1D *dzend_midpi_PanS;
+TH1D *dzend_midp_PanS;
+TH1D *dzend_midmu_PanS;
+TH1D *dzend_mideg_PanS;
+TH1D *dzend_midother_PanS;
+
+//calosz cut
+TH1D *dzend_inel_CaloSz;
+TH1D *dzend_el_CaloSz;
+TH1D *dzend_mcs_CaloSz;
+TH1D *dzend_midcosmic_CaloSz;
+TH1D *dzend_midpi_CaloSz;
+TH1D *dzend_midp_CaloSz;
+TH1D *dzend_midmu_CaloSz;
+TH1D *dzend_mideg_CaloSz;
+TH1D *dzend_midother_CaloSz;
+
+//beam quality cut
+TH1D *dzend_inel_BQ;
+TH1D *dzend_el_BQ;
+TH1D *dzend_mcs_BQ;
+TH1D *dzend_midcosmic_BQ;
+TH1D *dzend_midpi_BQ;
+TH1D *dzend_midp_BQ;
+TH1D *dzend_midmu_BQ;
+TH1D *dzend_mideg_BQ;
+TH1D *dzend_midother_BQ;
+
+//RecoInel cut
+TH1D *dzend_inel_RecoInel;
+TH1D *dzend_el_RecoInel;
+TH1D *dzend_mcs_RecoInel;
+TH1D *dzend_midcosmic_RecoInel;
+TH1D *dzend_midpi_RecoInel;
+TH1D *dzend_midp_RecoInel;
+TH1D *dzend_midmu_RecoInel;
+TH1D *dzend_mideg_RecoInel;
+TH1D *dzend_midother_RecoInel;
 
 
-	TH2D *ztrue_ketrue_TrueInEL;
-	TH2D *ztrue_ketrue_RecoInEL;
-	//TH2D *zreco_kereco_RecoInEL;
-	//TH2D *zreco_kereco_TrueInEL;
-
-	TH1D *ketrue_TrueInEL;
-
-	TH2D *ztrue_ketrue_TrueMCS;
-	TH1D *ketrue_TrueMCS;
-	TH1D *dztrue_TrueMCS;
-
-	TH2D *ztrue_ketrue_TrueEL;
-	TH1D *ketrue_TrueEL;
-
-	TH2D *ztrue_ketrue;
 
 
-		//reco presentation with true labels
-		TH2D *zreco_kereco_TrueInEL;
-		TH2D *zreco_kereco_TrueEL;
-		TH2D *zreco_kereco_TrueMCS;
-
-		TH1D *zreco_TrueInEL;
-		TH1D *zreco_TrueEL;
-		TH1D *zreco_TrueMCS;
-
-		TH1D *kereco_TrueInEL;
-		TH1D *kereco_TrueEL;
-		TH1D *kereco_TrueMCS;
-
-		//reco presentation with reco labels
-		TH2D *zreco_kereco_RecoInEL;
-		TH1D *zreco_RecoInEL;
-		TH1D *kereco_RecoInEL;
 
 
-		TH2D *rangereco_dedxreco_TrueInEL;
-		TH2D *rangereco_dedxreco_TrueEL;
-		TH2D *rangereco_dedxreco_TrueMCS;
 
 
-		TH1D *KE_ff_recostop;
-		TH1D *KE_range_recostop;
-		TH1D *KE_calo_recostop;
-		TH1D *KE_simide_recostop;
-		TH1D *KE_rrange_recostop;
-		TH1D *KE_rrange2_recostop;
-		//TH1D *KE_truth_recostop;
-		
-		TH1D *dKE_range_ff_recostop;
-		TH1D *dKE_calo_ff_recostop;
-		TH1D *dKE_rrange_ff_recostop;
-		TH1D *dKE_rrange2_ff_recostop;
 
 
-                TH1D *KE_ff_recoinel;
-                TH1D *KE_range_recoinel;
-                TH1D *KE_calo_recoinel;
-                TH1D *KE_simide_recoinel;
-                TH1D *KE_rrange_recoinel;
-
-		TH2D *rr_dedx_recostop;
-		TH2D *rr_ddedx1_recostop;
-		TH2D *rr_ddedx2_recostop;
-
-		TH2D *rr_dedx_truestop;
 
 
-		double true_interactions[nthinslices];
-		double true_incidents[nthinslices];
+TH1D *dzend_inel;
+TH1D *dzend_el;
+TH1D *dzend_mcs;
+TH1D *dzend_bkg;
 
-		std::string fOutputFileName;
-		TFile *outputFile;
-		void SetOutputFileName(std::string name){fOutputFileName = name;};
-		void BookHistograms();
-		//void FillHistograms(int cut, const HadAna & evt);
-		void SaveHistograms();
+TH1D *dzend_inel_beamQ;
+TH1D *dzend_el_beamQ;
+TH1D *dzend_mcs_beamQ;
+TH1D *dzend_bkg_beamQ;
 
-		//void ProcessEvent(const HadAna & evt, Unfold & uf);
-		//void CalcXS(const Unfold & uf);
+TH1D *dzend_inel_caloSz;
+TH1D *dzend_el_caloSz;
+TH1D *dzend_mcs_caloSz;
+TH1D *dzend_bkg_caloSz;
 
-		//void Run(HadAna & evt, Unfold & uf);
+//TH1D *dzend_inel_RecoInel;
+//TH1D *dzend_el_RecoInel;
+//TH1D *dzend_mcs_RecoInel;
+//TH1D *dzend_bkg_RecoInel;
+
+TH1D *dzend_inel_XY;
+TH1D *dzend_el_XY;
+TH1D *dzend_mcs_XY;
+TH1D *dzend_bkg_XY;
+
+TH2D *zend_2d_inel;
+TH2D *zend_2d_el;
+TH2D *zend_2d_mcs;
+TH2D *zend_2d_bkg;
+
+TH2D *zend_2d_inel_XY;
+TH2D *zend_2d_el_XY;
+TH2D *zend_2d_mcs_XY;
+TH2D *zend_2d_bkg_XY;
+
+TH1D *zend_reco;
+
+TH1D *trklen_inel_true;
+TH1D *trklen_el_true;
+TH1D *trklen_mcs_true;
+TH1D *trklen_bkg_true;
+
+TH1D *trklen_inel_reco;
+TH1D *trklen_el_reco;
+TH1D *trklen_mcs_reco;
+TH1D *trklen_bkg_reco;
+
+
+TH2D *zend_ke_inel_true_XY;
+TH2D *zend_ke_el_true_XY;
+TH2D *zend_ke_mcs_true_XY;
+TH2D *zend_ke_bkg_true_XY;
+
+
+TH2D *ztrue_ketrue_TrueInEL;
+TH2D *ztrue_ketrue_RecoInEL;
+//TH2D *zreco_kereco_RecoInEL;
+//TH2D *zreco_kereco_TrueInEL;
+
+TH1D *ketrue_TrueInEL;
+
+TH2D *ztrue_ketrue_TrueMCS;
+TH1D *ketrue_TrueMCS;
+TH1D *dztrue_TrueMCS;
+
+TH2D *ztrue_ketrue_TrueEL;
+TH1D *ketrue_TrueEL;
+
+TH2D *ztrue_ketrue;
+
+
+//reco presentation with true labels
+TH2D *zreco_kereco_TrueInEL;
+TH2D *zreco_kereco_TrueEL;
+TH2D *zreco_kereco_TrueMCS;
+
+TH1D *zreco_TrueInEL;
+TH1D *zreco_TrueEL;
+TH1D *zreco_TrueMCS;
+
+TH1D *kereco_TrueInEL;
+TH1D *kereco_TrueEL;
+TH1D *kereco_TrueMCS;
+
+//reco presentation with reco labels
+TH2D *zreco_kereco_RecoInEL;
+TH1D *zreco_RecoInEL;
+TH1D *kereco_RecoInEL;
+
+
+TH2D *rangereco_dedxreco_TrueInEL;
+TH2D *rangereco_dedxreco_TrueEL;
+TH2D *rangereco_dedxreco_TrueMCS;
+
+
+TH1D *KE_ff_recostop;
+TH1D *KE_range_recostop;
+TH1D *KE_calo_recostop;
+TH1D *KE_simide_recostop;
+TH1D *KE_rrange_recostop;
+TH1D *KE_rrange2_recostop;
+//TH1D *KE_truth_recostop;
+
+TH1D *dKE_range_ff_recostop;
+TH1D *dKE_calo_ff_recostop;
+TH1D *dKE_rrange_ff_recostop;
+TH1D *dKE_rrange2_ff_recostop;
+
+
+TH1D *KE_ff_recoinel;
+TH1D *KE_range_recoinel;
+TH1D *KE_calo_recoinel;
+TH1D *KE_simide_recoinel;
+TH1D *KE_rrange_recoinel;
+
+TH2D *rr_dedx_recostop;
+TH2D *rr_ddedx1_recostop;
+TH2D *rr_ddedx2_recostop;
+
+TH2D *rr_dedx_truestop;
+
+//KE Correlation
+TH2D *KE_range_ff_recostop;
+TH2D *KE_range_calo_recostop;
+
+double true_interactions[nthinslices];
+double true_incidents[nthinslices];
+
+std::string fOutputFileName;
+TFile *outputFile;
+void SetOutputFileName(std::string name){fOutputFileName = name;};
+void BookHistograms();
+//void FillHistograms(int cut, const HadAna & evt);
+void SaveHistograms();
+
+//void ProcessEvent(const HadAna & evt, Unfold & uf);
+//void CalcXS(const Unfold & uf);
+
+//void Run(HadAna & evt, Unfold & uf);
 
 //};
 
@@ -303,8 +463,17 @@ void BookHistograms(){
 	//response_SliceID_PionInEl = new RooUnfoldResponse(nthinslices+2, -1, nthinslices+1, "response_SliceID_PionInEl");
 
 
+	//
+	int n_ntrklen=60;
+	float st_ntrklen=0;
+	float ed_ntrklen=1.2;
+	ntrklen = new TH1D("ntrklen","",n_ntrklen,st_ntrklen,ed_ntrklen);
+	ntrklen_PureInel= new TH1D("ntrklen_PureInel", "",n_ntrklen,st_ntrklen,ed_ntrklen);
+	ntrklen_PureEl= new TH1D("ntrklen_PureEl", "",n_ntrklen,st_ntrklen,ed_ntrklen);
+	ntrklen_PureMCS= new TH1D("ntrklen_PureMCS", "",n_ntrklen,st_ntrklen,ed_ntrklen);
+
 	//zend distributions
-	int dz=2000;
+	int dz=200;
 	float z_st=-50;
 	float z_end=150;
 
@@ -314,12 +483,244 @@ void BookHistograms(){
 	float ke_st=-50;
 	float ke_end=600;
 
-	//truth distributions
+	//truthEndz ---------------------------------------------------------------------------//
+	//no cut
+	zend_true_inel_NoCut = new TH1D("zend_true_inel_NoCut","",dz, z_st, z_end);
+	zend_true_el_NoCut = new TH1D("zend_true_el_NoCut","",dz, z_st, z_end);
+	zend_true_mcs_NoCut = new TH1D("zend_true_mcs_NoCut","",dz, z_st, z_end);
+	zend_true_midcosmic_NoCut = new TH1D("zend_true_midcosmic_NoCut","",dz, z_st, z_end);
+	zend_true_midpi_NoCut = new TH1D("zend_true_midpi_NoCut","",dz, z_st, z_end);
+	zend_true_midp_NoCut = new TH1D("zend_true_midp_NoCut","",dz, z_st, z_end);
+	zend_true_midmu_NoCut = new TH1D("zend_true_midmu_NoCut","",dz, z_st, z_end);
+	zend_true_mideg_NoCut = new TH1D("zend_true_mideg_NoCut","",dz, z_st, z_end);
+	zend_true_midother_NoCut = new TH1D("zend_true_midother_NoCut","",dz, z_st, z_end);
+
+	//pandora cut
+	zend_true_inel_PanS = new TH1D("zend_true_inel_PanS","",dz, z_st, z_end);
+	zend_true_el_PanS = new TH1D("zend_true_el_PanS","",dz, z_st, z_end);
+	zend_true_mcs_PanS = new TH1D("zend_true_mcs_PanS","",dz, z_st, z_end);
+	zend_true_midcosmic_PanS = new TH1D("zend_true_midcosmic_PanS","",dz, z_st, z_end);
+	zend_true_midpi_PanS = new TH1D("zend_true_midpi_PanS","",dz, z_st, z_end);
+	zend_true_midp_PanS = new TH1D("zend_true_midp_PanS","",dz, z_st, z_end);
+	zend_true_midmu_PanS = new TH1D("zend_true_midmu_PanS","",dz, z_st, z_end);
+	zend_true_mideg_PanS = new TH1D("zend_true_mideg_PanS","",dz, z_st, z_end);
+	zend_true_midother_PanS = new TH1D("zend_true_midother_PanS","",dz, z_st, z_end);
+
+	//CaloSz
+	zend_true_inel_CaloSz = new TH1D("zend_true_inel_CaloSz","",dz, z_st, z_end);
+	zend_true_el_CaloSz = new TH1D("zend_true_el_CaloSz","",dz, z_st, z_end);
+	zend_true_mcs_CaloSz = new TH1D("zend_true_mcs_CaloSz","",dz, z_st, z_end);
+	zend_true_midcosmic_CaloSz = new TH1D("zend_true_midcosmic_CaloSz","",dz, z_st, z_end);
+	zend_true_midpi_CaloSz = new TH1D("zend_true_midpi_CaloSz","",dz, z_st, z_end);
+	zend_true_midp_CaloSz = new TH1D("zend_true_midp_CaloSz","",dz, z_st, z_end);
+	zend_true_midmu_CaloSz = new TH1D("zend_true_midmu_CaloSz","",dz, z_st, z_end);
+	zend_true_mideg_CaloSz = new TH1D("zend_true_mideg_CaloSz","",dz, z_st, z_end);
+	zend_true_midother_CaloSz = new TH1D("zend_true_midother_CaloSz","",dz, z_st, z_end);
+
+	//beam quality
+	zend_true_inel_BQ = new TH1D("zend_true_inel_BQ","",dz, z_st, z_end);
+	zend_true_el_BQ = new TH1D("zend_true_el_BQ","",dz, z_st, z_end);
+	zend_true_mcs_BQ = new TH1D("zend_true_mcs_BQ","",dz, z_st, z_end);
+	zend_true_midcosmic_BQ = new TH1D("zend_true_midcosmic_BQ","",dz, z_st, z_end);
+	zend_true_midpi_BQ = new TH1D("zend_true_midpi_BQ","",dz, z_st, z_end);
+	zend_true_midp_BQ = new TH1D("zend_true_midp_BQ","",dz, z_st, z_end);
+	zend_true_midmu_BQ = new TH1D("zend_true_midmu_BQ","",dz, z_st, z_end);
+	zend_true_mideg_BQ = new TH1D("zend_true_mideg_BQ","",dz, z_st, z_end);
+	zend_true_midother_BQ = new TH1D("zend_true_midother_BQ","",dz, z_st, z_end);
+
+	//reco inel cut
+	zend_true_inel_RecoInel = new TH1D("zend_true_inel_RecoInel","",dz, z_st, z_end);
+	zend_true_el_RecoInel = new TH1D("zend_true_el_RecoInel","",dz, z_st, z_end);
+	zend_true_mcs_RecoInel = new TH1D("zend_true_mcs_RecoInel","",dz, z_st, z_end);
+	zend_true_midcosmic_RecoInel = new TH1D("zend_true_midcosmic_RecoInel","",dz, z_st, z_end);
+	zend_true_midpi_RecoInel = new TH1D("zend_true_midpi_RecoInel","",dz, z_st, z_end);
+	zend_true_midp_RecoInel = new TH1D("zend_true_midp_RecoInel","",dz, z_st, z_end);
+	zend_true_midmu_RecoInel = new TH1D("zend_true_midmu_RecoInel","",dz, z_st, z_end);
+	zend_true_mideg_RecoInel = new TH1D("zend_true_mideg_RecoInel","",dz, z_st, z_end);
+	zend_true_midother_RecoInel = new TH1D("zend_true_midother_RecoInel","",dz, z_st, z_end);
+
 	zend_true = new TH1D("zend_true","", dz, z_st, z_end);
-	zend_inel_true = new TH1D("zend_inel_true","", dz, z_st, z_end);
-	zend_el_true = new TH1D("zend_el_true","", dz, z_st, z_end);
-	zend_mcs_true = new TH1D("zend_mcs_true","", dz, z_st, z_end);
-	zend_bkg_true = new TH1D("zend_bkg_true","", dz, z_st, z_end);
+
+	//recoEndz ---------------------------------------------------------------------------//
+	//no cut
+	zend_reco_inel_NoCut = new TH1D("zend_reco_inel_NoCut","",dz, z_st, z_end);
+	zend_reco_el_NoCut = new TH1D("zend_reco_el_NoCut","",dz, z_st, z_end);
+	zend_reco_mcs_NoCut = new TH1D("zend_reco_mcs_NoCut","",dz, z_st, z_end);
+	zend_reco_midcosmic_NoCut = new TH1D("zend_reco_midcosmic_NoCut","",dz, z_st, z_end);
+	zend_reco_midpi_NoCut = new TH1D("zend_reco_midpi_NoCut","",dz, z_st, z_end);
+	zend_reco_midp_NoCut = new TH1D("zend_reco_midp_NoCut","",dz, z_st, z_end);
+	zend_reco_midmu_NoCut = new TH1D("zend_reco_midmu_NoCut","",dz, z_st, z_end);
+	zend_reco_mideg_NoCut = new TH1D("zend_reco_mideg_NoCut","",dz, z_st, z_end);
+	zend_reco_midother_NoCut = new TH1D("zend_reco_midother_NoCut","",dz, z_st, z_end);
+
+	//pandora cut
+	zend_reco_inel_PanS = new TH1D("zend_reco_inel_PanS","",dz, z_st, z_end);
+	zend_reco_el_PanS = new TH1D("zend_reco_el_PanS","",dz, z_st, z_end);
+	zend_reco_mcs_PanS = new TH1D("zend_reco_mcs_PanS","",dz, z_st, z_end);
+	zend_reco_midcosmic_PanS = new TH1D("zend_reco_midcosmic_PanS","",dz, z_st, z_end);
+	zend_reco_midpi_PanS = new TH1D("zend_reco_midpi_PanS","",dz, z_st, z_end);
+	zend_reco_midp_PanS = new TH1D("zend_reco_midp_PanS","",dz, z_st, z_end);
+	zend_reco_midmu_PanS = new TH1D("zend_reco_midmu_PanS","",dz, z_st, z_end);
+	zend_reco_mideg_PanS = new TH1D("zend_reco_mideg_PanS","",dz, z_st, z_end);
+	zend_reco_midother_PanS = new TH1D("zend_reco_midother_PanS","",dz, z_st, z_end);
+
+	//CaloSz
+	zend_reco_inel_CaloSz = new TH1D("zend_reco_inel_CaloSz","",dz, z_st, z_end);
+	zend_reco_el_CaloSz = new TH1D("zend_reco_el_CaloSz","",dz, z_st, z_end);
+	zend_reco_mcs_CaloSz = new TH1D("zend_reco_mcs_CaloSz","",dz, z_st, z_end);
+	zend_reco_midcosmic_CaloSz = new TH1D("zend_reco_midcosmic_CaloSz","",dz, z_st, z_end);
+	zend_reco_midpi_CaloSz = new TH1D("zend_reco_midpi_CaloSz","",dz, z_st, z_end);
+	zend_reco_midp_CaloSz = new TH1D("zend_reco_midp_CaloSz","",dz, z_st, z_end);
+	zend_reco_midmu_CaloSz = new TH1D("zend_reco_midmu_CaloSz","",dz, z_st, z_end);
+	zend_reco_mideg_CaloSz = new TH1D("zend_reco_mideg_CaloSz","",dz, z_st, z_end);
+	zend_reco_midother_CaloSz = new TH1D("zend_reco_midother_CaloSz","",dz, z_st, z_end);
+
+	//beam quality
+	zend_reco_inel_BQ = new TH1D("zend_reco_inel_BQ","",dz, z_st, z_end);
+	zend_reco_el_BQ = new TH1D("zend_reco_el_BQ","",dz, z_st, z_end);
+	zend_reco_mcs_BQ = new TH1D("zend_reco_mcs_BQ","",dz, z_st, z_end);
+	zend_reco_midcosmic_BQ = new TH1D("zend_reco_midcosmic_BQ","",dz, z_st, z_end);
+	zend_reco_midpi_BQ = new TH1D("zend_reco_midpi_BQ","",dz, z_st, z_end);
+	zend_reco_midp_BQ = new TH1D("zend_reco_midp_BQ","",dz, z_st, z_end);
+	zend_reco_midmu_BQ = new TH1D("zend_reco_midmu_BQ","",dz, z_st, z_end);
+	zend_reco_mideg_BQ = new TH1D("zend_reco_mideg_BQ","",dz, z_st, z_end);
+	zend_reco_midother_BQ = new TH1D("zend_reco_midother_BQ","",dz, z_st, z_end);
+
+	//reco inel cut
+	zend_reco_inel_RecoInel = new TH1D("zend_reco_inel_RecoInel","",dz, z_st, z_end);
+	zend_reco_el_RecoInel = new TH1D("zend_reco_el_RecoInel","",dz, z_st, z_end);
+	zend_reco_mcs_RecoInel = new TH1D("zend_reco_mcs_RecoInel","",dz, z_st, z_end);
+	zend_reco_midcosmic_RecoInel = new TH1D("zend_reco_midcosmic_RecoInel","",dz, z_st, z_end);
+	zend_reco_midpi_RecoInel = new TH1D("zend_reco_midpi_RecoInel","",dz, z_st, z_end);
+	zend_reco_midp_RecoInel = new TH1D("zend_reco_midp_RecoInel","",dz, z_st, z_end);
+	zend_reco_midmu_RecoInel = new TH1D("zend_reco_midmu_RecoInel","",dz, z_st, z_end);
+	zend_reco_mideg_RecoInel = new TH1D("zend_reco_mideg_RecoInel","",dz, z_st, z_end);
+	zend_reco_midother_RecoInel = new TH1D("zend_reco_midother_RecoInel","",dz, z_st, z_end);
+
+
+
+
+
+
+
+	//reco distributions
+/*
+	zend_reco_inel_NoCut = new TH1D("zend_reco_inel_NoCut","",dz, z_st, z_end);
+	zend_reco_el_NoCut = new TH1D("zend_reco_el_NoCut","",dz, z_st, z_end);
+	zend_reco_mcs_NoCut = new TH1D("zend_reco_mcs_NoCut","",dz, z_st, z_end);
+	zend_reco_upinel_NoCut = new TH1D("zend_reco_upinel_NoCut","",dz, z_st, z_end);
+	zend_reco_upel_NoCut = new TH1D("zend_reco_upel_NoCut","",dz, z_st, z_end);
+	zend_reco_upmcs_NoCut = new TH1D("zend_reco_upmcs_NoCut","",dz, z_st, z_end);
+	zend_reco_misinel_NoCut = new TH1D("zend_reco_misinel_NoCut","",dz, z_st, z_end);
+	zend_reco_misel_NoCut = new TH1D("zend_reco_misel_NoCut","",dz, z_st, z_end);
+	zend_reco_mismcs_NoCut = new TH1D("zend_reco_mismcs_NoCut","",dz, z_st, z_end);
+
+	zend_reco_inel_PanS = new TH1D("zend_reco_inel_PanS","",dz, z_st, z_end);
+	zend_reco_el_PanS = new TH1D("zend_reco_el_PanS","",dz, z_st, z_end);
+	zend_reco_mcs_PanS = new TH1D("zend_reco_mcs_PanS","",dz, z_st, z_end);
+	zend_reco_upinel_PanS = new TH1D("zend_reco_upinel_PanS","",dz, z_st, z_end);
+	zend_reco_upel_PanS = new TH1D("zend_reco_upel_PanS","",dz, z_st, z_end);
+	zend_reco_upmcs_PanS = new TH1D("zend_reco_upmcs_PanS","",dz, z_st, z_end);
+	zend_reco_misinel_PanS = new TH1D("zend_reco_misinel_PanS","",dz, z_st, z_end);
+	zend_reco_misel_PanS = new TH1D("zend_reco_misel_PanS","",dz, z_st, z_end);
+	zend_reco_mismcs_PanS = new TH1D("zend_reco_mismcs_PanS","",dz, z_st, z_end);
+
+	zend_reco_inel_CaloSz = new TH1D("zend_reco_inel_CaloSz","",dz, z_st, z_end);
+	zend_reco_el_CaloSz = new TH1D("zend_reco_el_CaloSz","",dz, z_st, z_end);
+	zend_reco_mcs_CaloSz = new TH1D("zend_reco_mcs_CaloSz","",dz, z_st, z_end);
+	zend_reco_upinel_CaloSz = new TH1D("zend_reco_upinel_CaloSz","",dz, z_st, z_end);
+	zend_reco_upel_CaloSz = new TH1D("zend_reco_upel_CaloSz","",dz, z_st, z_end);
+	zend_reco_upmcs_CaloSz = new TH1D("zend_reco_upmcs_CaloSz","",dz, z_st, z_end);
+	zend_reco_misinel_CaloSz = new TH1D("zend_reco_misinel_CaloSz","",dz, z_st, z_end);
+	zend_reco_misel_CaloSz = new TH1D("zend_reco_misel_CaloSz","",dz, z_st, z_end);
+	zend_reco_mismcs_CaloSz = new TH1D("zend_reco_mismcs_CaloSz","",dz, z_st, z_end);
+
+	zend_reco_inel_BQ = new TH1D("zend_reco_inel_BQ","",dz, z_st, z_end);
+	zend_reco_el_BQ = new TH1D("zend_reco_el_BQ","",dz, z_st, z_end);
+	zend_reco_mcs_BQ = new TH1D("zend_reco_mcs_BQ","",dz, z_st, z_end);
+	zend_reco_upinel_BQ = new TH1D("zend_reco_upinel_BQ","",dz, z_st, z_end);
+	zend_reco_upel_BQ = new TH1D("zend_reco_upel_BQ","",dz, z_st, z_end);
+	zend_reco_upmcs_BQ = new TH1D("zend_reco_upmcs_BQ","",dz, z_st, z_end);
+	zend_reco_misinel_BQ = new TH1D("zend_reco_misinel_BQ","",dz, z_st, z_end);
+	zend_reco_misel_BQ = new TH1D("zend_reco_misel_BQ","",dz, z_st, z_end);
+	zend_reco_mismcs_BQ = new TH1D("zend_reco_mismcs_BQ","",dz, z_st, z_end);
+
+	zend_reco_inel_RecoInel = new TH1D("zend_reco_inel_RecoInel","",dz, z_st, z_end);
+	zend_reco_el_RecoInel = new TH1D("zend_reco_el_RecoInel","",dz, z_st, z_end);
+	zend_reco_mcs_RecoInel = new TH1D("zend_reco_mcs_RecoInel","",dz, z_st, z_end);
+	zend_reco_upinel_RecoInel = new TH1D("zend_reco_upinel_RecoInel","",dz, z_st, z_end);
+	zend_reco_upel_RecoInel = new TH1D("zend_reco_upel_RecoInel","",dz, z_st, z_end);
+	zend_reco_upmcs_RecoInel = new TH1D("zend_reco_upmcs_RecoInel","",dz, z_st, z_end);
+	zend_reco_misinel_RecoInel = new TH1D("zend_reco_misinel_RecoInel","",dz, z_st, z_end);
+	zend_reco_misel_RecoInel = new TH1D("zend_reco_misel_RecoInel","",dz, z_st, z_end);
+	zend_reco_mismcs_RecoInel = new TH1D("zend_reco_mismcs_RecoInel","",dz, z_st, z_end);
+*/
+
+	//(reco-true)EndZ distributions --------------------------------------------------------//
+	int n_dzend=100;
+	float dzend_st=-100;
+	float dzend_end=100; 
+
+	//nocut
+	dzend_inel_NoCut = new TH1D("dzend_inel_NoCut","",n_dzend, dzend_st, dzend_end);
+	dzend_el_NoCut = new TH1D("dzend_el_NoCut","",n_dzend, dzend_st, dzend_end);
+	dzend_mcs_NoCut = new TH1D("dzend_mcs_NoCut","",n_dzend, dzend_st, dzend_end);
+	dzend_midcosmic_NoCut = new TH1D("dzend_midcosmic_NoCut","",n_dzend, dzend_st, dzend_end);
+	dzend_midpi_NoCut = new TH1D("dzend_midpi_NoCut","",n_dzend, dzend_st, dzend_end);
+	dzend_midp_NoCut = new TH1D("dzend_midp_NoCut","",n_dzend, dzend_st, dzend_end);
+	dzend_midmu_NoCut = new TH1D("dzend_midmu_NoCut","",n_dzend, dzend_st, dzend_end);
+	dzend_mideg_NoCut = new TH1D("dzend_mideg_NoCut","",n_dzend, dzend_st, dzend_end);
+	dzend_midother_NoCut = new TH1D("dzend_midother_NoCut","",n_dzend, dzend_st, dzend_end);
+
+	//pandora cut
+	dzend_inel_PanS = new TH1D("dzend_inel_PanS","",n_dzend, dzend_st, dzend_end);
+	dzend_el_PanS = new TH1D("dzend_el_PanS","",n_dzend, dzend_st, dzend_end);
+	dzend_mcs_PanS = new TH1D("dzend_mcs_PanS","",n_dzend, dzend_st, dzend_end);
+	dzend_midcosmic_PanS = new TH1D("dzend_midcosmic_PanS","",n_dzend, dzend_st, dzend_end);
+	dzend_midpi_PanS = new TH1D("dzend_midpi_PanS","",n_dzend, dzend_st, dzend_end);
+	dzend_midp_PanS = new TH1D("dzend_midp_PanS","",n_dzend, dzend_st, dzend_end);
+	dzend_midmu_PanS = new TH1D("dzend_midmu_PanS","",n_dzend, dzend_st, dzend_end);
+	dzend_mideg_PanS = new TH1D("dzend_mideg_PanS","",n_dzend, dzend_st, dzend_end);
+	dzend_midother_PanS = new TH1D("dzend_midother_PanS","",n_dzend, dzend_st, dzend_end);
+	
+	//calosz
+	dzend_inel_CaloSz = new TH1D("dzend_inel_CaloSz","",n_dzend, dzend_st, dzend_end);
+	dzend_el_CaloSz = new TH1D("dzend_el_CaloSz","",n_dzend, dzend_st, dzend_end);
+	dzend_mcs_CaloSz = new TH1D("dzend_mcs_CaloSz","",n_dzend, dzend_st, dzend_end);
+	dzend_midcosmic_CaloSz = new TH1D("dzend_midcosmic_CaloSz","",n_dzend, dzend_st, dzend_end);
+	dzend_midpi_CaloSz = new TH1D("dzend_midpi_CaloSz","",n_dzend, dzend_st, dzend_end);
+	dzend_midp_CaloSz = new TH1D("dzend_midp_CaloSz","",n_dzend, dzend_st, dzend_end);
+	dzend_midmu_CaloSz = new TH1D("dzend_midmu_CaloSz","",n_dzend, dzend_st, dzend_end);
+	dzend_mideg_CaloSz = new TH1D("dzend_mideg_CaloSz","",n_dzend, dzend_st, dzend_end);
+	dzend_midother_CaloSz = new TH1D("dzend_midother_CaloSz","",n_dzend, dzend_st, dzend_end);
+
+	//beam quality
+	dzend_inel_BQ = new TH1D("dzend_inel_BQ","",n_dzend, dzend_st, dzend_end);
+	dzend_el_BQ = new TH1D("dzend_el_BQ","",n_dzend, dzend_st, dzend_end);
+	dzend_mcs_BQ = new TH1D("dzend_mcs_BQ","",n_dzend, dzend_st, dzend_end);
+	dzend_midcosmic_BQ = new TH1D("dzend_midcosmic_BQ","",n_dzend, dzend_st, dzend_end);
+	dzend_midpi_BQ = new TH1D("dzend_midpi_BQ","",n_dzend, dzend_st, dzend_end);
+	dzend_midp_BQ = new TH1D("dzend_midp_BQ","",n_dzend, dzend_st, dzend_end);
+	dzend_midmu_BQ = new TH1D("dzend_midmu_BQ","",n_dzend, dzend_st, dzend_end);
+	dzend_mideg_BQ = new TH1D("dzend_mideg_BQ","",n_dzend, dzend_st, dzend_end);
+	dzend_midother_BQ = new TH1D("dzend_midother_BQ","",n_dzend, dzend_st, dzend_end);
+
+	//reco inel
+	dzend_inel_RecoInel = new TH1D("dzend_inel_RecoInel","",n_dzend, dzend_st, dzend_end);
+	dzend_el_RecoInel = new TH1D("dzend_el_RecoInel","",n_dzend, dzend_st, dzend_end);
+	dzend_mcs_RecoInel = new TH1D("dzend_mcs_RecoInel","",n_dzend, dzend_st, dzend_end);
+	dzend_midcosmic_RecoInel = new TH1D("dzend_midcosmic_RecoInel","",n_dzend, dzend_st, dzend_end);
+	dzend_midpi_RecoInel = new TH1D("dzend_midpi_RecoInel","",n_dzend, dzend_st, dzend_end);
+	dzend_midp_RecoInel = new TH1D("dzend_midp_RecoInel","",n_dzend, dzend_st, dzend_end);
+	dzend_midmu_RecoInel = new TH1D("dzend_midmu_RecoInel","",n_dzend, dzend_st, dzend_end);
+	dzend_mideg_RecoInel = new TH1D("dzend_mideg_RecoInel","",n_dzend, dzend_st, dzend_end);
+	dzend_midother_RecoInel = new TH1D("dzend_midother_RecoInel","",n_dzend, dzend_st, dzend_end);
+
+	/*
+	   zend_inel_true = new TH1D("zend_inel_true","", dz, z_st, z_end);
+	   zend_el_true = new TH1D("zend_el_true","", dz, z_st, z_end);
+	   zend_mcs_true = new TH1D("zend_mcs_true","", dz, z_st, z_end);
+	   zend_bkg_true = new TH1D("zend_bkg_true","", dz, z_st, z_end);
 
 	//(par)_(truthlabel)_(reco or truth par)_(cut)
 	zend_inel_true_beamQ = new TH1D("zend_inel_true_beamQ","", dz, z_st, z_end);
@@ -346,8 +747,9 @@ void BookHistograms(){
 	trklen_el_true_XY = new TH1D("trklen_el_true_XY","", dz, z_st, z_end);
 	trklen_mcs_true_XY = new TH1D("trklen_mcs_true_XY","", dz, z_st, z_end);
 	trklen_bkg_true_XY = new TH1D("trklen_bkg_true_XY","", dz, z_st, z_end);
+	*/
 
-	//dZend (reco-true)
+	//dZend (reco-true) --------------------------------------------//
 	int ddz=300;
 	float dz_st=-150;
 	float dz_end=150;
@@ -367,10 +769,10 @@ void BookHistograms(){
 	dzend_mcs_caloSz = new TH1D("dzend_mcs_caloSz","", ddz, dz_st, dz_end);
 	dzend_bkg_caloSz = new TH1D("dzend_bkg_caloSz","", ddz, dz_st, dz_end);
 
-	dzend_inel_RecoInel = new TH1D("dzend_inel_RecoInel","", ddz, dz_st, dz_end);
-	dzend_el_RecoInel = new TH1D("dzend_el_RecoInel","", ddz, dz_st, dz_end);
-	dzend_mcs_RecoInel = new TH1D("dzend_mcs_RecoInel","", ddz, dz_st, dz_end);
-	dzend_bkg_RecoInel = new TH1D("dzend_bkg_RecoInel","", ddz, dz_st, dz_end);
+	//dzend_inel_RecoInel = new TH1D("dzend_inel_RecoInel","", ddz, dz_st, dz_end);
+	//dzend_el_RecoInel = new TH1D("dzend_el_RecoInel","", ddz, dz_st, dz_end);
+	//dzend_mcs_RecoInel = new TH1D("dzend_mcs_RecoInel","", ddz, dz_st, dz_end);
+	//dzend_bkg_RecoInel = new TH1D("dzend_bkg_RecoInel","", ddz, dz_st, dz_end);
 
 
 	dzend_inel_XY = new TH1D("dzend_inel_XY","", ddz, dz_st, dz_end);
@@ -431,9 +833,11 @@ void BookHistograms(){
 	zreco_RecoInEL = new TH1D("zreco_RecoInEL","", dz, z_st, z_end);
 
 	kereco_RecoInEL = new TH1D("kereco_RecoInEL","", dke, ke_st, ke_end);
-
-
 	ketrue_TrueInEL = new TH1D("ketrue_TrueInEL","",dke, ke_st, ke_end);
+
+	KE_range_ff_recostop=new TH2D("KE_range_ff_recostop","",dke, ke_st, ke_end,dke, ke_st, ke_end); KE_range_ff_recostop->GetXaxis()->SetTitle("KE_{range} [MeV]"); KE_range_ff_recostop->GetYaxis()->SetTitle("KE_{ff} [MeV]"); 
+	KE_range_calo_recostop=new TH2D("KE_range_calo_recostop","",dke, ke_st, ke_end,dke, ke_st, ke_end); KE_range_calo_recostop->GetXaxis()->SetTitle("KE_{range} [MeV]"); KE_range_calo_recostop->GetYaxis()->SetTitle("KE_{calo} [MeV]"); 
+
 
 	ztrue_ketrue_TrueMCS = new TH2D("ztrue_ketrue_TrueMCS","",dz, z_st, z_end, dke, ke_st, ke_end);
 	ketrue_TrueMCS = new TH1D("ketrue_TrueMCS","",dke, ke_st, ke_end);
@@ -474,11 +878,11 @@ void BookHistograms(){
 
 
 
-        KE_ff_recoinel=new TH1D("KE_ff_recoinel","", n_ke, ke_min, ke_max);
-        KE_range_recoinel=new TH1D("KE_range_recoinel", "", n_ke, ke_min, ke_max);
-        KE_calo_recoinel=new TH1D("KE_calo_recoinel","",n_ke, ke_min, ke_max);
-        KE_simide_recoinel=new TH1D("KE_simide_recoinel","",n_ke, ke_min, ke_max);
-        KE_rrange_recoinel=new TH1D("KE_rrange_recoinel", "", n_ke, ke_min, ke_max);
+	KE_ff_recoinel=new TH1D("KE_ff_recoinel","", n_ke, ke_min, ke_max);
+	KE_range_recoinel=new TH1D("KE_range_recoinel", "", n_ke, ke_min, ke_max);
+	KE_calo_recoinel=new TH1D("KE_calo_recoinel","",n_ke, ke_min, ke_max);
+	KE_simide_recoinel=new TH1D("KE_simide_recoinel","",n_ke, ke_min, ke_max);
+	KE_rrange_recoinel=new TH1D("KE_rrange_recoinel", "", n_ke, ke_min, ke_max);
 
 	rr_dedx_recostop=new TH2D("rr_dedx_recostop","", 240,0,120, 300,0, 30);
 	rr_dedx_truestop=new TH2D("rr_dedx_truestop","", 240,0,120, 300,0, 30);
@@ -524,6 +928,62 @@ void SaveHistograms(){
 	h_truesliceid_inelastic_uf->Write("h_truesliceid_inelastic_uf");
 	//response_SliceID_Pion->Write("response_SliceID_Pion");
 	//response_SliceID_PionInEl->Write("response_SliceID_PionInEl");
+	//
+
+/*
+	zend_true_inel_NoCut->Write();
+	zend_true_el_NoCut->Write();
+	zend_true_mcs_NoCut->Write();
+	zend_true_upinel_NoCut->Write();
+	zend_true_upel_NoCut->Write();
+	zend_true_upmcs_NoCut->Write();
+	zend_true_misinel_NoCut->Write();
+	zend_true_misel_NoCut->Write();
+	zend_true_mismcs_NoCut->Write();
+
+	zend_true_inel_PanS->Write();
+	zend_true_el_PanS->Write();
+	zend_true_mcs_PanS->Write();
+	zend_true_upinel_PanS->Write();
+	zend_true_upel_PanS->Write();
+	zend_true_upmcs_PanS->Write();
+	zend_true_misinel_PanS->Write();
+	zend_true_misel_PanS->Write();
+	zend_true_mismcs_PanS->Write();
+
+	zend_true_inel_CaloSz->Write();
+	zend_true_el_CaloSz->Write();
+	zend_true_mcs_CaloSz->Write();
+	zend_true_upinel_CaloSz->Write();
+	zend_true_upel_CaloSz->Write();
+	zend_true_upmcs_CaloSz->Write();
+	zend_true_misinel_CaloSz->Write();
+	zend_true_misel_CaloSz->Write();
+	zend_true_mismcs_CaloSz->Write();
+
+	zend_true_inel_BQ->Write();
+	zend_true_el_BQ->Write();
+	zend_true_mcs_BQ->Write();
+	zend_true_upinel_BQ->Write();
+	zend_true_upel_BQ->Write();
+	zend_true_upmcs_BQ->Write();
+	zend_true_misinel_BQ->Write();
+	zend_true_misel_BQ->Write();
+	zend_true_mismcs_BQ->Write();
+
+
+	zend_true_inel_RecoInel->Write();
+	zend_true_el_RecoInel->Write();
+	zend_true_mcs_RecoInel->Write();
+	zend_true_upinel_RecoInel->Write();
+	zend_true_upel_RecoInel->Write();
+	zend_true_upmcs_RecoInel->Write();
+	zend_true_misinel_RecoInel->Write();
+	zend_true_misel_RecoInel->Write();
+	zend_true_mismcs_RecoInel->Write();
+*/
+
+
 }
 
 void CalcXS(const Unfold & uf){
