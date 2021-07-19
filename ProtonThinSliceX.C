@@ -58,23 +58,47 @@ void ProtonThinSlice::Loop() {
 	int n_processmap_error=0; //sansity check: processmap
 	int n_true_end=0; //sansity check: true-end label
 
-	int n_tot=0; //no cut
-	int n_sg=0, n_bkg=0, n_up=0, n_mis=0;
-	int n_el=0, n_inel=0, n_mcs=0, n_upel=0, n_upinel=0, n_upmcs=0, n_misel=0, n_misinel=0, n_mismcs=0;
-	int n_pan=0; //pandora cut
-	int n_el_pan=0, n_inel_pan=0, n_mcs_pan=0, n_upel_pan=0, n_upinel_pan=0, n_upmcs_pan=0, n_misel_pan=0, n_misinel_pan=0, n_mismcs_pan=0;
-	int n_calsz=0; //calosz cut
-	int n_el_calsz=0, n_inel_calsz=0, n_mcs_calsz=0, n_upel_calsz=0, n_upinel_calsz=0, n_upmcs_calsz=0, n_misel_calsz=0, n_misinel_calsz=0, n_mismcs_calsz=0;
-	int n_bq=0; //bq cut
-	int n_el_bq=0, n_inel_bq=0, n_mcs_bq=0, n_upel_bq=0, n_upinel_bq=0, n_upmcs_bq=0, n_misel_bq=0, n_misinel_bq=0, n_mismcs_bq=0;
-	int n_recoinel=0; //reco inel cut
-	int n_el_recoinel=0, n_inel_recoinel=0, n_mcs_recoinel=0, n_upel_recoinel=0, n_upinel_recoinel=0, n_upmcs_recoinel=0, n_misel_recoinel=0, n_misinel_recoinel=0, n_mismcs_recoinel=0;
+	int n_tot=0, n_sg=0, n_bkg=0; //no cut
+	int n_el=0, n_inel=0, n_mcs=0, n_midcosmic=0, n_midpi=0, n_midp=0, n_midmu=0, n_mideg=0, n_midother=0;
 
-	//int n_misid=0, n_misid_intoutside=0, n_misid_inttpc=0, n_pandora_misid=0, n_calosz_misid=0, n_bq_misid=0, n_recoinel_misid=0;
-	//int n_pandora=0, n_pandora_el=0, n_pandora_inel=0, n_pandora_mcs=0, n_pandora_mid=0; //pandora slice
-	//int n_calosz=0, n_calosz_el=0, n_calosz_inel=0, n_calosz_mcs=0, n_calosz_mid=0; //calo size
-	//int n_bq=0, n_bq_el=0, n_bq_inel=0, n_bq_mcs=0, n_bq_mid=0; //calo size
-	//int n_recoinel=0, n_recoinel_el=0, n_recoinel_inel=0, n_recoinel_mcs=0, n_recoinel_mid=0; //recoinel
+	int n_pan_tot=0; //pandora cut
+	int n_el_pan=0, n_inel_pan=0, n_mcs_pan=0, n_midcosmic_pan=0, n_midpi_pan=0, n_midp_pan=0, n_midmu_pan=0, n_mideg_pan=0, n_midother_pan=0;
+
+	int n_calsz_tot=0; //calosz cut
+	int n_el_calsz=0, n_inel_calsz=0, n_mcs_calsz=0, n_midcosmic_calsz=0, n_midpi_calsz=0, n_midp_calsz=0, n_midmu_calsz=0, n_mideg_calsz=0, n_midother_calsz=0;
+
+	int n_bq_tot=0; //bq cut
+	int n_el_bq=0, n_inel_bq=0, n_mcs_bq=0, n_midcosmic_bq=0, n_midpi_bq=0, n_midp_bq=0, n_midmu_bq=0, n_mideg_bq=0, n_midother_bq=0;
+
+	int n_recoinel_tot=0; //recoinel cut
+	int n_el_recoinel=0, n_inel_recoinel=0, n_mcs_recoinel=0, n_midcosmic_recoinel=0, n_midpi_recoinel=0, n_midp_recoinel=0, n_midmu_recoinel=0, n_mideg_recoinel=0, n_midother_recoinel=0;
+
+
+	//int n_pan_tot=0, n_pan_sg=0, n_pan_bkg=0; //pandora cut
+	//int n_pan_el=0, n_pan_inel=0, n_pan_mcs=0, n_pan_midcosmic=0, n_pan_midpi=0, n_pan_midp=0, n_pan_midmu=0, n_pan_mideg=0, n_pan_midother=0;
+
+	//int n_calsz_tot=0, n_calsz_sg=0, n_calsz_bkg=0; //calosz cut
+	//int n_calsz_el=0, n_calsz_inel=0, n_calsz_mcs=0, n_calsz_midcosmic=0, n_calsz_midpi=0, n_calsz_midp=0, n_calsz_midmu=0, n_calsz_mideg=0, n_calsz_midother=0;
+
+	//int n_bq_tot=0, n_bq_sg=0, n_bq_bkg=0; //beam-quality cut
+	//int n_bq_el=0, n_bq_inel=0, n_bq_mcs=0, n_bq_midcosmic=0, n_bq_midpi=0, n_bq_midp=0, n_bq_midmu=0, n_bq_mideg=0, n_bq_midother=0;
+
+	//int n_recoinel_tot=0, n_recoinel_sg=0, n_recoinel_bkg=0; //recoinel cut
+	//int n_recoinel_el=0, n_recoinel_inel=0, n_recoinel_mcs=0, n_recoinel_midcosmic=0, n_recoinel_midpi=0, n_recoinel_midp=0, n_recoinel_midmu=0, n_recoinel_mideg=0, n_recoinel_midother=0;
+
+
+
+	//int n_sg=0, n_bkg=0, n_up=0, n_mis=0;
+	//n_upel=0, n_upinel=0, n_upmcs=0, n_misel=0, n_misinel=0, n_mismcs=0;
+	//int n_pan=0; //pandora cut
+	//int n_el_pan=0, n_inel_pan=0, n_mcs_pan=0, n_upel_pan=0, n_upinel_pan=0, n_upmcs_pan=0, n_misel_pan=0, n_misinel_pan=0, n_mismcs_pan=0;
+	//int n_calsz=0; //calosz cut
+	//int n_el_calsz=0, n_inel_calsz=0, n_mcs_calsz=0, n_upel_calsz=0, n_upinel_calsz=0, n_upmcs_calsz=0, n_misel_calsz=0, n_misinel_calsz=0, n_mismcs_calsz=0;
+	//int n_bq=0; //bq cut
+	//int n_el_bq=0, n_inel_bq=0, n_mcs_bq=0, n_upel_bq=0, n_upinel_bq=0, n_upmcs_bq=0, n_misel_bq=0, n_misinel_bq=0, n_mismcs_bq=0;
+	//int n_recoinel=0; //reco inel cut
+	//int n_el_recoinel=0, n_inel_recoinel=0, n_mcs_recoinel=0, n_upel_recoinel=0, n_upinel_recoinel=0, n_upmcs_recoinel=0, n_misel_recoinel=0, n_misinel_recoinel=0, n_mismcs_recoinel=0;
+
 	
 	//unfolding config. -------------------------//
 	Unfold uf(nthinslices+2, -1, nthinslices+1);
@@ -113,12 +137,10 @@ void ProtonThinSlice::Loop() {
 		bool IsBeamMatch=false; //if recostructed the right track (recoID=truthID)
 		bool IsPandoraSlice=false; //pandora slice cut (can pandora reconstruct this track)
 		bool IsCaloSize=false; //if calo size not empty
-		bool IsCosmic=false; //beam or cosmic
 		bool IsIntersection=false; //if any track intersect with our reco track		
 		if (primary_truth_Isbeammatched==1) IsBeamMatch=true;
 		if (isprimarytrack==1&&isprimaryshower==0) IsPandoraSlice=true; 
 		if (!primtrk_hitz->empty()) IsCaloSize=true;
-		if (primary_truth_byE_origin==2) IsCosmic=true;
 		if (timeintersection->size()) IsIntersection=true;
 		//----------------------------------------------------------------//
 	
@@ -130,9 +152,10 @@ void ProtonThinSlice::Loop() {
 		cout<<"primary_truth_EndProcess:"<<primary_truth_EndProcess->c_str()<<endl;
 		cout<<"Isendpoint_outsidetpc:"<<Isendpoint_outsidetpc<<endl;
 		cout<<"IsBeamMatch:"<<IsBeamMatch<<endl;
-		cout<<"IsCosmic:"<<IsCosmic<<" (primary_truth_byE_origin="<<primary_truth_byE_origin<<")"<<endl;
+		cout<<"primary_truth_byE_origin="<<primary_truth_byE_origin<<""<<endl;
+		cout<<"primary_truth_byE_PDG="<<primary_truth_byE_PDG<<""<<endl;
 		cout<<"primary_truth_Pdg:"<<primary_truth_Pdg<<endl;
-		cout<<"beamtrackPdg:"<<beamtrackPdg<<endl;	
+		cout<<"beamtrackPdg:"<<beamtrackPdg<<endl;
 
 		//Truth label of Primarytrack_End ------------------------------------------------------------------------------------------------//
 		bool IsPureInEL=false; //inel
@@ -178,12 +201,11 @@ void ProtonThinSlice::Loop() {
 		//if (strcmp(primary_truth_EndProcess->c_str(),"CoulombScat")==0) {
 			//IsPureMCS=true;
 		//}
-		cout<<"InEL EL MCS:"<<IsPureInEL<<" "<<IsPureEL<<" "<<IsPureMCS<<endl;
 		//--------------------------------------------------------------------------------------------------------------------------------//
 
-		for (size_t j=0; j<beamtrk_z->size(); ++j) { //MCParticle loop
-			cout<<"beamtrk_z["<<j<<"]"<<beamtrk_z->at(j)<<" beamtrk_Eng["<<"]"<<beamtrk_Eng->at(j)<<endl;
-		} //MCParticle loop
+		//for (size_t j=0; j<beamtrk_z->size(); ++j) { //MCParticle loop
+			//cout<<"beamtrk_z["<<j<<"]"<<beamtrk_z->at(j)<<" beamtrk_Eng["<<"]"<<beamtrk_Eng->at(j)<<endl;
+		//} //MCParticle loop
 
 		//Get true start/end point -----------------------------------------------------------------------//
 		//double true_endz=-99; if (beamtrk_z->size()>1) true_endz=beamtrk_z->at(-1+beamtrk_z->size()); 
@@ -203,8 +225,57 @@ void ProtonThinSlice::Loop() {
 		}
 		cout<<"trueEnd z/y/x:"<<true_endz<<"/"<<true_endy<<"/"<<true_endx<<endl;
 		cout<<"trueSt z/y/x:"<<true_stz<<"/"<<true_sty<<"/"<<true_stx<<endl;
+		cout<<"InEL EL MCS:"<<IsPureInEL<<" "<<IsPureEL<<" "<<IsPureMCS<<endl;
 		cout<<"IsTrueEndOutside:"<<IsTrueEndOutside<<endl;
+		if (IsPureInEL==1) cout<<"Summary(TrueEnd, Endoutside, Bm, Orig, EPDG):("<<1<<", "<<IsTrueEndOutside<<", "<<IsBeamMatch<<", "<<primary_truth_byE_origin<<", "<<primary_truth_byE_PDG<<")"<<endl;	
+		if (IsPureEL==1) cout<<"Summary(TrueEnd, Endoutside, Bm, Orig, EPDG):("<<2<<", "<<IsTrueEndOutside<<", "<<IsBeamMatch<<", "<<primary_truth_byE_origin<<", "<<primary_truth_byE_PDG<<")"<<endl;	
+		if (IsPureMCS==1) cout<<"Summary(TrueEnd, Endoutside, Bm, Orig, EPDG):("<<3<<", "<<IsTrueEndOutside<<", "<<IsBeamMatch<<", "<<primary_truth_byE_origin<<", "<<primary_truth_byE_PDG<<")"<<endl;	
 		//Get reco info ----------------------------------------------------------------------------------//
+
+		//Evt Classification -----------------------------------------------------------------------------//
+		//signal -----------------------------//
+		bool kinel=false;
+		bool kel=false;
+		bool kmcs=false;
+		if (IsBeamMatch) { //beam-match
+			if (IsPureInEL) kinel=true;
+			if (IsPureEL) kel=true;
+			if (IsPureMCS) kmcs=true;
+		} //beam-match
+
+		//background ------------------------------------------------------------------------//
+		bool kMIDcosmic=false; //beam or cosmic
+		bool kMIDpi=false; //+-pi
+		bool kMIDp=false; //p
+		bool kMIDmu=false; //mu
+		bool kMIDeg=false; //e/gamma
+		bool kMIDother=false; //other
+		if (!IsBeamMatch) { //!beam-match
+			if (primary_truth_byE_origin==2) { 
+				kMIDcosmic=true;
+			}
+			else if (std::abs(primary_truth_byE_PDG)==211) {
+				kMIDpi=true;
+			}
+			else if (primary_truth_byE_PDG==2212) {
+				kMIDp=true;
+			}
+			else if (std::abs(primary_truth_byE_PDG)==13) {
+				kMIDmu=true;
+			}
+			else if (std::abs(primary_truth_byE_PDG)==11 || primary_truth_byE_PDG==22) {
+				kMIDeg=true;
+			}
+			else {
+				kMIDother=true;
+			}
+		} //!beam-match	
+		cout<<"kMIDcosmic:"<<kMIDcosmic<<endl;
+		//Evt Classification -----------------------------------------------------------------------------//
+
+
+
+
 
 		//reco pos info & cut
 		double reco_stx=-999, reco_sty=-999, reco_stz=-999;
@@ -394,19 +465,20 @@ void ProtonThinSlice::Loop() {
 		//sort(zreco_ke.begin(),zreco_ke.end(),myComparison); //sorting based on the first column
 
 		//countings -------------------------------------------------------//
-		if (IsPandoraSlice) n_pan++;
-		if (IsPandoraSlice&&IsCaloSize) n_calsz++;
-		if (IsPandoraSlice&&IsCaloSize&&IsBQ) n_bq++;
-		if (IsPandoraSlice&&IsCaloSize&&IsBQ&&IsRecoInEL) n_recoinel++;
+		if (IsPandoraSlice) n_pan_tot++;
+		if (IsPandoraSlice&&IsCaloSize) n_calsz_tot++;
+		if (IsPandoraSlice&&IsCaloSize&&IsBQ) n_bq_tot++;
+		if (IsPandoraSlice&&IsCaloSize&&IsBQ&&IsRecoInEL) n_recoinel_tot++;
 
-		if (IsBeamMatch) n_sg++;
-		if (!IsBeamMatch) n_bkg++;
-		if (!IsBeamMatch&&IsTrueEndOutside) n_up++;
-		if (!IsBeamMatch&&!IsTrueEndOutside) n_mis++;
+		//if (IsBeamMatch) n_sg++;
+		//if (!IsBeamMatch) n_bkg++;
+		//if (!IsBeamMatch&&IsTrueEndOutside) n_up++;
+		//if (!IsBeamMatch&&!IsTrueEndOutside) n_mis++;
 
 
 		//[0]pure inel
-		if (IsBeamMatch&&IsPureInEL) { //pure inel
+		//if (IsBeamMatch&&IsPureInEL) { //pure inel
+		if (kinel) { //pure inel
 			n_inel++;
 			zend_true_inel_NoCut->Fill(true_endz);
 			zend_reco_inel_NoCut->Fill(reco_endz);
@@ -438,7 +510,8 @@ void ProtonThinSlice::Loop() {
 		} //pure inel		
 
 		//[1]pure el
-		if (IsBeamMatch&&IsPureEL) { //pure el
+		//if (IsBeamMatch&&IsPureEL) { //pure el
+		if (kel) { //pure el
 			n_el++;
 			zend_true_el_NoCut->Fill(true_endz);
 			zend_reco_el_NoCut->Fill(reco_endz);
@@ -470,7 +543,8 @@ void ProtonThinSlice::Loop() {
 		} //pure el		
 
 		//[2]pure mcs
-		if (IsBeamMatch&&IsPureMCS) { //pure mcs
+		//if (IsBeamMatch&&IsPureMCS) { //pure mcs
+		if (kmcs) { //pure mcs
 			n_mcs++;
 			zend_true_mcs_NoCut->Fill(true_endz);
 			zend_reco_mcs_NoCut->Fill(reco_endz);
@@ -501,197 +575,203 @@ void ProtonThinSlice::Loop() {
 			} //pandora
 		} //pure mcs
 
-		//[3]pure inel:upstream-int
-		if (!IsBeamMatch&&IsTrueEndOutside&&IsPureInEL) { //pure inel:upstream-int
-			n_upinel++;
-			zend_true_upinel_NoCut->Fill(true_endz);
-			zend_reco_upinel_NoCut->Fill(reco_endz);
-			dzend_upinel_NoCut->Fill(reco_endz-true_endz);
+		//[3]MID:Cosmic
+		if (kMIDcosmic) { //mid:cosmic
+			n_midcosmic++;
+			zend_true_midcosmic_NoCut->Fill(true_endz);
+			zend_reco_midcosmic_NoCut->Fill(reco_endz);
+			dzend_midcosmic_NoCut->Fill(reco_endz-true_endz);
 			if (IsPandoraSlice) { //pandora
-				n_upinel_pan++;
-				zend_true_upinel_PanS->Fill(true_endz);
-				zend_reco_upinel_PanS->Fill(reco_endz);
-				dzend_upinel_PanS->Fill(reco_endz-true_endz);
+				n_midcosmic_pan++;
+				zend_true_midcosmic_PanS->Fill(true_endz);
+				zend_reco_midcosmic_PanS->Fill(reco_endz);
+				dzend_midcosmic_PanS->Fill(reco_endz-true_endz);
 				if (IsCaloSize) { //calosz
-					n_upinel_calsz++;
-					zend_true_upinel_CaloSz->Fill(true_endz);
-					zend_reco_upinel_CaloSz->Fill(reco_endz);
-					dzend_upinel_CaloSz->Fill(reco_endz-true_endz);
+					n_midcosmic_calsz++;
+					zend_true_midcosmic_CaloSz->Fill(true_endz);
+					zend_reco_midcosmic_CaloSz->Fill(reco_endz);
+					dzend_midcosmic_CaloSz->Fill(reco_endz-true_endz);
 					if (IsBQ) { //bq
-						n_upinel_bq++;
-						zend_true_upinel_BQ->Fill(true_endz);
-						zend_reco_upinel_BQ->Fill(reco_endz);
-						dzend_upinel_BQ->Fill(reco_endz-true_endz);
+						n_midcosmic_bq++;
+						zend_true_midcosmic_BQ->Fill(true_endz);
+						zend_reco_midcosmic_BQ->Fill(reco_endz);
+						dzend_midcosmic_BQ->Fill(reco_endz-true_endz);
 						if (IsRecoInEL) { //reco inel
-							n_upinel_recoinel++;
-							zend_true_upinel_RecoInel->Fill(true_endz);
-							zend_reco_upinel_RecoInel->Fill(reco_endz);
-							dzend_upinel_RecoInel->Fill(reco_endz-true_endz);
+							n_midcosmic_recoinel++;
+							zend_true_midcosmic_RecoInel->Fill(true_endz);
+							zend_reco_midcosmic_RecoInel->Fill(reco_endz);
+							dzend_midcosmic_RecoInel->Fill(reco_endz-true_endz);
 						} //reco inel
 					} //bq
 				} //calosz
 			} //pandora
-		} //pure inel:upstream-int		
 
-		//[4]pure el:upstream-int
-		if (!IsBeamMatch&&IsTrueEndOutside&&IsPureEL) { //pure el:upstream-int
-			n_upel++;
-			zend_true_upel_NoCut->Fill(true_endz);
-			zend_reco_upel_NoCut->Fill(reco_endz);
-			dzend_upel_NoCut->Fill(reco_endz-true_endz);
-			if (IsPandoraSlice) { //pandora
-				n_upel_pan++;
-				zend_true_upel_PanS->Fill(true_endz);
-				zend_reco_upel_PanS->Fill(reco_endz);
-				dzend_upel_PanS->Fill(reco_endz-true_endz);
-				if (IsCaloSize) { //calosz
-					n_upel_calsz++;
-					zend_true_upel_CaloSz->Fill(true_endz);
-					zend_reco_upel_CaloSz->Fill(reco_endz);
-					dzend_upel_CaloSz->Fill(reco_endz-true_endz);
-					if (IsBQ) { //bq
-						n_upel_bq++;
-						zend_true_upel_BQ->Fill(true_endz);
-						zend_reco_upel_BQ->Fill(reco_endz);
-						dzend_upel_BQ->Fill(reco_endz-true_endz);
-						if (IsRecoInEL) { //reco inel
-							n_upel_recoinel++;
-							zend_true_upel_RecoInel->Fill(true_endz);
-							zend_reco_upel_RecoInel->Fill(reco_endz);
-							dzend_upel_RecoInel->Fill(reco_endz-true_endz);
-						} //reco inel
-					} //bq
-				} //calosz
-			} //pandora
-		} //pure el:upstream-int	
+			
+		} //mid:cosmic
 
-		//[5]pure mcs:upstream-int
-		if (!IsBeamMatch&&IsTrueEndOutside&&IsPureMCS) { //pure mcs:upstream-int
-			n_upmcs++;
-			zend_true_upmcs_NoCut->Fill(true_endz);
-			zend_reco_upmcs_NoCut->Fill(reco_endz);
-			dzend_upmcs_NoCut->Fill(reco_endz-true_endz);
+		//[4]MID:midpi
+		if (kMIDpi) { //mid:pi
+			n_midpi++;
+			zend_true_midpi_NoCut->Fill(true_endz);
+			zend_reco_midpi_NoCut->Fill(reco_endz);
+			dzend_midpi_NoCut->Fill(reco_endz-true_endz);
 			if (IsPandoraSlice) { //pandora
-				n_upmcs_pan++;
-				zend_true_upmcs_PanS->Fill(true_endz);
-				zend_reco_upmcs_PanS->Fill(reco_endz);
-				dzend_upmcs_PanS->Fill(reco_endz-true_endz);
+				n_midpi_pan++;
+				zend_true_midpi_PanS->Fill(true_endz);
+				zend_reco_midpi_PanS->Fill(reco_endz);
+				dzend_midpi_PanS->Fill(reco_endz-true_endz);
 				if (IsCaloSize) { //calosz
-					n_upmcs_calsz++;
-					zend_true_upmcs_CaloSz->Fill(true_endz);
-					zend_reco_upmcs_CaloSz->Fill(reco_endz);
-					dzend_upmcs_CaloSz->Fill(reco_endz-true_endz);
+					n_midpi_calsz++;
+					zend_true_midpi_CaloSz->Fill(true_endz);
+					zend_reco_midpi_CaloSz->Fill(reco_endz);
+					dzend_midpi_CaloSz->Fill(reco_endz-true_endz);
 					if (IsBQ) { //bq
-						n_upmcs_bq++;
-						zend_true_upmcs_BQ->Fill(true_endz);
-						zend_reco_upmcs_BQ->Fill(reco_endz);
-						dzend_upmcs_BQ->Fill(reco_endz-true_endz);
+						n_midpi_bq++;
+						zend_true_midpi_BQ->Fill(true_endz);
+						zend_reco_midpi_BQ->Fill(reco_endz);
+						dzend_midpi_BQ->Fill(reco_endz-true_endz);
 						if (IsRecoInEL) { //reco inel
-							n_upmcs_recoinel++;
-							zend_true_upmcs_RecoInel->Fill(true_endz);
-							zend_reco_upmcs_RecoInel->Fill(reco_endz);
-							dzend_upmcs_RecoInel->Fill(reco_endz-true_endz);
+							n_midpi_recoinel++;
+							zend_true_midpi_RecoInel->Fill(true_endz);
+							zend_reco_midpi_RecoInel->Fill(reco_endz);
+							dzend_midpi_RecoInel->Fill(reco_endz-true_endz);
 						} //reco inel
 					} //bq
 				} //calosz
 			} //pandora
-		} //pure mcs:upstream-int	
+		} //mid:pi
 
-		//[6]pure inel+int. inside tpc
-		if (!IsBeamMatch&&!IsTrueEndOutside&&IsPureInEL) { //pure inel
-			n_misinel++;
-			zend_true_misinel_NoCut->Fill(true_endz);
-			zend_reco_misinel_NoCut->Fill(reco_endz);
-			dzend_misinel_NoCut->Fill(reco_endz-true_endz);
+		//[5]MID:midp
+		if (kMIDp) { //mid:p
+			n_midp++;
+			zend_true_midp_NoCut->Fill(true_endz);
+			zend_reco_midp_NoCut->Fill(reco_endz);
+			dzend_midp_NoCut->Fill(reco_endz-true_endz);
 			if (IsPandoraSlice) { //pandora
-				n_misinel_pan++;
-				zend_true_misinel_PanS->Fill(true_endz);
-				zend_reco_misinel_PanS->Fill(reco_endz);
-				dzend_misinel_PanS->Fill(reco_endz-true_endz);
+				n_midp_pan++;
+				zend_true_midp_PanS->Fill(true_endz);
+				zend_reco_midp_PanS->Fill(reco_endz);
+				dzend_midp_PanS->Fill(reco_endz-true_endz);
 				if (IsCaloSize) { //calosz
-					n_misinel_calsz++;
-					zend_true_misinel_CaloSz->Fill(true_endz);
-					zend_reco_misinel_CaloSz->Fill(reco_endz);
-					dzend_misinel_CaloSz->Fill(reco_endz-true_endz);
+					n_midp_calsz++;
+					zend_true_midp_CaloSz->Fill(true_endz);
+					zend_reco_midp_CaloSz->Fill(reco_endz);
+					dzend_midp_CaloSz->Fill(reco_endz-true_endz);
 					if (IsBQ) { //bq
-						n_misinel_bq++;
-						zend_true_misinel_BQ->Fill(true_endz);
-						zend_reco_misinel_BQ->Fill(reco_endz);
-						dzend_misinel_BQ->Fill(reco_endz-true_endz);
+						n_midp_bq++;
+						zend_true_midp_BQ->Fill(true_endz);
+						zend_reco_midp_BQ->Fill(reco_endz);
+						dzend_midp_BQ->Fill(reco_endz-true_endz);
 						if (IsRecoInEL) { //reco inel
-							n_misinel_recoinel++;
-							zend_true_misinel_RecoInel->Fill(true_endz);
-							zend_reco_misinel_RecoInel->Fill(reco_endz);
-							dzend_misinel_RecoInel->Fill(reco_endz-true_endz);
+							n_midp_recoinel++;
+							zend_true_midp_RecoInel->Fill(true_endz);
+							zend_reco_midp_RecoInel->Fill(reco_endz);
+							dzend_midp_RecoInel->Fill(reco_endz-true_endz);
 						} //reco inel
 					} //bq
 				} //calosz
 			} //pandora
-		} //pure inel		
+		} //mid:p
 
-		//[7]pure el+int. inside tpc+misid
-		if (!IsBeamMatch&&!IsTrueEndOutside&&IsPureEL) { //pure el
-			n_misel++;
-			zend_true_misel_NoCut->Fill(true_endz);
-			zend_reco_misel_NoCut->Fill(reco_endz);
-			dzend_misel_NoCut->Fill(reco_endz-true_endz);
-			if (IsPandoraSlice) { //pandora
-				n_misel_pan++;
-				zend_true_misel_PanS->Fill(true_endz);
-				zend_reco_misel_PanS->Fill(reco_endz);
-				dzend_misel_PanS->Fill(reco_endz-true_endz);
-				if (IsCaloSize) { //calosz
-					n_misel_calsz++;
-					zend_true_misel_CaloSz->Fill(true_endz);
-					zend_reco_misel_CaloSz->Fill(reco_endz);
-					dzend_misel_CaloSz->Fill(reco_endz-true_endz);
-					if (IsBQ) { //bq
-						n_misel_bq++;
-						zend_true_misel_BQ->Fill(true_endz);
-						zend_reco_misel_BQ->Fill(reco_endz);
-						dzend_misel_BQ->Fill(reco_endz-true_endz);
-						if (IsRecoInEL) { //reco inel
-							n_misel_recoinel++;
-							zend_true_misel_RecoInel->Fill(true_endz);
-							zend_reco_misel_RecoInel->Fill(reco_endz);
-							dzend_misel_RecoInel->Fill(reco_endz-true_endz);
-						} //reco inel
-					} //bq
-				} //calosz
-			} //pandora
-		} //pure el		
 
-		//[8]pure mcs+int. inside tpc+misid
-		if (!IsBeamMatch&&!IsTrueEndOutside&&IsPureMCS) { //pure mcs
-			n_mismcs++;
-			zend_true_mismcs_NoCut->Fill(true_endz);
-			zend_reco_mismcs_NoCut->Fill(reco_endz);
-			dzend_mismcs_NoCut->Fill(reco_endz-true_endz);
+		//[6]MID:midmu
+		if (kMIDmu) { //mid:mu
+			n_midmu++;
+			zend_true_midmu_NoCut->Fill(true_endz);
+			zend_reco_midmu_NoCut->Fill(reco_endz);
+			dzend_midmu_NoCut->Fill(reco_endz-true_endz);
 			if (IsPandoraSlice) { //pandora
-				n_mismcs_pan++;
-				zend_true_mismcs_PanS->Fill(true_endz);
-				zend_reco_mismcs_PanS->Fill(reco_endz);
-				dzend_mismcs_PanS->Fill(reco_endz-true_endz);
+				n_midmu_pan++;
+				zend_true_midmu_PanS->Fill(true_endz);
+				zend_reco_midmu_PanS->Fill(reco_endz);
+				dzend_midmu_PanS->Fill(reco_endz-true_endz);
 				if (IsCaloSize) { //calosz
-					n_mismcs_calsz++;
-					zend_true_mismcs_CaloSz->Fill(true_endz);
-					zend_reco_mismcs_CaloSz->Fill(reco_endz);
-					dzend_mismcs_CaloSz->Fill(reco_endz-true_endz);
+					n_midmu_calsz++;
+					zend_true_midmu_CaloSz->Fill(true_endz);
+					zend_reco_midmu_CaloSz->Fill(reco_endz);
+					dzend_midmu_CaloSz->Fill(reco_endz-true_endz);
 					if (IsBQ) { //bq
-						n_mismcs_bq++;
-						zend_true_mismcs_BQ->Fill(true_endz);
-						zend_reco_mismcs_BQ->Fill(reco_endz);
-						dzend_mismcs_BQ->Fill(reco_endz-true_endz);
+						n_midmu_bq++;
+						zend_true_midmu_BQ->Fill(true_endz);
+						zend_reco_midmu_BQ->Fill(reco_endz);
+						dzend_midmu_BQ->Fill(reco_endz-true_endz);
 						if (IsRecoInEL) { //reco inel
-							n_mismcs_recoinel++;
-							zend_true_mismcs_RecoInel->Fill(true_endz);
-							zend_reco_mismcs_RecoInel->Fill(reco_endz);
-							dzend_mismcs_RecoInel->Fill(reco_endz-true_endz);
+							n_midmu_recoinel++;
+							zend_true_midmu_RecoInel->Fill(true_endz);
+							zend_reco_midmu_RecoInel->Fill(reco_endz);
+							dzend_midmu_RecoInel->Fill(reco_endz-true_endz);
 						} //reco inel
 					} //bq
 				} //calosz
 			} //pandora
-		} //pure mcs
+		} //mid:mu
+
+
+		//[7]MID:mideg
+		if (kMIDeg) { //mid:eg
+			n_mideg++;
+			zend_true_mideg_NoCut->Fill(true_endz);
+			zend_reco_mideg_NoCut->Fill(reco_endz);
+			dzend_mideg_NoCut->Fill(reco_endz-true_endz);
+			if (IsPandoraSlice) { //pandora
+				n_mideg_pan++;
+				zend_true_mideg_PanS->Fill(true_endz);
+				zend_reco_mideg_PanS->Fill(reco_endz);
+				dzend_mideg_PanS->Fill(reco_endz-true_endz);
+				if (IsCaloSize) { //calosz
+					n_mideg_calsz++;
+					zend_true_mideg_CaloSz->Fill(true_endz);
+					zend_reco_mideg_CaloSz->Fill(reco_endz);
+					dzend_mideg_CaloSz->Fill(reco_endz-true_endz);
+					if (IsBQ) { //bq
+						n_mideg_bq++;
+						zend_true_mideg_BQ->Fill(true_endz);
+						zend_reco_mideg_BQ->Fill(reco_endz);
+						dzend_mideg_BQ->Fill(reco_endz-true_endz);
+						if (IsRecoInEL) { //reco inel
+							n_mideg_recoinel++;
+							zend_true_mideg_RecoInel->Fill(true_endz);
+							zend_reco_mideg_RecoInel->Fill(reco_endz);
+							dzend_mideg_RecoInel->Fill(reco_endz-true_endz);
+						} //reco inel
+					} //bq
+				} //calosz
+			} //pandora
+		} //mid:eg
+
+
+		//[8]MID:midother
+		if (kMIDother) { //mid:other
+			n_midother++;
+			zend_true_midother_NoCut->Fill(true_endz);
+			zend_reco_midother_NoCut->Fill(reco_endz);
+			dzend_midother_NoCut->Fill(reco_endz-true_endz);
+			if (IsPandoraSlice) { //pandora
+				n_midother_pan++;
+				zend_true_midother_PanS->Fill(true_endz);
+				zend_reco_midother_PanS->Fill(reco_endz);
+				dzend_midother_PanS->Fill(reco_endz-true_endz);
+				if (IsCaloSize) { //calosz
+					n_midother_calsz++;
+					zend_true_midother_CaloSz->Fill(true_endz);
+					zend_reco_midother_CaloSz->Fill(reco_endz);
+					dzend_midother_CaloSz->Fill(reco_endz-true_endz);
+					if (IsBQ) { //bq
+						n_midother_bq++;
+						zend_true_midother_BQ->Fill(true_endz);
+						zend_reco_midother_BQ->Fill(reco_endz);
+						dzend_midother_BQ->Fill(reco_endz-true_endz);
+						if (IsRecoInEL) { //reco inel
+							n_midother_recoinel++;
+							zend_true_midother_RecoInel->Fill(true_endz);
+							zend_reco_midother_RecoInel->Fill(reco_endz);
+							dzend_midother_RecoInel->Fill(reco_endz-true_endz);
+						} //reco inel
+					} //bq
+				} //calosz
+			} //pandora
+		} //mid:other
+
 		//countings -------------------------------------------------------//
 
 
@@ -889,73 +969,67 @@ void ProtonThinSlice::Loop() {
          
         //counting -- summary -----------------------------------------------------//
 	cout<<"\nn_tot:"<<n_tot<<endl;
-	cout<<"n_sg:"<<n_sg<<endl;
 	cout<<"n_el:"<<n_el<<endl;
 	cout<<"n_inel:"<<n_inel<<endl;
 	cout<<"n_mcs:"<<n_mcs<<endl;
-	cout<<"n_bkg:"<<n_bkg<<endl;
-	cout<<"n_up:"<<n_up<<endl;
-	cout<<"n_upel:"<<n_upel<<endl;
-	cout<<"n_upinel:"<<n_upinel<<endl;
-	cout<<"n_upmcs:"<<n_upmcs<<endl;
-	cout<<"n_mis:"<<n_mis<<endl;
-	cout<<"n_misel:"<<n_misel<<endl;
-	cout<<"n_misinel:"<<n_misinel<<endl;
-	cout<<"n_mismcs:"<<n_mismcs<<endl;
-	cout<<"diff:"<<n_tot-n_el-n_inel-n_mcs-n_upel-n_upinel-n_upmcs-n_misel-n_misinel-n_mismcs<<endl;
-	cout<<"\n"<<endl;
+	cout<<"n_midcosmic:"<<n_midcosmic<<endl;
+	cout<<"n_midpi:"<<n_midpi<<endl;
+	cout<<"n_midp:"<<n_midp<<endl;
+	cout<<"n_midmu:"<<n_midmu<<endl;
+	cout<<"n_mideg:"<<n_mideg<<endl;
+	cout<<"n_midother"<<n_midother<<endl;
+	cout<<"n_diff:"<<n_tot-(n_el+n_inel+n_mcs+n_midcosmic+n_midpi+n_midp+n_midmu+n_mideg+n_midother)<<endl;
 
-	
-	cout<<"n_pan:"<<n_pan<<endl;
+	cout<<"\nn_pan_tot:"<<n_pan_tot<<endl;
 	cout<<"n_el_pan:"<<n_el_pan<<endl;
 	cout<<"n_inel_pan:"<<n_inel_pan<<endl;
 	cout<<"n_mcs_pan:"<<n_mcs_pan<<endl;
-	cout<<"n_upel_pan:"<<n_upel_pan<<endl;
-	cout<<"n_upinel_pan:"<<n_upinel_pan<<endl;
-	cout<<"n_upmcs_pan:"<<n_upmcs_pan<<endl;
-	cout<<"n_misel_pan:"<<n_misel_pan<<endl;
-	cout<<"n_misinel_pan:"<<n_misinel_pan<<endl;
-	cout<<"n_mismcs_pan:"<<n_mismcs_pan<<endl;
-	cout<<"diff:"<<n_pan-n_el_pan-n_inel_pan-n_mcs_pan-n_upel_pan-n_upinel_pan-n_upmcs_pan-n_misel_pan-n_misinel_pan-n_mismcs_pan<<endl;
-	cout<<"\n"<<endl;
+	cout<<"n_midcosmic_pan:"<<n_midcosmic_pan<<endl;
+	cout<<"n_midpi_pan:"<<n_midpi_pan<<endl;
+	cout<<"n_midp_pan:"<<n_midp_pan<<endl;
+	cout<<"n_midmu_pan:"<<n_midmu_pan<<endl;
+	cout<<"n_mideg_pan:"<<n_mideg_pan<<endl;
+	cout<<"n_midother_pan"<<n_midother_pan<<endl;
+	cout<<"n_diff_pan:"<<n_pan_tot-(n_el_pan+n_inel_pan+n_mcs_pan+n_midcosmic_pan+n_midpi_pan+n_midp_pan+n_midmu_pan+n_mideg_pan+n_midother_pan)<<endl;
 
-	cout<<"n_calsz:"<<n_calsz<<endl;
+	cout<<"\nn_calsz_tot:"<<n_calsz_tot<<endl;
 	cout<<"n_el_calsz:"<<n_el_calsz<<endl;
 	cout<<"n_inel_calsz:"<<n_inel_calsz<<endl;
 	cout<<"n_mcs_calsz:"<<n_mcs_calsz<<endl;
-	cout<<"n_upel_calsz:"<<n_upel_calsz<<endl;
-	cout<<"n_upinel_calsz:"<<n_upinel_calsz<<endl;
-	cout<<"n_upmcs_calsz:"<<n_upmcs_calsz<<endl;
-	cout<<"n_misel_calsz:"<<n_misel_calsz<<endl;
-	cout<<"n_misinel_calsz:"<<n_misinel_calsz<<endl;
-	cout<<"n_mismcs_calsz:"<<n_mismcs_calsz<<endl;
-	cout<<"diff:"<<n_calsz-n_el_calsz-n_inel_calsz-n_mcs_calsz-n_upel_calsz-n_upinel_calsz-n_upmcs_calsz-n_misel_calsz-n_misinel_calsz-n_mismcs_calsz<<endl;
-	cout<<"\n"<<endl;
+	cout<<"n_midcosmic_calsz:"<<n_midcosmic_calsz<<endl;
+	cout<<"n_midpi_calsz:"<<n_midpi_calsz<<endl;
+	cout<<"n_midp_calsz:"<<n_midp_calsz<<endl;
+	cout<<"n_midmu_calsz:"<<n_midmu_calsz<<endl;
+	cout<<"n_mideg_calsz:"<<n_mideg_calsz<<endl;
+	cout<<"n_midother_calsz"<<n_midother_calsz<<endl;
+	cout<<"n_diff_calsz:"<<n_calsz_tot-(n_el_calsz+n_inel_calsz+n_mcs_calsz+n_midcosmic_calsz+n_midpi_calsz+n_midp_calsz+n_midmu_calsz+n_mideg_calsz+n_midother_calsz)<<endl;
 
-	cout<<"n_bq:"<<n_bq<<endl;
+	cout<<"\nn_bq_tot:"<<n_bq_tot<<endl;
 	cout<<"n_el_bq:"<<n_el_bq<<endl;
 	cout<<"n_inel_bq:"<<n_inel_bq<<endl;
 	cout<<"n_mcs_bq:"<<n_mcs_bq<<endl;
-	cout<<"n_upel_bq:"<<n_upel_bq<<endl;
-	cout<<"n_upinel_bq:"<<n_upinel_bq<<endl;
-	cout<<"n_upmcs_bq:"<<n_upmcs_bq<<endl;
-	cout<<"n_misel_bq:"<<n_misel_bq<<endl;
-	cout<<"n_misinel_bq:"<<n_misinel_bq<<endl;
-	cout<<"n_mismcs_bq:"<<n_mismcs_bq<<endl;
-	cout<<"diff:"<<n_bq-n_el_bq-n_inel_bq-n_mcs_bq-n_upel_bq-n_upinel_bq-n_upmcs_bq-n_misel_bq-n_misinel_bq-n_mismcs_bq<<endl;
-	cout<<"\n"<<endl;
+	cout<<"n_midcosmic_bq:"<<n_midcosmic_bq<<endl;
+	cout<<"n_midpi_bq:"<<n_midpi_bq<<endl;
+	cout<<"n_midp_bq:"<<n_midp_bq<<endl;
+	cout<<"n_midmu_bq:"<<n_midmu_bq<<endl;
+	cout<<"n_mideg_bq:"<<n_mideg_bq<<endl;
+	cout<<"n_midother_bq"<<n_midother_bq<<endl;
+	cout<<"n_diff_bq:"<<n_bq_tot-(n_el_bq+n_inel_bq+n_mcs_bq+n_midcosmic_bq+n_midpi_bq+n_midp_bq+n_midmu_bq+n_mideg_bq+n_midother_bq)<<endl;
 
-	cout<<"n_recoinel:"<<n_recoinel<<endl;
+	cout<<"\nn_recoinel_tot:"<<n_recoinel_tot<<endl;
 	cout<<"n_el_recoinel:"<<n_el_recoinel<<endl;
 	cout<<"n_inel_recoinel:"<<n_inel_recoinel<<endl;
 	cout<<"n_mcs_recoinel:"<<n_mcs_recoinel<<endl;
-	cout<<"n_upel_recoinel:"<<n_upel_recoinel<<endl;
-	cout<<"n_upinel_recoinel:"<<n_upinel_recoinel<<endl;
-	cout<<"n_upmcs_recoinel:"<<n_upmcs_recoinel<<endl;
-	cout<<"n_misel_recoinel:"<<n_misel_recoinel<<endl;
-	cout<<"n_misinel_recoinel:"<<n_misinel_recoinel<<endl;
-	cout<<"n_mismcs_recoinel:"<<n_mismcs_recoinel<<endl;
-	cout<<"diff:"<<n_recoinel-n_el_recoinel-n_inel_recoinel-n_mcs_recoinel-n_upel_recoinel-n_upinel_recoinel-n_upmcs_recoinel-n_misel_recoinel-n_misinel_recoinel-n_mismcs_recoinel<<endl;
+	cout<<"n_midcosmic_recoinel:"<<n_midcosmic_recoinel<<endl;
+	cout<<"n_midpi_recoinel:"<<n_midpi_recoinel<<endl;
+	cout<<"n_midp_recoinel:"<<n_midp_recoinel<<endl;
+	cout<<"n_midmu_recoinel:"<<n_midmu_recoinel<<endl;
+	cout<<"n_mideg_recoinel:"<<n_mideg_recoinel<<endl;
+	cout<<"n_midother_recoinel"<<n_midother_recoinel<<endl;
+	cout<<"n_diff_recoinel:"<<n_recoinel_tot-(n_el_recoinel+n_inel_recoinel+n_mcs_recoinel+n_midcosmic_recoinel+n_midpi_recoinel+n_midp_recoinel+n_midmu_recoinel+n_mideg_recoinel+n_midother_recoinel)<<endl;
+
+
+
 
 
 
