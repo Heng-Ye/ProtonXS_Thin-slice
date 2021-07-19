@@ -18,26 +18,28 @@ void plot_ztrue(TString fin, TString fout_path, TString str_cut) {
 	TH1D *z_el=(TH1D *)f0->Get(Form("zend_true_el_%s",str_cut.Data()));
 	TH1D *z_mcs=(TH1D *)f0->Get(Form("zend_true_mcs_%s",str_cut.Data()));
 
-	TH1D *z_upinel=(TH1D *)f0->Get(Form("zend_true_upinel_%s",str_cut.Data()));
-	TH1D *z_upel=(TH1D *)f0->Get(Form("zend_true_upel_%s",str_cut.Data()));
-	TH1D *z_upmcs=(TH1D *)f0->Get(Form("zend_true_upmcs_%s",str_cut.Data()));
+	TH1D *z_midcosmic=(TH1D *)f0->Get(Form("zend_true_midcosmic_%s",str_cut.Data()));
+	TH1D *z_midpi=(TH1D *)f0->Get(Form("zend_true_midpi_%s",str_cut.Data()));
+	TH1D *z_midp=(TH1D *)f0->Get(Form("zend_true_midp_%s",str_cut.Data()));
 
-	TH1D *z_misinel=(TH1D *)f0->Get(Form("zend_true_misinel_%s",str_cut.Data()));
-	TH1D *z_misel=(TH1D *)f0->Get(Form("zend_true_misel_%s",str_cut.Data()));
-	TH1D *z_mismcs=(TH1D *)f0->Get(Form("zend_true_mismcs_%s",str_cut.Data()));
+	TH1D *z_midmu=(TH1D *)f0->Get(Form("zend_true_midmu_%s",str_cut.Data()));
+	TH1D *z_mideg=(TH1D *)f0->Get(Form("zend_true_mideg_%s",str_cut.Data()));
+	TH1D *z_midother=(TH1D *)f0->Get(Form("zend_true_midother_%s",str_cut.Data()));
 
 	z_inel->SetFillColor(2); z_inel->SetLineColor(2);
 	z_el->SetFillColor(4); z_el->SetLineColor(4);
 	z_mcs->SetFillColor(3); z_mcs->SetLineColor(3);
 
-	z_misinel->SetFillColor(7); z_misinel->SetLineColor(7);
-	z_misel->SetFillColor(6); z_misel->SetLineColor(6);
-	z_mismcs->SetFillColor(5); z_mismcs->SetLineColor(5);
+	z_midp->SetFillColor(7); z_midp->SetLineColor(7);
+	z_midcosmic->SetFillColor(5); z_midcosmic->SetLineColor(5);
+	z_midpi->SetFillColor(6); z_midpi->SetLineColor(6);
 
-	z_upinel->SetFillColor(41); z_upinel->SetLineColor(41);
-	z_upel->SetFillColor(30); z_upel->SetLineColor(30);
-	z_upmcs->SetFillColor(48); z_upmcs->SetLineColor(48);
+	z_midmu->SetFillColor(1); z_midmu->SetLineColor(1);
+	z_mideg->SetFillColor(30); z_mideg->SetLineColor(30);
+	z_midother->SetFillColor(15); z_midother->SetLineColor(15);
 
+
+	//z_inel->GetXaxis()->SetTitle("Truth EndZ [cm]");
 	z_mcs->GetXaxis()->SetTitle("Truth EndZ [cm]");
 
 	THStack* hs=new THStack("hs","");
@@ -45,13 +47,13 @@ void plot_ztrue(TString fin, TString fout_path, TString str_cut) {
 	hs->Add(z_el);
 	hs->Add(z_inel);
 
-	hs->Add(z_upmcs);
-	hs->Add(z_upel);
-	hs->Add(z_upinel);
+	hs->Add(z_midcosmic);
+	hs->Add(z_midp);
+	hs->Add(z_midpi);
 
-	hs->Add(z_mismcs);
-	hs->Add(z_misel);
-	hs->Add(z_misinel);
+	hs->Add(z_midmu);
+	hs->Add(z_mideg);
+	hs->Add(z_midother);
 
 
 	TCanvas *c_=new TCanvas(Form("c"),"",900, 600);
@@ -60,7 +62,8 @@ void plot_ztrue(TString fin, TString fout_path, TString str_cut) {
 
 	c_->Divide(1,1);
 	c_->cd(1);
-	TH2D *f2d=new TH2D("f2d","",200,-50,150,1200,0,1200);
+	//TH2D *f2d=new TH2D("f2d","",200,-50,150,1200,0,1200);
+	TH2D *f2d=new TH2D("f2d","",200,-50,150,3200,0,3200);
 	f2d->GetXaxis()->SetTitle("Truth EndZ [cm]");
 	//f2d->GetYaxis()->SetTitle("Counts");
 	f2d->Draw();
@@ -68,19 +71,19 @@ void plot_ztrue(TString fin, TString fout_path, TString str_cut) {
 
 	hs->Draw("same");
 
-	TLegend *leg = new TLegend(0.5,0.6,0.8,0.9);
+	TLegend *leg = new TLegend(0.2,0.6,0.8,0.9);
 	leg->SetFillStyle(0);
-	leg->AddEntry(z_mcs,"NoHS","f");
+	leg->AddEntry(z_mcs,"Nohs","f");
 	leg->AddEntry(z_el, "El","f");
 	leg->AddEntry(z_inel, "Inel","f");
 
-	leg->AddEntry(z_mismcs,"mis:NoHS","f");
-	leg->AddEntry(z_misel, "mis:El","f");
-	leg->AddEntry(z_misinel, "mis:Inel","f");
+	leg->AddEntry(z_midcosmic,"misID:cosmic","f");
+	leg->AddEntry(z_midp, "misID:p","f");
+	leg->AddEntry(z_midpi, "misID:#pi","f");
 
-	leg->AddEntry(z_upmcs,"up:NoHS","f");
-	leg->AddEntry(z_upel, "up:El","f");
-	leg->AddEntry(z_upinel, "up:Inel","f");
+	leg->AddEntry(z_midmu,"misID:#mu","f");
+	leg->AddEntry(z_mideg, "misID:e/#gamma","f");
+	leg->AddEntry(z_midother, "misID:other","f");
 
 	leg->SetNColumns(3);
 	leg->Draw();
