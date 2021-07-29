@@ -62,7 +62,33 @@ void ProtonMomentumReweight::Loop() {
 	//int true_sliceID = -1, reco_sliceID = -1;
 
 	//Weighted Gaussians & Weighting function ----------------------------------------------------------------------------------------------------------------------------------------------//
-	/*
+	int n_b=30;
+	double b_min=0;
+	double b_max=150;
+
+
+	int nx=1000;	
+	double xmin=0.; //pmin [MeV/c]
+	double xmax=2000.; //pmax [MeV/c]
+	TH1D *h1d_pbeam=new TH1D("h1d_pbeam","",nx,xmin,xmax);
+
+
+/*
+	//1st Gaussian 
+	double m1=1005.52; //prod4 [spec]
+	double s1=62.2796; //prod4 [spec]
+
+	//momentum cut range	
+	double mu_min=m1-3.*s1;
+	double mu_max=m1+3.*s1;
+
+	//default gaussian
+	TF1 *g1=new TF1("g1",fitg,xmin,xmax,2);
+	g1->SetName("g1");
+	g1->SetParameter(0,m1);
+	g1->SetParameter(1,s1);
+
+
 	//mu range
 	double dmu=0.0005;
 	double mu_st=1.01;
@@ -84,39 +110,44 @@ void ProtonMomentumReweight::Loop() {
 	int cnt_array=0;
 	int index_original=0;
 	for (int imu=0; imu<nmu; ++imu){ //mu loop
-	double frac_mu=mu_st-(double)imu*dmu;
-	double mu=m1*frac_mu;
-	for (int isigma=0; isigma<nsigma; ++isigma){ //sigma loop
-	double frac_sigma=sigma_st-(double)isigma*dsigma;
-	double sigma=s1*frac_sigma;
+		double frac_mu=mu_st-(double)imu*dmu;
+		double mu=m1*frac_mu;
+		for (int isigma=0; isigma<nsigma; ++isigma){ //sigma loop
+			double frac_sigma=sigma_st-(double)isigma*dsigma;
+			double sigma=s1*frac_sigma;
 
-	//if (mu==m1&&sigma==s1) { //no rw
-	if (std::abs(mu-m1)<0.0001&&std::abs(sigma-s1)<0.0001) { //no rw
-	index_original=cnt_array;
-	mu=m1;
-	sigma=s1;
-	} //no rw
+			//if (mu==m1&&sigma==s1) { //no rw
+			if (std::abs(mu-m1)<0.0001&&std::abs(sigma-s1)<0.0001) { //no rw
+				index_original=cnt_array;
+				mu=m1;
+				sigma=s1;
+			} //no rw
 
-	//Gaussian with changed mean and sigma
-	gn[cnt_array]=new TF1(Form("gn_%d",cnt_array),fitg,xmin,xmax,2);
-	gn[cnt_array]->SetParameter(0,mu);
-	gn[cnt_array]->SetParameter(1,sigma);
+			//Gaussian with changed mean and sigma
+			gn[cnt_array]=new TF1(Form("gn_%d",cnt_array),fitg,xmin,xmax,2);
+			gn[cnt_array]->SetParameter(0,mu);
+			gn[cnt_array]->SetParameter(1,sigma);
 
-	//weighting func. (beam mom)
-	gng[cnt_array]=new TF1(Form("gng_%d",cnt_array),govg,xmin,xmax,4);
-	gng[cnt_array]->SetParameter(0,m1);
-	gng[cnt_array]->SetParameter(1,s1);
-	gng[cnt_array]->SetParameter(2,mu);
-	gng[cnt_array]->SetParameter(3,sigma);
+			//weighting func. (beam mom)
+			gng[cnt_array]=new TF1(Form("gng_%d",cnt_array),govg,xmin,xmax,4);
+			gng[cnt_array]->SetParameter(0,m1);
+			gng[cnt_array]->SetParameter(1,s1);
+			gng[cnt_array]->SetParameter(2,mu);
+			gng[cnt_array]->SetParameter(3,sigma);
 
-	//prepare rw histograms
-	h1d_trklen_rw[cnt_array]=new TH1D(Form("h1d_trklen_rw_%d",cnt_array),Form("f_{#mu}:%.2f f_{#sigma}:%.2f #oplus RecoStop Cut",frac_mu,frac_sigma),n_b,b_min,b_max);
-	h1d_trklen_rw[cnt_array]->GetXaxis()->SetTitle("Track Length [cm]");
+			//prepare rw histograms
+			h1d_trklen_rw[cnt_array]=new TH1D(Form("h1d_trklen_rw_%d",cnt_array),Form("f_{#mu}:%.2f f_{#sigma}:%.2f #oplus RecoStop Cut",frac_mu,frac_sigma),n_b,b_min,b_max);
+			h1d_trklen_rw[cnt_array]->GetXaxis()->SetTitle("Track Length [cm]");
 
-	cnt_array++;
-	} //sigma loop
+			cnt_array++;
+			} //sigma loop
 	} //mu loop
-	*/
+*/
+
+	//trklen
+	TH1D *h1d_trklen_stop=new TH1D(Form("h1d_trklen_stop"),Form("reco stop"),n_b,b_min,b_max);
+	TH1D *h1d_trklen_stop_XY=new TH1D(Form("h1d_trklen_stop_XY"),Form("reco stop with xy cut"),n_b,b_min,b_max);
+	
 	//Weighted Gaussians & Weighting function ----------------------------------------------------------------------------------------------------------------------------------------------//
 
 
@@ -130,6 +161,7 @@ void ProtonMomentumReweight::Loop() {
 
 	TH1D *h1d_kebeam=new TH1D("h1d_kebeam","",ny_edept,ymin_edept,ymax_edept);
 	TH1D *h1d_keff=new TH1D("h1d_keff","",ny_edept,ymin_edept,ymax_edept);
+	TH1D *h1d_keff_stop=new TH1D("h1d_keff_stop","",ny_edept,ymin_edept,ymax_edept);
 	TH1D *h1d_kerange_stop=new TH1D("h1d_kerange_stop","", ny_edept, ymin_edept, ymax_edept);
 	TH1D *h1d_kecalo_stop=new TH1D("h1d_kecalo_stop","", ny_edept, ymin_edept, ymax_edept);
 
@@ -137,9 +169,19 @@ void ProtonMomentumReweight::Loop() {
 	TH2D *h2d_rr_dedx_recoSTOP=new TH2D("h2d_rr_dedx_recoSTOP","",240,0,120,90,0,30);
 
 	//chi2_pid ------------------------------------------------------------//
+	TH1D *chi2pid_recostop=new TH1D("chi2pid_recostop","",500,0,100);
 	TH1D *chi2pid_truestop=new TH1D("chi2pid_truestop","",500,0,100);
 	TH1D *chi2pid_trueel=new TH1D("chi2pid_trueel","",500,0,100);
 	TH1D *chi2pid_trueinel=new TH1D("chi2pid_trueinel","",500,0,100);
+	TH1D *chi2pid_recoinel=new TH1D("chi2pid_recoinel","",500,0,100);
+
+	//xy-dist
+	TH2D *h2d_xy_noSCE=new TH2D("h2d_xy_noSCE","", 70,-60,10,60,390,450); //nosce
+	TH2D *h2d_xy_SCE=new TH2D("h2d_xy_SCE","", 70,-60,10,60,390,450); //after sce
+	
+	//z-st
+	TH1D *h1d_zst_noSCE=new TH1D("h1d_zst_noSCE","",110,-10,100);
+	TH1D *h1d_zst_SCE=new TH1D("h1d_zst_SCE","",110,-10,100);
 
 	for (Long64_t jentry=0; jentry<nentries;jentry++) { //main entry loop
 		Long64_t ientry = LoadTree(jentry);
@@ -286,18 +328,18 @@ void ProtonMomentumReweight::Loop() {
 
 		//xy-cut
 		bool IsXY=false;		
-		double x0_tmp=0, y0_tmp=0, z0_tmp=0; //start-pos, before sce
+		double reco_stx_noSCE=0, reco_sty_noSCE=0, reco_stz_noSCE=0; //start-pos, before sce
 		if (primaryEndPosition[2]>primaryStartPosition[2]) { //check if Pandora flip the sign
-			x0_tmp=primaryStartPosition[0];
-			y0_tmp=primaryStartPosition[1];
-			z0_tmp=primaryStartPosition[2];
+			reco_stx_noSCE=primaryStartPosition[0];
+			reco_sty_noSCE=primaryStartPosition[1];
+			reco_stz_noSCE=primaryStartPosition[2];
 		} //check if Pandora flip the sign
 		else {
-			x0_tmp=primaryEndPosition[0];
-			y0_tmp=primaryEndPosition[1];
-			z0_tmp=primaryEndPosition[2];
+			reco_stx_noSCE=primaryEndPosition[0];
+			reco_sty_noSCE=primaryEndPosition[1];
+			reco_stz_noSCE=primaryEndPosition[2];
 		}
-		if ((pow(((x0_tmp-mean_x)/dev_x),2)+pow(((y0_tmp-mean_y)/dev_y),2))<=1.) IsXY=true;
+		if ((pow(((reco_stx_noSCE-mean_x)/dev_x),2)+pow(((reco_sty_noSCE-mean_y)/dev_y),2))<=1.) IsXY=true;
 
 		//Intersection cut
 		//bool IsIntersection=false;		
@@ -330,7 +372,15 @@ void ProtonMomentumReweight::Loop() {
 		//} //loop over simIDE points
 
 		double ke_calo_MeV=0;
-		if (IsCaloSize) { //if calo size not empty
+		if (IsPandoraSlice&&IsBQ&&IsCaloSize) { //if calo size not empty
+			//no-sce
+			h2d_xy_noSCE->Fill(reco_stx_noSCE, reco_sty_noSCE);
+			h1d_zst_noSCE->Fill(reco_stz_noSCE);
+			//after sce
+			h2d_xy_SCE->Fill(reco_stx, reco_sty);
+			h1d_zst_SCE->Fill(reco_stz);
+			
+			//calo
 			vector<double> trkdedx; 
 			vector<double> trkres;
 			for (size_t h=0; h<primtrk_dedx->size(); ++h) { //loop over reco hits of a given track
@@ -347,30 +397,41 @@ void ProtonMomentumReweight::Loop() {
 				double pt_reco=primtrk_pt->at(-1+primtrk_wid->size()-h);
 
 				double cali_dedx=0.;
-				cali_dedx=dedx_function_35ms(dqdx, hitx_reco, hity_reco, hitz_reco);
+				//cali_dedx=dedx_function_35ms(dqdx, hitx_reco, hity_reco, hitz_reco);
+				//ke_calo_MeV+=cali_dedx*pitch;
 				//kereco_calo+=cali_dedx*pitch;
 				ke_calo_MeV+=dedx*pitch;
 
+				//trkdedx.push_back(cali_dedx*pitch);
 				trkdedx.push_back(dedx*pitch);
 				trkres.push_back(resrange_reco);
 
 				if (IsRecoStop) {
 					h2d_rr_dedx_recoSTOP->Fill(resrange_reco, dedx);
+					//h2d_rr_dedx_recoSTOP->Fill(resrange_reco, cali_dedx);
 				}
 
 			} //loop over reco hits of a given track
 
+			if (IsRecoStop) chi2pid_recostop->Fill(chi2pid(trkdedx,trkres));
+			if (IsRecoInEL) chi2pid_recoinel->Fill(chi2pid(trkdedx,trkres));
 			if (IsPureMCS) chi2pid_truestop->Fill(chi2pid(trkdedx,trkres));
 			if (IsPureEL) chi2pid_trueel->Fill(chi2pid(trkdedx,trkres));
 			if (IsPureInEL) chi2pid_trueinel->Fill(chi2pid(trkdedx,trkres)); 
 
 		} //if calo size not empty
 
-		h1d_kebeam->Fill(ke_beam_spec_MeV);
-		h1d_keff->Fill(ke_ff);
-		if (IsCaloSize&&IsRecoStop) { 
-			h1d_kerange_stop->Fill(ke_trklen_MeV);
-			h1d_kecalo_stop->Fill(ke_calo_MeV);
+		if (IsPandoraSlice&&IsBQ&&IsCaloSize) {
+			h1d_kebeam->Fill(ke_beam_spec_MeV);
+			h1d_pbeam->Fill(1000.*mom_beam_spec);
+			h1d_keff->Fill(ke_ff);
+			if (IsRecoStop) { 
+				h1d_keff_stop->Fill(ke_ff);
+				h1d_kerange_stop->Fill(ke_trklen_MeV);
+				h1d_kecalo_stop->Fill(ke_calo_MeV);
+			
+				h1d_trklen_stop->Fill(range_reco);
+			}
 		}
 
 				/*
@@ -420,16 +481,38 @@ void ProtonMomentumReweight::Loop() {
 
 	} //main entry loop
 
+	TF1* kebeam_fit; kebeam_fit=VFit(h1d_kebeam, 2);
+	kebeam_fit->SetName("kebeam_fit");
+	TF1* pbeam_fit; pbeam_fit=VFit(h1d_pbeam, 2);
+	pbeam_fit->SetName("pbeam_fit");
+
 	//save results...
    	TFile *fout = new TFile("mc_proton_bmrw.root","RECREATE");
 				
 		h2d_rr_dedx_recoSTOP->Write();
 		gr_predict_dedx_resrange->Write();
+
+		h1d_pbeam->Write();
 		h1d_kebeam->Write();
+		kebeam_fit->Write();
+		pbeam_fit->Write();
+
 		h1d_keff->Write();
+		h1d_keff_stop->Write();
+		
 		h1d_kerange_stop->Write();
 		h1d_kecalo_stop->Write();
-				
+
+		h1d_trklen_stop->Write();
+
+		h2d_xy_noSCE->Write();
+		h2d_xy_SCE->Write();
+		
+		h1d_zst_noSCE->Write();
+		h1d_zst_SCE->Write();
+
+		chi2pid_recostop->Write();
+		chi2pid_recoinel->Write();
 		chi2pid_truestop->Write();
 		chi2pid_trueel->Write();
 		chi2pid_trueinel->Write();
