@@ -14,12 +14,10 @@
 #include "TMinuit.h"
 
 ///change these parameters everytime you use new sample
-//double calib_factor =5.02e-3;
-//double normalisation_factor=1.02;//for plane 2
-//TFile my_file0("./cali_oldp3/YZcalo_r6256030.root");//YZ correction factors
-//TFile my_file2("./cali_oldp3/Xcalo_r6256030.root"); //X correction factors
-double calib_factor=1.011e-3;
-double normalisation_factor=0.989;//for plane 2
+//double calib_factor=1.011e-3; //prod4, plane2
+//double normalisation_factor=0.989;//prod4, plane 2
+double calib_factor=1.0205e-3; //prod4a, plane2
+double normalisation_factor=1;//prod4a, plane 2
 TFile my_file0("./cali/YZcalo_prod4_sceon.root");//YZ correction factors
 TFile my_file2("./cali/Xcalo_prod4_sceon.root"); //X correction factors
 bool sceoff=0;//change this to 0 if you want sceon
