@@ -19,15 +19,26 @@ double Density = 1.39; // g/cm^3
 
 //Misc. Cut values
 //XY-Cut
-double mean_x=-29.73; //prod4 mc
-double mean_y=422.4;
-double dev_x=1.5*4.046;
-double dev_y=1.5*3.679;
+//double mean_x=-29.73; //prod4 mc
+//double mean_y=422.4;
+//double dev_x=1.5*4.046;
+//double dev_y=1.5*3.679;
 
-double mean_x_data=-26.58; //prod4 data
-double mean_y_data=423.5; //prod4 data
-double dev_x_data=1.5*3.753; //prod4 data
-double dev_y_data=1.5*4.354; //prod4 data
+//double mean_x_data=-26.58; //prod4 data
+//double mean_y_data=423.5; //prod4 data
+//double dev_x_data=1.5*3.753; //prod4 data
+//double dev_y_data=1.5*4.354; //prod4 data
+
+double mean_x=-29.25; //prod4a mc
+double mean_y=422.1; //prod4a mc
+double dev_x=1.5*4.4; //prod4a mc
+double dev_y=1.5*3.883; //prod4a mc
+
+double mean_x_data=-26.59; //prod4a data
+double mean_y_data=423.5; //prod4a data
+double dev_x_data=1.5*3.744; //prod4a data
+double dev_y_data=1.5*4.364; //prod4a data
+
 
 //dedx cut
 double dedx_min=30.;
