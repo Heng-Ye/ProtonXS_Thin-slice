@@ -71,7 +71,8 @@ void ProtonMomentumReweight::Loop() {
 	double xmin=0.; //pmin [MeV/c]
 	double xmax=2000.; //pmax [MeV/c]
 	TH1D *h1d_pbeam=new TH1D("h1d_pbeam","",nx,xmin,xmax);
-
+	TH1D *h1d_pbeam_stop=new TH1D("h1d_pbeam_stop","",nx,xmin,xmax);
+	TH1D *h1d_pff_stop=new TH1D("h1d_pff_stop","",nx,xmin,xmax);
 
 	//MC Beam Mom Gaussian 
 	double m1=1007.1482; //MC prod4a [spec]
@@ -362,7 +363,8 @@ void ProtonMomentumReweight::Loop() {
 		//double ke_beam=1000.*p2ke(mom_beam); //ke_beam
 		double ke_beam_spec=p2ke(mom_beam_spec); //ke_beam_spec [GeV]
 		double ke_beam_spec_MeV=1000.*ke_beam_spec; //ke_beam_spec [MeV]
-		double ke_trklen_MeV=1000.*ke_vs_csda_range_sm->Eval(range_reco); //[unit: MeV]
+		double ke_trklen=ke_vs_csda_range_sm->Eval(range_reco); //[unit: GeV]
+		double ke_trklen_MeV=1000.*ke_trklen; //[unit: MeV]
 
 		//double p_trklen=ke2p(ke_trklen);
 		//double ke_simide=0;
@@ -424,6 +426,8 @@ void ProtonMomentumReweight::Loop() {
 				h1d_kerange_stop->Fill(ke_trklen_MeV);
 				h1d_kecalo_stop->Fill(ke_calo_MeV);
 				h1d_trklen_stop->Fill(range_reco);
+				h1d_pbeam_stop->Fill(1000.*ke2p(ke_trklen));
+				h1d_pff_stop->Fill(1000.*ke2p(ke_ff/1000.));
 
 				if (IsXY) { //xy-cut
 					h1d_trklen_stop_XY->Fill(range_reco);
@@ -452,6 +456,13 @@ void ProtonMomentumReweight::Loop() {
 	TF1* pbeam_fit; pbeam_fit=VFit(h1d_pbeam, 2);
 	pbeam_fit->SetName("pbeam_fit");
 
+	TF1* pbeam_stop_fit; pbeam_stop_fit=VFit(h1d_pbeam_stop, 2);
+	pbeam_stop_fit->SetName("pbeam_stop_fit");
+
+	TF1* pff_stop_fit; pff_stop_fit=VFit(h1d_pff_stop, 2);
+	pff_stop_fit->SetName("pff_stop_fit");
+
+
 	//save results...
    	TFile *fout = new TFile("mc_proton_bmrw.root","RECREATE");
 				
@@ -460,8 +471,13 @@ void ProtonMomentumReweight::Loop() {
 
 		h1d_pbeam->Write();
 		h1d_kebeam->Write();
+		h1d_pbeam_stop->Write();
+		h1d_pff_stop->Write();
+
 		kebeam_fit->Write();
 		pbeam_fit->Write();
+		pbeam_stop_fit->Write();
+		pff_stop_fit->Write();
 
 		h1d_keff->Write();
 		h1d_keff_stop->Write();
