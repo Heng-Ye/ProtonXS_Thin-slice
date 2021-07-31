@@ -73,10 +73,9 @@ void ProtonMomentumReweight::Loop() {
 	TH1D *h1d_pbeam=new TH1D("h1d_pbeam","",nx,xmin,xmax);
 
 
-/*
-	//1st Gaussian 
-	double m1=1005.52; //prod4 [spec]
-	double s1=62.2796; //prod4 [spec]
+	//MC Beam Mom Gaussian 
+	double m1=1007.1482; //MC prod4a [spec]
+	double s1=60.703307; //MC prod4a [spec]
 
 	//momentum cut range	
 	double mu_min=m1-3.*s1;
@@ -142,7 +141,7 @@ void ProtonMomentumReweight::Loop() {
 			cnt_array++;
 			} //sigma loop
 	} //mu loop
-*/
+
 
 	//trklen
 	TH1D *h1d_trklen_stop=new TH1D(Form("h1d_trklen_stop"),Form("reco stop"),n_b,b_min,b_max);
@@ -383,32 +382,27 @@ void ProtonMomentumReweight::Loop() {
 			//calo
 			vector<double> trkdedx; 
 			vector<double> trkres;
-			for (size_t h=0; h<primtrk_dedx->size(); ++h) { //loop over reco hits of a given track
+			for (size_t h=0; h<primtrk_hitz->size(); ++h) { //loop over reco hits of a given track
 				double hitx_reco=primtrk_hitx->at(h);
 				double hity_reco=primtrk_hity->at(h);
 				double hitz_reco=primtrk_hitz->at(h);
 				double resrange_reco=primtrk_resrange->at(h);
 
 				double dqdx=primtrk_dqdx->at(h);
-				double dedx=primtrk_dedx->at(h);
 				double pitch=primtrk_pitch->at(h);
 
 				int wid_reco=primtrk_wid->at(-1+primtrk_wid->size()-h);
 				double pt_reco=primtrk_pt->at(-1+primtrk_wid->size()-h);
 
 				double cali_dedx=0.;
-				//cali_dedx=dedx_function_35ms(dqdx, hitx_reco, hity_reco, hitz_reco);
-				//ke_calo_MeV+=cali_dedx*pitch;
-				//kereco_calo+=cali_dedx*pitch;
-				ke_calo_MeV+=dedx*pitch;
+				cali_dedx=dedx_function_35ms(dqdx, hitx_reco, hity_reco, hitz_reco);
+				ke_calo_MeV+=cali_dedx*pitch; //prod4a, pandoracalinoxyzt
 
-				//trkdedx.push_back(cali_dedx*pitch);
-				trkdedx.push_back(dedx*pitch);
+				trkdedx.push_back(cali_dedx);
 				trkres.push_back(resrange_reco);
 
 				if (IsRecoStop) {
-					h2d_rr_dedx_recoSTOP->Fill(resrange_reco, dedx);
-					//h2d_rr_dedx_recoSTOP->Fill(resrange_reco, cali_dedx);
+					h2d_rr_dedx_recoSTOP->Fill(resrange_reco, cali_dedx);
 				}
 
 			} //loop over reco hits of a given track
@@ -421,66 +415,38 @@ void ProtonMomentumReweight::Loop() {
 
 		} //if calo size not empty
 
-		if (IsPandoraSlice&&IsBQ&&IsCaloSize) {
+		if (IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
 			h1d_kebeam->Fill(ke_beam_spec_MeV);
 			h1d_pbeam->Fill(1000.*mom_beam_spec);
 			h1d_keff->Fill(ke_ff);
-			if (IsRecoStop) { 
+			if (IsRecoStop) { //reco stop 
 				h1d_keff_stop->Fill(ke_ff);
 				h1d_kerange_stop->Fill(ke_trklen_MeV);
 				h1d_kecalo_stop->Fill(ke_calo_MeV);
-			
 				h1d_trklen_stop->Fill(range_reco);
-			}
-		}
 
-				/*
-				//momentum_loss reweight -------------------------------------------------//
-				if ((pow(((x0_tmp-mean_x)/dev_x),2)+pow(((y0_tmp-mean_y)/dev_y),2))<=1.) { //xy-cut	
-				if (primtrk_z_st_reco>=0&&IsStoppingProton==true) { //if z gt 0
-				double mom_rw=1.;
-				//cout<<"z_st:"<<primtrk_z_st_reco<<" IsP:"<<IsStoppingProton<<endl;
-				if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) { //beam-mom cut
-				for (int ig = 0; ig < n_1d; ++ig) { //rw loop
-				//double mom_rw=gng[ig]->Eval(mom_beam*1000.);
-				mom_rw=gng[ig]->Eval(mom_beam_spec*1000.);
-				//double norm_rw=rw_csda_sm[ig]->Eval(csda_range_vs_mom_sm->Eval(mom_beam_spec));
-				//double norm_rw=rw_csda_sm[ig]->Eval(csda_val_spec);
-				//double norm_rw=mom_rw;
-				//double norm_rw=1./rw_csda_sm[ig]->Eval(csda_range_vs_mom_sm->Eval(mom_beam_spec));
-				//double norm_rw=mom_rw*(rw_csda_sm[ig]->Eval(csda_range_vs_mom_sm->Eval(mom_beam_spec)));
-
-				//h1d_trklen_rw[ig]->Fill(primtrk_range_reco*frac_mom.at(ig)); //scaling up and down
-				//h1d_ntrklen_rw[ig]->Fill((primtrk_range_reco/csda_val_spec),1./mom_rw); //beam-mom rw
-
-				//h1d_trklen_rw[ig]->Fill(primtrk_range_reco,mom_rw); //beam-mom rw 
-				h1d_trklen_rw[ig]->Fill(primtrk_range_reco,mom_rw); //beam-mom rw using stopping protons
-				//h1d_ntrklen_rw[ig]->Fill((primtrk_range_reco/csda_val_spec),norm_rw); //beam-mom rw
-
-				//h2d_trklen_csda_rw[ig]->Fill(primtrk_range_reco,csda_val_spec,mom_rw); //x,y,w
-
-				//ntuple_rw[cnt_array]->Fill(primtrk_range_reco,csda_val_spec,mom_rw);
-
-				//h1d_z2_rw[ig]->Fill(((z2-z0)/cosine_end_minus_st_sce_rad),mom_rw);
-				//h1d_b2_rw[ig]->Fill(b2,mom_rw);
-				//h1d_d2_rw[ig]->Fill(d2,mom_rw);
-				} //rw loop
-				} //beam-mom cut
-				if ((mom_beam_spec*1000.)<mu_min||(mom_beam_spec*1000.)>mu_max) { //tail of the beam
-				//cout<<"ck1"<<endl;
-				for (int ig = 0; ig < n_1d; ++ig) { //rw loop
-				h1d_trklen_rw[ig]->Fill(primtrk_range_reco); //beam-mom rw 
-				} //rw loop
-				} //tail of the beam	
-				} //if z gt 0 
+				if (IsXY) { //xy-cut
+					h1d_trklen_stop_XY->Fill(range_reco);
+					double mom_rw=1.;
+					if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) { //beam-mom cut (within 3-sigma)
+						for (int ig = 0; ig < n_1d; ++ig) { //rw loop
+							mom_rw=gng[ig]->Eval(mom_beam_spec*1000.);
+							h1d_trklen_rw[ig]->Fill(range_reco,mom_rw); //beam-mom rw using stopping protons
+						} //rw loop
+					} //beam-mom cut (within 3-sigma)
+					else { //tail of beam
+					//if ((mom_beam_spec*1000.)<mu_min||(mom_beam_spec*1000.)>mu_max) { //tail of the beam
+						for (int ig = 0; ig < n_1d; ++ig) { //rw loop
+							h1d_trklen_rw[ig]->Fill(range_reco); //beam-mom rw 
+						} //rw loop
+					} //tail of the beam	
 				} //xy-cut
-				//momentum_loss reweight -------------------------------------------------//
-				*/
-
-
+			} //reco stop
+		} //basic cuts
 
 	} //main entry loop
 
+	//Fit Beam ...
 	TF1* kebeam_fit; kebeam_fit=VFit(h1d_kebeam, 2);
 	kebeam_fit->SetName("kebeam_fit");
 	TF1* pbeam_fit; pbeam_fit=VFit(h1d_pbeam, 2);
@@ -503,7 +469,7 @@ void ProtonMomentumReweight::Loop() {
 		h1d_kerange_stop->Write();
 		h1d_kecalo_stop->Write();
 
-		h1d_trklen_stop->Write();
+
 
 		h2d_xy_noSCE->Write();
 		h2d_xy_SCE->Write();
@@ -516,6 +482,14 @@ void ProtonMomentumReweight::Loop() {
 		chi2pid_truestop->Write();
 		chi2pid_trueel->Write();
 		chi2pid_trueinel->Write();
+
+		h1d_trklen_stop->Write();
+		h1d_trklen_stop_XY->Write();
+
+		for (int ig = 0; ig < n_1d; ++ig) { //rw loop
+			h1d_trklen_rw[ig]->Write();
+		} //rw loop
+
 	fout->Close();
 
 
