@@ -356,18 +356,25 @@ void ProtonThinSlice::Loop() {
 		if (IsCosine&&IsPos) IsBQ=true;
 	
 		//reco calorimetry ---------------------------------------------------------------------------//
-		vector< pair<double,int > > zreco_rawindex; //z, original_index
-		vector< pair<double,double > > zreco_rr; //z, rr
-		vector< pair<double,double > > zreco_de; //z, wid_reco
-		vector< pair<double,double > > zreco_dedx; //z, wid_reco
-		vector< pair<double,double > > zreco_dx; //z, wid_reco
-		vector< pair<double,double > > zreco_xreco; //z, wid_reco
-		vector< pair<double,double > > zreco_yreco; //z, wid_reco
-		vector< pair<double,int > > zreco_widreco; //z, wid_reco
-		vector< pair<double,double > > zreco_lenreco; //z, len_reco
+		//vector< pair<double,int > > zreco_rawindex; //z, original_index
+		//vector< pair<double,double > > zreco_rr; //z, rr
+		//vector< pair<double,double > > zreco_de; //z, wid_reco
+		//vector< pair<double,double > > zreco_dedx; //z, wid_reco
+		//vector< pair<double,double > > zreco_dx; //z, wid_reco
+		//vector< pair<double,double > > zreco_xreco; //z, wid_reco
+		//vector< pair<double,double > > zreco_yreco; //z, wid_reco
+		//vector< pair<double,int > > zreco_widreco; //z, wid_reco
+		//vector< pair<double,double > > zreco_lenreco; //z, len_reco
 
 		int index_reco_endz=0;
 		double wid_reco_max=-9999;
+		double range_reco=-999;
+		vector<double> reco_trklen_accum;
+  		reco_trklen_accum.reserve(primtrk_hitz->size());
+		double kereco_calo=0;
+		double kereco_range=0;
+		double kereco_range2=0;
+		vector<double> EDept;
 		if (IsCaloSize) { //if calo size not empty
 		  for (size_t h=0; h<primtrk_dedx->size(); ++h) { //loop over reco hits of a given track
 			double hitx_reco=primtrk_hitx->at(h);
@@ -389,64 +396,68 @@ void ProtonThinSlice::Loop() {
 
 			double cali_dedx=0.;
 			cali_dedx=dedx_function_35ms(dqdx, hitx_reco, hity_reco, hitz_reco);
-			//kereco_calo+=cali_dedx*pitch;
-			//ke_reco-=cali_dedx*pitch;
 
-			//use dedx from rr
-			//kereco_range+=pitch*dedx_predict(resrange_reco);
-			//kereco_range2+=pitch*(double)gr_predict_dedx_resrange->Eval(resrange_reco);
+			EDept.push_back(cali_dedx*pitch);
 
-			//if (IsRecoStop) {
-				//double theory1_dedx=(double)gr_predict_dedx_resrange->Eval(resrange_reco);
-				//double theory2_dedx=dedx_predict(resrange_reco);
-				//rr_dedx_recostop->Fill(resrange_reco,cali_dedx);
-				//rr_ddedx1_recostop->Fill(resrange_reco,
-			//}
-
-			//if (IsPureMCS) {
-				//rr_dedx_truestop->Fill(resrange_reco,cali_dedx);
-			//}
-
-			zreco_rawindex.push_back(make_pair(wid_reco, h));
-			zreco_de.push_back(make_pair(wid_reco, cali_dedx*pitch));
-			zreco_dedx.push_back(make_pair(wid_reco, cali_dedx));
-			zreco_dx.push_back(make_pair(wid_reco, pitch));
-			zreco_xreco.push_back(make_pair(wid_reco, hitx_reco));
-			zreco_yreco.push_back(make_pair(wid_reco, hity_reco));
-			zreco_widreco.push_back(make_pair(wid_reco, hitz_reco));
-			zreco_rr.push_back(make_pair(wid_reco, resrange_reco));
+			//zreco_rawindex.push_back(make_pair(wid_reco, h));
+			//zreco_de.push_back(make_pair(wid_reco, cali_dedx*pitch));
+			//zreco_dedx.push_back(make_pair(wid_reco, cali_dedx));
+			//zreco_dx.push_back(make_pair(wid_reco, pitch));
+			//zreco_xreco.push_back(make_pair(wid_reco, hitx_reco));
+			//zreco_yreco.push_back(make_pair(wid_reco, hity_reco));
+			//zreco_widreco.push_back(make_pair(wid_reco, hitz_reco));
+			//zreco_rr.push_back(make_pair(wid_reco, resrange_reco));
 
 			//if (IsPureInEL) rangereco_dedxreco_TrueInEL->Fill(range_reco-resrange_reco, cali_dedx);
 			//if (IsPureEL) rangereco_dedxreco_TrueEL->Fill(range_reco-resrange_reco, cali_dedx);
 			//if (IsPureMCS) rangereco_dedxreco_TrueMCS->Fill(range_reco-resrange_reco, cali_dedx);
 
 			//zreco_ke.push_back(make_pair(wid_reco, ke_reco));
+
+			if (h==1) range_reco=0;
+			if (h>=1) {
+    					range_reco += sqrt( pow(primtrk_hitx->at(h)-primtrk_hitx->at(h-1), 2)+
+					    		    pow(primtrk_hity->at(h)-primtrk_hity->at(h-1), 2)+
+					    		    pow(primtrk_hitz->at(h)-primtrk_hitz->at(h-1), 2) );
+					reco_trklen_accum[h] = range_reco;
+			}
+
+			kereco_calo+=cali_dedx*pitch;
+			kereco_range+=pitch*dedx_predict(resrange_reco);
+			kereco_range2+=pitch*(double)gr_predict_dedx_resrange->Eval(resrange_reco);
+
+			if (IsPureInEL) rangereco_dedxreco_TrueInEL->Fill(range_reco, cali_dedx);
+			if (IsPureEL) { 
+						rangereco_dedxreco_TrueEL->Fill(range_reco, cali_dedx);
+						rr_dedx_truestop->Fill(resrange_reco, cali_dedx);
+			}
+
 		  } //loop over reco hits of a given track
 		} //if calo size not empty
 
 		//use wid for sorting
-		sort(zreco_rawindex.begin(),zreco_rawindex.end(),myComparison); //sorting based on the first column
-		sort(zreco_rr.begin(),zreco_rr.end(),myComparison); //sorting based on the first column
-		sort(zreco_de.begin(),zreco_de.end(),myComparison); //sorting based on the first column
-		sort(zreco_dedx.begin(),zreco_dedx.end(),myComparison); //sorting based on the first column
-		sort(zreco_dx.begin(),zreco_dx.end(),myComparison); //sorting based on the first column
-		sort(zreco_xreco.begin(),zreco_xreco.end(),myComparison); //sorting based on the first column
-		sort(zreco_yreco.begin(),zreco_yreco.end(),myComparison); //sorting based on the first column
-		sort(zreco_widreco.begin(),zreco_widreco.end(),myComparison); //sorting based on the first column
+		//sort(zreco_rawindex.begin(),zreco_rawindex.end(),myComparison); //sorting based on the first column
+		//sort(zreco_rr.begin(),zreco_rr.end(),myComparison); //sorting based on the first column
+		//sort(zreco_de.begin(),zreco_de.end(),myComparison); //sorting based on the first column
+		//sort(zreco_dedx.begin(),zreco_dedx.end(),myComparison); //sorting based on the first column
+		//sort(zreco_dx.begin(),zreco_dx.end(),myComparison); //sorting based on the first column
+		//sort(zreco_xreco.begin(),zreco_xreco.end(),myComparison); //sorting based on the first column
+		//sort(zreco_yreco.begin(),zreco_yreco.end(),myComparison); //sorting based on the first column
+		//sort(zreco_widreco.begin(),zreco_widreco.end(),myComparison); //sorting based on the first column
 		//sort(zreco_ke.begin(),zreco_ke.end(),myComparison); //sorting based on the first column
 
 		//reco trklen ---------------------------------------------------------------------------//
-		double range_reco=-999;
-		vector<double> reco_trklen_accum;
-  		reco_trklen_accum.reserve(primtrk_hitz->size());
-  		for (int iz=1; iz<(int)zreco_rawindex.size(); iz++) {
-			if (iz==1) range_reco=0; 	
-    			range_reco += sqrt( pow(zreco_xreco[iz].second-zreco_xreco[iz-1].second, 2)+
-					    pow(zreco_yreco[iz].second-zreco_yreco[iz-1].second, 2)+
-					    pow(zreco_widreco[iz].second-zreco_widreco[iz-1].second, 2) );
-			reco_trklen_accum[iz] = range_reco;
-			zreco_lenreco.push_back(make_pair(zreco_widreco[iz].first, range_reco));
-  		}
+		//double range_reco=-999;
+		//vector<double> reco_trklen_accum;
+  		//reco_trklen_accum.reserve(primtrk_hitz->size());
+  		//for (int iz=1; iz<(int)zreco_rawindex.size(); iz++) {
+			//if (iz==1) range_reco=0; 	
+    			//range_reco += sqrt( pow(zreco_xreco[iz].second-zreco_xreco[iz-1].second, 2)+
+					    //pow(zreco_yreco[iz].second-zreco_yreco[iz-1].second, 2)+
+					    //pow(zreco_widreco[iz].second-zreco_widreco[iz-1].second, 2) );
+			//reco_trklen_accum[iz] = range_reco;
+			//zreco_lenreco.push_back(make_pair(zreco_widreco[iz].first, range_reco));
+  		//}
 		cout<<"range_reco:"<<range_reco<<endl;
 
 		//Reco stopping/Inel p cut -----------------------------------------------------------------------------------------------//
@@ -471,34 +482,31 @@ void ProtonThinSlice::Loop() {
 		} //loop over simIDE points
 
 		//some ke calc. -------------------------------------------------------------------------------------//
-		double kereco_calo=0;
-		double kereco_range=0;
-		double kereco_range2=0;
+		//double kereco_calo=0;
+		//double kereco_range=0;
+		//double kereco_range2=0;
 		if (IsCaloSize) { //if calo size not empty
-  			for (int iz=1; iz<(int)zreco_rawindex.size(); iz++) { //calo hit loop
-				double cali_dedx=zreco_dedx[iz].second;
-				double pitch=zreco_dx[iz].second;
-				double len=zreco_lenreco[iz].second;
-				double rr=range_reco-len;
+  			//for (int iz=1; iz<(int)zreco_rawindex.size(); iz++) { //calo hit loop
+				//double cali_dedx=zreco_dedx[iz].second;
+				//double pitch=zreco_dx[iz].second;
+				//double len=zreco_lenreco[iz].second;
+				//double rr=range_reco-len;
 
-				kereco_calo+=cali_dedx*pitch;
-				kereco_range+=pitch*dedx_predict(rr);
-				kereco_range2+=pitch*(double)gr_predict_dedx_resrange->Eval(rr);
+				//kereco_calo+=cali_dedx*pitch;
+				//kereco_range+=pitch*dedx_predict(rr);
+				//kereco_range2+=pitch*(double)gr_predict_dedx_resrange->Eval(rr);
 
-				if (IsRecoStop) {
-					//double theory1_dedx=(double)gr_predict_dedx_resrange->Eval(resrange_reco);
-					//double theory2_dedx=dedx_predict(resrange_reco);
-					rr_dedx_recostop->Fill(rr, cali_dedx);
-					//rr_ddedx1_recostop->Fill(resrange_reco,
-				}
+				//if (IsRecoStop) {
+					//rr_dedx_recostop->Fill(rr, cali_dedx);
+				//}
 
-				if (IsPureInEL) rangereco_dedxreco_TrueInEL->Fill(len, cali_dedx);
-				if (IsPureEL) { 
-						rangereco_dedxreco_TrueEL->Fill(len, cali_dedx);
-						rr_dedx_truestop->Fill(rr,cali_dedx);
-				}
+				//if (IsPureInEL) rangereco_dedxreco_TrueInEL->Fill(len, cali_dedx);
+				//if (IsPureEL) { 
+						//rangereco_dedxreco_TrueEL->Fill(len, cali_dedx);
+						//rr_dedx_truestop->Fill(rr,cali_dedx);
+				//}
 				//if (IsPureMCS) rangereco_dedxreco_TrueMCS->Fill(len, cali_dedx);
-			} //calo hit loop
+			//} //calo hit loop
 
 			if (IsRecoStop) { //reco_stop 
 				KE_ff_recostop->Fill(ke_ff);
@@ -515,6 +523,30 @@ void ProtonThinSlice::Loop() {
 
 				KE_range_ff_recostop->Fill(kereco_range, ke_ff);
 				KE_range_calo_recostop->Fill(kereco_range, kereco_calo);
+
+		  		for (size_t h=0; h<primtrk_dedx->size(); ++h) { //loop over reco hits of a track
+					double hitx_reco=primtrk_hitx->at(h);
+					double hity_reco=primtrk_hity->at(h);
+					double hitz_reco=primtrk_hitz->at(h);
+					double resrange_reco=primtrk_resrange->at(h);
+
+					double dqdx=primtrk_dqdx->at(h);
+					double pitch=primtrk_pitch->at(h);
+
+					int wid_reco=primtrk_wid->at(-1+primtrk_wid->size()-h);
+					double pt_reco=primtrk_pt->at(-1+primtrk_wid->size()-h);
+
+					//if (wid_reco==-9999) continue; //outside TPC
+					if (wid_reco>wid_reco_max) { 
+						wid_reco_max=wid_reco;
+						index_reco_endz=(int)-1+primtrk_wid->size()-h;
+					}
+
+					double cali_dedx=0.;
+					cali_dedx=dedx_function_35ms(dqdx, hitx_reco, hity_reco, hitz_reco);
+
+					rr_dedx_recostop->Fill(resrange_reco, cali_dedx);
+				} //loop over reco hits of a track
 			} //reco_stop
 		} //if calo size not empty
 
@@ -909,13 +941,15 @@ void ProtonThinSlice::Loop() {
 			if (IsCaloSize==true&&IsBeamMatch==true) { //calo & beam_match
 				std::vector<std::vector<double>> vincE(nthinslices);
 				double ke_reco=ke_ff;
-				for (size_t ih=0; ih<zreco_rawindex.size(); ++ih) {
+				//for (size_t ih=0; ih<zreco_rawindex.size(); ++ih) {
+				for (size_t ih=0; ih<primtrk_dedx->size(); ++ih) {
 					//double this_calo_z=zreco_widreco[ih].second;
 					//int this_sliceID = int(this_calo_z/thinslicewidth);
-					double this_calo_len=zreco_lenreco[ih].second;
-					int this_sliceID = int(this_calo_len/thinslicewidth);
-					double this_dE=zreco_de[ih].second;
-					ke_reco-=this_dE;
+					//double this_calo_len=zreco_lenreco[ih].second;
+					//double this_dE=zreco_de[ih].second;
+					int this_sliceID = int(reco_trklen_accum[ih]/thinslicewidth);
+					//ke_reco-=this_dE;
+					ke_reco-=EDept.at(ih);
 
 					if (this_sliceID>=nthinslices) continue;
 					if (this_sliceID<0) continue;
@@ -934,12 +968,14 @@ void ProtonThinSlice::Loop() {
 					}
 				}
 
-				TVector3 pt0(zreco_xreco[0].second,
-						zreco_yreco[0].second,
-						zreco_xreco[0].first); //ST
-				TVector3 pt1(zreco_xreco[-1+zreco_rawindex.size()].second,
-						zreco_yreco[-1+zreco_rawindex.size()].second,
-						zreco_xreco[-1+zreco_rawindex.size()].first);
+				//TVector3 pt0(zreco_xreco[0].second,
+						//zreco_yreco[0].second,
+						//zreco_xreco[0].first); //ST
+				//TVector3 pt1(zreco_xreco[-1+zreco_rawindex.size()].second,
+						//zreco_yreco[-1+zreco_rawindex.size()].second,
+						//zreco_xreco[-1+zreco_rawindex.size()].first);
+				TVector3 pt0(primtrk_hitx->at(0), primtrk_hity->at(0), primtrk_hitz->at(0));
+				TVector3 pt1(primtrk_hitx->at(-1+primtrk_hitx->size()), primtrk_hity->at(-1+primtrk_hity->size()), primtrk_hitz->at(-1+primtrk_hitz->size()));
 				TVector3 dir = pt1 - pt0;
 				dir = dir.Unit();
 				reco_AngCorr->Fill(dir.Z());
