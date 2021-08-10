@@ -311,9 +311,11 @@ void BookHistograms() { //BookHistograms
 	dKE_calo_ff_recostop=new TH1D("dKE_calo_ff_recostop","",200,-100,100); dKE_calo_ff_recostop->Sumw2();
 	dKE_rrange_ff_recostop=new TH1D("dKE_rrange_ff_recostop","",200,-100,100); dKE_rrange_ff_recostop->Sumw2();
 	dKE_rrange2_ff_recostop=new TH1D("dKE_rrange2_ff_recostop","",200,-100,100); dKE_rrange2_ff_recostop->Sumw2();
-	KE_range_ff_recostop=new TH2D("KE_range_ff_recostop","",dke, ke_st, ke_end,dke, ke_st, ke_end); KE_range_ff_recostop->GetXaxis()->SetTitle("KE_{range} [MeV]"); KE_range_ff_recostop->GetYaxis()->SetTitle("KE_{ff} [MeV]"); 
+	KE_range_ff_recostop=new TH2D("KE_range_ff_recostop","",n_ke, ke_min, ke_max, n_ke, ke_min, ke_max); 
+	KE_range_ff_recostop->GetXaxis()->SetTitle("KE_{range} [MeV]"); KE_range_ff_recostop->GetYaxis()->SetTitle("KE_{ff} [MeV]"); 
 	KE_range_ff_recostop->Sumw2();
-	KE_range_calo_recostop=new TH2D("KE_range_calo_recostop","",dke, ke_st, ke_end,dke, ke_st, ke_end); KE_range_calo_recostop->GetXaxis()->SetTitle("KE_{range} [MeV]"); KE_range_calo_recostop->GetYaxis()->SetTitle("KE_{calo} [MeV]"); 
+	KE_range_calo_recostop=new TH2D("KE_range_calo_recostop","",n_ke, ke_min, ke_max, n_ke, ke_min, ke_max); 
+	KE_range_calo_recostop->GetXaxis()->SetTitle("KE_{range} [MeV]"); KE_range_calo_recostop->GetYaxis()->SetTitle("KE_{calo} [MeV]"); 
 	KE_range_calo_recostop->Sumw2();
 
 	//trklen -----------------------------------------------------------------------------------------------------//
@@ -505,6 +507,10 @@ void BookHistograms() { //BookHistograms
 
 
 void SaveHistograms() { //SaveHistograms
+	outputFile->cd();
+	outputFile->Write();
+	h_truesliceid_uf->Write("h_truesliceid_uf");
+	h_truesliceid_inelastic_uf->Write("h_truesliceid_inelastic_uf");
 
 
 } //SaveHistograms
