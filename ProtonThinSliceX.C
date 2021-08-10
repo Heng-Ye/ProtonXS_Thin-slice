@@ -199,7 +199,8 @@ void ProtonThinSlice::Loop() {
 		}
 		cout<<"trueEnd z/y/x:"<<true_endz<<"/"<<true_endy<<"/"<<true_endx<<endl;
 		cout<<"trueSt z/y/x:"<<true_stz<<"/"<<true_sty<<"/"<<true_stx<<endl;
-		cout<<"InEL EL MCS:"<<IsPureInEL<<" "<<IsPureEL<<" "<<IsPureMCS<<endl;
+		//cout<<"InEL EL MCS:"<<IsPureInEL<<" "<<IsPureEL<<" "<<IsPureMCS<<endl;
+		cout<<"InEL EL:"<<IsPureInEL<<" "<<IsPureEL<<" "<<endl;
 		cout<<"IsTrueEndOutside:"<<IsTrueEndOutside<<endl;
 		if (IsPureInEL==1) cout<<"Summary(TrueEnd, Endoutside, Bm, Orig, EPDG):("<<1<<", "<<IsTrueEndOutside<<", "<<IsBeamMatch<<", "<<primary_truth_byE_origin<<", "<<primary_truth_byE_PDG<<")"<<endl;	
 		if (IsPureEL==1) cout<<"Summary(TrueEnd, Endoutside, Bm, Orig, EPDG):("<<2<<", "<<IsTrueEndOutside<<", "<<IsBeamMatch<<", "<<primary_truth_byE_origin<<", "<<primary_truth_byE_PDG<<")"<<endl;	
@@ -349,10 +350,6 @@ void ProtonThinSlice::Loop() {
 			//z0_tmp=primaryEndPosition[2];
 		//}
 		//if ((pow(((x0_tmp-mean_x)/dev_x),2)+pow(((y0_tmp-mean_y)/dev_y),2))<=1.) IsXY=true;
-
-		//Intersection cut -------------------------------------------------------------//
-		bool IsIntersection=false;		
-		if (timeintersection->size()) IsIntersection=true; //over-lapping track cut
 
 		//beam quality cut --------------//
 		bool IsBQ=false;
