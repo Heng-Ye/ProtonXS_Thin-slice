@@ -166,7 +166,7 @@ void ProtonThinSlice::Loop() {
 		if (strcmp(primary_truth_EndProcess->c_str(),"protonInelastic")==0) {
 			IsPureInEL=true;
 		}
-		else { //if primarytrue_end!=InEL
+		else { //hIoni
 			if (interactionProcesslist->size()) { //size of interactionProcesslist >=0
 				cout<<"interactionProcesslist->size():"<<interactionProcesslist->size()<<endl;	
 				for(size_t iiii=0; iiii<interactionProcesslist->size(); iiii++) { //loop over all true interaction hits in this track
@@ -189,7 +189,7 @@ void ProtonThinSlice::Loop() {
 				} //loop over all true interaction hits in this track 
 			} //size of interactionProcesslist >=0
 
-		} //if primarytrue_end!=InEL
+		} //hIoni
 
 		if (IsPureInEL==0&&IsPureEL==0) {
 			IsPureMCS=1;
@@ -278,8 +278,8 @@ void ProtonThinSlice::Loop() {
 
 
 		//reco pos info & cut
-		double reco_stx=-999, reco_sty=-999, reco_stz=-999;
-		double reco_endx=-999, reco_endy=-999, reco_endz=-999;
+		double reco_stx=-99, reco_sty=-99, reco_stz=-99;
+		double reco_endx=-99, reco_endy=-99, reco_endz=-99;
 		//double dx_reco_stx__bposx_ff=-999, dy_reco_sty__bposy_ff=-999, dz_reco_stz__bposz_ff=-999;
 		bool IsPos=false;
 		if (IsCaloSize) {
@@ -778,16 +778,20 @@ void ProtonThinSlice::Loop() {
 		//thin-slice method ----------------------------------------------------//
 		//true slice ID
 		true_sliceID = int(true_endz/thinslicewidth);
+		//true_sliceID = int(primtrk_range_true->at(0)/thinslicewidth); //HY:Make sure size of true_trk_len vector is !0, otherwise lost truth info
 		if (true_sliceID < 0) true_sliceID = -1;
 		if (true_endz < 0) true_sliceID = -1; //hy added
 		if (true_sliceID >= nthinslices) true_sliceID = nthinslices;
 		cout<<"true_endz:"<<true_endz<<"  true_sliceID:"<<true_sliceID<<endl;
+		cout<<"primtrk_range_true->empty():"<<primtrk_range_true->empty()
+		    <<" primtrk_range->empty():"<<primtrk_range->empty()<<endl;
 
 		//evt selection cuts
 		bool PassCuts_INT=false; //all bq cut+reco inel cut
 		bool PassCuts_INC=false; //all bq cut
 		if (IsPandoraSlice&&IsCaloSize) {
 			//reco slice ID
+			//reco_sliceID = int(primtrk_range->at(0)/thinslicewidth);
 			reco_sliceID = int(reco_endz/thinslicewidth);
 			if (reco_sliceID < 0) reco_sliceID = -1;
 			if (reco_endz<0) reco_sliceID = -1;
