@@ -85,6 +85,6 @@ void plot_trklentrue(TString fin, TString fout_path, TString str_cut) {
 	leg->SetNColumns(3);
 	leg->Draw();
 
-	c_->Print(Form("%s/ztrue_%s.eps",fout_path.Data(),str_cut.Data()));
+	c_->Print(Form("%s/trklentrue_%s.eps",fout_path.Data(),str_cut.Data()));
 
 }
