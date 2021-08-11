@@ -8,7 +8,7 @@ void plot_trklentrue(TString fin, TString fout_path, TString str_cut) {
 	gStyle->SetOptStat(0);
 	gStyle->SetTitleX(0.5);
 	gStyle->SetTitleAlign(23); 
-	gStyle->SetOptStat(0);
+	//gStyle->SetOptStat(0);
 
 	TFile *f0 = TFile::Open(fin.Data());
 
@@ -40,7 +40,6 @@ void plot_trklentrue(TString fin, TString fout_path, TString str_cut) {
 	trklen_el->GetXaxis()->SetTitle("Truth Track Length [cm]");
 
 	THStack* hs=new THStack("hs","");
-	//hs->Add(trklen_mcs);
 	hs->Add(trklen_el);
 	hs->Add(trklen_inel);
 
@@ -60,13 +59,13 @@ void plot_trklentrue(TString fin, TString fout_path, TString str_cut) {
 	c_->Divide(1,1);
 	c_->cd(1);
 	//TH2D *f2d=new TH2D("f2d","",200,-50,150,1200,0,1200);
-	TH2D *f2d=new TH2D("f2d",Form("%s",str_cut.Data()),200,-50,150,3200,0,3200);
-	f2d->GetXaxis()->SetTitle("Truth Track Length [cm]");
+	//TH2D *f2d=new TH2D("f2d",Form("%s",str_cut.Data()),200,-50,150,3200,0,3200);
+	TH2D *f2d=new TH2D("f2d",Form("%s",str_cut.Data()),136,-4,132,9200,0,9200);
+	f2d->GetXaxis()->SetTitle("True Track Length [cm]");
 	//f2d->GetYaxis()->SetTitle("Counts");
 	f2d->Draw();
 	//c_->cd(1)->SetLogy();
-
-	hs->Draw("same");
+	hs->Draw("hist same");
 
 	TLegend *leg = new TLegend(0.2,0.6,0.8,0.9);
 	leg->SetFillStyle(0);

@@ -49,7 +49,17 @@ TH1D *hdeltaY;
 TH1D *hdeltaZ;
 TH1D *hdeltaXY; //similiar to XY cut
 
+//cosine_theta
 TH1D *reco_cosineTheta;
+TH1D *reco_cosineTheta_inel;
+TH1D *reco_cosineTheta_el;
+TH1D *reco_cosineTheta_midcosmic;
+TH1D *reco_cosineTheta_midpi;
+TH1D *reco_cosineTheta_midp;
+TH1D *reco_cosineTheta_midmu;
+TH1D *reco_cosineTheta_mideg;
+TH1D *reco_cosineTheta_midother;
+
 
 //dE/dx vs rr related histograms ------------//
 TH2D *rr_dedx_recostop;
@@ -289,7 +299,19 @@ void BookHistograms() { //BookHistograms
 	hdeltaZ = new TH1D(Form("hdeltaZ"), Form("#Deltaz/#sigma_{z}"), 100, -10, 10);  hdeltaZ->Sumw2();
 	hdeltaXY = new TH1D(Form("hdeltaXY"), Form("Sqrt((#Deltax/#sigma_{x})^2+(#Deltay/#sigma_{y})^2)"), 100, -10, 10);  hdeltaXY->Sumw2();
 
+	//Histograms for cosineTheta --------------------------------------------------------------//
 	reco_cosineTheta = new TH1D("reco_cosineTheta","",100, 0.9, 1);	reco_cosineTheta->Sumw2();
+
+	reco_cosineTheta_inel=new TH1D("reco_cosineTheta_inel", "", 100, 0.9, 1); reco_cosineTheta_inel->Sumw2();
+	reco_cosineTheta_el=new TH1D("reco_cosineTheta_el", "", 100, 0.9, 1); reco_cosineTheta_el->Sumw2();
+	reco_cosineTheta_midcosmic=new TH1D("reco_cosineTheta_midcosmic", "", 100, 0.9, 1); reco_cosineTheta_midcosmic->Sumw2();
+	reco_cosineTheta_midpi=new TH1D("reco_cosineTheta_midpi", "", 100, 0.9, 1); reco_cosineTheta_midpi->Sumw2();
+	reco_cosineTheta_midp=new TH1D("reco_cosineTheta_midp","", 100, 0.9, 1); reco_cosineTheta_midp->Sumw2();
+	reco_cosineTheta_midmu=new TH1D("reco_cosineTheta_midmu","", 100, 0.9, 1); reco_cosineTheta_midmu->Sumw2();
+	reco_cosineTheta_mideg=new TH1D("reco_cosineTheta_mideg","", 100, 0.9, 1); reco_cosineTheta_mideg->Sumw2();
+	reco_cosineTheta_midother=new TH1D("reco_cosineTheta_midother","", 100, 0.9, 1); reco_cosineTheta_midother->Sumw2();
+
+
 
 	//dE/dx vs rr related histograms ---------------------------------------------------------//
 	rr_dedx_recostop=new TH2D("rr_dedx_recostop","", 240,0,120, 300,0, 30);
@@ -319,9 +341,9 @@ void BookHistograms() { //BookHistograms
 	KE_range_calo_recostop->Sumw2();
 
 	//trklen -----------------------------------------------------------------------------------------------------//
-        int n_trklen=30;
-        double trklen_min=0;
-        double trklen_max=150;
+        int n_trklen=34;
+        double trklen_min=-4;
+        double trklen_max=132;
 
 	//truth range
 	//no cut
@@ -481,8 +503,8 @@ void BookHistograms() { //BookHistograms
 	dtrklen_midother_RecoInel = new TH1D("dtrklen_midother_RecoInel","",n_dtrklen, dtrklen_st, dtrklen_end); dtrklen_midother_RecoInel->Sumw2();
 
 	//ntrklen ------------------------------------------------------------------------------------//
-	int n_ntrklen=60;
-	double st_ntrklen=0;
+	int n_ntrklen=61;
+	double st_ntrklen=-0.02;
 	double ed_ntrklen=1.2;
 	//bq cut
 	ntrklen_BQ=new TH1D("ntrklen_BQ", "", n_ntrklen, st_ntrklen, ed_ntrklen);

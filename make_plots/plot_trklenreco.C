@@ -8,7 +8,7 @@ void plot_trklenreco(TString fin, TString fout_path, TString str_cut) {
 	gStyle->SetOptStat(0);
 	gStyle->SetTitleX(0.5);
 	gStyle->SetTitleAlign(23); 
-	gStyle->SetOptStat(0);
+	//gStyle->SetOptStat(0);
 
 	TFile *f0 = TFile::Open(fin.Data());
 
@@ -26,7 +26,6 @@ void plot_trklenreco(TString fin, TString fout_path, TString str_cut) {
 	trklen_inel->SetFillColor(2); trklen_inel->SetLineColor(2);
 	trklen_el->SetFillColor(4); trklen_el->SetLineColor(4);
 
-	//trklen_midp->SetFillColor(7); trklen_midp->SetLineColor(7);
 	trklen_midp->SetFillColor(3); trklen_midp->SetLineColor(3);
 	trklen_midcosmic->SetFillColor(5); trklen_midcosmic->SetLineColor(5);
 	trklen_midpi->SetFillColor(6); trklen_midpi->SetLineColor(6);
@@ -57,13 +56,13 @@ void plot_trklenreco(TString fin, TString fout_path, TString str_cut) {
 	c_->Divide(1,1);
 	c_->cd(1);
 	//TH2D *f2d=new TH2D("f2d","",200,-50,150,1200,0,1200);
-	TH2D *f2d=new TH2D("f2d",Form("%s",str_cut.Data()),200,-50,150,3200,0,3200);
-	f2d->GetXaxis()->SetTitle("Reco EndZ [cm]");
+	//TH2D *f2d=new TH2D("f2d",Form("%s",str_cut.Data()),200,-50,150,3200,0,3200);
+	TH2D *f2d=new TH2D("f2d",Form("%s",str_cut.Data()),136,-4,132,9200,0,9200);
+	f2d->GetXaxis()->SetTitle("Reco Track Length [cm]");
 	//f2d->GetYaxis()->SetTitle("Counts");
 	f2d->Draw();
 	//c_->cd(1)->SetLogy();
-
-	hs->Draw("same");
+	hs->Draw("hist same");
 
 	TLegend *leg = new TLegend(0.2,0.6,0.8,0.9);
 	leg->SetFillStyle(0);

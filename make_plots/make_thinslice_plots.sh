@@ -1,6 +1,7 @@
 #!/bin/bash
 
-file_in="../prod4a_thinslice_dx4cm_24slcs.root"
+#file_in="../prod4a_thinslice_dx4cm_24slcs.root"
+file_in="../prod4a_thinslice_dx4cm_25slcs.root"
 fout_path="./plots"
 #file_in="../prod4a_thinslice_dx4cm_25slcs.root"
 #fout_path="./plots_25slices"
@@ -30,6 +31,8 @@ exe19_str="root -b -q 'plot_dtrklen.C(\""$file_in\"", \""$fout_path\"", \""CaloS
 exe20_str="root -b -q 'plot_dtrklen.C(\""$file_in\"", \""$fout_path\"", \""BQ\"")'"
 exe21_str="root -b -q 'plot_dtrklen.C(\""$file_in\"", \""$fout_path\"", \""RecoInel\"")'"
 
+exe22_str="root -b -q 'plot_ntrklenreco.C(\""$file_in\"", \""$fout_path\"", \""BQ\"")'"
+exe23_str="root -b -q 'plot_reco_cosineTheta.C(\""$file_in\"", \""$fout_path\"")'"
 
 echo $exe0_str" ......"
 eval $exe0_str
@@ -97,5 +100,10 @@ eval $exe20_str
 echo $exe21_str" ......"
 eval $exe21_str
 
+echo $exe22_str" ......"
+eval $exe22_str
+
+echo $exe23_str" ......"
+eval $exe23_str
 
 
