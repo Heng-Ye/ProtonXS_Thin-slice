@@ -7,11 +7,9 @@ void plot_ztrue(TString fin, TString fout_path, TString str_cut) {
 	gROOT->ForceStyle();
 	gStyle->SetOptStat(0);
 	gStyle->SetTitleX(0.5);
-	//gStyle->SetTitleX(0.5);
 	gStyle->SetTitleAlign(23); 
 	gStyle->SetOptStat(0);
 
-	//TString str_cut=Form("NoCut");
 	TFile *f0 = TFile::Open(fin.Data());
 
 	TH1D *z_inel=(TH1D *)f0->Get(Form("zend_true_inel_%s",str_cut.Data()));
@@ -34,12 +32,10 @@ void plot_ztrue(TString fin, TString fout_path, TString str_cut) {
 	z_midcosmic->SetFillColor(5); z_midcosmic->SetLineColor(5);
 	z_midpi->SetFillColor(6); z_midpi->SetLineColor(6);
 
-	z_midmu->SetFillColor(1); z_midmu->SetLineColor(1);
+	z_midmu->SetFillColor(28); z_midmu->SetLineColor(28);
 	z_mideg->SetFillColor(30); z_mideg->SetLineColor(30);
 	z_midother->SetFillColor(15); z_midother->SetLineColor(15);
 
-
-	//z_inel->GetXaxis()->SetTitle("Truth EndZ [cm]");
 	z_mcs->GetXaxis()->SetTitle("Truth EndZ [cm]");
 
 	THStack* hs=new THStack("hs","");
@@ -63,7 +59,7 @@ void plot_ztrue(TString fin, TString fout_path, TString str_cut) {
 	c_->Divide(1,1);
 	c_->cd(1);
 	//TH2D *f2d=new TH2D("f2d","",200,-50,150,1200,0,1200);
-	TH2D *f2d=new TH2D("f2d","",200,-50,150,3200,0,3200);
+	TH2D *f2d=new TH2D("f2d",Form("%s",str_cut.Data()),200,-50,150,3200,0,3200);
 	f2d->GetXaxis()->SetTitle("Truth EndZ [cm]");
 	//f2d->GetYaxis()->SetTitle("Counts");
 	f2d->Draw();

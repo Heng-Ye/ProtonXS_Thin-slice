@@ -313,9 +313,45 @@ void ProtonThinSlice::Loop() {
 			//hdeltaXY->Fill(beam_dxy);
 
 			Fill1DHist(hdeltaX, beam_dx);
+			if (kinel) Fill1DHist(hdeltaX_inel, beam_dx);
+			if (kel) Fill1DHist(hdeltaX_el, beam_dx);
+			if (kMIDcosmic) Fill1DHist(hdeltaX_midcosmic, beam_dx);
+			if (kMIDpi) Fill1DHist(hdeltaX_midpi, beam_dx);
+			if (kMIDp) Fill1DHist(hdeltaX_midp, beam_dx);
+			if (kMIDmu) Fill1DHist(hdeltaX_midmu, beam_dx);
+			if (kMIDeg) Fill1DHist(hdeltaX_mideg, beam_dx);
+			if (kMIDother) Fill1DHist(hdeltaX_midother, beam_dx);
+
 			Fill1DHist(hdeltaY, beam_dy);
+			if (kinel) Fill1DHist(hdeltaY_inel, beam_dy);
+			if (kel) Fill1DHist(hdeltaY_el, beam_dy);
+			if (kMIDcosmic) Fill1DHist(hdeltaY_midcosmic, beam_dy);
+			if (kMIDpi) Fill1DHist(hdeltaY_midpi, beam_dy);
+			if (kMIDp) Fill1DHist(hdeltaY_midp, beam_dy);
+			if (kMIDmu) Fill1DHist(hdeltaY_midmu, beam_dy);
+			if (kMIDeg) Fill1DHist(hdeltaY_mideg, beam_dy);
+			if (kMIDother) Fill1DHist(hdeltaY_midother, beam_dy);
+
 			Fill1DHist(hdeltaZ, beam_dz);
+			if (kinel) Fill1DHist(hdeltaZ_inel, beam_dz);
+			if (kel) Fill1DHist(hdeltaZ_el, beam_dz);
+			if (kMIDcosmic) Fill1DHist(hdeltaZ_midcosmic, beam_dz);
+			if (kMIDpi) Fill1DHist(hdeltaZ_midpi, beam_dz);
+			if (kMIDp) Fill1DHist(hdeltaZ_midp, beam_dz);
+			if (kMIDmu) Fill1DHist(hdeltaZ_midmu, beam_dz);
+			if (kMIDeg) Fill1DHist(hdeltaZ_mideg, beam_dz);
+			if (kMIDother) Fill1DHist(hdeltaZ_midother, beam_dz);
+
 			Fill1DHist(hdeltaXY, beam_dxy);
+			if (kinel) Fill1DHist(hdeltaXY_inel, beam_dxy);
+			if (kel) Fill1DHist(hdeltaXY_el, beam_dxy);
+			if (kMIDcosmic) Fill1DHist(hdeltaXY_midcosmic, beam_dxy);
+			if (kMIDpi) Fill1DHist(hdeltaXY_midpi, beam_dxy);
+			if (kMIDp) Fill1DHist(hdeltaXY_midp, beam_dxy);
+			if (kMIDmu) Fill1DHist(hdeltaXY_midmu, beam_dxy);
+			if (kMIDeg) Fill1DHist(hdeltaXY_mideg, beam_dxy);
+			if (kMIDother) Fill1DHist(hdeltaXY_midother, beam_dxy);
+
 
 			if (beam_dx>=dx_min&&beam_dx<=dx_max) { //dx
 				if (beam_dy>=dy_min&&beam_dy<=dy_max) { //dy
@@ -340,7 +376,25 @@ void ProtonThinSlice::Loop() {
 		//cosine_theta/cut ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 		bool IsCosine=false;
 		double cosine_beam_spec_primtrk=-99; 
-		cosine_beam_spec_primtrk=beamDirx_spec->at(0)*primaryStartDirection[0]+beamDiry_spec->at(0)*primaryStartDirection[1]+beamDirz_spec->at(0)*primaryStartDirection[2]; //cosine between beam_spec and primary trk direction
+		//cosine_beam_spec_primtrk=beamDirx_spec->at(0)*primaryStartDirection[0]+beamDiry_spec->at(0)*primaryStartDirection[1]+beamDirz_spec->at(0)*primaryStartDirection[2]; //cosine between beam_spec and primary trk direction(trk before SCE corr)
+
+		TVector3 dir;
+		if (IsCaloSize) {	
+			//trk direction after SCE corr.
+			TVector3 pt0(primtrk_hitx->at(0), primtrk_hity->at(0), primtrk_hitz->at(0));
+			TVector3 pt1(primtrk_hitx->at(-1+primtrk_hitx->size()), primtrk_hity->at(-1+primtrk_hity->size()), primtrk_hitz->at(-1+primtrk_hitz->size()));
+			//TVector3 dir = pt1 - pt0;
+			dir = pt1 - pt0;
+			dir = dir.Unit();
+
+			//beam direction
+      			//TVector3 beamdir(cos(beam_angleX_mc*TMath::Pi()/180), cos(beam_angleY_mc*TMath::Pi()/180), cos(beam_angleZ_mc*TMath::Pi()/180));
+      			TVector3 beamdir(beamDirx_spec->at(0),beamDiry_spec->at(0),beamDirz_spec->at(0));
+      			beamdir = beamdir.Unit();
+      			//beam_costh = dir.Dot(beamdir);
+      			cosine_beam_spec_primtrk=dir.Dot(beamdir);
+		}
+
 		if (cosine_beam_spec_primtrk<0) { cosine_beam_spec_primtrk=-1.*cosine_beam_spec_primtrk; }
 		//if (cosine_beam_spec_primtrk>cosine_beam_primtrk_min) { IsCosine=true; }
 		if (cosine_beam_spec_primtrk>costh_min&&cosine_beam_spec_primtrk<costh_max) { IsCosine=true; }
@@ -454,8 +508,8 @@ void ProtonThinSlice::Loop() {
 			kereco_range+=pitch*dedx_predict(resrange_reco);
 			kereco_range2+=pitch*(double)gr_predict_dedx_resrange->Eval(resrange_reco);
 
-			if (IsPureInEL) rangereco_dedxreco_TrueInEL->Fill(range_reco, cali_dedx);
-			if (IsPureEL) { 
+			if (kinel) rangereco_dedxreco_TrueInEL->Fill(range_reco, cali_dedx);
+			if (kel) { 
 						rangereco_dedxreco_TrueEL->Fill(range_reco, cali_dedx);
 						rr_dedx_truestop->Fill(resrange_reco, cali_dedx);
 			}
@@ -510,32 +564,7 @@ void ProtonThinSlice::Loop() {
 		} //loop over simIDE points
 
 		//some ke calc. -------------------------------------------------------------------------------------//
-		//double kereco_calo=0;
-		//double kereco_range=0;
-		//double kereco_range2=0;
-		if (IsCaloSize) { //if calo size not empty
-  			//for (int iz=1; iz<(int)zreco_rawindex.size(); iz++) { //calo hit loop
-				//double cali_dedx=zreco_dedx[iz].second;
-				//double pitch=zreco_dx[iz].second;
-				//double len=zreco_lenreco[iz].second;
-				//double rr=range_reco-len;
-
-				//kereco_calo+=cali_dedx*pitch;
-				//kereco_range+=pitch*dedx_predict(rr);
-				//kereco_range2+=pitch*(double)gr_predict_dedx_resrange->Eval(rr);
-
-				//if (IsRecoStop) {
-					//rr_dedx_recostop->Fill(rr, cali_dedx);
-				//}
-
-				//if (IsPureInEL) rangereco_dedxreco_TrueInEL->Fill(len, cali_dedx);
-				//if (IsPureEL) { 
-						//rangereco_dedxreco_TrueEL->Fill(len, cali_dedx);
-						//rr_dedx_truestop->Fill(rr,cali_dedx);
-				//}
-				//if (IsPureMCS) rangereco_dedxreco_TrueMCS->Fill(len, cali_dedx);
-			//} //calo hit loop
-
+		if (IsBQ&&IsCaloSize&&IsPandoraSlice) { //if calo size not empty
 			if (IsRecoStop) { //reco_stop 
 				Fill1DHist(KE_ff_recostop, ke_ff);
 				Fill1DHist(KE_calo_recostop, kereco_calo);
@@ -1002,10 +1031,6 @@ void ProtonThinSlice::Loop() {
 				//TVector3 pt1(zreco_xreco[-1+zreco_rawindex.size()].second,
 						//zreco_yreco[-1+zreco_rawindex.size()].second,
 						//zreco_xreco[-1+zreco_rawindex.size()].first);
-				TVector3 pt0(primtrk_hitx->at(0), primtrk_hity->at(0), primtrk_hitz->at(0));
-				TVector3 pt1(primtrk_hitx->at(-1+primtrk_hitx->size()), primtrk_hity->at(-1+primtrk_hity->size()), primtrk_hitz->at(-1+primtrk_hitz->size()));
-				TVector3 dir = pt1 - pt0;
-				dir = dir.Unit();
 				reco_AngCorr->Fill(dir.Z());
 			} //calo & beam_match
 
@@ -1034,11 +1059,11 @@ void ProtonThinSlice::Loop() {
 					}
 				}
 
-				TVector3 pt0(true_stx, true_sty, true_stz);
-				TVector3 pt1(true_endx, true_endy, true_endz);
-				TVector3 dir = pt1 - pt0;
-				dir = dir.Unit();
-				true_AngCorr->Fill(dir.Z());
+				TVector3 pt0_true(true_stx, true_sty, true_stz);
+				TVector3 pt1_true(true_endx, true_endy, true_endz);
+				TVector3 dir_true = pt1_true - pt0_true;
+				dir_true = dir_true.Unit();
+				true_AngCorr->Fill(dir_true.Z());
 			} //if true container not empty
 		} //if pure inelastic
 

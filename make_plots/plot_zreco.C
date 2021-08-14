@@ -32,7 +32,7 @@ void plot_zreco(TString fin, TString fout_path, TString str_cut) {
 	z_midcosmic->SetFillColor(5); z_midcosmic->SetLineColor(5);
 	z_midpi->SetFillColor(6); z_midpi->SetLineColor(6);
 
-	z_midmu->SetFillColor(1); z_midmu->SetLineColor(1);
+	z_midmu->SetFillColor(28); z_midmu->SetLineColor(28);
 	z_mideg->SetFillColor(30); z_mideg->SetLineColor(30);
 	z_midother->SetFillColor(15); z_midother->SetLineColor(15);
 
@@ -59,7 +59,7 @@ void plot_zreco(TString fin, TString fout_path, TString str_cut) {
 	c_->Divide(1,1);
 	c_->cd(1);
 	//TH2D *f2d=new TH2D("f2d","",200,-50,150,1200,0,1200);
-	TH2D *f2d=new TH2D("f2d","",200,-50,150,3200,0,3200);
+	TH2D *f2d=new TH2D("f2d",Form("%s",str_cut.Data()),200,-50,150,3200,0,3200);
 	f2d->GetXaxis()->SetTitle("Reco EndZ [cm]");
 	//f2d->GetYaxis()->SetTitle("Counts");
 	f2d->Draw();

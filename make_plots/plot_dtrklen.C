@@ -55,12 +55,12 @@ void plot_dtrklen(TString fin, TString fout_path, TString str_cut) {
 
 	c_->Divide(1,1);
 	c_->cd(1);
-	TH2D *f2d=new TH2D("f2d",Form("%s",str_cut.Data()),200,-100,100,4000,0,400000);
-	f2d->GetXaxis()->SetTitle("Reco EndZ - Truth EndZ [cm]");
+	TH2D *f2d=new TH2D("f2d",Form("%s",str_cut.Data()),200, -100, 100, 200000, 0, 200000);
+	f2d->GetXaxis()->SetTitle("(Reco-Truth) Track Length [cm]");
 	f2d->Draw();
 	c_->cd(1)->SetLogy();
 
-	hs->Draw("same");
+	hs->Draw("hist same");
 
 	TLegend *leg = new TLegend(0.2,0.6,0.8,0.9);
 	leg->SetFillStyle(0);

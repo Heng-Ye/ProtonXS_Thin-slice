@@ -61,7 +61,8 @@ void makeXS(TString fin, TString outpath){
 	hinc->DrawCopy("same");
 	h_recosliceid_cuts->SetLineColor(2);
 	h_recosliceid_cuts->Draw("same hist");
-	TLegend *leg1 = new TLegend(0.5,0.6,0.8,0.9);
+	//TLegend *leg1 = new TLegend(0.5,0.6,0.8,0.9);
+	TLegend *leg1 = new TLegend(0.5-0.3,0.6,0.8-0.3,0.9);
 	leg1->SetFillStyle(0);
 	leg1->AddEntry(h_recosliceid_allevts_cuts,"Selected","ple");
 	leg1->AddEntry(hinc, "Selected #times purity","ple");
@@ -82,7 +83,8 @@ void makeXS(TString fin, TString outpath){
 	h_truesliceid_all->SetLineColor(2);
 	h_truesliceid_all->SetMarkerColor(2);
 	h_truesliceid_all->Draw("same hist");
-	TLegend *leg2 = new TLegend(0.5,0.6,0.8,0.9);
+	//TLegend *leg2 = new TLegend(0.5,0.6,0.8,0.9);
+	TLegend *leg2 = new TLegend(0.5-0.3,0.6,0.8-0.3,0.9);
 	leg2->SetFillStyle(0);
 	leg2->AddEntry(hinc, "Selected #times purity","ple");
 	leg2->AddEntry(h_truesliceid_uf,"Unfolded protons","ple");
@@ -98,7 +100,8 @@ void makeXS(TString fin, TString outpath){
 	hint->DrawCopy("same");
 	h_recosliceid_inelastic_cuts->SetLineColor(2);
 	h_recosliceid_inelastic_cuts->Draw("same hist");
-	TLegend *leg3 = new TLegend(0.5,0.6,0.8,0.9);
+	//TLegend *leg3 = new TLegend(0.5,0.6,0.8,0.9);
+	TLegend *leg3 = new TLegend(0.5-0.3,0.6,0.8-0.3,0.9);
 	leg3->SetFillStyle(0);
 	leg3->AddEntry(h_recosliceid_allevts_cuts,"Selected","ple");
 	leg3->AddEntry(hint, "Selected #times purity","ple");
@@ -116,7 +119,8 @@ void makeXS(TString fin, TString outpath){
 	h_truesliceid_inelastic_all->SetLineColor(2);
 	h_truesliceid_inelastic_all->SetMarkerColor(2);
 	h_truesliceid_inelastic_all->Draw("same hist");
-	TLegend *leg4 = new TLegend(0.5,0.6,0.8,0.9);
+	//TLegend *leg4 = new TLegend(0.5,0.6,0.8,0.9);
+	TLegend *leg4 = new TLegend(0.5-0.3,0.6,0.8-0.3,0.9);
 	leg4->SetFillStyle(0);
 	leg4->AddEntry(hint, "Selected #times purity","ple");
 	leg4->AddEntry(h_truesliceid_inelastic_uf,"Unfolded protons","ple");
@@ -171,14 +175,16 @@ void makeXS(TString fin, TString outpath){
 	double err_xs[nthinslices] = {0};
 	double incE[nthinslices] = {0};
 
-	TGraphErrors *gr_trueincE = (TGraphErrors*)file->Get("gr_trueincE"); //use truth KE as KE definition
-	//TGraphErrors *gr_trueincE = (TGraphErrors*)file->Get("gr_recoincE"); //use reco KE as KE definition
+	//TGraphErrors *gr_trueincE = (TGraphErrors*)file->Get("gr_trueincE"); //use truth KE as KE definition
+	TGraphErrors *gr_trueincE = (TGraphErrors*)file->Get("gr_recoincE"); //use reco KE as KE definition
 	TGraphErrors *gr_truexs = (TGraphErrors*)file->Get("gr_truexs");
 	for (int i = 0; i<nthinslices; ++i){
-		xs[i] = MAr/(Density*NA*thinslicewidth/true_AngCorr->GetMean())*log(Ninc[i]/(Ninc[i]-Nint[i]))*1e27;
-		//err_xs[i] = MAr/(Density*NA*thinslicewidth)*1e27*sqrt(N_int[i]+pow(N_int[i],2)/N_inc[i])/N_incidents[i];
-		err_xs[i] = MAr/(Density*NA*thinslicewidth/true_AngCorr->GetMean())*1e27*sqrt(pow(Nint[i]*err_inc[i]/Ninc[i]/(Ninc[i]-Nint[i]),2)+pow(err_int[i]/(Ninc[i]-Nint[i]),2));
-		//incE[i] = gr_trueincE->GetPointY(i);
+		////err_xs[i] = MAr/(Density*NA*thinslicewidth)*1e27*sqrt(N_int[i]+pow(N_int[i],2)/N_inc[i])/N_incidents[i];
+		////incE[i] = gr_trueincE->GetPointY(i);
+		//xs[i] = MAr/(Density*NA*thinslicewidth/true_AngCorr->GetMean())*log(Ninc[i]/(Ninc[i]-Nint[i]))*1e27;
+		//err_xs[i] = MAr/(Density*NA*thinslicewidth/true_AngCorr->GetMean())*1e27*sqrt(pow(Nint[i]*err_inc[i]/Ninc[i]/(Ninc[i]-Nint[i]),2)+pow(err_int[i]/(Ninc[i]-Nint[i]),2));
+		xs[i] = MAr/(Density*NA*thinslicewidth/1.)*log(Ninc[i]/(Ninc[i]-Nint[i]))*1e27;
+		err_xs[i] = MAr/(Density*NA*thinslicewidth/1.)*1e27*sqrt(pow(Nint[i]*err_inc[i]/Ninc[i]/(Ninc[i]-Nint[i]),2)+pow(err_int[i]/(Ninc[i]-Nint[i]),2));
 		incE[i] = gr_trueincE->GetY()[i];
 		//std::cout<<i<<" "<<Ninc[i]<<" "<<Nint[i]<<" "<<xs[i]<<" "<<incE[i]<<std::endl;
 	}

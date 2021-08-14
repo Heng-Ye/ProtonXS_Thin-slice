@@ -1,4 +1,4 @@
-void plot_ntrklen.C(TString fin, TString outpath){
+void plot_ntrklen(TString fin, TString outpath){
 
 	gROOT->LoadMacro(" ~/protoDUNEStyle.C"); //load pDUNE style
 	gROOT->SetStyle("protoDUNEStyle");
@@ -21,21 +21,21 @@ void plot_ntrklen.C(TString fin, TString outpath){
 
 	int n_rb=2;
 
-	TH2D* frame2d=new TH2D("frame2d","", 400, 200, 600, 400, 0, 400); //zend_2d
-	frame2d->SetTitle("Protons;Track Length/CSDA [a.u.];Counts");
+	TH2D* frame2d=new TH2D("frame2d","", 120, 0, 1.2, 200, 0, 2000); //zend_2d
+	frame2d->SetTitle("MC Protons;Track Length/CSDA [a.u.];");
 
 
 	TCanvas *c0=new TCanvas("c0",""); 
 	c0->Divide(1,1);
 	c0->cd(1);
 	frame2d->Draw();
-	ntrklen_PureInel->Draw();
+	ntrklen_PureInel->Draw("same");
 	ntrklen->Draw("same");
 
 	TLegend *leg5 = new TLegend(0.15,0.65,0.75,0.85);
 	leg5->SetFillStyle(0);
 	leg5->AddEntry(ntrklen, "Total", "l");
-	leg5->AddEntry(ntrklen_PureInel, "Truth Inel.", "f");
+	leg5->AddEntry(ntrklen_PureInel, "Truth Inel. Protons", "f");
 	leg5->Draw();
 
 	c0->Print(Form("%s/ntrklen.eps",outpath.Data()));

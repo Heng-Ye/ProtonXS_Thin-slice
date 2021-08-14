@@ -65,11 +65,11 @@ void ploteffpur(TString fin, TString fout_path){
 	c5->Print(Form("%s/protonres.eps",fout_path.Data()));
 	c6->Print(Form("%s/protoninelres.eps",fout_path.Data()));
 
-	c1->Print(Form("%s/protoneff.eps",fout_path.Data()));
-	c2->Print(Form("%s/protonineleff.eps",fout_path.Data()));
-	c3->Print(Form("%s/protonpur.eps",fout_path.Data()));
-	c4->Print(Form("%s/protoninelpur.eps",fout_path.Data()));
-	c5->Print(Form("%s/protonres.eps",fout_path.Data()));
-	c6->Print(Form("%s/protoninelres.eps",fout_path.Data()));
+	//c1->Print(Form("%s/protoneff.eps",fout_path.Data()));
+	//c2->Print(Form("%s/protonineleff.eps",fout_path.Data()));
+	//c3->Print(Form("%s/protonpur.eps",fout_path.Data()));
+	//c4->Print(Form("%s/protoninelpur.eps",fout_path.Data()));
+	//c5->Print(Form("%s/protonres.eps",fout_path.Data()));
+	//c6->Print(Form("%s/protoninelres.eps",fout_path.Data()));
 
 }
