@@ -1,3 +1,4 @@
+#include "TMath.h"
 
 double p2ke(double p) {
 	double ke=m_proton*(-1.+sqrt(1.+(p*p)/(m_proton*m_proton)));
@@ -31,7 +32,7 @@ TGraph *ke_vs_csda_range_sm=(TGraph *)fke_csda->Get("ke_vs_csda_range_sm_rd");
 Double_t fitg(Double_t* x,Double_t *par) {
 	double m=par[0];
 	double s=par[1];
-	double n=1;
+	double n=par[2];
 
 	double g=n*TMath::Exp(-(x[0]-m)*(x[0]-m)/(2*s*s));
 	//Double_t g=n/(s*sqrt(2*3.14159))*TMath::Exp(-(x[0]-m)*(x[0]-m)/(2*s*s));
@@ -107,4 +108,57 @@ for (size_t i = 0; i<trkdedx.size(); ++i){ //hits
   if (npt>0) return (chi2pro/npt);
   else return 9999;
 }
+
+
+//Gaussian fit
+TF1* VFit(TH1D* h, Int_t col) {
+        //pre-fit parameters
+        float pre_mean=h->GetBinCenter(h->GetMaximumBin());
+        float pre_max=h->GetBinContent(h->GetMaximumBin());
+        float pre_rms=h->GetRMS();
+        cout<<"mean: "<<pre_mean<<endl;
+        cout<<"rms: "<<pre_rms<<endl;
+        cout<<"max: "<<pre_max<<endl;
+        cout<<""<<endl;
+
+        //1st fitting ---------------------------------------------------------//
+        TF1 *gg=new TF1("gg", fitg, pre_mean-3*pre_rms, pre_mean+3*pre_rms, 3);
+        gg->SetParameter(0,pre_mean);
+        gg->SetParameter(1,pre_rms);
+        gg->SetParameter(2,pre_max);
+        //if (pre_rms>1.0e+06) { gg->SetParLimits(1,0,100); }
+
+        //gg->SetLineColor(col);
+        //gg->SetLineStyle(2);
+        h->Fit("gg","remn");
+
+        //2nd fitting -----------------------------------------------------------------------------------------------------------//
+        TF1 *g=new TF1("g", fitg, gg->GetParameter(0)-3.*gg->GetParameter(1), gg->GetParameter(0)+3.*gg->GetParameter(1), 3);
+        //TF1 *g=new TF1("g",fitg,0.3,0.5,3);
+
+        //TF1 *g=new TF1("g",fitg,gg->GetParameter(0)-1,gg->GetParameter(0)+.5,3);
+        g->SetParameter(0, gg->GetParameter(0));
+        g->SetParameter(1, gg->GetParameter(1));
+        g->SetParameter(2, gg->GetParameter(2));
+
+        //g->SetParLimits(0,gg->GetParameter(0)-1*gg->GetParameter(1), gg->GetParameter(0)+1*gg->GetParameter(1));
+	//double sss=gg->GetParameter(1); if (sss<0) sss=-sss;
+        //g->SetParLimits(1,0,5.*sss);
+        //g->SetParLimits(2,0,100.*sqrt(pre_max));
+
+        g->SetLineColor(col);
+        g->SetLineStyle(2);
+        g->SetLineWidth(2);
+
+       h->Fit("g","rem+");
+       return g;
+}
+
+
+//beam momentum reweighting --------------------------------------------------------------------------------------------------------------------------------------------//
+TString fpath_bmrw=Form("/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/mcdata/sce/MC_PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1/xs_thinslice/rw/");
+TString file_bmrw=Form("bmrw_bestfit.root");
+TFile *f_bmrw=new TFile(Form("%s%s",fpath_bmrw.Data(),file_bmrw.Data()));
+TF1 *bmrw_func=(TF1 *)f_bmrw->Get("bmrw_minchi2");
+
 
