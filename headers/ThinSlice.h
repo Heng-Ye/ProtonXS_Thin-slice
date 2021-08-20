@@ -44,10 +44,52 @@ TH1D *reco_startX_sce;
 TH1D *reco_startY_sce;
 TH1D *reco_startZ_sce;
 
+
 TH1D *hdeltaX;
+TH1D *hdeltaX_inel;
+TH1D *hdeltaX_el;
+TH1D *hdeltaX_midcosmic;
+TH1D *hdeltaX_midpi;
+TH1D *hdeltaX_midp;
+TH1D *hdeltaX_midmu;
+TH1D *hdeltaX_mideg;
+TH1D *hdeltaX_midother;
+
 TH1D *hdeltaY;
+TH1D *hdeltaY_inel;
+TH1D *hdeltaY_el;
+TH1D *hdeltaY_midcosmic;
+TH1D *hdeltaY_midpi;
+TH1D *hdeltaY_midp;
+TH1D *hdeltaY_midmu;
+TH1D *hdeltaY_mideg;
+TH1D *hdeltaY_midother;
+
 TH1D *hdeltaZ;
+TH1D *hdeltaZ_inel;
+TH1D *hdeltaZ_el;
+TH1D *hdeltaZ_midcosmic;
+TH1D *hdeltaZ_midpi;
+TH1D *hdeltaZ_midp;
+TH1D *hdeltaZ_midmu;
+TH1D *hdeltaZ_mideg;
+TH1D *hdeltaZ_midother;
+
 TH1D *hdeltaXY; //similiar to XY cut
+TH1D *hdeltaXY_inel;
+TH1D *hdeltaXY_el;
+TH1D *hdeltaXY_midcosmic;
+TH1D *hdeltaXY_midpi;
+TH1D *hdeltaXY_midp;
+TH1D *hdeltaXY_midmu;
+TH1D *hdeltaXY_mideg;
+TH1D *hdeltaXY_midother;
+
+
+
+
+
+
 
 //cosine_theta
 TH1D *reco_cosineTheta;
@@ -59,6 +101,15 @@ TH1D *reco_cosineTheta_midp;
 TH1D *reco_cosineTheta_midmu;
 TH1D *reco_cosineTheta_mideg;
 TH1D *reco_cosineTheta_midother;
+
+TH1D *reco_cosineTheta_Pos_inel; //apply position cut
+TH1D *reco_cosineTheta_Pos_el;
+TH1D *reco_cosineTheta_Pos_midcosmic;
+TH1D *reco_cosineTheta_Pos_midpi;
+TH1D *reco_cosineTheta_Pos_midp;
+TH1D *reco_cosineTheta_Pos_midmu;
+TH1D *reco_cosineTheta_Pos_mideg;
+TH1D *reco_cosineTheta_Pos_midother;
 
 
 //dE/dx vs rr related histograms ------------//
@@ -295,23 +346,71 @@ void BookHistograms() { //BookHistograms
 	reco_startZ_sce = new TH1D(Form("reco_startZ_sce"), Form("reco_startZ_sce"), 100, -5, 10);   reco_startZ_sce->Sumw2();
 
 	hdeltaX = new TH1D(Form("hdeltaX"), Form("#Deltax/#sigma_{x}"), 100, -10, 10);  hdeltaX->Sumw2();
+	hdeltaX_inel = new TH1D(Form("hdeltaX_inel"), Form("#Deltax/#sigma_{x}"), 100, -10, 10);  hdeltaX_inel->Sumw2();
+	hdeltaX_el = new TH1D(Form("hdeltaX_el"), Form("#Deltax/#sigma_{x}"), 100, -10, 10);  hdeltaX_el->Sumw2();
+	hdeltaX_midcosmic = new TH1D(Form("hdeltaX_midcosmic"), Form("#Deltax/#sigma_{x}"), 100, -10, 10);  hdeltaX_midcosmic->Sumw2();
+	hdeltaX_midpi = new TH1D(Form("hdeltaX_midpi"), Form("#Deltax/#sigma_{x}"), 100, -10, 10);  hdeltaX_midpi->Sumw2();
+	hdeltaX_midp = new TH1D(Form("hdeltaX_midp"), Form("#Deltax/#sigma_{x}"), 100, -10, 10);  hdeltaX_midp->Sumw2();
+	hdeltaX_midmu = new TH1D(Form("hdeltaX_midmu"), Form("#Deltax/#sigma_{x}"), 100, -10, 10);  hdeltaX_midmu->Sumw2();
+	hdeltaX_mideg = new TH1D(Form("hdeltaX_mideg"), Form("#Deltax/#sigma_{x}"), 100, -10, 10);  hdeltaX_mideg->Sumw2();
+	hdeltaX_midother = new TH1D(Form("hdeltaX_midother"), Form("#Deltax/#sigma_{x}"), 100, -10, 10);  hdeltaX_midother->Sumw2();
+
 	hdeltaY = new TH1D(Form("hdeltaY"), Form("#Deltay/#sigma_{y}"), 100, -10, 10);  hdeltaY->Sumw2();
+	hdeltaY_inel = new TH1D(Form("hdeltaY_inel"), Form("#Deltay/#sigma_{y}"), 100, -10, 10);  hdeltaY_inel->Sumw2();
+	hdeltaY_el = new TH1D(Form("hdeltaY_el"), Form("#Deltay/#sigma_{y}"), 100, -10, 10);  hdeltaY_el->Sumw2();
+	hdeltaY_midcosmic = new TH1D(Form("hdeltaY_midcosmic"), Form("#Deltay/#sigma_{y}"), 100, -10, 10);  hdeltaY_midcosmic->Sumw2();
+	hdeltaY_midpi = new TH1D(Form("hdeltaY_midpi"), Form("#Deltay/#sigma_{y}"), 100, -10, 10);  hdeltaY_midpi->Sumw2();
+	hdeltaY_midp = new TH1D(Form("hdeltaY_midp"), Form("#Deltay/#sigma_{y}"), 100, -10, 10);  hdeltaY_midp->Sumw2();
+	hdeltaY_midmu = new TH1D(Form("hdeltaY_midmu"), Form("#Deltay/#sigma_{y}"), 100, -10, 10);  hdeltaY_midmu->Sumw2();
+	hdeltaY_mideg = new TH1D(Form("hdeltaY_mideg"), Form("#Deltay/#sigma_{y}"), 100, -10, 10);  hdeltaY_mideg->Sumw2();
+	hdeltaY_midother = new TH1D(Form("hdeltaY_midother"), Form("#Deltay/#sigma_{y}"), 100, -10, 10);  hdeltaY_midother->Sumw2();
+
 	hdeltaZ = new TH1D(Form("hdeltaZ"), Form("#Deltaz/#sigma_{z}"), 100, -10, 10);  hdeltaZ->Sumw2();
+	hdeltaZ_inel = new TH1D(Form("hdeltaZ_inel"), Form("#Deltaz/#sigma_{z}"), 100, -10, 10);  hdeltaZ_inel->Sumw2();
+	hdeltaZ_el = new TH1D(Form("hdeltaZ_el"), Form("#Deltaz/#sigma_{z}"), 100, -10, 10);  hdeltaZ_el->Sumw2();
+	hdeltaZ_midcosmic = new TH1D(Form("hdeltaZ_midcosmic"), Form("#Deltaz/#sigma_{z}"), 100, -10, 10);  hdeltaZ_midcosmic->Sumw2();
+	hdeltaZ_midpi = new TH1D(Form("hdeltaZ_midpi"), Form("#Deltaz/#sigma_{z}"), 100, -10, 10);  hdeltaZ_midpi->Sumw2();
+	hdeltaZ_midp = new TH1D(Form("hdeltaZ_midp"), Form("#Deltaz/#sigma_{z}"), 100, -10, 10);  hdeltaZ_midp->Sumw2();
+	hdeltaZ_midmu = new TH1D(Form("hdeltaZ_midmu"), Form("#Deltaz/#sigma_{z}"), 100, -10, 10);  hdeltaZ_midmu->Sumw2();
+	hdeltaZ_mideg = new TH1D(Form("hdeltaZ_mideg"), Form("#Deltaz/#sigma_{z}"), 100, -10, 10);  hdeltaZ_mideg->Sumw2();
+	hdeltaZ_midother = new TH1D(Form("hdeltaZ_midother"), Form("#Deltaz/#sigma_{z}"), 100, -10, 10);  hdeltaZ_midother->Sumw2();
+
 	hdeltaXY = new TH1D(Form("hdeltaXY"), Form("Sqrt((#Deltax/#sigma_{x})^2+(#Deltay/#sigma_{y})^2)"), 100, -10, 10);  hdeltaXY->Sumw2();
+	hdeltaXY_inel = new TH1D(Form("hdeltaXY_inel"), Form("Sqrt((#Deltax/#sigma_{x})^2+(#Deltay/#sigma_{y})^2)"), 100, -10, 10);  hdeltaXY_inel->Sumw2();
+	hdeltaXY_el = new TH1D(Form("hdeltaXY_el"), Form("Sqrt((#Deltax/#sigma_{x})^2+(#Deltay/#sigma_{y})^2)"), 100, -10, 10);  hdeltaXY_el->Sumw2();
+	hdeltaXY_midcosmic = new TH1D(Form("hdeltaXY_midcosmic"), Form("Sqrt((#Deltax/#sigma_{x})^2+(#Deltay/#sigma_{y})^2)"), 100, -10, 10);  hdeltaXY_midcosmic->Sumw2();
+	hdeltaXY_midpi = new TH1D(Form("hdeltaXY_midpi"), Form("Sqrt((#Deltax/#sigma_{x})^2+(#Deltay/#sigma_{y})^2)"), 100, -10, 10);  hdeltaXY_midpi->Sumw2();
+	hdeltaXY_midp = new TH1D(Form("hdeltaXY_midp"), Form("Sqrt((#Deltax/#sigma_{x})^2+(#Deltay/#sigma_{y})^2)"), 100, -10, 10);  hdeltaXY_midp->Sumw2();
+	hdeltaXY_midmu = new TH1D(Form("hdeltaXY_midmu"), Form("Sqrt((#Deltax/#sigma_{x})^2+(#Deltay/#sigma_{y})^2)"), 100, -10, 10);  hdeltaXY_midmu->Sumw2();
+	hdeltaXY_mideg = new TH1D(Form("hdeltaXY_mideg"), Form("Sqrt((#Deltax/#sigma_{x})^2+(#Deltay/#sigma_{y})^2)"), 100, -10, 10);  hdeltaXY_mideg->Sumw2();
+	hdeltaXY_midother = new TH1D(Form("hdeltaXY_midother"), Form("Sqrt((#Deltax/#sigma_{x})^2+(#Deltay/#sigma_{y})^2)"), 100, -10, 10);  hdeltaXY_midother->Sumw2();
+
 
 	//Histograms for cosineTheta --------------------------------------------------------------//
-	reco_cosineTheta = new TH1D("reco_cosineTheta","",100, 0.9, 1);	reco_cosineTheta->Sumw2();
+	int n_cosine=100;
+	//double cosine_min=0.9;
+	double cosine_min=0;
+	double cosine_max=1.0;
+	reco_cosineTheta = new TH1D("reco_cosineTheta","", n_cosine, cosine_min, cosine_max);	reco_cosineTheta->Sumw2();
 
-	reco_cosineTheta_inel=new TH1D("reco_cosineTheta_inel", "", 100, 0.9, 1); reco_cosineTheta_inel->Sumw2();
-	reco_cosineTheta_el=new TH1D("reco_cosineTheta_el", "", 100, 0.9, 1); reco_cosineTheta_el->Sumw2();
-	reco_cosineTheta_midcosmic=new TH1D("reco_cosineTheta_midcosmic", "", 100, 0.9, 1); reco_cosineTheta_midcosmic->Sumw2();
-	reco_cosineTheta_midpi=new TH1D("reco_cosineTheta_midpi", "", 100, 0.9, 1); reco_cosineTheta_midpi->Sumw2();
-	reco_cosineTheta_midp=new TH1D("reco_cosineTheta_midp","", 100, 0.9, 1); reco_cosineTheta_midp->Sumw2();
-	reco_cosineTheta_midmu=new TH1D("reco_cosineTheta_midmu","", 100, 0.9, 1); reco_cosineTheta_midmu->Sumw2();
-	reco_cosineTheta_mideg=new TH1D("reco_cosineTheta_mideg","", 100, 0.9, 1); reco_cosineTheta_mideg->Sumw2();
-	reco_cosineTheta_midother=new TH1D("reco_cosineTheta_midother","", 100, 0.9, 1); reco_cosineTheta_midother->Sumw2();
+	reco_cosineTheta_inel=new TH1D("reco_cosineTheta_inel", "", n_cosine, cosine_min, cosine_max); reco_cosineTheta_inel->Sumw2();
+	reco_cosineTheta_el=new TH1D("reco_cosineTheta_el", "", n_cosine, cosine_min, cosine_max); reco_cosineTheta_el->Sumw2();
+	reco_cosineTheta_midcosmic=new TH1D("reco_cosineTheta_midcosmic", "", n_cosine, cosine_min, cosine_max); reco_cosineTheta_midcosmic->Sumw2();
+	reco_cosineTheta_midpi=new TH1D("reco_cosineTheta_midpi", "", n_cosine, cosine_min, cosine_max); reco_cosineTheta_midpi->Sumw2();
+	reco_cosineTheta_midp=new TH1D("reco_cosineTheta_midp","", n_cosine, cosine_min, cosine_max); reco_cosineTheta_midp->Sumw2();
+	reco_cosineTheta_midmu=new TH1D("reco_cosineTheta_midmu","", n_cosine, cosine_min, cosine_max); reco_cosineTheta_midmu->Sumw2();
+	reco_cosineTheta_mideg=new TH1D("reco_cosineTheta_mideg","", n_cosine, cosine_min, cosine_max); reco_cosineTheta_mideg->Sumw2();
+	reco_cosineTheta_midother=new TH1D("reco_cosineTheta_midother","", n_cosine, cosine_min, cosine_max); reco_cosineTheta_midother->Sumw2();
 
 
+	reco_cosineTheta_Pos_inel=new TH1D("reco_cosineTheta_Pos_inel", "", n_cosine, cosine_min, cosine_max); reco_cosineTheta_Pos_inel->Sumw2();
+	reco_cosineTheta_Pos_el=new TH1D("reco_cosineTheta_Pos_el", "", n_cosine, cosine_min, cosine_max); reco_cosineTheta_Pos_el->Sumw2();
+	reco_cosineTheta_Pos_midcosmic=new TH1D("reco_cosineTheta_Pos_midcosmic", "", n_cosine, cosine_min, cosine_max); reco_cosineTheta_Pos_midcosmic->Sumw2();
+	reco_cosineTheta_Pos_midpi=new TH1D("reco_cosineTheta_Pos_midpi", "", n_cosine, cosine_min, cosine_max); reco_cosineTheta_Pos_midpi->Sumw2();
+	reco_cosineTheta_Pos_midp=new TH1D("reco_cosineTheta_Pos_midp","", n_cosine, cosine_min, cosine_max); reco_cosineTheta_Pos_midp->Sumw2();
+	reco_cosineTheta_Pos_midmu=new TH1D("reco_cosineTheta_Pos_midmu","", n_cosine, cosine_min, cosine_max); reco_cosineTheta_Pos_midmu->Sumw2();
+	reco_cosineTheta_Pos_mideg=new TH1D("reco_cosineTheta_Pos_mideg","", n_cosine, cosine_min, cosine_max); reco_cosineTheta_Pos_mideg->Sumw2();
+	reco_cosineTheta_Pos_midother=new TH1D("reco_cosineTheta_Pos_midother","", n_cosine, cosine_min, cosine_max); reco_cosineTheta_Pos_midother->Sumw2();
 
 	//dE/dx vs rr related histograms ---------------------------------------------------------//
 	rr_dedx_recostop=new TH2D("rr_dedx_recostop","", 240,0,120, 300,0, 30);
@@ -555,7 +654,6 @@ void CalcXS(const Unfold & uf) { //CalcXS
   	double true_cosangle = 1.;
 
 	for (int i = 0; i<nthinslices; ++i){
-
 		slcid[i] = i;
 		avg_trueincE[i] = true_incE[i]->GetMean();
 		err_trueincE[i] = true_incE[i]->GetMeanError();
