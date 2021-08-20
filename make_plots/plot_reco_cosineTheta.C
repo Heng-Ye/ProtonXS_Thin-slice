@@ -1,6 +1,6 @@
 #include "THStack.h"
 
-void plot_reco_cosineTheta(TString fin, TString fout_path) {
+void plot_reco_cosineTheta(TString fin, TString fin_data, TString fout_path) {
 
 	gROOT->LoadMacro(" ~/protoDUNEStyle.C"); //load pDUNE style
 	gROOT->SetStyle("protoDUNEStyle");
@@ -9,7 +9,13 @@ void plot_reco_cosineTheta(TString fin, TString fout_path) {
 	gStyle->SetTitleX(0.5);
 	gStyle->SetTitleAlign(23); 
 	//gStyle->SetOptStat(0);
+	
+	//data ---------------------------------------------------------//
+	TFile *f_data = TFile::Open(fin_data.Data());
+	TH1D *cosine_data=(TH1D *)f_data->Get(Form("reco_cosineTheta"));
+	int n_data=cosine_data->Integral();
 
+	//mc -----------------------------------------------------------------------------//
 	TFile *f0 = TFile::Open(fin.Data());
 
 	TH1D *cosine_inel=(TH1D *)f0->Get(Form("reco_cosineTheta_inel"));
@@ -34,6 +40,24 @@ void plot_reco_cosineTheta(TString fin, TString fout_path) {
 	cosine_mideg->SetFillColor(30); cosine_mideg->SetLineColor(30);
 	cosine_midother->SetFillColor(15); cosine_midother->SetLineColor(15);
 
+	int n_mc_inel=cosine_inel->Integral();
+	int n_mc_el=cosine_el->Integral();
+	int n_midcosmic=cosine_midcosmic->Integral();
+	int n_midpi=cosine_midpi->Integral();
+	int n_midp=cosine_midp->Integral();
+	int n_midmu=cosine_midmu->Integral();
+	int n_mideg=cosine_mideg->Integral();
+	int n_midother=cosine_midother->Integral();
+	int n_mc=n_mc_inel+n_mc_el+n_midcosmic+n_midpi+n_midp+n_midmu+n_mideg+n_midother;
+	double mc_scale=(double)n_data/(double)n_mc;
+	cosine_inel->Scale(mc_scale);
+	cosine_el->Scale(mc_scale);
+	cosine_midcosmic->Scale(mc_scale);
+	cosine_midpi->Scale(mc_scale);
+	cosine_midp->Scale(mc_scale);
+	cosine_midmu->Scale(mc_scale);
+	cosine_mideg->Scale(mc_scale);
+	cosine_midother->Scale(mc_scale);
 	cosine_el->GetXaxis()->SetTitle("cos#Theta");
 
 	THStack* hs=new THStack("hs","");
@@ -56,15 +80,31 @@ void plot_reco_cosineTheta(TString fin, TString fout_path) {
 	c_->Divide(1,1);
 	c_->cd(1);
 	c_->cd(1)->SetLogy();
+        c_->SetGridx();
+        c_->SetGridy();
+
 	TH2D *f2d=new TH2D("f2d",Form("%s","CaloSize"),100,0.9,1,92000,0,92000);
 	f2d->GetXaxis()->SetTitle("cos#Theta");
+
+        //TPad *pad1 = new TPad(Form("pad1"), Form("pad1"), 0, 0., 1, 1.);
+        //pad1->SetGridx();
+        //pad1->SetGridy();
+        //pad1->cd();
+	//pad1->cd(1)->SetLogy();
+        //pad1->Draw();
+
+        //f2d->GetXaxis()->SetNdivisions(32);
+        //f2d->Draw("same");
+
 	f2d->Draw();
 	hs->Draw("hist same");
+	cosine_data->Draw("ep same");
 
 	TLegend *leg = new TLegend(0.2,0.6,0.8,0.9);
 	leg->SetFillStyle(0);
-	leg->AddEntry(cosine_el, "El","f");
+	leg->AddEntry(cosine_data, "Data","ep");
 	leg->AddEntry(cosine_inel, "Inel","f");
+	leg->AddEntry(cosine_el, "El","f");
 
 	leg->AddEntry(cosine_midcosmic,"misID:cosmic","f");
 	leg->AddEntry(cosine_midp, "misID:p","f");

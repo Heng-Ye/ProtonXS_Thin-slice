@@ -1,5 +1,5 @@
-#define ProtonEvtClassification_cxx
-#include "ProtonEvtClassification.h"
+#define ProtonEvtCounter_cxx
+#include "ProtonEvtCounter.h"
 
 #include <TH2.h>
 #include <TH1.h>
@@ -47,85 +47,20 @@
 #include "./headers/BasicFunctions.h"
 #include "./headers/SliceParams.h"
 #include "./headers/ThinSlice.h"
+#include "HadAna.h"
 
 using namespace std;
 using namespace ROOT::Math;
 
-void ProtonEvtClassification::Loop() {
+void ProtonEvtCounter::Loop() {
 	if (fChain == 0) return;
 
 	//various counters --------------------------------------------------------------------------------------------------------------------//
 	int n_tot=0; //no cut
 	int n_processmap_error=0; //sansity check: processmap
 	int n_true_end=0; //sansity check: true-end label
-
-	vector<string> intTypeName{
-				     "Inel",
-				     "El",
-				     "NoHS",
-				     "Up:Inel",
-				     "Up:El",
-				     "Up:NoHS",
-				     "Mis:Inel",
-				     "Mis:El",
-				     "Mis:NoHS"
-		       };
-	vector<string> IntType{
-				  "IsPureInEL",
-				  "IsPureEL",
-				  "IsPureMCS",
-				  "IsPureInEL",
-				  "IsPureEL",
-				  "IsPureMCS",
-				  "IsPureInEL",
-				  "IsPureEL",
-				  "IsPureMCS"
-		       };	
-	vector<string> EvtLabel{
-				  "IsBeamMatch",
-				  "IsBeamMatch",
-				  "IsBeamMatch",
-				  "!IsBeamMatch",
-				  "!IsBeamMatch",
-				  "!IsBeamMatch",
-				  "!IsBeamMatch",
-				  "!IsBeamMatch",
-				  "!IsBeamMatch"
-		       };
-	vector<string> IntCut;
-	IntCut=IntType;
-	for (size_t k=0; k<IntType.size(); ++k) {
-		IntCut.at(k)+="&&"+EvtLabel.at(k);
-	}
-	for (size_t k=0; k<IntType.size(); ++k) {
-		cout<<IntCut.at(k).c_str()<<endl;
-	}
-	
-	vector<string> Cuts{
-				"",
-				"IsPandoraSlice",
-				"IsPandoraSlice&&IsCaloSize",
-				"IsPandoraSlice&&IsCaloSize&&IsBQ",
-				"IsPandoraSlice&&IsCaloSize&&IsBQ&&IsRecoInEL"
-	};
-	const int n_class=9;
-	const int n_cut=5;
-	int count[n_class][n_cut]={0};
-
-
-//str_rw_out[cnt_array].c_str()
-
-	//int n_sg=0, n_el=0, n_inel=0, n_mcs=0;
-	//int n_misid=0, n_misid_outside=0, n_misid_inside=0;
-	//int n_misid_outside_el=0, n_misid_outside_inel=0, n_misid_outside_mcs=0;
-	//int n_misid_inside_el=0, n_misid_inside_inel=0, n_misid_inside_mcs=0;
-
-	//Pandora-slice cut
-	//int n_pandora_sg=0, n_pandora_el=0, n_pandora_inel=0, n_pandora_mcs=0;
-	//int n_pandora_misid=0, n_pandora_misid_outside=0, n_pandora_misid_inside=0;
-	//int n_pandora_misid_outside_el=0, n_pandora_misid_outside_inel=0, n_pandora_misid_outside_mcs=0;
-	//int n_pandora_misid_inside_el=0, n_pandora_misid_inside_inel=0, n_pandora_misid_inside_mcs=0;
-
+	int n_bm=0;
+	int n_bm2=0;
 
 	Long64_t nentries = fChain->GetEntries();
 	std::cout<<"nentries: "<<nentries<<std::endl;
@@ -157,6 +92,10 @@ void ProtonEvtClassification::Loop() {
 		if (primary_truth_byE_origin==2) IsCosmic=true;
 		if (timeintersection->size()) IsIntersection=true;
 		//------------------------------------------------------------------------------//
+
+		if (IsBeamMatch) n_bm++;
+		HadAna ana;
+		if (ana.PassBeamMatch()) n_bm2++;
 
 		/*
 		   cout<<"\n"<<endl;
@@ -281,22 +220,10 @@ void ProtonEvtClassification::Loop() {
 		if ((range_reco/csda_val_spec)>=min_norm_trklen_csda&&(range_reco/csda_val_spec)<max_norm_trklen_csda) IsRecoStop=true;
 		if ((range_reco/csda_val_spec)<min_norm_trklen_csda) IsRecoInEL=true;
 
-		int cc=0; //no-cut
-		for (int cj=0; cj<n_class; ++cj) { //loop over evt class
-		} //loop over class
 
-
-
-
-
-		for (int kt=0; kt<n_cut; ++kt) { //loop over cuts
-			bool BM_cut=false;
-			if (kt<=2) {
-
-
-			
-
-
+/*
+		for (int kj=0; kj<n_cut; ++kj) { //loop over cuts
+			//apply various pre-selection cut
 			for (int cj=0; cj<n_class; ++cj) { //loop over evt class
 				//true label
 				TString mycut = IntCut.at(cj);
@@ -307,7 +234,6 @@ void ProtonEvtClassification::Loop() {
 		} //loop over cuts
 
 
-		/*
 		if (IsBeamMatch) { //beam-matched track
 			n_sg++; //pure signal 	
 			n_pandora_sg++; //pure signal after Pandora slice cut	
@@ -399,6 +325,11 @@ void ProtonEvtClassification::Loop() {
 } //main entry loop
 
 //counting -- summary -----------------------------------------------------//
+cout<<"n_tot:"<<n_tot<<endl;
+cout<<"n_bm:"<<n_bm<<endl;
+cout<<"n_bm2:"<<n_bm<<endl;
+
+
 /*
 cout<<"\nAll proton counting..."<<endl;
 cout<<"n_tot:"<<n_tot<<endl;
@@ -425,15 +356,6 @@ cout<<"  n_sg+n_misid:"<<n_sg+n_misid<<endl;
 */
 
 
-		for (int c=0; c<n_cut; ++c) { //cut loop
-			for (int j=0; j<n_class; ++j) { //class loop
-			//int c=0;
-				//string evt_selection=IntCut.at(j).c_str()+"&&"+Cuts.at(c).c_str();
-				//cout<<evt_selection.c_str()<<" | cnt:"<<count[j][c]<<endl;
-				cout<<" cnt:"<<count[j][c]<<endl;
-			} //cut loop
-			cout<<"\n"<<endl;
-		} //class loop	
 
 
 

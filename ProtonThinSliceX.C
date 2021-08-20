@@ -78,7 +78,8 @@ void ProtonThinSlice::Loop() {
 	Unfold uf(nthinslices+2, -1, nthinslices+1);
 
 	//ThinSlice config. ---------------------------------------------------------------------------------------------------//
-	SetOutputFileName(Form("prod4a_thinslice_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4a_thinslice_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
+	SetOutputFileName(Form("prod4a_thinslice_dx%dcm_%dslcs_1stHitKEff.root", name_thinslicewidth, nthinslices)); //output file name
 
 	//book histograms --//
 	BookHistograms();
@@ -99,7 +100,7 @@ void ProtonThinSlice::Loop() {
 
 		true_sliceID = -1;
 		reco_sliceID = -1;
-	
+
 		//only select protons	
 		//if (primary_truth_Pdg!=pdg) continue; //only interested in protons
 		if (beamtrackPdg!=pdg) continue; //only interested in protons
@@ -116,7 +117,7 @@ void ProtonThinSlice::Loop() {
 		if (!primtrk_hitz->empty()) IsCaloSize=true;
 		if (timeintersection->size()) IsIntersection=true;
 		//----------------------------------------------------------------//
-	
+
 		cout<<"\n"<<endl;
 		cout<<"run/subrun:event:"<<run<<" "<<subrun<<" "<<event<<endl;
 		cout<<"primaryID:"<<primaryID<<endl;
@@ -141,29 +142,29 @@ void ProtonThinSlice::Loop() {
 		}
 		else { //hIoni
 			IsPureEL=true;
-/*
-			if (interactionProcesslist->size()) { //size of interactionProcesslist >=0
-				cout<<"interactionProcesslist->size():"<<interactionProcesslist->size()<<endl;	
-				for(size_t iiii=0; iiii<interactionProcesslist->size(); iiii++) { //loop over all true interaction hits in this track
-					try {
-						double intx=interactionX->at(iiii);
-						double inty=interactionY->at(iiii);
-						double intz=interactionZ->at(iiii); 
-						cout<<"["<<iiii<<"] process:"<<interactionProcesslist->at(iiii)<<" z:"<<intz<<endl;
+			/*
+			   if (interactionProcesslist->size()) { //size of interactionProcesslist >=0
+			   cout<<"interactionProcesslist->size():"<<interactionProcesslist->size()<<endl;	
+			   for(size_t iiii=0; iiii<interactionProcesslist->size(); iiii++) { //loop over all true interaction hits in this track
+			   try {
+			   double intx=interactionX->at(iiii);
+			   double inty=interactionY->at(iiii);
+			   double intz=interactionZ->at(iiii); 
+			   cout<<"["<<iiii<<"] process:"<<interactionProcesslist->at(iiii)<<" z:"<<intz<<endl;
 
-						if(strcmp(interactionProcesslist->at(iiii).c_str(),"hadElastic")==0) {
-							IsPureEL=1;
-						}
-					}
-					catch (const std::out_of_range & ex) {
-						std::cout << "out_of_range Exception Caught :: interactionProcesslist" << ex.what() << std::endl;
-						n_processmap_error++;
-					}
-					//if (intz<0) { //if interaction outside tpc
-					//if(strcmp(interactionProcesslist->at(iiii).c_str(),"Transportation")!=0) {
-				} //loop over all true interaction hits in this track 
+			   if(strcmp(interactionProcesslist->at(iiii).c_str(),"hadElastic")==0) {
+			   IsPureEL=1;
+			   }
+			   }
+			   catch (const std::out_of_range & ex) {
+			   std::cout << "out_of_range Exception Caught :: interactionProcesslist" << ex.what() << std::endl;
+			   n_processmap_error++;
+			   }
+			//if (intz<0) { //if interaction outside tpc
+			//if(strcmp(interactionProcesslist->at(iiii).c_str(),"Transportation")!=0) {
+			} //loop over all true interaction hits in this track 
 			} //size of interactionProcesslist >=0
-*/
+			*/
 		} //hIoni
 
 		//if (IsPureInEL==0&&IsPureEL==0) {
@@ -171,15 +172,15 @@ void ProtonThinSlice::Loop() {
 		//}
 
 		////if (strcmp(primary_truth_EndProcess->c_str(),"hIoni")==0) {
-			////IsPureEL=true;
+		////IsPureEL=true;
 		////}
 		////if (strcmp(primary_truth_EndProcess->c_str(),"CoulombScat")==0) {
-			////IsPureMCS=true;
+		////IsPureMCS=true;
 		////}
 		//--------------------------------------------------------------------------------------------------------------------------------//
 
 		//for (size_t j=0; j<beamtrk_z->size(); ++j) { //MCParticle loop
-			//cout<<"beamtrk_z["<<j<<"]"<<beamtrk_z->at(j)<<" beamtrk_Eng["<<"]"<<beamtrk_Eng->at(j)<<endl;
+		//cout<<"beamtrk_z["<<j<<"]"<<beamtrk_z->at(j)<<" beamtrk_Eng["<<"]"<<beamtrk_Eng->at(j)<<endl;
 		//} //MCParticle loop
 
 		//Get true start/end point -----------------------------------------------------------------------//
@@ -193,7 +194,7 @@ void ProtonThinSlice::Loop() {
 		double true_stz=primary_truth_StartPosition_MC[2];
 		double true_sty=primary_truth_StartPosition_MC[1];
 		double true_stx=primary_truth_StartPosition_MC[0];
- 
+
 		bool IsTrueEndOutside=false;
 		if (true_endz<0.) {
 			IsTrueEndOutside=true;
@@ -209,34 +210,34 @@ void ProtonThinSlice::Loop() {
 
 		//Get true trklen ---------------------------------------------------------------------------------------//
 		double range_true=-999;
-  		int key_st = 0;
-  		double tmp_z = 9999;
+		int key_st = 0;
+		double tmp_z = 9999;
 		vector<double> true_trklen_accum;
 		//cout<<"beamtrk_z->size():"<<beamtrk_z->size()<<endl;
-  		true_trklen_accum.reserve(beamtrk_z->size()); // initialize true_trklen_accum
+		true_trklen_accum.reserve(beamtrk_z->size()); // initialize true_trklen_accum
 		//cout<<"ck0"<<endl;
-  		for (int iz=0; iz<(int)beamtrk_z->size(); iz++) {
-    			if (abs(beamtrk_z->at(iz)) < tmp_z){
-      				tmp_z = abs(beamtrk_z->at(iz));
-      				key_st = iz; // find the point where the beam enters the TPC (find the smallest abs(Z))
-    			}
+		for (int iz=0; iz<(int)beamtrk_z->size(); iz++) {
+			if (abs(beamtrk_z->at(iz)) < tmp_z){
+				tmp_z = abs(beamtrk_z->at(iz));
+				key_st = iz; // find the point where the beam enters the TPC (find the smallest abs(Z))
+			}
 			//cout<<"ck0/"<<endl;
-    			true_trklen_accum[iz] = 0.; // initialize true_trklen_accum
+			true_trklen_accum[iz] = 0.; // initialize true_trklen_accum
 			//cout<<"ck0///"<<endl;
-  		}
+		}
 		//cout<<"ck1"<<endl;
-  		for (int iz=key_st+1; iz<(int)beamtrk_z->size(); iz++){
-    			if (iz == key_st+1) range_true = 0;
-    			range_true += sqrt( pow(beamtrk_x->at(iz)-beamtrk_x->at(iz-1), 2)+
-					    pow(beamtrk_y->at(iz)-beamtrk_y->at(iz-1), 2)+	
-					    pow(beamtrk_z->at(iz)-beamtrk_z->at(iz-1), 2) );						    	
-    			true_trklen_accum[iz] = range_true;
-  		}
-	
-		cout<<"range_true:"<<range_true<<endl;
-		cout<<"key_st:"<<key_st<<endl;
+		for (int iz=key_st+1; iz<(int)beamtrk_z->size(); iz++){
+			if (iz == key_st+1) range_true = 0;
+			range_true += sqrt( pow(beamtrk_x->at(iz)-beamtrk_x->at(iz-1), 2)+
+					pow(beamtrk_y->at(iz)-beamtrk_y->at(iz-1), 2)+	
+					pow(beamtrk_z->at(iz)-beamtrk_z->at(iz-1), 2) );						    	
+			true_trklen_accum[iz] = range_true;
+		}
+
+		//cout<<"range_true:"<<range_true<<endl;
+		//cout<<"key_st:"<<key_st<<endl;
 		//for (size_t j=0; j<beamtrk_z->size(); ++j) { //MCParticle loop
-			//cout<<"beamtrk_z["<<j<<"]:"<<beamtrk_z->at(j)<<" beamtrk_Eng["<<j<<"]:"<<beamtrk_Eng->at(j)<<" true_trklen_accum["<<j<<"]:"<<true_trklen_accum[j]<<endl;
+		//cout<<"beamtrk_z["<<j<<"]:"<<beamtrk_z->at(j)<<" beamtrk_Eng["<<j<<"]:"<<beamtrk_Eng->at(j)<<" true_trklen_accum["<<j<<"]:"<<true_trklen_accum[j]<<endl;
 		//} //MCParticle loop
 		//Get reco info ----------------------------------------------------------------------------------//
 
@@ -297,7 +298,7 @@ void ProtonThinSlice::Loop() {
 			//reco_startX_sce->Fill(reco_stx);
 			//reco_startY_sce->Fill(reco_sty);
 			//reco_startZ_sce->Fill(reco_stz);
-			
+
 			Fill1DHist(reco_startX_sce, reco_stx);
 			Fill1DHist(reco_startY_sce, reco_sty);
 			Fill1DHist(reco_startZ_sce, reco_stz);
@@ -306,7 +307,7 @@ void ProtonThinSlice::Loop() {
 			double beam_dy=(reco_sty-mean_StartY)/sigma_StartY;
 			double beam_dz=(reco_stz-mean_StartZ)/sigma_StartZ;
 			double beam_dxy=sqrt(pow(beam_dx,2)+pow(beam_dy,2));	
-	
+
 			//hdeltaX->Fill(beam_dx);
 			//hdeltaY->Fill(beam_dy);
 			//hdeltaZ->Fill(beam_dz);
@@ -365,11 +366,11 @@ void ProtonThinSlice::Loop() {
 
 			//old position cut
 			//if (reco_stz>min1_z&&reco_stz<min2_z) {
-				//if (reco_sty>min1_y&&reco_sty<min2_y) {
-					//if (reco_stx>min1_x&&reco_stx<min2_x) {
-						//IsPos=true;
-					//}
-				//}
+			//if (reco_sty>min1_y&&reco_sty<min2_y) {
+			//if (reco_stx>min1_x&&reco_stx<min2_x) {
+			//IsPos=true;
+			//}
+			//}
 			//}
 		}
 
@@ -379,7 +380,7 @@ void ProtonThinSlice::Loop() {
 		//cosine_beam_spec_primtrk=beamDirx_spec->at(0)*primaryStartDirection[0]+beamDiry_spec->at(0)*primaryStartDirection[1]+beamDirz_spec->at(0)*primaryStartDirection[2]; //cosine between beam_spec and primary trk direction(trk before SCE corr)
 
 		TVector3 dir;
-		if (IsCaloSize) {	
+		if (IsCaloSize) { //calosize	
 			//trk direction after SCE corr.
 			TVector3 pt0(primtrk_hitx->at(0), primtrk_hity->at(0), primtrk_hitz->at(0));
 			TVector3 pt1(primtrk_hitx->at(-1+primtrk_hitx->size()), primtrk_hity->at(-1+primtrk_hity->size()), primtrk_hitz->at(-1+primtrk_hitz->size()));
@@ -388,55 +389,67 @@ void ProtonThinSlice::Loop() {
 			dir = dir.Unit();
 
 			//beam direction
-      			//TVector3 beamdir(cos(beam_angleX_mc*TMath::Pi()/180), cos(beam_angleY_mc*TMath::Pi()/180), cos(beam_angleZ_mc*TMath::Pi()/180));
-      			TVector3 beamdir(beamDirx_spec->at(0),beamDiry_spec->at(0),beamDirz_spec->at(0));
-      			beamdir = beamdir.Unit();
-      			//beam_costh = dir.Dot(beamdir);
-      			cosine_beam_spec_primtrk=dir.Dot(beamdir);
-		}
+			//TVector3 beamdir(cos(beam_angleX_mc*TMath::Pi()/180), cos(beam_angleY_mc*TMath::Pi()/180), cos(beam_angleZ_mc*TMath::Pi()/180));
+			TVector3 beamdir(beamDirx_spec->at(0),beamDiry_spec->at(0),beamDirz_spec->at(0));
+			beamdir = beamdir.Unit();
+			//beam_costh = dir.Dot(beamdir);
+			cosine_beam_spec_primtrk=dir.Dot(beamdir);
 
-		if (cosine_beam_spec_primtrk<0) { cosine_beam_spec_primtrk=-1.*cosine_beam_spec_primtrk; }
-		//if (cosine_beam_spec_primtrk>cosine_beam_primtrk_min) { IsCosine=true; }
-		if (cosine_beam_spec_primtrk>costh_min&&cosine_beam_spec_primtrk<costh_max) { IsCosine=true; }
-		//reco_cosineTheta->Fill(cosine_beam_spec_primtrk);
-		Fill1DHist(reco_cosineTheta, cosine_beam_spec_primtrk);
-		//if (kinel) reco_cosineTheta_inel->Fill(cosine_beam_spec_primtrk);
-		//if (kel) reco_cosineTheta_el->Fill(cosine_beam_spec_primtrk);
-		//if (kMIDcosmic) reco_cosineTheta_midcosmic->Fill(cosine_beam_spec_primtrk);
-		//if (kMIDpi) reco_cosineTheta_midpi->Fill(cosine_beam_spec_primtrk);
-		//if (kMIDp) reco_cosineTheta_midp->Fill(cosine_beam_spec_primtrk);
-		//if (kMIDmu) reco_cosineTheta_midmu->Fill(cosine_beam_spec_primtrk);
-		//if (kMIDeg) reco_cosineTheta_mideg->Fill(cosine_beam_spec_primtrk);
-		//if (kMIDother) reco_cosineTheta_midother->Fill(cosine_beam_spec_primtrk);
+			if (cosine_beam_spec_primtrk<0) { cosine_beam_spec_primtrk=-1.*cosine_beam_spec_primtrk; }
+			//if (cosine_beam_spec_primtrk>cosine_beam_primtrk_min) { IsCosine=true; }
+			if (cosine_beam_spec_primtrk>costh_min&&cosine_beam_spec_primtrk<costh_max) { IsCosine=true; }
+			//reco_cosineTheta->Fill(cosine_beam_spec_primtrk);
+			Fill1DHist(reco_cosineTheta, cosine_beam_spec_primtrk);
+			//if (kinel) reco_cosineTheta_inel->Fill(cosine_beam_spec_primtrk);
+			//if (kel) reco_cosineTheta_el->Fill(cosine_beam_spec_primtrk);
+			//if (kMIDcosmic) reco_cosineTheta_midcosmic->Fill(cosine_beam_spec_primtrk);
+			//if (kMIDpi) reco_cosineTheta_midpi->Fill(cosine_beam_spec_primtrk);
+			//if (kMIDp) reco_cosineTheta_midp->Fill(cosine_beam_spec_primtrk);
+			//if (kMIDmu) reco_cosineTheta_midmu->Fill(cosine_beam_spec_primtrk);
+			//if (kMIDeg) reco_cosineTheta_mideg->Fill(cosine_beam_spec_primtrk);
+			//if (kMIDother) reco_cosineTheta_midother->Fill(cosine_beam_spec_primtrk);
 
-		if (kinel) Fill1DHist(reco_cosineTheta_inel, cosine_beam_spec_primtrk);
-		if (kel) Fill1DHist(reco_cosineTheta_el, cosine_beam_spec_primtrk);
-		if (kMIDcosmic) Fill1DHist(reco_cosineTheta_midcosmic, cosine_beam_spec_primtrk);
-		if (kMIDpi) Fill1DHist(reco_cosineTheta_midpi, cosine_beam_spec_primtrk);
-		if (kMIDp) Fill1DHist(reco_cosineTheta_midp, cosine_beam_spec_primtrk);
-		if (kMIDmu) Fill1DHist(reco_cosineTheta_midmu, cosine_beam_spec_primtrk);
-		if (kMIDeg) Fill1DHist(reco_cosineTheta_mideg, cosine_beam_spec_primtrk);
-		if (kMIDother) Fill1DHist(reco_cosineTheta_midother, cosine_beam_spec_primtrk);
+			if (kinel) Fill1DHist(reco_cosineTheta_inel, cosine_beam_spec_primtrk);
+			if (kel) Fill1DHist(reco_cosineTheta_el, cosine_beam_spec_primtrk);
+			if (kMIDcosmic) Fill1DHist(reco_cosineTheta_midcosmic, cosine_beam_spec_primtrk);
+			if (kMIDpi) Fill1DHist(reco_cosineTheta_midpi, cosine_beam_spec_primtrk);
+			if (kMIDp) Fill1DHist(reco_cosineTheta_midp, cosine_beam_spec_primtrk);
+			if (kMIDmu) Fill1DHist(reco_cosineTheta_midmu, cosine_beam_spec_primtrk);
+			if (kMIDeg) Fill1DHist(reco_cosineTheta_mideg, cosine_beam_spec_primtrk);
+			if (kMIDother) Fill1DHist(reco_cosineTheta_midother, cosine_beam_spec_primtrk);
+		} //calosize
 
 		//xy-cut (has been merged in the BQ cut in the new version)
 		//bool IsXY=false;		
 		//double x0_tmp=0, y0_tmp=0, z0_tmp=0; //start-pos, before sce
 		//if (primaryEndPosition[2]>primaryStartPosition[2]) { //check if Pandora flip the sign
-			//x0_tmp=primaryStartPosition[0];
-			//y0_tmp=primaryStartPosition[1];
-			//z0_tmp=primaryStartPosition[2];
+		//x0_tmp=primaryStartPosition[0];
+		//y0_tmp=primaryStartPosition[1];
+		//z0_tmp=primaryStartPosition[2];
 		//} //check if Pandora flip the sign
 		//else {
-			//x0_tmp=primaryEndPosition[0];
-			//y0_tmp=primaryEndPosition[1];
-			//z0_tmp=primaryEndPosition[2];
+		//x0_tmp=primaryEndPosition[0];
+		//y0_tmp=primaryEndPosition[1];
+		//z0_tmp=primaryEndPosition[2];
 		//}
 		//if ((pow(((x0_tmp-mean_x)/dev_x),2)+pow(((y0_tmp-mean_y)/dev_y),2))<=1.) IsXY=true;
 
 		//beam quality cut --------------//
 		bool IsBQ=false;
 		if (IsCosine&&IsPos) IsBQ=true;
-	
+
+		if (IsPos&&IsCaloSize) {
+			if (kinel) Fill1DHist(reco_cosineTheta_Pos_inel, cosine_beam_spec_primtrk);
+			if (kel) Fill1DHist(reco_cosineTheta_Pos_el, cosine_beam_spec_primtrk);
+			if (kMIDcosmic) Fill1DHist(reco_cosineTheta_Pos_midcosmic, cosine_beam_spec_primtrk);
+			if (kMIDpi) Fill1DHist(reco_cosineTheta_Pos_midpi, cosine_beam_spec_primtrk);
+			if (kMIDp) Fill1DHist(reco_cosineTheta_Pos_midp, cosine_beam_spec_primtrk);
+			if (kMIDmu) Fill1DHist(reco_cosineTheta_Pos_midmu, cosine_beam_spec_primtrk);
+			if (kMIDeg) Fill1DHist(reco_cosineTheta_Pos_mideg, cosine_beam_spec_primtrk);
+			if (kMIDother) Fill1DHist(reco_cosineTheta_Pos_midother, cosine_beam_spec_primtrk);
+		}
+
+
 		//reco calorimetry ---------------------------------------------------------------------------//
 		//vector< pair<double,int > > zreco_rawindex; //z, original_index
 		//vector< pair<double,double > > zreco_rr; //z, rr
@@ -452,69 +465,78 @@ void ProtonThinSlice::Loop() {
 		double wid_reco_max=-9999;
 		double range_reco=-999;
 		vector<double> reco_trklen_accum;
-  		reco_trklen_accum.reserve(primtrk_hitz->size());
+		reco_trklen_accum.reserve(primtrk_hitz->size());
 		double kereco_calo=0;
 		double kereco_range=0;
 		double kereco_range2=0;
 		vector<double> EDept;
+		double pid=-99; 
 		if (IsCaloSize) { //if calo size not empty
-		  for (size_t h=0; h<primtrk_dedx->size(); ++h) { //loop over reco hits of a given track
-			double hitx_reco=primtrk_hitx->at(h);
-			double hity_reco=primtrk_hity->at(h);
-			double hitz_reco=primtrk_hitz->at(h);
-			double resrange_reco=primtrk_resrange->at(h);
+			vector<double> trkdedx;
+			vector<double> trkres;
+			for (size_t h=0; h<primtrk_dedx->size(); ++h) { //loop over reco hits of a given track
+				double hitx_reco=primtrk_hitx->at(h);
+				double hity_reco=primtrk_hity->at(h);
+				double hitz_reco=primtrk_hitz->at(h);
+				double resrange_reco=primtrk_resrange->at(h);
 
-			double dqdx=primtrk_dqdx->at(h);
-			double pitch=primtrk_pitch->at(h);
+				double dqdx=primtrk_dqdx->at(h);
+				double pitch=primtrk_pitch->at(h);
 
-			int wid_reco=primtrk_wid->at(-1+primtrk_wid->size()-h);
-			double pt_reco=primtrk_pt->at(-1+primtrk_wid->size()-h);
+				int wid_reco=primtrk_wid->at(-1+primtrk_wid->size()-h);
+				double pt_reco=primtrk_pt->at(-1+primtrk_wid->size()-h);
 
-			//if (wid_reco==-9999) continue; //outside TPC
-			if (wid_reco>wid_reco_max) { 
-				wid_reco_max=wid_reco;
-				index_reco_endz=(int)-1+primtrk_wid->size()-h;
-			}
+				//if (wid_reco==-9999) continue; //outside TPC
+				if (wid_reco>wid_reco_max) { 
+					wid_reco_max=wid_reco;
+					index_reco_endz=(int)-1+primtrk_wid->size()-h;
+				}
 
-			double cali_dedx=0.;
-			cali_dedx=dedx_function_35ms(dqdx, hitx_reco, hity_reco, hitz_reco);
+				double cali_dedx=0.;
+				cali_dedx=dedx_function_35ms(dqdx, hitx_reco, hity_reco, hitz_reco);
 
-			EDept.push_back(cali_dedx*pitch);
+				EDept.push_back(cali_dedx*pitch);
 
-			//zreco_rawindex.push_back(make_pair(wid_reco, h));
-			//zreco_de.push_back(make_pair(wid_reco, cali_dedx*pitch));
-			//zreco_dedx.push_back(make_pair(wid_reco, cali_dedx));
-			//zreco_dx.push_back(make_pair(wid_reco, pitch));
-			//zreco_xreco.push_back(make_pair(wid_reco, hitx_reco));
-			//zreco_yreco.push_back(make_pair(wid_reco, hity_reco));
-			//zreco_widreco.push_back(make_pair(wid_reco, hitz_reco));
-			//zreco_rr.push_back(make_pair(wid_reco, resrange_reco));
+				//zreco_rawindex.push_back(make_pair(wid_reco, h));
+				//zreco_de.push_back(make_pair(wid_reco, cali_dedx*pitch));
+				//zreco_dedx.push_back(make_pair(wid_reco, cali_dedx));
+				//zreco_dx.push_back(make_pair(wid_reco, pitch));
+				//zreco_xreco.push_back(make_pair(wid_reco, hitx_reco));
+				//zreco_yreco.push_back(make_pair(wid_reco, hity_reco));
+				//zreco_widreco.push_back(make_pair(wid_reco, hitz_reco));
+				//zreco_rr.push_back(make_pair(wid_reco, resrange_reco));
 
-			//if (IsPureInEL) rangereco_dedxreco_TrueInEL->Fill(range_reco-resrange_reco, cali_dedx);
-			//if (IsPureEL) rangereco_dedxreco_TrueEL->Fill(range_reco-resrange_reco, cali_dedx);
-			//if (IsPureMCS) rangereco_dedxreco_TrueMCS->Fill(range_reco-resrange_reco, cali_dedx);
+				//if (IsPureInEL) rangereco_dedxreco_TrueInEL->Fill(range_reco-resrange_reco, cali_dedx);
+				//if (IsPureEL) rangereco_dedxreco_TrueEL->Fill(range_reco-resrange_reco, cali_dedx);
+				//if (IsPureMCS) rangereco_dedxreco_TrueMCS->Fill(range_reco-resrange_reco, cali_dedx);
 
-			//zreco_ke.push_back(make_pair(wid_reco, ke_reco));
+				//zreco_ke.push_back(make_pair(wid_reco, ke_reco));
 
-			if (h==1) range_reco=0;
-			if (h>=1) {
-    					range_reco += sqrt( pow(primtrk_hitx->at(h)-primtrk_hitx->at(h-1), 2)+
-					    		    pow(primtrk_hity->at(h)-primtrk_hity->at(h-1), 2)+
-					    		    pow(primtrk_hitz->at(h)-primtrk_hitz->at(h-1), 2) );
+				if (h==1) range_reco=0;
+				if (h>=1) {
+					range_reco += sqrt( pow(primtrk_hitx->at(h)-primtrk_hitx->at(h-1), 2)+
+							pow(primtrk_hity->at(h)-primtrk_hity->at(h-1), 2)+
+							pow(primtrk_hitz->at(h)-primtrk_hitz->at(h-1), 2) );
 					reco_trklen_accum[h] = range_reco;
-			}
+				}
 
-			kereco_calo+=cali_dedx*pitch;
-			kereco_range+=pitch*dedx_predict(resrange_reco);
-			kereco_range2+=pitch*(double)gr_predict_dedx_resrange->Eval(resrange_reco);
+				kereco_calo+=cali_dedx*pitch;
+				kereco_range+=pitch*dedx_predict(resrange_reco);
+				kereco_range2+=pitch*(double)gr_predict_dedx_resrange->Eval(resrange_reco);
 
-			if (kinel) rangereco_dedxreco_TrueInEL->Fill(range_reco, cali_dedx);
-			if (kel) { 
-						rangereco_dedxreco_TrueEL->Fill(range_reco, cali_dedx);
-						rr_dedx_truestop->Fill(resrange_reco, cali_dedx);
-			}
+				if (kinel) rangereco_dedxreco_TrueInEL->Fill(range_reco, cali_dedx);
+				if (kel) { 
+					rangereco_dedxreco_TrueEL->Fill(range_reco, cali_dedx);
+					rr_dedx_truestop->Fill(resrange_reco, cali_dedx);
+				}
 
-		  } //loop over reco hits of a given track
+				trkdedx.push_back(cali_dedx);
+				trkres.push_back(resrange_reco);
+
+			} //loop over reco hits of a given track
+
+			pid=chi2pid(trkdedx,trkres); //pid using stopping proton hypothesis
+
 		} //if calo size not empty
 
 		//use wid for sorting
@@ -531,26 +553,37 @@ void ProtonThinSlice::Loop() {
 		//reco trklen ---------------------------------------------------------------------------//
 		//double range_reco=-999;
 		//vector<double> reco_trklen_accum;
-  		//reco_trklen_accum.reserve(primtrk_hitz->size());
-  		//for (int iz=1; iz<(int)zreco_rawindex.size(); iz++) {
-			//if (iz==1) range_reco=0; 	
-    			//range_reco += sqrt( pow(zreco_xreco[iz].second-zreco_xreco[iz-1].second, 2)+
-					    //pow(zreco_yreco[iz].second-zreco_yreco[iz-1].second, 2)+
-					    //pow(zreco_widreco[iz].second-zreco_widreco[iz-1].second, 2) );
-			//reco_trklen_accum[iz] = range_reco;
-			//zreco_lenreco.push_back(make_pair(zreco_widreco[iz].first, range_reco));
-  		//}
+		//reco_trklen_accum.reserve(primtrk_hitz->size());
+		//for (int iz=1; iz<(int)zreco_rawindex.size(); iz++) {
+		//if (iz==1) range_reco=0; 	
+		//range_reco += sqrt( pow(zreco_xreco[iz].second-zreco_xreco[iz-1].second, 2)+
+		//pow(zreco_yreco[iz].second-zreco_yreco[iz-1].second, 2)+
+		//pow(zreco_widreco[iz].second-zreco_widreco[iz-1].second, 2) );
+		//reco_trklen_accum[iz] = range_reco;
+		//zreco_lenreco.push_back(make_pair(zreco_widreco[iz].first, range_reco));
+		//}
 		cout<<"range_reco:"<<range_reco<<endl;
 
-		//Reco stopping/Inel p cut -----------------------------------------------------------------------------------------------//
+		//Reco stopping/Inel p cut ---------------------------------------------------------------------------------------------------------//
 		bool IsRecoStop=false;
 		bool IsRecoInEL=false;
 		double mom_beam_spec=-99; mom_beam_spec=beamMomentum_spec->at(0);
 		//double range_reco=-99; if (!primtrk_range->empty()) range_reco=primtrk_range->at(0); //reco primary trklen
 		double csda_val_spec=csda_range_vs_mom_sm->Eval(mom_beam_spec);
 
-		if ((range_reco/csda_val_spec)>=min_norm_trklen_csda&&(range_reco/csda_val_spec)<max_norm_trklen_csda) IsRecoStop=true;
-		if ((range_reco/csda_val_spec)<min_norm_trklen_csda) IsRecoInEL=true;
+		//if ((range_reco/csda_val_spec)>=min_norm_trklen_csda&&(range_reco/csda_val_spec)<max_norm_trklen_csda) IsRecoStop=true; //old cut
+		//if ((range_reco/csda_val_spec)<min_norm_trklen_csda) IsRecoInEL=true; //old cut
+		
+		if ((range_reco/csda_val_spec)<min_norm_trklen_csda) { //inel region
+			if (pid>pid_1) IsRecoInEL=true; 
+			if (pid<=pid_1) IsRecoStop=true; 
+		} //inel region
+		if ((range_reco/csda_val_spec)>=min_norm_trklen_csda&&(range_reco/csda_val_spec)<max_norm_trklen_csda) { //stopping p region
+			if (pid>pid_2) IsRecoInEL=true; 
+			if (pid<=pid_2) IsRecoStop=true;
+		} //stopping p region
+
+
 
 		//kinetic energies -------------------------------------------------------------------//
 		//double ke_beam=1000.*p2ke(mom_beam); //ke_beam
@@ -563,25 +596,52 @@ void ProtonThinSlice::Loop() {
 			ke_simide+=primtrk_true_edept->at(hk);
 		} //loop over simIDE points
 
+		//First point of MCParticle entering TPC ------------------------------------------------------------------------//
+		bool is_beam_at_ff=false; //if the beam reach tpc
+		int key_reach_tpc=-99;
+		if (beamtrk_z->size()){
+			for (size_t kk=0; kk<beamtrk_z->size(); ++kk) {  //loop over all beam hits
+				double zpos_beam=beamtrk_z->at(kk);
+				if (zpos_beam>=0) {
+					key_reach_tpc=(int)kk;
+					break;
+				}
+			} //loop over all beam hits
+
+			//for (size_t kk=0; kk<beamtrk_z->size(); ++kk) {  //loop over all beam hits
+			//cout<<"["<<kk<<"] beamtrk_z:"<<beamtrk_z->at(kk) <<" beamtrk_Eng:"<<beamtrk_Eng->at(kk)<<endl;
+			//} //loop over all beam hits
+		} 
+		if (key_reach_tpc!=-99) { is_beam_at_ff=true; }
+		cout<<"key_reach_tpc:"<<key_reach_tpc<<endl;	
+		cout<<"is_beam_at_ff:"<<is_beam_at_ff<<endl;
+
+		double KE_ff=0;
+		if (is_beam_at_ff) KE_ff=1000.*beamtrk_Eng->at(key_reach_tpc); //unit:MeV
+		//KE_ff=ke_ff; //use KE exactly at z=0
+		//---------------------------------------------------------------------------------------------------------------//
+
+
+
 		//some ke calc. -------------------------------------------------------------------------------------//
 		if (IsBQ&&IsCaloSize&&IsPandoraSlice) { //if calo size not empty
 			if (IsRecoStop) { //reco_stop 
-				Fill1DHist(KE_ff_recostop, ke_ff);
+				Fill1DHist(KE_ff_recostop, KE_ff);
 				Fill1DHist(KE_calo_recostop, kereco_calo);
 				Fill1DHist(KE_rrange_recostop, kereco_range);
 				Fill1DHist(KE_rrange2_recostop, kereco_range2);
 				Fill1DHist(KE_range_recostop, ke_trklen);
 				Fill1DHist(KE_simide_recostop, ke_simide);
 
-				Fill1DHist(dKE_range_ff_recostop, ke_trklen-ke_ff);
-				Fill1DHist(dKE_calo_ff_recostop, kereco_calo-ke_ff);
-				Fill1DHist(dKE_rrange_ff_recostop, kereco_range-ke_ff);
-				Fill1DHist(dKE_rrange2_ff_recostop, kereco_range2-ke_ff);
+				Fill1DHist(dKE_range_ff_recostop, ke_trklen-KE_ff);
+				Fill1DHist(dKE_calo_ff_recostop, kereco_calo-KE_ff);
+				Fill1DHist(dKE_rrange_ff_recostop, kereco_range-KE_ff);
+				Fill1DHist(dKE_rrange2_ff_recostop, kereco_range2-KE_ff);
 
-				KE_range_ff_recostop->Fill(kereco_range, ke_ff);
+				KE_range_ff_recostop->Fill(kereco_range, KE_ff);
 				KE_range_calo_recostop->Fill(kereco_range, kereco_calo);
 
-		  		for (size_t h=0; h<primtrk_dedx->size(); ++h) { //loop over reco hits of a track
+				for (size_t h=0; h<primtrk_dedx->size(); ++h) { //loop over reco hits of a track
 					double hitx_reco=primtrk_hitx->at(h);
 					double hity_reco=primtrk_hity->at(h);
 					double hitz_reco=primtrk_hitz->at(h);
@@ -903,7 +963,7 @@ void ProtonThinSlice::Loop() {
 		if (true_sliceID >= nthinslices) true_sliceID = nthinslices;
 		cout<<"true_endz:"<<true_endz<<"  true_sliceID:"<<true_sliceID<<endl;
 		//cout<<"primtrk_range_true->empty():"<<primtrk_range_true->empty()
-		   // <<" primtrk_range->empty():"<<primtrk_range->empty()<<endl;
+		// <<" primtrk_range->empty():"<<primtrk_range->empty()<<endl;
 
 		//evt selection cuts
 		bool PassCuts_INT=false; //all bq cut+reco inel cut
@@ -979,7 +1039,7 @@ void ProtonThinSlice::Loop() {
 				if (!isTestSample) uf.response_SliceID_Int.Miss(true_sliceID);
 			} //if not pass all basic cuts
 		} //pure inel
-		
+
 		if (PassCuts_INC) { //if pass all cuts
 			if (isTestSample){ //if test sample
 				h_recosliceid_allevts_cuts->Fill(reco_sliceID);
@@ -997,7 +1057,7 @@ void ProtonThinSlice::Loop() {
 			//reco ke
 			if (IsCaloSize==true&&IsBeamMatch==true) { //calo & beam_match
 				std::vector<std::vector<double>> vincE(nthinslices);
-				double ke_reco=ke_ff;
+				double ke_reco=KE_ff;
 				//for (size_t ih=0; ih<zreco_rawindex.size(); ++ih) {
 				for (size_t ih=0; ih<primtrk_dedx->size(); ++ih) {
 					//double this_calo_z=zreco_widreco[ih].second;
@@ -1026,11 +1086,11 @@ void ProtonThinSlice::Loop() {
 				}
 
 				//TVector3 pt0(zreco_xreco[0].second,
-						//zreco_yreco[0].second,
-						//zreco_xreco[0].first); //ST
+				//zreco_yreco[0].second,
+				//zreco_xreco[0].first); //ST
 				//TVector3 pt1(zreco_xreco[-1+zreco_rawindex.size()].second,
-						//zreco_yreco[-1+zreco_rawindex.size()].second,
-						//zreco_xreco[-1+zreco_rawindex.size()].first);
+				//zreco_yreco[-1+zreco_rawindex.size()].second,
+				//zreco_xreco[-1+zreco_rawindex.size()].first);
 				reco_AngCorr->Fill(dir.Z());
 			} //calo & beam_match
 
@@ -1065,78 +1125,78 @@ void ProtonThinSlice::Loop() {
 				dir_true = dir_true.Unit();
 				true_AngCorr->Fill(dir_true.Z());
 			} //if true container not empty
-		} //if pure inelastic
+			} //if pure inelastic
 
 
 
 
 
-	
-	} //main entry loop
 
-	//save results -------//
-	uf.SaveHistograms();
-	CalcXS(uf);
-	SaveHistograms();
-         
-        //counting -- summary -----------------------------------------------------//
-	cout<<"\nn_tot:"<<n_tot<<endl;
-	cout<<"n_el:"<<n_el<<endl;
-	cout<<"n_inel:"<<n_inel<<endl;
-	cout<<"n_midcosmic:"<<n_midcosmic<<endl;
-	cout<<"n_midpi:"<<n_midpi<<endl;
-	cout<<"n_midp:"<<n_midp<<endl;
-	cout<<"n_midmu:"<<n_midmu<<endl;
-	cout<<"n_mideg:"<<n_mideg<<endl;
-	cout<<"n_midother"<<n_midother<<endl;
-	cout<<"n_diff:"<<n_tot-(n_el+n_inel+n_midcosmic+n_midpi+n_midp+n_midmu+n_mideg+n_midother)<<endl;
+		} //main entry loop
 
-	cout<<"\nn_pan_tot:"<<n_pan_tot<<endl;
-	cout<<"n_el_pan:"<<n_el_pan<<endl;
-	cout<<"n_inel_pan:"<<n_inel_pan<<endl;
-	cout<<"n_midcosmic_pan:"<<n_midcosmic_pan<<endl;
-	cout<<"n_midpi_pan:"<<n_midpi_pan<<endl;
-	cout<<"n_midp_pan:"<<n_midp_pan<<endl;
-	cout<<"n_midmu_pan:"<<n_midmu_pan<<endl;
-	cout<<"n_mideg_pan:"<<n_mideg_pan<<endl;
-	cout<<"n_midother_pan"<<n_midother_pan<<endl;
-	cout<<"n_diff_pan:"<<n_pan_tot-(n_el_pan+n_inel_pan+n_midcosmic_pan+n_midpi_pan+n_midp_pan+n_midmu_pan+n_mideg_pan+n_midother_pan)<<endl;
+		//save results -------//
+		uf.SaveHistograms();
+		CalcXS(uf);
+		SaveHistograms();
 
-	cout<<"\nn_calsz_tot:"<<n_calsz_tot<<endl;
-	cout<<"n_el_calsz:"<<n_el_calsz<<endl;
-	cout<<"n_inel_calsz:"<<n_inel_calsz<<endl;
-	cout<<"n_midcosmic_calsz:"<<n_midcosmic_calsz<<endl;
-	cout<<"n_midpi_calsz:"<<n_midpi_calsz<<endl;
-	cout<<"n_midp_calsz:"<<n_midp_calsz<<endl;
-	cout<<"n_midmu_calsz:"<<n_midmu_calsz<<endl;
-	cout<<"n_mideg_calsz:"<<n_mideg_calsz<<endl;
-	cout<<"n_midother_calsz"<<n_midother_calsz<<endl;
-	cout<<"n_diff_calsz:"<<n_calsz_tot-(n_el_calsz+n_inel_calsz+n_midcosmic_calsz+n_midpi_calsz+n_midp_calsz+n_midmu_calsz+n_mideg_calsz+n_midother_calsz)<<endl;
+		//counting -- summary -----------------------------------------------------//
+		cout<<"\nn_tot:"<<n_tot<<endl;
+		cout<<"n_el:"<<n_el<<endl;
+		cout<<"n_inel:"<<n_inel<<endl;
+		cout<<"n_midcosmic:"<<n_midcosmic<<endl;
+		cout<<"n_midpi:"<<n_midpi<<endl;
+		cout<<"n_midp:"<<n_midp<<endl;
+		cout<<"n_midmu:"<<n_midmu<<endl;
+		cout<<"n_mideg:"<<n_mideg<<endl;
+		cout<<"n_midother"<<n_midother<<endl;
+		cout<<"n_diff:"<<n_tot-(n_el+n_inel+n_midcosmic+n_midpi+n_midp+n_midmu+n_mideg+n_midother)<<endl;
 
-	cout<<"\nn_bq_tot:"<<n_bq_tot<<endl;
-	cout<<"n_el_bq:"<<n_el_bq<<endl;
-	cout<<"n_inel_bq:"<<n_inel_bq<<endl;
-	cout<<"n_midcosmic_bq:"<<n_midcosmic_bq<<endl;
-	cout<<"n_midpi_bq:"<<n_midpi_bq<<endl;
-	cout<<"n_midp_bq:"<<n_midp_bq<<endl;
-	cout<<"n_midmu_bq:"<<n_midmu_bq<<endl;
-	cout<<"n_mideg_bq:"<<n_mideg_bq<<endl;
-	cout<<"n_midother_bq"<<n_midother_bq<<endl;
-	cout<<"n_diff_bq:"<<n_bq_tot-(n_el_bq+n_inel_bq+n_midcosmic_bq+n_midpi_bq+n_midp_bq+n_midmu_bq+n_mideg_bq+n_midother_bq)<<endl;
+		cout<<"\nn_pan_tot:"<<n_pan_tot<<endl;
+		cout<<"n_el_pan:"<<n_el_pan<<endl;
+		cout<<"n_inel_pan:"<<n_inel_pan<<endl;
+		cout<<"n_midcosmic_pan:"<<n_midcosmic_pan<<endl;
+		cout<<"n_midpi_pan:"<<n_midpi_pan<<endl;
+		cout<<"n_midp_pan:"<<n_midp_pan<<endl;
+		cout<<"n_midmu_pan:"<<n_midmu_pan<<endl;
+		cout<<"n_mideg_pan:"<<n_mideg_pan<<endl;
+		cout<<"n_midother_pan"<<n_midother_pan<<endl;
+		cout<<"n_diff_pan:"<<n_pan_tot-(n_el_pan+n_inel_pan+n_midcosmic_pan+n_midpi_pan+n_midp_pan+n_midmu_pan+n_mideg_pan+n_midother_pan)<<endl;
 
-	cout<<"\nn_recoinel_tot:"<<n_recoinel_tot<<endl;
-	cout<<"n_el_recoinel:"<<n_el_recoinel<<endl;
-	cout<<"n_inel_recoinel:"<<n_inel_recoinel<<endl;
-	cout<<"n_midcosmic_recoinel:"<<n_midcosmic_recoinel<<endl;
-	cout<<"n_midpi_recoinel:"<<n_midpi_recoinel<<endl;
-	cout<<"n_midp_recoinel:"<<n_midp_recoinel<<endl;
-	cout<<"n_midmu_recoinel:"<<n_midmu_recoinel<<endl;
-	cout<<"n_mideg_recoinel:"<<n_mideg_recoinel<<endl;
-	cout<<"n_midother_recoinel"<<n_midother_recoinel<<endl;
-	cout<<"n_diff_recoinel:"<<n_recoinel_tot-(n_el_recoinel+n_inel_recoinel+n_midcosmic_recoinel+n_midpi_recoinel+n_midp_recoinel+n_midmu_recoinel+n_mideg_recoinel+n_midother_recoinel)<<endl;
+		cout<<"\nn_calsz_tot:"<<n_calsz_tot<<endl;
+		cout<<"n_el_calsz:"<<n_el_calsz<<endl;
+		cout<<"n_inel_calsz:"<<n_inel_calsz<<endl;
+		cout<<"n_midcosmic_calsz:"<<n_midcosmic_calsz<<endl;
+		cout<<"n_midpi_calsz:"<<n_midpi_calsz<<endl;
+		cout<<"n_midp_calsz:"<<n_midp_calsz<<endl;
+		cout<<"n_midmu_calsz:"<<n_midmu_calsz<<endl;
+		cout<<"n_mideg_calsz:"<<n_mideg_calsz<<endl;
+		cout<<"n_midother_calsz"<<n_midother_calsz<<endl;
+		cout<<"n_diff_calsz:"<<n_calsz_tot-(n_el_calsz+n_inel_calsz+n_midcosmic_calsz+n_midpi_calsz+n_midp_calsz+n_midmu_calsz+n_mideg_calsz+n_midother_calsz)<<endl;
 
+		cout<<"\nn_bq_tot:"<<n_bq_tot<<endl;
+		cout<<"n_el_bq:"<<n_el_bq<<endl;
+		cout<<"n_inel_bq:"<<n_inel_bq<<endl;
+		cout<<"n_midcosmic_bq:"<<n_midcosmic_bq<<endl;
+		cout<<"n_midpi_bq:"<<n_midpi_bq<<endl;
+		cout<<"n_midp_bq:"<<n_midp_bq<<endl;
+		cout<<"n_midmu_bq:"<<n_midmu_bq<<endl;
+		cout<<"n_mideg_bq:"<<n_mideg_bq<<endl;
+		cout<<"n_midother_bq"<<n_midother_bq<<endl;
+		cout<<"n_diff_bq:"<<n_bq_tot-(n_el_bq+n_inel_bq+n_midcosmic_bq+n_midpi_bq+n_midp_bq+n_midmu_bq+n_mideg_bq+n_midother_bq)<<endl;
 
+		cout<<"\nn_recoinel_tot:"<<n_recoinel_tot<<endl;
+		cout<<"n_el_recoinel:"<<n_el_recoinel<<endl;
+		cout<<"n_inel_recoinel:"<<n_inel_recoinel<<endl;
+		cout<<"n_midcosmic_recoinel:"<<n_midcosmic_recoinel<<endl;
+		cout<<"n_midpi_recoinel:"<<n_midpi_recoinel<<endl;
+		cout<<"n_midp_recoinel:"<<n_midp_recoinel<<endl;
+		cout<<"n_midmu_recoinel:"<<n_midmu_recoinel<<endl;
+		cout<<"n_mideg_recoinel:"<<n_mideg_recoinel<<endl;
+		cout<<"n_midother_recoinel"<<n_midother_recoinel<<endl;
+		cout<<"n_diff_recoinel:"<<n_recoinel_tot-(n_el_recoinel+n_inel_recoinel+n_midcosmic_recoinel+n_midpi_recoinel+n_midp_recoinel+n_midmu_recoinel+n_mideg_recoinel+n_midother_recoinel)<<endl;
 
 
 
-}
+
+
+		}

@@ -40,8 +40,8 @@ void plot_trklentrue(TString fin, TString fout_path, TString str_cut) {
 	trklen_el->GetXaxis()->SetTitle("Truth Track Length [cm]");
 
 	THStack* hs=new THStack("hs","");
-	hs->Add(trklen_el);
 	hs->Add(trklen_inel);
+	hs->Add(trklen_el);
 
 	hs->Add(trklen_midcosmic);
 	hs->Add(trklen_midp);
