@@ -59,6 +59,8 @@ void ProtonThinSlice::Loop() {
 	int n_processmap_error=0; //sansity check: processmap
 	int n_true_end=0; //sansity check: true-end label
 
+	int n_test_recoinel=0, n_test_recoinel_sample=0, n_kinel=0, n_kinel2=0, n_kel=0;
+
 	int n_tot=0, n_sg=0, n_bkg=0; //no cut
 	int n_el=0, n_inel=0, n_midcosmic=0, n_midpi=0, n_midp=0, n_midmu=0, n_mideg=0, n_midother=0;
 
@@ -78,8 +80,8 @@ void ProtonThinSlice::Loop() {
 	Unfold uf(nthinslices+2, -1, nthinslices+1);
 
 	//ThinSlice config. ---------------------------------------------------------------------------------------------------//
-	//SetOutputFileName(Form("prod4a_thinslice_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
-	SetOutputFileName(Form("prod4a_thinslice_dx%dcm_%dslcs_1stHitKEff.root", name_thinslicewidth, nthinslices)); //output file name
+	SetOutputFileName(Form("prod4a_thinslice_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4a_thinslice_dx%dcm_%dslcs_1stHitKEff.root", name_thinslicewidth, nthinslices)); //output file name
 
 	//book histograms --//
 	BookHistograms();
@@ -438,7 +440,8 @@ void ProtonThinSlice::Loop() {
 		bool IsBQ=false;
 		if (IsCosine&&IsPos) IsBQ=true;
 
-		if (IsPos&&IsCaloSize) {
+		if (IsPos&&IsCaloSize&&IsPandoraSlice) {
+			Fill1DHist(reco_cosineTheta_Pos, cosine_beam_spec_primtrk);
 			if (kinel) Fill1DHist(reco_cosineTheta_Pos_inel, cosine_beam_spec_primtrk);
 			if (kel) Fill1DHist(reco_cosineTheta_Pos_el, cosine_beam_spec_primtrk);
 			if (kMIDcosmic) Fill1DHist(reco_cosineTheta_Pos_midcosmic, cosine_beam_spec_primtrk);
@@ -617,8 +620,8 @@ void ProtonThinSlice::Loop() {
 		cout<<"is_beam_at_ff:"<<is_beam_at_ff<<endl;
 
 		double KE_ff=0;
-		if (is_beam_at_ff) KE_ff=1000.*beamtrk_Eng->at(key_reach_tpc); //unit:MeV
-		//KE_ff=ke_ff; //use KE exactly at z=0
+		//if (is_beam_at_ff) KE_ff=1000.*beamtrk_Eng->at(key_reach_tpc); //unit:MeV
+		KE_ff=ke_ff; //use KE exactly at z=0
 		//---------------------------------------------------------------------------------------------------------------//
 
 
@@ -1017,14 +1020,21 @@ void ProtonThinSlice::Loop() {
 
 		//INT histograms ------------------------------------------------------------//
 		if (IsPureInEL) { //pure inel
+			n_test_recoinel++;
+			if (IsBeamMatch) n_kinel++;
+
 			if (isTestSample){
 				h_truesliceid_inelastic_all->Fill(true_sliceID);
 			}
 			else{ //NOT test sample for unfolding
 				uf.eff_den_Int->Fill(true_sliceID);
+				n_test_recoinel_sample++;
+				if (IsBeamMatch) n_kinel2++;
 			} //NOT test sample for unfolding
 
-			if (PassCuts_INT&&IsBeamMatch) { //if pass all basic cuts
+
+
+			if (PassCuts_INT&&IsBeamMatch) { //if pass reco inel cuts
 				if (isTestSample){
 					h_recosliceid_inelastic_cuts->Fill(reco_sliceID);
 					h_truesliceid_inelastic_cuts->Fill(true_sliceID);
@@ -1034,7 +1044,7 @@ void ProtonThinSlice::Loop() {
 					uf.pur_num_Int->Fill(reco_sliceID);
 					uf.response_SliceID_Int.Fill(reco_sliceID, true_sliceID);
 				}
-			} //if pass all basic cuts
+			} //if pass reco inel cuts
 			else{ //if NOT pass all basic cuts
 				if (!isTestSample) uf.response_SliceID_Int.Miss(true_sliceID);
 			} //if not pass all basic cuts
@@ -1043,11 +1053,37 @@ void ProtonThinSlice::Loop() {
 		if (PassCuts_INC) { //if pass all cuts
 			if (isTestSample){ //if test sample
 				h_recosliceid_allevts_cuts->Fill(reco_sliceID);
+				if (kinel) h_recosliceid_allevts_cuts_inel->Fill(reco_sliceID);
+				if (kel) h_recosliceid_allevts_cuts_el->Fill(reco_sliceID);
+				if (kMIDcosmic) h_recosliceid_allevts_cuts_midcosmic->Fill(reco_sliceID);
+				if (kMIDpi) h_recosliceid_allevts_cuts_midpi->Fill(reco_sliceID);
+				if (kMIDp) h_recosliceid_allevts_cuts_midp->Fill(reco_sliceID);
+				if (kMIDmu) h_recosliceid_allevts_cuts_midmu->Fill(reco_sliceID);
+				if (kMIDeg) h_recosliceid_allevts_cuts_mideg->Fill(reco_sliceID);
+				if (kMIDother) h_recosliceid_allevts_cuts_midother->Fill(reco_sliceID);				
 			} //if test sample
 			else { //if NOT test sample
 				uf.pur_den->Fill(reco_sliceID);
+				uf.pur_den_Inc->Fill(reco_sliceID);
 			} //if NOT test sample
 		} //if pass all cuts
+
+		if (PassCuts_INT) { //if pass reco inel cut
+			if (isTestSample){ //if test sample
+				h_recosliceid_recoinelastic_cuts->Fill(reco_sliceID);
+				if (kinel) h_recosliceid_recoinelastic_cuts_inel->Fill(reco_sliceID);
+				if (kel) h_recosliceid_recoinelastic_cuts_el->Fill(reco_sliceID);
+				if (kMIDcosmic) h_recosliceid_recoinelastic_cuts_midcosmic->Fill(reco_sliceID);
+				if (kMIDpi) h_recosliceid_recoinelastic_cuts_midpi->Fill(reco_sliceID);
+				if (kMIDp) h_recosliceid_recoinelastic_cuts_midp->Fill(reco_sliceID);
+				if (kMIDmu) h_recosliceid_recoinelastic_cuts_midmu->Fill(reco_sliceID);
+				if (kMIDeg) h_recosliceid_recoinelastic_cuts_mideg->Fill(reco_sliceID);
+				if (kMIDother) h_recosliceid_recoinelastic_cuts_midother->Fill(reco_sliceID);
+			} //if test sample
+			else { //if NOT test sample
+				uf.pur_den_Int->Fill(reco_sliceID);
+			} //if NOT test sample
+		} //if pass reco inel cut
 
 		//reco/truth KEs
 		if (IsPureInEL) { //is pure inelastic
@@ -1196,7 +1232,7 @@ void ProtonThinSlice::Loop() {
 		cout<<"n_diff_recoinel:"<<n_recoinel_tot-(n_el_recoinel+n_inel_recoinel+n_midcosmic_recoinel+n_midpi_recoinel+n_midp_recoinel+n_midmu_recoinel+n_mideg_recoinel+n_midother_recoinel)<<endl;
 
 
+		cout<<"\n\n\n n_test_recoinel:"<<n_test_recoinel<<" n_test_recoinel_sample:"<<n_test_recoinel_sample<<" n_kinel:"<<n_kinel<<" n_kinel2:"<<n_kinel2<<endl;
 
 
-
-		}
+}
