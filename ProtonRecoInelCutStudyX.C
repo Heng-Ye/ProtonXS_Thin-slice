@@ -82,6 +82,9 @@ void ProtonRecoInelCutStudy::Loop() {
 	int n_recoinel2_tot=0; //recoinel2 cut
 	int n_el_recoinel2=0, n_inel_recoinel2=0, n_midcosmic_recoinel2=0, n_midpi_recoinel2=0, n_midp_recoinel2=0, n_midmu_recoinel2=0, n_mideg_recoinel2=0, n_midother_recoinel2=0;
 
+	int n_recoinel3_tot=0; //recoinel3 cut
+	int n_el_recoinel3=0, n_inel_recoinel3=0, n_midcosmic_recoinel3=0, n_midpi_recoinel3=0, n_midp_recoinel3=0, n_midmu_recoinel3=0, n_mideg_recoinel3=0, n_midother_recoinel3=0;
+
 
 
 	//book histograms ------------------------------------------------------------------------------------------------------------------------//
@@ -89,27 +92,45 @@ void ProtonRecoInelCutStudy::Loop() {
 	double st_ntrklen=-0.02;
 	double ed_ntrklen=1.2;
 
-	int n_chi2=500;
+	int n_chi2=750;
 	double st_chi2=0;
-	double ed_chi2=100;
+	double ed_chi2=150;
 
 	//2d ntrklen vs chi2pid
 	TH2D *ntrklen_chi2pid_BQ=new TH2D("ntrklen_chi2pid_BQ","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
 	TH2D *ntrklen_chi2pid_BQ_inel=new TH2D("ntrklen_chi2pid_BQ_inel","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
 	TH2D *ntrklen_chi2pid_BQ_el=new TH2D("ntrklen_chi2pid_BQ_el","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
-	TH2D *ntrklen_chi2pid_BQ_midcosmic=new TH2D("ntrklen_chi2pid_midcosmic","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
-	TH2D *ntrklen_chi2pid_BQ_midpi=new TH2D("ntrklen_chi2pid_midpi","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
-	TH2D *ntrklen_chi2pid_BQ_midp=new TH2D("ntrklen_chi2pid_midp","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
-	TH2D *ntrklen_chi2pid_BQ_midmu=new TH2D("ntrklen_chi2pid_midmu","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
-	TH2D *ntrklen_chi2pid_BQ_mideg=new TH2D("ntrklen_chi2pid_mideg","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
-	TH2D *ntrklen_chi2pid_BQ_midother=new TH2D("ntrklen_chi2pid_midother","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
+	TH2D *ntrklen_chi2pid_BQ_midcosmic=new TH2D("ntrklen_chi2pid_BQ_midcosmic","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
+	TH2D *ntrklen_chi2pid_BQ_midpi=new TH2D("ntrklen_chi2pid_BQ_midpi","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
+	TH2D *ntrklen_chi2pid_BQ_midp=new TH2D("ntrklen_chi2pid_BQ_midp","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
+	TH2D *ntrklen_chi2pid_BQ_midmu=new TH2D("ntrklen_chi2pid_BQ_midmu","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
+	TH2D *ntrklen_chi2pid_BQ_mideg=new TH2D("ntrklen_chi2pid_BQ_mideg","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
+	TH2D *ntrklen_chi2pid_BQ_midother=new TH2D("ntrklen_chi2pid_BQ_midother","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
 	TH2D *ntrklen_chi2pid_RecoInel=new TH2D("ntrklen_chi2pid_RecoInel","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
 	TH2D *ntrklen_chi2pid_RecoInel2=new TH2D("ntrklen_chi2pid_RecoInel2","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
+	TH2D *ntrklen_chi2pid_RecoInel3=new TH2D("ntrklen_chi2pid_RecoInel3","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
+
+	TH2D *ntruetrklen_chi2pid_BQ=new TH2D("ntruetrklen_chi2pid_BQ","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
+	TH2D *ntruetrklen_chi2pid_BQ_inel=new TH2D("ntruetrklen_chi2pid_BQ_inel","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
+	TH2D *ntruetrklen_chi2pid_BQ_el=new TH2D("ntruetrklen_chi2pid_BQ_el","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
+	TH2D *ntruetrklen_chi2pid_BQ_midcosmic=new TH2D("ntruetrklen_chi2pid_BQ_midcosmic","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
+	TH2D *ntruetrklen_chi2pid_BQ_midpi=new TH2D("ntruetrklen_chi2pid_BQ_midpi","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
+	TH2D *ntruetrklen_chi2pid_BQ_midp=new TH2D("ntruetrklen_chi2pid_BQ_midp","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
+	TH2D *ntruetrklen_chi2pid_BQ_midmu=new TH2D("ntruetrklen_chi2pid_BQ_midmu","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
+	TH2D *ntruetrklen_chi2pid_BQ_mideg=new TH2D("ntruetrklen_chi2pid_BQ_mideg","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
+	TH2D *ntruetrklen_chi2pid_BQ_midother=new TH2D("ntruetrklen_chi2pid_BQ_midother","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
+
+	TH2D *ntrklen_chi2pid_Pos=new TH2D("ntrklen_chi2pid_Pos","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
+	TH2D *ntrklen_chi2pid_Pos_inel=new TH2D("ntrklen_chi2pid_Pos_inel","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
+	TH2D *ntrklen_chi2pid_Pos_el=new TH2D("ntrklen_chi2pid_Pos_el","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
+	TH2D *ntrklen_chi2pid_Pos_midp=new TH2D("ntrklen_chi2pid_Pos_midp","", n_ntrklen, st_ntrklen, ed_ntrklen, n_chi2, st_chi2, ed_chi2);
+
 
 	//1d pid
 	TH1D *h1d_chi2pid_BQ=new TH1D("h1d_chi2pid_BQ","", n_chi2, st_chi2, ed_chi2);
 	TH1D *h1d_chi2pid_RecoInel=new TH1D("h1d_chi2pid_RecoInel","", n_chi2, st_chi2, ed_chi2);
 	TH1D *h1d_chi2pid_RecoInel2=new TH1D("h1d_chi2pid_RecoInel2","", n_chi2, st_chi2, ed_chi2);
+	TH1D *h1d_chi2pid_RecoInel3=new TH1D("h1d_chi2pid_RecoInel3","", n_chi2, st_chi2, ed_chi2);
 	TH1D *h1d_chi2pid_RecoStop=new TH1D("h1d_chi2pid_RecoStop","", n_chi2, st_chi2, ed_chi2);
 	TH1D *h1d_chi2pid_RecoStop2=new TH1D("h1d_chi2pid_RecoStop2","", n_chi2, st_chi2, ed_chi2);
 
@@ -126,6 +147,7 @@ void ProtonRecoInelCutStudy::Loop() {
 	TH1D *h1d_ntrklen_BQ=new TH1D("h1d_ntrklen_BQ","", n_ntrklen, st_ntrklen, ed_ntrklen);
 	TH1D *h1d_ntrklen_RecoInel=new TH1D("h1d_ntrklen_RecoInel","", n_ntrklen, st_ntrklen, ed_ntrklen);
 	TH1D *h1d_ntrklen_RecoInel2=new TH1D("h1d_ntrklen_RecoInel2","", n_ntrklen, st_ntrklen, ed_ntrklen);
+	TH1D *h1d_ntrklen_RecoInel3=new TH1D("h1d_ntrklen_RecoInel3","", n_ntrklen, st_ntrklen, ed_ntrklen);
 	TH1D *h1d_ntrklen_RecoStop=new TH1D("h1d_ntrklen_RecoStop","", n_ntrklen, st_ntrklen, ed_ntrklen);
 	TH1D *h1d_ntrklen_RecoStop2=new TH1D("h1d_ntrklen_RecoStop2","", n_ntrklen, st_ntrklen, ed_ntrklen);
 
@@ -162,6 +184,16 @@ void ProtonRecoInelCutStudy::Loop() {
 	TH1D *h1d_trklen_RecoInel2_mideg=new TH1D(Form("h1d_trklen_RecoInel2_mideg"), Form("mideg"), n_b, b_min, b_max);
 	TH1D *h1d_trklen_RecoInel2_midother=new TH1D(Form("h1d_trklen_RecoInel2_midother"), Form("midother"), n_b, b_min, b_max);
 
+	TH1D *h1d_trklen_RecoInel3=new TH1D(Form("h1d_trklen_RecoInel3"), Form("MC default"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_RecoInel3_el=new TH1D(Form("h1d_trklen_RecoInel3_el"), Form("el"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_RecoInel3_inel=new TH1D(Form("h1d_trklen_RecoInel3_inel"), Form("inel"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_RecoInel3_midcosmic=new TH1D(Form("h1d_trklen_RecoInel3_midcosmic"), Form("midcosmic"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_RecoInel3_midpi=new TH1D(Form("h1d_trklen_RecoInel3_midpi"), Form("midpi"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_RecoInel3_midp=new TH1D(Form("h1d_trklen_RecoInel3_midp"), Form("midp"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_RecoInel3_midmu=new TH1D(Form("h1d_trklen_RecoInel3_midmu"), Form("midmu"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_RecoInel3_mideg=new TH1D(Form("h1d_trklen_RecoInel3_mideg"), Form("mideg"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_RecoInel3_midother=new TH1D(Form("h1d_trklen_RecoInel3_midother"), Form("midother"), n_b, b_min, b_max);
+
 	//other pid parameters
 	TH1D *h1d_ntrklen_chi2pid_BQ=new TH1D("h1d_ntrklen_chi2pid_BQ","",1000,0,100);
 	TH1D *h1d_ntrklen_chi2pid_BQ_inel=new TH1D("h1d_ntrklen_chi2pid_BQ_inel","",1000,0,100);
@@ -169,14 +201,47 @@ void ProtonRecoInelCutStudy::Loop() {
 	TH1D *h1d_ntrklen_chi2pid_RecoInel=new TH1D("h1d_ntrklen_chi2pid_RecoInel","",1000,0,100);
 
 	TH1D *h1d_mediandedx_BQ=new TH1D("h1d_mediandedx_BQ","",100,0,10);
-	TH1D *h1d_mediandedx_BQ_inel=new TH1D("h1d_mediandedx_BQ_inel","",100,0,10);
 	TH1D *h1d_mediandedx_BQ_el=new TH1D("h1d_mediandedx_BQ_el","",100,0,10);
+	TH1D *h1d_mediandedx_BQ_inel=new TH1D("h1d_mediandedx_BQ_inel","",100,0,10);
+	TH1D *h1d_mediandedx_BQ_midp=new TH1D("h1d_mediandedx_BQ_midp","",100,0,10);
+	TH1D *h1d_mediandedx_BQ_midcosmic=new TH1D("h1d_mediandedx_BQ_midcosmic","",100,0,10);
+	TH1D *h1d_mediandedx_BQ_midpi=new TH1D("h1d_mediandedx_BQ_midpi","",100,0,10);
+	TH1D *h1d_mediandedx_BQ_midmu=new TH1D("h1d_mediandedx_BQ_midmu","",100,0,10);
+	TH1D *h1d_mediandedx_BQ_mideg=new TH1D("h1d_mediandedx_BQ_mideg","",100,0,10);
+	TH1D *h1d_mediandedx_BQ_midother=new TH1D("h1d_mediandedx_BQ_midother","",100,0,10);
 	TH1D *h1d_mediandedx_RecoInel=new TH1D("h1d_mediandedx_RecoInel","",100,0,10);
 
 	TH1D *h1d_dEdL_BQ=new TH1D("h1d_dEdL_BQ","",100,0,10);
-	TH1D *h1d_dEdL_BQ_inel=new TH1D("h1d_dEdL__BQ_inel","",100,0,10);
 	TH1D *h1d_dEdL_BQ_el=new TH1D("h1d_dEdL_BQ_el","",100,0,10);
+	TH1D *h1d_dEdL_BQ_inel=new TH1D("h1d_dEdL_BQ_inel","",100,0,10);
+	TH1D *h1d_dEdL_BQ_midp=new TH1D("h1d_dEdL_BQ_midp","",100,0,10);
+	TH1D *h1d_dEdL_BQ_midcosmic=new TH1D("h1d_dEdL_BQ_midcosmic","",100,0,10);
+	TH1D *h1d_dEdL_BQ_midpi=new TH1D("h1d_dEdL_BQ_midpi","",100,0,10);
+	TH1D *h1d_dEdL_BQ_midmu=new TH1D("h1d_dEdL_BQ_midmu","",100,0,10);
+	TH1D *h1d_dEdL_BQ_mideg=new TH1D("h1d_dEdL_BQ_mideg","",100,0,10);
+	TH1D *h1d_dEdL_BQ_midother=new TH1D("h1d_dEdL_BQ_midother","",100,0,10);
 	TH1D *h1d_dEdL_RecoInel=new TH1D("h1d_dEdL_RecoInel","",100,0,10);
+
+	//2D dists after Pos+CaloSize+PandoraSlice cut
+	//cosTheta vs ntrklen
+        int n_cosine=100;
+        double cosine_min=0;
+        double cosine_max=1.0;
+	TH2D *ntrklen_cosineTheta_Pos_el=new TH2D("ntrklen_cosineTheta_Pos_el","", n_ntrklen, st_ntrklen, ed_ntrklen, n_cosine, cosine_min, cosine_max); 
+	TH2D *ntrklen_cosineTheta_Pos_inel=new TH2D("ntrklen_cosineTheta_Pos_inel","", n_ntrklen, st_ntrklen, ed_ntrklen, n_cosine, cosine_min, cosine_max);
+	TH2D *ntrklen_cosineTheta_Pos_midp=new TH2D("ntrklen_cosineTheta_Pos_midp","", n_ntrklen, st_ntrklen, ed_ntrklen, n_cosine, cosine_min, cosine_max);
+	//cosTheta vs chi^2 PID
+        TH2D *chi2pid_cosineTheta_Pos_el=new TH2D("chi2pid_cosineTheta_Pos_el","", n_chi2, st_chi2, ed_chi2, n_cosine, cosine_min, cosine_max);
+        TH2D *chi2pid_cosineTheta_Pos_inel=new TH2D("chi2pid_cosineTheta_Pos_inel","", n_chi2, st_chi2, ed_chi2, n_cosine, cosine_min, cosine_max);
+        TH2D *chi2pid_cosineTheta_Pos_midp=new TH2D("chi2pid_cosineTheta_Pos_midp","", n_chi2, st_chi2, ed_chi2, n_cosine, cosine_min, cosine_max);
+
+	//cosTheta vs trklen
+	TH2D *trklen_cosineTheta_Pos_el=new TH2D(Form("trklen_cosineTheta_Pos_el"), Form(""), n_b, b_min, b_max, n_cosine, cosine_min, cosine_max);
+	TH2D *trklen_cosineTheta_Pos_inel=new TH2D(Form("trklen_cosineTheta_Pos_inel"), Form(""), n_b, b_min, b_max, n_cosine, cosine_min, cosine_max);
+	TH2D *trklen_cosineTheta_Pos_midp=new TH2D(Form("trklen_cosineTheta_Pos_midp"), Form(""), n_b, b_min, b_max, n_cosine, cosine_min, cosine_max);
+
+
+
 
 	//------------------------------------------------------------------------------------------------------------//
 
@@ -406,10 +471,46 @@ void ProtonRecoInelCutStudy::Loop() {
 		double ke_trklen_MeV=1000.*ke_trklen; //[unit: MeV]
 		double ke_calo_MeV=0;
 
+
+		//Get true trklen ---------------------------------------------------------------------------------------//
+		double range_true=-999;
+		int key_st = 0;
+		double tmp_z = 9999;
+		//vector<double> true_trklen_accum;
+		//cout<<"beamtrk_z->size():"<<beamtrk_z->size()<<endl;
+		//true_trklen_accum.reserve(beamtrk_z->size()); // initialize true_trklen_accum
+		//cout<<"ck0"<<endl;
+		for (int iz=0; iz<(int)beamtrk_z->size(); iz++) {
+			if (abs(beamtrk_z->at(iz)) < tmp_z){
+				tmp_z = abs(beamtrk_z->at(iz));
+				key_st = iz; // find the point where the beam enters the TPC (find the smallest abs(Z))
+			}
+			//cout<<"ck0/"<<endl;
+			//true_trklen_accum[iz] = 0.; // initialize true_trklen_accum
+			//cout<<"ck0///"<<endl;
+		}
+		//cout<<"ck1"<<endl;
+		for (int iz=key_st+1; iz<(int)beamtrk_z->size(); iz++){
+			if (iz == key_st+1) range_true = 0;
+			range_true += sqrt( pow(beamtrk_x->at(iz)-beamtrk_x->at(iz-1), 2)+
+					pow(beamtrk_y->at(iz)-beamtrk_y->at(iz-1), 2)+	
+					pow(beamtrk_z->at(iz)-beamtrk_z->at(iz-1), 2) );						    	
+			//true_trklen_accum[iz] = range_true;
+		}
+
+		//cout<<"range_true:"<<range_true<<endl;
+		//cout<<"key_st:"<<key_st<<endl;
+		//for (size_t j=0; j<beamtrk_z->size(); ++j) { //MCParticle loop
+		//cout<<"beamtrk_z["<<j<<"]:"<<beamtrk_z->at(j)<<" beamtrk_Eng["<<j<<"]:"<<beamtrk_Eng->at(j)<<" true_trklen_accum["<<j<<"]:"<<true_trklen_accum[j]<<endl;
+		//} //MCParticle loop
+		//Get reco info ----------------------------------------------------------------------------------//
+
+
 		//PID parameter & cut
 		double pid=-99; 
 		double median_dedx=-99;
-		if (IsBQ&&IsCaloSize&&IsPandoraSlice) { //beam quality cut
+		//if (IsBQ&&IsCaloSize&&IsPandoraSlice) { //beam quality cut
+		if (IsCaloSize&&IsPandoraSlice) { //beam quality cut
 			//calo
 			vector<double> trkdedx;
 			vector<double> trkres;
@@ -438,14 +539,79 @@ void ProtonRecoInelCutStudy::Loop() {
 		} //beam quality cut
 
 		//define new reco inel cut ----------------------//
+		//recoinel2
 		bool IsRecoInEL2=false;
 		bool IsRecoStop2=false;
-		if (IsRecoInEL&&pid>3) IsRecoInEL2=true;
+		if (IsRecoInEL&&pid>7.5) IsRecoInEL2=true;
 		if (IsRecoStop&&pid>10) IsRecoInEL2=true;
 
-		if (IsRecoInEL&&pid<=3) IsRecoStop2=true;
-		if (IsRecoStop&&pid<10) IsRecoStop2=true;
+		if (IsRecoInEL&&pid<=7.5) IsRecoStop2=true;
+		if (IsRecoStop&&pid<=10) IsRecoStop2=true;
+
+		//recoinel3
+		bool IsRecoInEL3=false;
+
+		double x1_2d0=0.0328725;
+		double y1_2d0=132.511;
+		double x2_2d0=0.268832;
+		double y2_2d0=55.3046;
+		double m_2d0=(y1_2d0-y2_2d0)/(x1_2d0-x2_2d0);
+		double b_2d0=y1_2d0-m_2d0*x1_2d0;
+
+		double x1_2d=0.461096;
+		double y1_2d=67.9097;
+		double x2_2d=0.764785;
+		double y2_2d=6.85399;
+		double m_2d=(y1_2d-y2_2d)/(x1_2d-x2_2d);
+		double b_2d=y1_2d-m_2d*x1_2d;
+
+		if (IsRecoInEL) {
+			if (norm_trklen<=0.245) {
+				if (pid>=(b_2d0+m_2d0*norm_trklen)) {
+					IsRecoInEL3=true;
+				}
+			}
+			if (norm_trklen>0.245&&norm_trklen<=0.472) {
+				if (pid>=60) {
+					IsRecoInEL3=true;
+				}
+			}
+			if (norm_trklen>0.472) {
+				if (pid>=(b_2d+m_2d*norm_trklen)) {
+					IsRecoInEL3=true;
+				}
+			}
+		}
+		if (IsRecoStop&&pid>10) IsRecoInEL3=true;
 		//-----------------------------------------------//
+
+		if (IsPos&&IsCaloSize&&IsPandoraSlice) { //IsPOs
+			if (cosine_beam_spec_primtrk>0.5&&cosine_beam_spec_primtrk<0.9) { //misID:P rich(cosine>0.5<0.9)
+				ntrklen_chi2pid_Pos->Fill(norm_trklen, pid);
+				if (kinel) ntrklen_chi2pid_Pos_inel->Fill(norm_trklen, pid);
+				if (kel) ntrklen_chi2pid_Pos_el->Fill(norm_trklen, pid);
+				if (kMIDp) ntrklen_chi2pid_Pos_midp->Fill(norm_trklen, pid);
+			} //misID:P rich(cosine>0.5<0.9)
+
+			if (kel) { //true el
+				ntrklen_cosineTheta_Pos_el->Fill(norm_trklen, cosine_beam_spec_primtrk);
+				trklen_cosineTheta_Pos_el->Fill(range_reco, cosine_beam_spec_primtrk);	
+				chi2pid_cosineTheta_Pos_el->Fill(pid, cosine_beam_spec_primtrk);
+			} //true el
+
+			if (kinel) { //true inel
+				ntrklen_cosineTheta_Pos_inel->Fill(norm_trklen, cosine_beam_spec_primtrk);	
+				trklen_cosineTheta_Pos_inel->Fill(range_reco, cosine_beam_spec_primtrk);	
+				chi2pid_cosineTheta_Pos_inel->Fill(pid, cosine_beam_spec_primtrk);
+			} //true inel
+
+			if (kMIDp) { //midP
+				ntrklen_cosineTheta_Pos_midp->Fill(norm_trklen, cosine_beam_spec_primtrk);	
+				trklen_cosineTheta_Pos_midp->Fill(range_reco, cosine_beam_spec_primtrk);	
+				chi2pid_cosineTheta_Pos_midp->Fill(pid, cosine_beam_spec_primtrk);
+			} //midP
+		} //IsPos
+
 
 
 		if (IsBQ&&IsCaloSize&&IsPandoraSlice) { //beam quality cut
@@ -457,6 +623,8 @@ void ProtonRecoInelCutStudy::Loop() {
 			Fill1DHist(h1d_mediandedx_BQ, median_dedx);
 			Fill1DHist(h1d_dEdL_BQ,kereco_calo/range_reco);
 
+			ntruetrklen_chi2pid_BQ->Fill(range_true/csda_val_spec, pid);
+
 			if (kinel) { //true inel
 				ntrklen_chi2pid_BQ_inel->Fill(norm_trklen, pid);
 				Fill1DHist(h1d_chi2pid_BQ_inel, pid);
@@ -465,6 +633,8 @@ void ProtonRecoInelCutStudy::Loop() {
 				Fill1DHist(h1d_ntrklen_chi2pid_BQ_inel, pid/norm_trklen);
 				Fill1DHist(h1d_mediandedx_BQ_inel, median_dedx);
 				Fill1DHist(h1d_dEdL_BQ_inel, kereco_calo/range_reco);
+
+				ntruetrklen_chi2pid_BQ_inel->Fill(range_true/csda_val_spec, pid);	
 			} //true inel
 
 			if (kel) { //true el
@@ -475,6 +645,8 @@ void ProtonRecoInelCutStudy::Loop() {
 				Fill1DHist(h1d_ntrklen_chi2pid_BQ_el, pid/norm_trklen);
 				Fill1DHist(h1d_mediandedx_BQ_el, median_dedx);
 				Fill1DHist(h1d_dEdL_BQ_el, kereco_calo/range_reco);
+
+				ntruetrklen_chi2pid_BQ_el->Fill(range_true/csda_val_spec, pid);	
 			} //true el
 
 			if (kMIDcosmic) { //midcosmic
@@ -482,12 +654,19 @@ void ProtonRecoInelCutStudy::Loop() {
 				Fill1DHist(h1d_chi2pid_BQ_midcosmic, pid);
 				Fill1DHist(h1d_ntrklen_BQ_midcosmic, norm_trklen);
 
+				Fill1DHist(h1d_mediandedx_BQ_midcosmic, median_dedx);
+				Fill1DHist(h1d_dEdL_BQ_midcosmic, kereco_calo/range_reco);
+				ntruetrklen_chi2pid_BQ_midcosmic->Fill(range_true/csda_val_spec, pid);
 			} //midcosmic
 
 			if (kMIDpi) { //midPi
 				ntrklen_chi2pid_BQ_midpi->Fill(norm_trklen, pid);
 				Fill1DHist(h1d_chi2pid_BQ_midpi, pid);
 				Fill1DHist(h1d_ntrklen_BQ_midpi, norm_trklen);
+
+				Fill1DHist(h1d_mediandedx_BQ_midpi, median_dedx);
+				Fill1DHist(h1d_dEdL_BQ_midpi, kereco_calo/range_reco);
+				ntruetrklen_chi2pid_BQ_midpi->Fill(range_true/csda_val_spec, pid);
 
 			} //midPi
 
@@ -496,6 +675,9 @@ void ProtonRecoInelCutStudy::Loop() {
 				Fill1DHist(h1d_chi2pid_BQ_midp, pid);
 				Fill1DHist(h1d_ntrklen_BQ_midp, norm_trklen);
 
+				Fill1DHist(h1d_mediandedx_BQ_midp, median_dedx);
+				Fill1DHist(h1d_dEdL_BQ_midp, kereco_calo/range_reco);
+				ntruetrklen_chi2pid_BQ_midp->Fill(range_true/csda_val_spec, pid);
 			} //midP
 
 			if (kMIDmu) { //midmu
@@ -503,6 +685,9 @@ void ProtonRecoInelCutStudy::Loop() {
 				Fill1DHist(h1d_chi2pid_BQ_midmu, pid);
 				Fill1DHist(h1d_ntrklen_BQ_midmu, norm_trklen);
 
+				Fill1DHist(h1d_mediandedx_BQ_midmu, median_dedx);
+				Fill1DHist(h1d_dEdL_BQ_midmu, kereco_calo/range_reco);
+				ntruetrklen_chi2pid_BQ_midmu->Fill(range_true/csda_val_spec, pid);
 			} //midmu
 
 			if (kMIDeg) { //mideg
@@ -510,12 +695,18 @@ void ProtonRecoInelCutStudy::Loop() {
 				Fill1DHist(h1d_chi2pid_BQ_mideg, pid);
 				Fill1DHist(h1d_ntrklen_BQ_mideg, norm_trklen);
 
+				Fill1DHist(h1d_mediandedx_BQ_mideg, median_dedx);
+				Fill1DHist(h1d_dEdL_BQ_mideg, kereco_calo/range_reco);
+				ntruetrklen_chi2pid_BQ_mideg->Fill(range_true/csda_val_spec, pid);
 			} //mideg
 			if (kMIDother) { //midother
 				ntrklen_chi2pid_BQ_midother->Fill(norm_trklen, pid);
 				Fill1DHist(h1d_chi2pid_BQ_midother, pid);
 				Fill1DHist(h1d_ntrklen_BQ_midother, norm_trklen);
 
+				Fill1DHist(h1d_mediandedx_BQ_midother, median_dedx);
+				Fill1DHist(h1d_dEdL_BQ_midother, kereco_calo/range_reco);
+				ntruetrklen_chi2pid_BQ_midother->Fill(range_true/csda_val_spec, pid);
 			} //midother
 
 			if (IsRecoInEL) { //reco inel
@@ -553,8 +744,25 @@ void ProtonRecoInelCutStudy::Loop() {
 				if (kMIDeg) Fill1DHist(h1d_trklen_RecoInel2_mideg, range_reco);
 				if (kMIDother) Fill1DHist(h1d_trklen_RecoInel2_midother, range_reco);
 
-
 			} //reco inel2
+
+			if (IsRecoInEL3) { //reco inel3
+				ntrklen_chi2pid_RecoInel3->Fill(norm_trklen, pid);
+				Fill1DHist(h1d_chi2pid_RecoInel3, pid);
+				Fill1DHist(h1d_ntrklen_RecoInel3, norm_trklen);
+
+				Fill1DHist(h1d_trklen_RecoInel3,range_reco);
+				if (kel) Fill1DHist(h1d_trklen_RecoInel3_el, range_reco);
+				if (kinel) Fill1DHist(h1d_trklen_RecoInel3_inel, range_reco);
+				if (kMIDcosmic) Fill1DHist(h1d_trklen_RecoInel3_midcosmic, range_reco);
+				if (kMIDpi) Fill1DHist(h1d_trklen_RecoInel3_midpi, range_reco);
+				if (kMIDp) Fill1DHist(h1d_trklen_RecoInel3_midp, range_reco);
+				if (kMIDmu) Fill1DHist(h1d_trklen_RecoInel3_midmu, range_reco);
+				if (kMIDeg) Fill1DHist(h1d_trklen_RecoInel3_mideg, range_reco);
+				if (kMIDother) Fill1DHist(h1d_trklen_RecoInel3_midother, range_reco);
+
+			} //reco inel3
+
 
 			if (IsRecoStop) { //reco stop
 				Fill1DHist(h1d_chi2pid_RecoStop, pid);
@@ -577,6 +785,8 @@ void ProtonRecoInelCutStudy::Loop() {
 		if (IsPandoraSlice&&IsCaloSize) n_calsz_tot++;
 		if (IsPandoraSlice&&IsCaloSize&&IsBQ) n_bq_tot++;
 		if (IsPandoraSlice&&IsCaloSize&&IsBQ&&IsRecoInEL) n_recoinel_tot++;
+		if (IsPandoraSlice&&IsCaloSize&&IsBQ&&IsRecoInEL2) n_recoinel2_tot++;
+		if (IsPandoraSlice&&IsCaloSize&&IsBQ&&IsRecoInEL3) n_recoinel3_tot++;
 
 
 		//[0]pure inel
@@ -591,6 +801,12 @@ void ProtonRecoInelCutStudy::Loop() {
 						if (IsRecoInEL) { //reco inel
 							n_inel_recoinel++;
 						} //reco inel
+						if (IsRecoInEL2) { //reco inel2
+							n_inel_recoinel2++;
+						} //reco inel2
+						if (IsRecoInEL3) { //reco inel3
+							n_inel_recoinel3++;
+						} //reco inel3
 					} //bq
 				} //calosz
 			} //pandora
@@ -608,6 +824,12 @@ void ProtonRecoInelCutStudy::Loop() {
 						if (IsRecoInEL) { //reco inel
 							n_el_recoinel++;
 						} //reco inel
+						if (IsRecoInEL2) { //reco inel2
+							n_el_recoinel2++;
+						} //reco inel2
+						if (IsRecoInEL3) { //reco inel3
+							n_el_recoinel3++;
+						} //reco inel3
 					} //bq
 				} //calosz
 			} //pandora
@@ -625,6 +847,12 @@ void ProtonRecoInelCutStudy::Loop() {
 						if (IsRecoInEL) { //reco inel
 							n_midcosmic_recoinel++;
 						} //reco inel
+						if (IsRecoInEL2) { //reco inel2
+							n_midcosmic_recoinel2++;
+						} //reco inel2
+						if (IsRecoInEL3) { //reco inel3
+							n_midcosmic_recoinel3++;
+						} //reco inel3
 					} //bq
 				} //calosz
 			} //pandora
@@ -642,6 +870,12 @@ void ProtonRecoInelCutStudy::Loop() {
 						if (IsRecoInEL) { //reco inel
 							n_midpi_recoinel++;
 						} //reco inel
+						if (IsRecoInEL2) { //reco inel2
+							n_midpi_recoinel2++;
+						} //reco inel2
+						if (IsRecoInEL3) { //reco inel3
+							n_midpi_recoinel3++;
+						} //reco inel3
 					} //bq
 				} //calosz
 			} //pandora
@@ -659,6 +893,12 @@ void ProtonRecoInelCutStudy::Loop() {
 						if (IsRecoInEL) { //reco inel
 							n_midp_recoinel++;
 						} //reco inel
+						if (IsRecoInEL2) { //reco inel2
+							n_midp_recoinel2++;
+						} //reco inel2
+						if (IsRecoInEL3) { //reco inel3
+							n_midp_recoinel3++;
+						} //reco inel3
 					} //bq
 				} //calosz
 			} //pandora
@@ -676,6 +916,12 @@ void ProtonRecoInelCutStudy::Loop() {
 						if (IsRecoInEL) { //reco inel
 							n_midmu_recoinel++;
 						} //reco inel
+						if (IsRecoInEL2) { //reco inel2
+							n_midmu_recoinel2++;
+						} //reco inel2
+						if (IsRecoInEL3) { //reco inel3
+							n_midmu_recoinel3++;
+						} //reco inel3
 					} //bq
 				} //calosz
 			} //pandora
@@ -693,6 +939,12 @@ void ProtonRecoInelCutStudy::Loop() {
 						if (IsRecoInEL) { //reco inel
 							n_mideg_recoinel++;
 						} //reco inel
+						if (IsRecoInEL2) { //reco inel2
+							n_mideg_recoinel2++;
+						} //reco inel2
+						if (IsRecoInEL3) { //reco inel3
+							n_mideg_recoinel3++;
+						} //reco inel3
 					} //bq
 				} //calosz
 			} //pandora
@@ -710,6 +962,12 @@ void ProtonRecoInelCutStudy::Loop() {
 						if (IsRecoInEL) { //reco inel
 							n_midother_recoinel++;
 						} //reco inel
+						if (IsRecoInEL2) { //reco inel2
+							n_midother_recoinel2++;
+						} //reco inel2
+						if (IsRecoInEL3) { //reco inel3
+							n_midother_recoinel3++;
+						} //reco inel3
 					} //bq
 				} //calosz
 			} //pandora
@@ -788,6 +1046,16 @@ void ProtonRecoInelCutStudy::Loop() {
 	cout<<"n_midother_recoinel2"<<n_midother_recoinel2<<endl;
 	cout<<"n_diff_recoinel2:"<<n_recoinel2_tot-(n_el_recoinel2+n_inel_recoinel2+n_midcosmic_recoinel2+n_midpi_recoinel2+n_midp_recoinel2+n_midmu_recoinel2+n_mideg_recoinel2+n_midother_recoinel2)<<endl;
 
+	cout<<"\nn_recoinel3_tot:"<<n_recoinel3_tot<<endl;
+	cout<<"n_el_recoinel3:"<<n_el_recoinel3<<endl;
+	cout<<"n_inel_recoinel3:"<<n_inel_recoinel3<<endl;
+	cout<<"n_midcosmic_recoinel3:"<<n_midcosmic_recoinel3<<endl;
+	cout<<"n_midpi_recoinel3:"<<n_midpi_recoinel3<<endl;
+	cout<<"n_midp_recoinel3:"<<n_midp_recoinel3<<endl;
+	cout<<"n_midmu_recoinel3:"<<n_midmu_recoinel3<<endl;
+	cout<<"n_mideg_recoinel3:"<<n_mideg_recoinel3<<endl;
+	cout<<"n_midother_recoinel3"<<n_midother_recoinel3<<endl;
+	cout<<"n_diff_recoinel3:"<<n_recoinel3_tot-(n_el_recoinel3+n_inel_recoinel3+n_midcosmic_recoinel3+n_midpi_recoinel3+n_midp_recoinel3+n_midmu_recoinel3+n_mideg_recoinel3+n_midother_recoinel3)<<endl;
 
 
 	//save results ---------------------------------------------------------//
@@ -801,12 +1069,25 @@ void ProtonRecoInelCutStudy::Loop() {
 	ntrklen_chi2pid_BQ_midmu->Write();
 	ntrklen_chi2pid_BQ_mideg->Write();
 	ntrklen_chi2pid_BQ_midother->Write();
+
 	ntrklen_chi2pid_RecoInel->Write();
 	ntrklen_chi2pid_RecoInel2->Write();
+	ntrklen_chi2pid_RecoInel3->Write();
+
+	ntruetrklen_chi2pid_BQ->Write();
+	ntruetrklen_chi2pid_BQ_inel->Write();
+	ntruetrklen_chi2pid_BQ_el->Write();
+	ntruetrklen_chi2pid_BQ_midcosmic->Write();
+	ntruetrklen_chi2pid_BQ_midpi->Write();
+	ntruetrklen_chi2pid_BQ_midp->Write();
+	ntruetrklen_chi2pid_BQ_midmu->Write();
+	ntruetrklen_chi2pid_BQ_mideg->Write();
+	ntruetrklen_chi2pid_BQ_midother->Write();
 
 	h1d_chi2pid_BQ->Write();
 	h1d_chi2pid_RecoInel->Write();
 	h1d_chi2pid_RecoInel2->Write();
+	h1d_chi2pid_RecoInel3->Write();
 	h1d_chi2pid_RecoStop->Write();
 	h1d_chi2pid_RecoStop2->Write();
 
@@ -822,6 +1103,8 @@ void ProtonRecoInelCutStudy::Loop() {
 	h1d_ntrklen_BQ->Write();
 	h1d_ntrklen_RecoInel->Write();
 	h1d_ntrklen_RecoInel2->Write();
+	h1d_ntrklen_RecoInel3->Write();
+
 	h1d_ntrklen_RecoStop->Write();
 	h1d_ntrklen_RecoStop2->Write();
 
@@ -855,6 +1138,16 @@ void ProtonRecoInelCutStudy::Loop() {
 	h1d_trklen_RecoInel2_mideg->Write();
 	h1d_trklen_RecoInel2_midother->Write();
 
+	h1d_trklen_RecoInel3->Write();
+	h1d_trklen_RecoInel3_el->Write();
+	h1d_trklen_RecoInel3_inel->Write();
+	h1d_trklen_RecoInel3_midcosmic->Write();
+	h1d_trklen_RecoInel3_midpi->Write();
+	h1d_trklen_RecoInel3_midp->Write();
+	h1d_trklen_RecoInel3_midmu->Write();
+	h1d_trklen_RecoInel3_mideg->Write();
+	h1d_trklen_RecoInel3_midother->Write();
+
 	h1d_ntrklen_chi2pid_BQ->Write();
 	h1d_ntrklen_chi2pid_BQ_inel->Write();
 	h1d_ntrklen_chi2pid_BQ_el->Write();
@@ -862,17 +1155,43 @@ void ProtonRecoInelCutStudy::Loop() {
 
 
 	h1d_mediandedx_BQ->Write();
-	h1d_mediandedx_BQ_inel->Write();
 	h1d_mediandedx_BQ_el->Write();
+	h1d_mediandedx_BQ_inel->Write();
+	h1d_mediandedx_BQ_midp->Write();
+	h1d_mediandedx_BQ_midcosmic->Write();
+	h1d_mediandedx_BQ_midpi->Write();
+	h1d_mediandedx_BQ_midmu->Write();
+	h1d_mediandedx_BQ_mideg->Write();
+	h1d_mediandedx_BQ_midother->Write();
 	h1d_mediandedx_RecoInel->Write();
 
 	h1d_dEdL_BQ->Write();
-	h1d_dEdL_BQ_inel->Write();
 	h1d_dEdL_BQ_el->Write();
+	h1d_dEdL_BQ_inel->Write();
+	h1d_dEdL_BQ_midp->Write();
+	h1d_dEdL_BQ_midcosmic->Write();
+	h1d_dEdL_BQ_midpi->Write();
+	h1d_dEdL_BQ_midmu->Write();
+	h1d_dEdL_BQ_mideg->Write();
+	h1d_dEdL_BQ_midother->Write();
 	h1d_dEdL_RecoInel->Write();
 
+	ntrklen_chi2pid_Pos->Write();
+	ntrklen_chi2pid_Pos_inel->Write();
+	ntrklen_chi2pid_Pos_el->Write();
+	ntrklen_chi2pid_Pos_midp->Write();
 
+	ntrklen_cosineTheta_Pos_el->Write();
+	ntrklen_cosineTheta_Pos_inel->Write();
+	ntrklen_cosineTheta_Pos_midp->Write();
 
+	trklen_cosineTheta_Pos_el->Write();
+	trklen_cosineTheta_Pos_inel->Write();
+	trklen_cosineTheta_Pos_midp->Write();
+
+	chi2pid_cosineTheta_Pos_el->Write();
+	chi2pid_cosineTheta_Pos_inel->Write();
+	chi2pid_cosineTheta_Pos_midp->Write();
 
 	fout->Close();
 
