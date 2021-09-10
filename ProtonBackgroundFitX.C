@@ -452,7 +452,7 @@ void ProtonBackgroundFit::Loop() {
 		//reco_trklen_accum[iz] = range_reco;
 		//zreco_lenreco.push_back(make_pair(zreco_widreco[iz].first, range_reco));
 		//}
-		cout<<"range_reco:"<<range_reco<<endl;
+		//cout<<"range_reco:"<<range_reco<<endl;
 
 		//Reco stopping/Inel p cut ---------------------------------------------------------------------------------------------------------//
 		bool IsRecoStop=false;
@@ -503,8 +503,8 @@ void ProtonBackgroundFit::Loop() {
 			//} //loop over all beam hits
 		} 
 		if (key_reach_tpc!=-99) { is_beam_at_ff=true; }
-		cout<<"key_reach_tpc:"<<key_reach_tpc<<endl;	
-		cout<<"is_beam_at_ff:"<<is_beam_at_ff<<endl;
+		//cout<<"key_reach_tpc:"<<key_reach_tpc<<endl;	
+		//cout<<"is_beam_at_ff:"<<is_beam_at_ff<<endl;
 
 		double KE_ff=0;
 		//if (is_beam_at_ff) KE_ff=1000.*beamtrk_Eng->at(key_reach_tpc); //unit:MeV
@@ -533,6 +533,42 @@ void ProtonBackgroundFit::Loop() {
 		//(MC/data) vs reco Slice ID using bkg-rich sample
 		//[1]misID:p rich sample
 		if (IsPos&&IsCaloSize&&IsPandoraSlice) { //if Pos
+			//cosTheta
+			for (int j=0; j<nthinslices+2; ++j) { //slice loop
+				if (j==(reco_sliceID+1)) {
+					h_cosTheta_Pos[j]->Fill(cosine_beam_spec_primtrk);
+					if (kinel) h_cosTheta_Pos_inel[j]->Fill(cosine_beam_spec_primtrk);
+					if (kel) h_cosTheta_Pos_el[j]->Fill(cosine_beam_spec_primtrk);
+					if (kMIDcosmic) h_cosTheta_Pos_midcosmic[j]->Fill(cosine_beam_spec_primtrk);
+					if (kMIDpi) h_cosTheta_Pos_midpi[j]->Fill(cosine_beam_spec_primtrk);
+					if (kMIDp) h_cosTheta_Pos_midp[j]->Fill(cosine_beam_spec_primtrk);
+					if (kMIDmu) h_cosTheta_Pos_midmu[j]->Fill(cosine_beam_spec_primtrk);
+					if (kMIDeg) h_cosTheta_Pos_mideg[j]->Fill(cosine_beam_spec_primtrk);
+					if (kMIDother) h_cosTheta_Pos_midother[j]->Fill(cosine_beam_spec_primtrk);
+				}
+			} //slice loop
+			h_cosTheta_Pos_all->Fill(cosine_beam_spec_primtrk);
+			if (kinel) h_cosTheta_Pos_all_inel->Fill(cosine_beam_spec_primtrk);
+			if (kel) h_cosTheta_Pos_all_el->Fill(cosine_beam_spec_primtrk);
+			if (kMIDcosmic) h_cosTheta_Pos_all_midcosmic->Fill(cosine_beam_spec_primtrk);
+			if (kMIDpi) h_cosTheta_Pos_all_midpi->Fill(cosine_beam_spec_primtrk);
+			if (kMIDp) h_cosTheta_Pos_all_midp->Fill(cosine_beam_spec_primtrk);
+			if (kMIDmu) h_cosTheta_Pos_all_midmu->Fill(cosine_beam_spec_primtrk);
+			if (kMIDeg) h_cosTheta_Pos_all_mideg->Fill(cosine_beam_spec_primtrk);
+			if (kMIDother) h_cosTheta_Pos_all_midother->Fill(cosine_beam_spec_primtrk);
+
+			if (reco_sliceID>0) { 
+				h_cosTheta_Pos_all_nosliceidOne->Fill(cosine_beam_spec_primtrk);
+				if (kinel) h_cosTheta_Pos_all_nosliceidOne_inel->Fill(cosine_beam_spec_primtrk);
+				if (kel) h_cosTheta_Pos_all_nosliceidOne_el->Fill(cosine_beam_spec_primtrk);
+				if (kMIDcosmic) h_cosTheta_Pos_all_nosliceidOne_midcosmic->Fill(cosine_beam_spec_primtrk);
+				if (kMIDpi) h_cosTheta_Pos_all_nosliceidOne_midpi->Fill(cosine_beam_spec_primtrk);
+				if (kMIDp) h_cosTheta_Pos_all_nosliceidOne_midp->Fill(cosine_beam_spec_primtrk);
+				if (kMIDmu) h_cosTheta_Pos_all_nosliceidOne_midmu->Fill(cosine_beam_spec_primtrk);
+				if (kMIDeg) h_cosTheta_Pos_all_nosliceidOne_mideg->Fill(cosine_beam_spec_primtrk);
+				if (kMIDother) h_cosTheta_Pos_all_nosliceidOne_midother->Fill(cosine_beam_spec_primtrk);
+			}
+
 			if (cosine_beam_spec_primtrk<=0.9) { //misID:p-rich sample
 				h_recosliceid_cosLE09->Fill(reco_sliceID);
 				if (kinel) h_recosliceid_cosLE09_inel->Fill(reco_sliceID);
@@ -543,6 +579,17 @@ void ProtonBackgroundFit::Loop() {
 				if (kMIDmu) h_recosliceid_cosLE09_midmu->Fill(reco_sliceID);
 				if (kMIDeg) h_recosliceid_cosLE09_mideg->Fill(reco_sliceID);
 				if (kMIDother) h_recosliceid_cosLE09_midother->Fill(reco_sliceID);
+
+				h_truesliceid_cosLE09->Fill(true_sliceID);
+				if (kinel) h_truesliceid_cosLE09_inel->Fill(true_sliceID);
+				if (kel) h_truesliceid_cosLE09_el->Fill(true_sliceID);
+				if (kMIDcosmic) h_truesliceid_cosLE09_midcosmic->Fill(true_sliceID);
+				if (kMIDpi) h_truesliceid_cosLE09_midpi->Fill(true_sliceID);
+				if (kMIDp) h_truesliceid_cosLE09_midp->Fill(true_sliceID);
+				if (kMIDmu) h_truesliceid_cosLE09_midmu->Fill(true_sliceID);
+				if (kMIDeg) h_truesliceid_cosLE09_mideg->Fill(true_sliceID);
+				if (kMIDother) h_truesliceid_cosLE09_midother->Fill(true_sliceID);
+
 			} //misID:p-rich sample
 			else { //cosine_theta>0.9
 				h_recosliceid_cosGT09->Fill(reco_sliceID);
@@ -556,9 +603,36 @@ void ProtonBackgroundFit::Loop() {
 				if (kMIDother) h_recosliceid_cosGT09_midother->Fill(reco_sliceID);
 			} //cosine_theta>0.9
 
+
+			if (cosine_beam_spec_primtrk<=0.8) { //misID:p-rich sample
+				h_recosliceid_cosLE08->Fill(reco_sliceID);
+				if (kinel) h_recosliceid_cosLE08_inel->Fill(reco_sliceID);
+				if (kel) h_recosliceid_cosLE08_el->Fill(reco_sliceID);
+				if (kMIDcosmic) h_recosliceid_cosLE08_midcosmic->Fill(reco_sliceID);
+				if (kMIDpi) h_recosliceid_cosLE08_midpi->Fill(reco_sliceID);
+				if (kMIDp) h_recosliceid_cosLE08_midp->Fill(reco_sliceID);
+				if (kMIDmu) h_recosliceid_cosLE08_midmu->Fill(reco_sliceID);
+				if (kMIDeg) h_recosliceid_cosLE08_mideg->Fill(reco_sliceID);
+				if (kMIDother) h_recosliceid_cosLE08_midother->Fill(reco_sliceID);
+			} //misID:p-rich sample
+
+
+			if (cosine_beam_spec_primtrk<=0.7) { //misID:p-rich sample
+				h_recosliceid_cosLE07->Fill(reco_sliceID);
+				if (kinel) h_recosliceid_cosLE07_inel->Fill(reco_sliceID);
+				if (kel) h_recosliceid_cosLE07_el->Fill(reco_sliceID);
+				if (kMIDcosmic) h_recosliceid_cosLE07_midcosmic->Fill(reco_sliceID);
+				if (kMIDpi) h_recosliceid_cosLE07_midpi->Fill(reco_sliceID);
+				if (kMIDp) h_recosliceid_cosLE07_midp->Fill(reco_sliceID);
+				if (kMIDmu) h_recosliceid_cosLE07_midmu->Fill(reco_sliceID);
+				if (kMIDeg) h_recosliceid_cosLE07_mideg->Fill(reco_sliceID);
+				if (kMIDother) h_recosliceid_cosLE07_midother->Fill(reco_sliceID);
+			} //misID:p-rich sample
+
 		} //if Pos
 
 		//some ke calc. -------------------------------------------------------------------------------------//
+/*
 		if (IsBQ&&IsCaloSize&&IsPandoraSlice) { //if calo size not empty
 			if (IsRecoStop) { //reco_stop 
 				for (size_t h=0; h<primtrk_dedx->size(); ++h) { //loop over reco hits of a track
@@ -584,7 +658,7 @@ void ProtonBackgroundFit::Loop() {
 				} //loop over reco hits of a track
 			} //reco_stop
 		} //if calo size not empty
-
+*/
 
 
 
