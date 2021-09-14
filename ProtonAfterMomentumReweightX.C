@@ -287,7 +287,10 @@ void ProtonAfterMomentumReweight::Loop() {
 		double kereco_range=0;
 		double kereco_range2=0;
 		vector<double> EDept;
+		double pid=-99;
 		if (IsCaloSize) { //if calo size not empty
+		  vector<double> trkdedx;
+		  vector<double> trkres;
 		  for (size_t h=0; h<primtrk_dedx->size(); ++h) { //loop over reco hits of a given track
 			double hitx_reco=primtrk_hitx->at(h);
 			double hity_reco=primtrk_hity->at(h);
@@ -321,8 +324,13 @@ void ProtonAfterMomentumReweight::Loop() {
 			kereco_range+=pitch*dedx_predict(resrange_reco);
 			kereco_range2+=pitch*(double)gr_predict_dedx_resrange->Eval(resrange_reco);
 
+			trkdedx.push_back(cali_dedx);
+			trkres.push_back(resrange_reco);
+
 		  } //loop over reco hits of a given track
 		  //range_reco=primtrk_range->at(0);
+
+		  pid=chi2pid(trkdedx,trkres); //pid using stopping proton hypothesis
 		} //if calo size not empty
 
 
@@ -333,8 +341,18 @@ void ProtonAfterMomentumReweight::Loop() {
 		//double range_reco=-99; if (!primtrk_range->empty()) range_reco=primtrk_range->at(0); //reco primary trklen
 		double csda_val_spec=csda_range_vs_mom_sm->Eval(mom_beam_spec);
 
-		if ((range_reco/csda_val_spec)>=min_norm_trklen_csda&&(range_reco/csda_val_spec)<max_norm_trklen_csda) IsRecoStop=true;
-		if ((range_reco/csda_val_spec)<min_norm_trklen_csda) IsRecoInEL=true;
+		//if ((range_reco/csda_val_spec)>=min_norm_trklen_csda&&(range_reco/csda_val_spec)<max_norm_trklen_csda) IsRecoStop=true;
+		//if ((range_reco/csda_val_spec)<min_norm_trklen_csda) IsRecoInEL=true;
+
+		if ((range_reco/csda_val_spec)<min_norm_trklen_csda) { //inel region
+			if (pid>pid_1) IsRecoInEL=true; 
+			if (pid<=pid_1) IsRecoStop=true; 
+		} //inel region
+		if ((range_reco/csda_val_spec)>=min_norm_trklen_csda&&(range_reco/csda_val_spec)<max_norm_trklen_csda) { //stopping p region
+			if (pid>pid_2) IsRecoInEL=true; 
+			if (pid<=pid_2) IsRecoStop=true;
+		} //stopping p region
+
 
 		//kinetic energies
 		double ke_beam_spec=p2ke(mom_beam_spec); //ke_beam_spec [GeV]

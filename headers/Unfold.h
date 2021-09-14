@@ -95,7 +95,8 @@ void Unfold::SaveHistograms(){
   pur_Int->Write("pur_Int");
 
   pur_Inc = (TH1D*)pur_num_Inc->Clone("pur_Inc");
-  pur_Inc->Divide(pur_den);
+  //pur_Inc->Divide(pur_den);
+  pur_Inc->Divide(pur_den_Inc);
   pur_Inc->Write("pur_Inc");
 
   TH2D *hint = (TH2D*)response_SliceID_Int.Hresponse();

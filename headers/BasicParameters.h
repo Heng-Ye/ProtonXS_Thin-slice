@@ -17,7 +17,7 @@ double NA=6.02214076e23;
 double MAr=39.95; //gmol
 double Density = 1.39; // g/cm^3
 
-//Misc. Cut values
+//Misc. Cut values --------------------------//
 //XY-Cut
 //double mean_x=-29.73; //prod4 mc
 //double mean_y=422.4;
@@ -43,7 +43,7 @@ double dev_y_data=1.5*4.364; //prod4a data
 //dedx cut
 double dedx_min=30.;
 
-//beam quality cut
+//beam quality cut -----------------------------------------------------------------//
 double min1_dx=0.; //new p3
 double min2_dx=2.0; //new p3
 double min1_dy=-2.0; //new p3
@@ -51,21 +51,45 @@ double min2_dy=2.0; //new p3
 double min1_dz=-.5; //new p3
 double min2_dz=1.5; //new p3
 
-double min1_z=5.10816e-02-3.*2.13366e-01; //p4 
-double min2_z=5.10816e-02+3.*2.13366e-01; //p4
-double min1_y=4.21863e+02-3.*4.11359e+00; //p4
-double min2_y=4.21863e+02+3.*4.11359e+00; //p4
-double min1_x=-3.05895e+01-3.*4.69242e+00; //p4  
-double min2_x=-3.05895e+01+3.*4.69242e+00; //p4
+double mean_StartZ=4.98555e-02; //prod4a
+double sigma_StartZ=2.06792e-01; //prod4a
+double mean_StartY=4.22400e+02; //prod4a
+double sigma_StartY=4.18191e+00; //prod4a
+double mean_StartX=-3.07693e+01; //prod4a
+double sigma_StartX=4.75347e+00; //prod4a
 
-double cosine_beam_primtrk_min=(9.92194e-01)-4.*(3.96921e-03); //new p4 [spec]
+//double min1_z=5.10816e-02-3.*2.13366e-01; //p4 
+//double min2_z=5.10816e-02+3.*2.13366e-01; //p4
+//double min1_y=4.21863e+02-3.*4.11359e+00; //p4
+//double min2_y=4.21863e+02+3.*4.11359e+00; //p4
+//double min1_x=-3.05895e+01-3.*4.69242e+00; //p4  
+//double min2_x=-3.05895e+01+3.*4.69242e+00; //p4
+
+double min1_z=mean_StartZ-3.*sigma_StartZ; //p4a
+double min2_z=mean_StartZ+3.*sigma_StartZ; //p4a
+double min1_y=mean_StartY-3.*sigma_StartY; //p4a
+double min2_y=mean_StartY+3.*sigma_StartY; //p4a
+double min1_x=mean_StartX-3.*sigma_StartX; //p4a 
+double min2_x=mean_StartX+3.*sigma_StartX; //p4a
+
+double dx_min=-3.; double dx_max=3.;
+double dy_min=-3.; double dy_max=3.;
+double dz_min=-3.; double dz_max=3.;
+double dxy_min=-1.; double dxy_max=3.;
+double costh_min = 0.96; double costh_max = 2; //prod4a
+
+double cosine_beam_primtrk_min=(9.92194e-01)-4.*(3.96921e-03); //p4 [spec]
 
 
 //stopping proton cut
-double mean_norm_trklen_csda=9.32064e-01; //prod4 spec
-double sigma_norm_trklen_csda=1.32800e-02; //prod4 spec
+//double mean_norm_trklen_csda=9.32064e-01; //prod4 spec
+//double sigma_norm_trklen_csda=1.32800e-02; //prod4 spec
+double mean_norm_trklen_csda=9.01289e-01; //prod4a (spec)
+double sigma_norm_trklen_csda=7.11431e-02; //prod4a (spec)
 double min_norm_trklen_csda=mean_norm_trklen_csda-2.*sigma_norm_trklen_csda;
 double max_norm_trklen_csda=mean_norm_trklen_csda+3.*sigma_norm_trklen_csda;
 
-
+//new inel cut using chi^2 info
+double pid_1=7.5;
+double pid_2=10.;
 

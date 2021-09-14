@@ -1,6 +1,6 @@
 #include "THStack.h"
 
-void plot_reco_cosineTheta(TString fin, TString fin_data, TString fout_path) {
+void plot_reco_cosineTheta(TString fin, TString fin_data, TString rep, TString fout_path) {
 
 	gROOT->LoadMacro(" ~/protoDUNEStyle.C"); //load pDUNE style
 	gROOT->SetStyle("protoDUNEStyle");
@@ -12,22 +12,22 @@ void plot_reco_cosineTheta(TString fin, TString fin_data, TString fout_path) {
 	
 	//data ---------------------------------------------------------//
 	TFile *f_data = TFile::Open(fin_data.Data());
-	TH1D *cosine_data=(TH1D *)f_data->Get(Form("reco_cosineTheta"));
+	TH1D *cosine_data=(TH1D *)f_data->Get(Form("%s",rep.Data()));
 	int n_data=cosine_data->Integral();
 
 	//mc -----------------------------------------------------------------------------//
 	TFile *f0 = TFile::Open(fin.Data());
 
-	TH1D *cosine_inel=(TH1D *)f0->Get(Form("reco_cosineTheta_inel"));
-	TH1D *cosine_el=(TH1D *)f0->Get(Form("reco_cosineTheta_el"));
+	TH1D *cosine_inel=(TH1D *)f0->Get(Form("%s_inel",rep.Data()));
+	TH1D *cosine_el=(TH1D *)f0->Get(Form("%s_el",rep.Data()));
 
-	TH1D *cosine_midcosmic=(TH1D *)f0->Get(Form("reco_cosineTheta_midcosmic"));
-	TH1D *cosine_midpi=(TH1D *)f0->Get(Form("reco_cosineTheta_midpi"));
-	TH1D *cosine_midp=(TH1D *)f0->Get(Form("reco_cosineTheta_midp"));
+	TH1D *cosine_midcosmic=(TH1D *)f0->Get(Form("%s_midcosmic",rep.Data()));
+	TH1D *cosine_midpi=(TH1D *)f0->Get(Form("%s_midpi",rep.Data()));
+	TH1D *cosine_midp=(TH1D *)f0->Get(Form("%s_midp",rep.Data()));
 
-	TH1D *cosine_midmu=(TH1D *)f0->Get(Form("reco_cosineTheta_midmu"));
-	TH1D *cosine_mideg=(TH1D *)f0->Get(Form("reco_cosineTheta_mideg"));
-	TH1D *cosine_midother=(TH1D *)f0->Get(Form("reco_cosineTheta_midother"));
+	TH1D *cosine_midmu=(TH1D *)f0->Get(Form("%s_midmu",rep.Data()));
+	TH1D *cosine_mideg=(TH1D *)f0->Get(Form("%s_mideg",rep.Data()));
+	TH1D *cosine_midother=(TH1D *)f0->Get(Form("%s_midother",rep.Data()));
 
 	cosine_inel->SetFillColor(2); cosine_inel->SetLineColor(2);
 	cosine_el->SetFillColor(4); cosine_el->SetLineColor(4);
@@ -80,10 +80,16 @@ void plot_reco_cosineTheta(TString fin, TString fin_data, TString fout_path) {
 	c_->Divide(1,1);
 	c_->cd(1);
 	c_->cd(1)->SetLogy();
+	//c_->cd(1)->SetLogy(0);
         c_->SetGridx();
         c_->SetGridy();
 
-	TH2D *f2d=new TH2D("f2d",Form("%s","CaloSize"),100,0.9,1,92000,0,92000);
+	//TH2D *f2d=new TH2D("f2d",Form("%s","CaloSize"),100,0.9,1,92000,0,92000);
+	//TH2D *f2d=new TH2D("f2d",Form("%s","Pos"),100,0.4,1.,92000,0,92000); //logy
+	//TH2D *f2d=new TH2D("f2d",Form("%s","Pos"),100,0.4,1.,50,0,50); //liny
+	TH2D *f2d=new TH2D("f2d",Form("%s","CaloSize"),100,0.4,1.,92000,0,92000); //logy
+	//TH2D *f2d=new TH2D("f2d",Form("%s","CaloSize"),100,0.4,1.,50,0,50); //liny
+	//TH2D *f2d=new TH2D("f2d",Form("%s","CaloSize"),100,0.,1.,2000,0,2000);
 	f2d->GetXaxis()->SetTitle("cos#Theta");
 
         //TPad *pad1 = new TPad(Form("pad1"), Form("pad1"), 0, 0., 1, 1.);
@@ -117,6 +123,10 @@ void plot_reco_cosineTheta(TString fin, TString fin_data, TString fout_path) {
 	leg->SetNColumns(3);
 	leg->Draw();
 
-	c_->Print(Form("%s/cosinereco_%s.eps",fout_path.Data(),"calosz"));
+	//c_->Print(Form("%s/cosinereco_%s.eps",fout_path.Data(),"calosz"));
+	//c_->Print(Form("%s/cosinereco_%s_allrange.eps",fout_path.Data(),"calosz"));
+	//c_->Print(Form("%s/cosinereco_%s_allrange_liny.eps",fout_path.Data(),"calosz"));
+	c_->Print(Form("%s/%s_allrange_logy.eps",fout_path.Data(),rep.Data()));
+	//c_->Print(Form("%s/%s_allrange_liny.eps",fout_path.Data(),rep.Data()));
 
 }

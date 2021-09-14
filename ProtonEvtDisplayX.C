@@ -1,5 +1,5 @@
-#define ProtonBackgroundFit_cxx
-#include "ProtonBackgroundFit.h"
+#define ProtonEvtDisplay_cxx
+#include "ProtonEvtDisplay.h"
 
 #include <TH2.h>
 #include <TH1.h>
@@ -53,7 +53,7 @@
 using namespace std;
 using namespace ROOT::Math;
 
-void ProtonBackgroundFit::Loop() {
+void ProtonEvtDisplay::Loop() {
 	if (fChain == 0) return;
 
 	//various counters ---------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -81,7 +81,7 @@ void ProtonBackgroundFit::Loop() {
 	//Unfold uf(nthinslices+2, -1, nthinslices+1);
 
 	//ThinSlice config. ---------------------------------------------------------------------------------------------------//
-	SetOutputFileName(Form("prod4a_bkgstudy_dx%dcm_%dslcs_largerbin.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4a_bkgstudy_dx%dcm_%dslcs_largerbin.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4a_bkgstudy_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4a_thinslice_dx%dcm_%dslcs_1stHitKEff.root", name_thinslicewidth, nthinslices)); //output file name
 
@@ -534,101 +534,65 @@ void ProtonBackgroundFit::Loop() {
 		//(MC/data) vs reco Slice ID using bkg-rich sample
 		//[1]misID:p rich sample
 		if (IsPos&&IsCaloSize&&IsPandoraSlice) { //if Pos
-			//cosTheta
-			for (int j=0; j<nthinslices+2; ++j) { //slice loop
-				if (j==(reco_sliceID+1)) {
-					h_cosTheta_Pos[j]->Fill(cosine_beam_spec_primtrk);
-					if (kinel) h_cosTheta_Pos_inel[j]->Fill(cosine_beam_spec_primtrk);
-					if (kel) h_cosTheta_Pos_el[j]->Fill(cosine_beam_spec_primtrk);
-					if (kMIDcosmic) h_cosTheta_Pos_midcosmic[j]->Fill(cosine_beam_spec_primtrk);
-					if (kMIDpi) h_cosTheta_Pos_midpi[j]->Fill(cosine_beam_spec_primtrk);
-					if (kMIDp) h_cosTheta_Pos_midp[j]->Fill(cosine_beam_spec_primtrk);
-					if (kMIDmu) h_cosTheta_Pos_midmu[j]->Fill(cosine_beam_spec_primtrk);
-					if (kMIDeg) h_cosTheta_Pos_mideg[j]->Fill(cosine_beam_spec_primtrk);
-					if (kMIDother) h_cosTheta_Pos_midother[j]->Fill(cosine_beam_spec_primtrk);
-				}
-			} //slice loop
-			h_cosTheta_Pos_all->Fill(cosine_beam_spec_primtrk);
-			if (kinel) h_cosTheta_Pos_all_inel->Fill(cosine_beam_spec_primtrk);
-			if (kel) h_cosTheta_Pos_all_el->Fill(cosine_beam_spec_primtrk);
-			if (kMIDcosmic) h_cosTheta_Pos_all_midcosmic->Fill(cosine_beam_spec_primtrk);
-			if (kMIDpi) h_cosTheta_Pos_all_midpi->Fill(cosine_beam_spec_primtrk);
-			if (kMIDp) h_cosTheta_Pos_all_midp->Fill(cosine_beam_spec_primtrk);
-			if (kMIDmu) h_cosTheta_Pos_all_midmu->Fill(cosine_beam_spec_primtrk);
-			if (kMIDeg) h_cosTheta_Pos_all_mideg->Fill(cosine_beam_spec_primtrk);
-			if (kMIDother) h_cosTheta_Pos_all_midother->Fill(cosine_beam_spec_primtrk);
+			if (kinel&&cosine_beam_spec_primtrk<0.4&&reco_sliceID<=1) {
+				TString tit=Form("run%d evt:%d trackID:%d",run,event,primaryID);
+				TString fig_out=Form("/dune/data2/users/hyliao/evt_display/proton_cosTheta/trueinel_cosThetalt0.4/run%d_event%d_trackID%d_pdg%d_trklen%.2fcm.png",run,event,primaryID,beamtrackPdg,range_reco);
 
-			if (reco_sliceID>0) { 
-				h_cosTheta_Pos_all_nosliceidOne->Fill(cosine_beam_spec_primtrk);
-				if (kinel) h_cosTheta_Pos_all_nosliceidOne_inel->Fill(cosine_beam_spec_primtrk);
-				if (kel) h_cosTheta_Pos_all_nosliceidOne_el->Fill(cosine_beam_spec_primtrk);
-				if (kMIDcosmic) h_cosTheta_Pos_all_nosliceidOne_midcosmic->Fill(cosine_beam_spec_primtrk);
-				if (kMIDpi) h_cosTheta_Pos_all_nosliceidOne_midpi->Fill(cosine_beam_spec_primtrk);
-				if (kMIDp) h_cosTheta_Pos_all_nosliceidOne_midp->Fill(cosine_beam_spec_primtrk);
-				if (kMIDmu) h_cosTheta_Pos_all_nosliceidOne_midmu->Fill(cosine_beam_spec_primtrk);
-				if (kMIDeg) h_cosTheta_Pos_all_nosliceidOne_mideg->Fill(cosine_beam_spec_primtrk);
-				if (kMIDother) h_cosTheta_Pos_all_nosliceidOne_midother->Fill(cosine_beam_spec_primtrk);
+				gStyle->SetOptStat(0); //no statistics box
+				gStyle->SetFrameBorderSize(3);
+
+
+				TCanvas *c1 = new TCanvas(Form("c1"),tit.Data(),1600,800);
+				//cnt_canvas++;
+				//c1->SetName(Form("c_%d",cnt_canvas));
+				c1->SetTitle(tit.Data());
+				c1->Divide(2,1);
+
+				//draw track in y-z view
+				//after entering TPC
+				TGraph *gr_trk_yz=new TGraph(primtrk_hitz->size(), &primtrk_hitz->at(0), &primtrk_hity->at(0));
+				TGraph *gr_trk_xz=new TGraph(primtrk_hitz->size(), &primtrk_hitz->at(0), &primtrk_hitx->at(0));
+
+				gr_trk_yz->SetMarkerStyle(20);
+				gr_trk_xz->SetMarkerStyle(20);
+				gr_trk_yz->SetMarkerColor(1);
+				gr_trk_xz->SetMarkerColor(1);
+
+				//before tpc
+				TGraph *gr_btrk_yz=new TGraph(key_reach_tpc+1, &beamtrk_z->at(0), &beamtrk_y->at(0));
+				TGraph *gr_btrk_xz=new TGraph(key_reach_tpc+1, &beamtrk_z->at(0), &beamtrk_x->at(0));
+				gr_btrk_yz->SetMarkerStyle(20);
+				gr_btrk_xz->SetMarkerStyle(20);
+				gr_btrk_yz->SetMarkerColor(4);
+				gr_btrk_xz->SetMarkerColor(4);
+
+				TH2D *h2d_yz=new TH2D("h2d_yz","",520,-150,110,120,420-30,420+30); //bkg
+				c1->cd(1);
+				h2d_yz->GetXaxis()->SetTitle("Z [cm]");
+				h2d_yz->GetYaxis()->SetTitle("Y [cm]");
+				h2d_yz->SetTitle(tit.Data());
+				h2d_yz->Draw();
+				gr_trk_yz->Draw("p same");
+				gr_btrk_yz->Draw("p same");
+
+				TH2D *h2d_xz=new TH2D("h2d_xz","",520,-150,110,120,-30-30,-30+30);
+				c1->cd(2);
+				h2d_xz->GetXaxis()->SetTitle("Z [cm]");
+				h2d_xz->GetYaxis()->SetTitle("X [cm]");
+				TString str_right;
+				TString str_right=Form("trklen:%.1f cm | SliceID:%d", range_reco, reco_sliceID);
+				h2d_xz->SetTitle(str_right.Data());
+				h2d_xz->Draw();
+				gr_trk_xz->Draw("p same");
+				gr_btrk_xz->Draw("p same");
+				c1->Modified(); c1->Update();
+				c1->Print(fig_out.Data());
+
+
 			}
 
-			if (cosine_beam_spec_primtrk<=0.9) { //misID:p-rich sample
-				h_recosliceid_cosLE09->Fill(reco_sliceID);
-				if (kinel) h_recosliceid_cosLE09_inel->Fill(reco_sliceID);
-				if (kel) h_recosliceid_cosLE09_el->Fill(reco_sliceID);
-				if (kMIDcosmic) h_recosliceid_cosLE09_midcosmic->Fill(reco_sliceID);
-				if (kMIDpi) h_recosliceid_cosLE09_midpi->Fill(reco_sliceID);
-				if (kMIDp) h_recosliceid_cosLE09_midp->Fill(reco_sliceID);
-				if (kMIDmu) h_recosliceid_cosLE09_midmu->Fill(reco_sliceID);
-				if (kMIDeg) h_recosliceid_cosLE09_mideg->Fill(reco_sliceID);
-				if (kMIDother) h_recosliceid_cosLE09_midother->Fill(reco_sliceID);
-
-				h_truesliceid_cosLE09->Fill(true_sliceID);
-				if (kinel) h_truesliceid_cosLE09_inel->Fill(true_sliceID);
-				if (kel) h_truesliceid_cosLE09_el->Fill(true_sliceID);
-				if (kMIDcosmic) h_truesliceid_cosLE09_midcosmic->Fill(true_sliceID);
-				if (kMIDpi) h_truesliceid_cosLE09_midpi->Fill(true_sliceID);
-				if (kMIDp) h_truesliceid_cosLE09_midp->Fill(true_sliceID);
-				if (kMIDmu) h_truesliceid_cosLE09_midmu->Fill(true_sliceID);
-				if (kMIDeg) h_truesliceid_cosLE09_mideg->Fill(true_sliceID);
-				if (kMIDother) h_truesliceid_cosLE09_midother->Fill(true_sliceID);
-
-			} //misID:p-rich sample
-			else { //cosine_theta>0.9
-				h_recosliceid_cosGT09->Fill(reco_sliceID);
-				if (kinel) h_recosliceid_cosGT09_inel->Fill(reco_sliceID);
-				if (kel) h_recosliceid_cosGT09_el->Fill(reco_sliceID);
-				if (kMIDcosmic) h_recosliceid_cosGT09_midcosmic->Fill(reco_sliceID);
-				if (kMIDpi) h_recosliceid_cosGT09_midpi->Fill(reco_sliceID);
-				if (kMIDp) h_recosliceid_cosGT09_midp->Fill(reco_sliceID);
-				if (kMIDmu) h_recosliceid_cosGT09_midmu->Fill(reco_sliceID);
-				if (kMIDeg) h_recosliceid_cosGT09_mideg->Fill(reco_sliceID);
-				if (kMIDother) h_recosliceid_cosGT09_midother->Fill(reco_sliceID);
-			} //cosine_theta>0.9
 
 
-			if (cosine_beam_spec_primtrk<=0.8) { //misID:p-rich sample
-				h_recosliceid_cosLE08->Fill(reco_sliceID);
-				if (kinel) h_recosliceid_cosLE08_inel->Fill(reco_sliceID);
-				if (kel) h_recosliceid_cosLE08_el->Fill(reco_sliceID);
-				if (kMIDcosmic) h_recosliceid_cosLE08_midcosmic->Fill(reco_sliceID);
-				if (kMIDpi) h_recosliceid_cosLE08_midpi->Fill(reco_sliceID);
-				if (kMIDp) h_recosliceid_cosLE08_midp->Fill(reco_sliceID);
-				if (kMIDmu) h_recosliceid_cosLE08_midmu->Fill(reco_sliceID);
-				if (kMIDeg) h_recosliceid_cosLE08_mideg->Fill(reco_sliceID);
-				if (kMIDother) h_recosliceid_cosLE08_midother->Fill(reco_sliceID);
-			} //misID:p-rich sample
-
-
-			if (cosine_beam_spec_primtrk<=0.7) { //misID:p-rich sample
-				h_recosliceid_cosLE07->Fill(reco_sliceID);
-				if (kinel) h_recosliceid_cosLE07_inel->Fill(reco_sliceID);
-				if (kel) h_recosliceid_cosLE07_el->Fill(reco_sliceID);
-				if (kMIDcosmic) h_recosliceid_cosLE07_midcosmic->Fill(reco_sliceID);
-				if (kMIDpi) h_recosliceid_cosLE07_midpi->Fill(reco_sliceID);
-				if (kMIDp) h_recosliceid_cosLE07_midp->Fill(reco_sliceID);
-				if (kMIDmu) h_recosliceid_cosLE07_midmu->Fill(reco_sliceID);
-				if (kMIDeg) h_recosliceid_cosLE07_mideg->Fill(reco_sliceID);
-				if (kMIDother) h_recosliceid_cosLE07_midother->Fill(reco_sliceID);
-			} //misID:p-rich sample
 
 		} //if Pos
 
@@ -669,7 +633,7 @@ void ProtonBackgroundFit::Loop() {
 		} //main entry loop
 
 		//save results -------//
-		SaveHistograms();
+		//SaveHistograms();
 
 
 

@@ -104,7 +104,8 @@ void study_bkg_using_cosineTheta(TString fin, TString fin_data, TString rep, TSt
 
 	float xmin=0.4;
 	float xmax=1.;
-	TH2D *f2d=new TH2D("f2d",Form("%s","Pos"),100,xmin,xmax,92000,0,92000); //logy
+	float ymax=92000;
+	TH2D *f2d=new TH2D("f2d",Form("%s",""),100,xmin,xmax,92000,0,ymax); //logy
 
 	f2d->Draw();
 	f2d->GetXaxis()->SetLabelSize(0);
@@ -128,6 +129,20 @@ void study_bkg_using_cosineTheta(TString fin, TString fin_data, TString rep, TSt
 
 	leg->SetNColumns(3);
 	leg->Draw();
+
+        //pDUNE Logo
+        float logo_y=ymax+9000;
+        TLatex **txt_pdune1=new TLatex*[1];
+        txt_pdune1[0]=new TLatex(xmin, logo_y, Form("#bf{DUNE:ProtoDUNE-SP}"));
+        txt_pdune1[0]->SetTextColor(1);
+        txt_pdune1[0]->Draw();
+        //
+        //Beam Logo
+        TLatex **txt_p1=new TLatex*[1];
+        txt_p1[0]=new TLatex(xmax-.185, logo_y, Form("Protons (1 GeV/c)"));
+        txt_p1[0]->SetTextColor(1);
+        txt_p1[0]->SetTextSize(0.05);
+        txt_p1[0]->Draw();
 
 
 	c_->cd();
@@ -155,6 +170,8 @@ void study_bkg_using_cosineTheta(TString fin, TString fin_data, TString rep, TSt
 	line1->SetLineWidth(2);
 	line1->Draw("same");
 	R->Draw("ep same");
+
+
 
 	//c_->Print(Form("%s/cosinereco_%s.eps",fout_path.Data(),"calosz"));
 	//c_->Print(Form("%s/cosinereco_%s_allrange.eps",fout_path.Data(),"calosz"));

@@ -1,5 +1,10 @@
+//#include "../headers/BasicFunctions.h"
+#include <vector>
+#include <iostream>
+#include "../headers/TemplateFitter.h"
 
-void plot_bkgfit_recosliceid(TString fin_data, TString fin, TString fout_path, TString fout_filename, TString rep, TString title1) {
+
+void plot_bkgfit_recosliceid(TString fin, TString fin_data, TString fout_path, TString fout_filename, TString rep, TString title1) {
 
 	//TString rep="h_recosliceid_allevts_cuts";
 	TString title=Form("%s; Reco SliceID; Events", title1.Data());
@@ -17,7 +22,7 @@ void plot_bkgfit_recosliceid(TString fin_data, TString fin, TString fout_path, T
 
 	//get data ----------------------------------------------------//
 	TFile *f_data = TFile::Open(fin_data.Data());
-	TH1D *h1d_data=(TH1D *)fin_data->Get(Form("%s",rep.Data()));
+	TH1D *h1d_data=(TH1D *)f_data->Get(Form("%s",rep.Data()));
 	int n_data=h1d_data->Integral();
 	cout<<"n_data:"<<n_data<<endl;
 
@@ -41,6 +46,16 @@ void plot_bkgfit_recosliceid(TString fin_data, TString fin, TString fout_path, T
 	h1d_mc->Add(h1d_mideg);
 	h1d_mc->Add(h1d_midother);
 
+	TH1D *MC_2=(TH1D *)f_mc->Get(Form("%s_midp", rep.Data())); 
+	TH1D *MC_1=(TH1D *)h1d_inel->Clone(); MC_1->Sumw2();
+	MC_1->Add(h1d_el);
+	MC_1->Add(h1d_midcosmic);
+	MC_1->Add(h1d_midpi);
+	MC_1->Add(h1d_midmu);
+	MC_1->Add(h1d_mideg);
+	MC_1->Add(h1d_midother);
+
+
 	h1d_inel->SetFillColor(2); h1d_inel->SetLineColor(2);
 	h1d_el->SetFillColor(4); h1d_el->SetLineColor(4);
 	h1d_midp->SetFillColor(3); h1d_midp->SetLineColor(3);
@@ -62,6 +77,10 @@ void plot_bkgfit_recosliceid(TString fin_data, TString fin, TString fout_path, T
 
 	double norm_mc=(double)n_data/(double)n_mc;
 
+
+
+
+
 	h1d_inel->Scale(norm_mc);
 	h1d_el->Scale(norm_mc);
 	h1d_midcosmic->Scale(norm_mc);
@@ -71,6 +90,10 @@ void plot_bkgfit_recosliceid(TString fin_data, TString fin, TString fout_path, T
 	h1d_mideg->Scale(norm_mc);
 	h1d_midother->Scale(norm_mc);
 	h1d_mc->Scale(norm_mc);
+
+	MC_1->Scale(norm_mc);
+	MC_2->Scale(norm_mc);
+
 
 	//h1d_mc->GetXaxis()->SetTitle("#chi^{2}PID");
 	
@@ -87,18 +110,34 @@ void plot_bkgfit_recosliceid(TString fin_data, TString fin, TString fout_path, T
 	hs->Add(h1d_mideg);
 	hs->Add(h1d_midother);
 
-	TCanvas *c_ = new TCanvas("c_", "c_", 900,600);
+        //data/MC -----------------------------------------//
+        TH1D *R=(TH1D*)h1d_data->Clone();
+        R->Divide(h1d_data, h1d_mc);
+        //-------------------------------------------------//
+
+	TCanvas *c_ = new TCanvas("c_", "c_", 900,700);
+        TPad *pad1 = new TPad("pad1","pad1",0,0.29,1.,1.);
+        pad1->SetBottomMargin(0.03);
+        pad1->SetGridx();
+        pad1->SetGridy();
+        pad1->Draw();
+        pad1->cd();
+        //pad1->SetLogy();
+
+
+
 	float xmin=-2;
 	float xmax=26;
-        float ymax=4100;
+        float ymax=90;
 
 	TH2D *f2d=new TH2D("f2d",Form("%s",""),100,xmin,xmax,3000,0,ymax); //logy
 	f2d->SetTitle(title.Data());
-	f2d->GetYaxis()->SetTitleOffset(1.3);
+	f2d->GetYaxis()->SetTitleOffset(1.);
 	f2d->Draw();
 	hs->Draw("same hist");
+	h1d_data->Draw("ep same");
 
-	TLegend *leg = new TLegend(0.2,0.5,0.8,0.9);
+	TLegend *leg = new TLegend(0.2,0.65,0.8,0.9);
 	leg->SetFillStyle(0);
 	leg->AddEntry(h1d_data, "Data","ep");
 	leg->AddEntry(h1d_inel, "Inel","f");
@@ -115,8 +154,57 @@ void plot_bkgfit_recosliceid(TString fin_data, TString fin, TString fout_path, T
 	leg->SetNColumns(3);
 	leg->Draw();
 
+
+        c_->cd();
+        TPad *pad2 = new TPad("pad2","pad2",0,0,1,0.3);
+        pad2->SetTopMargin(0.02);
+        pad2->SetBottomMargin(0.25);
+        pad2->SetGridx();
+        pad2->SetGridy();
+        pad2->Draw();
+        pad2->cd();
+
+        //TH2D *f2d2=new TH2D("f2d2",Form("%s","Pos"),100,xmin,xmax,64,0,6.4); //liny
+        TH2D *f2d2=new TH2D("f2d2",Form("%s","Pos"),100,xmin,xmax,64,0,2.1); //liny
+        f2d2->SetTitle(";Reco SliceID;Data/MC");
+        f2d2->GetXaxis()->SetLabelSize(0.1);
+        f2d2->GetYaxis()->SetLabelSize(0.1);
+
+        f2d2->GetXaxis()->SetTitleSize(0.1);
+        f2d2->GetYaxis()->SetTitleSize(0.1);
+        f2d2->GetYaxis()->SetTitleOffset(.5);
+        f2d2->Draw();
+        TLine *line1=new TLine(xmin,1,xmax,1);
+        line1->SetLineColor(7);
+        line1->SetLineWidth(2);
+        line1->Draw("same");
+        R->Draw("ep same");
+
+
+
 	c_->Print(Form("%s/%s.eps",fout_path.Data(), fout_filename.Data()));
 
+
+/*
+	//best-fit	
+  	TemplateFitter fitter;
+		
+	//Min.(h0-h1-s*h2)
+	
+	//h0:data
+	//h1:mc(mc except misID:p)
+	//h2:mc(misID:p)
+	vector<double> scal_midp;
+	vector<double> err_scal_midp;
+			
+	fitter.SetHistograms(h1d_data, MC_1, MC_2);
+    	//fitter.SetFitRange(4,-1);
+    	fitter.Fit();
+	scal_midp.push_back(fitter.GetPar());
+    	err_scal_midp.push_back(fitter.GetParError());
+
+	cout<<"scal_midp:"<<scal_midp.at(0)<<" +- "<<err_scal_midp.at(0)<<endl;
+*/
 
 
 }

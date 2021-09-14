@@ -4,8 +4,8 @@
 
 void plot_2d_ntrklen_cosineTheta() {
 	TString rep="Pos";
-	TString title=";Proton Track Length/CSDA range[a.u.]; cos#theta[a.u.]";	
-	TString fig_out="ntrklen_cosTheta_";
+	TString title=";Proton Track Length/CSDA range; cos#theta";	
+	TString fig_out="ntrklen_cosTheta";
 
 	gROOT->LoadMacro(" ~/protoDUNEStyle.C"); //load pDUNE style
 	gROOT->SetStyle("protoDUNEStyle");
@@ -65,16 +65,6 @@ void plot_2d_ntrklen_cosineTheta() {
 
 
 
-	TCanvas *c3=new TCanvas(Form("c3"),"",900, 600);
-	gStyle->SetTitleX(0.5);
-	gStyle->SetTitleAlign(23);
-	c3->Divide(1,1);
-	c3->cd(1);
-	h2d_inel->SetTitle(";Proton Track Length/CSDA; #chi^{2} PID [a.u.]");
-	h2d_inel->Draw("");
-	h2d_midp->SetMarkerSize(0.4);
-	h2d_midp->Draw("same");
-	c3->Print(Form("./plots_recoinel/%s_%s_inel_midp.eps", fig_out.Data(), rep.Data()));	
 
 
 

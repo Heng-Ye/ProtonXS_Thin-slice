@@ -69,6 +69,32 @@ void study_bkg_using_chi2pid(TString fin_mc, TString fin_data, TString rep, TStr
 	cout<<"n_mc:"<<n_mc<<endl;
 	cout<<"h1d_mc->Integral():"<<h1d_mc->Integral()<<endl;
 
+	//rebin histograms
+	int n_rb=2;
+	h1d_inel->Rebin(n_rb);
+	h1d_el->Rebin(n_rb);
+	h1d_midcosmic->Rebin(n_rb);
+	h1d_midpi->Rebin(n_rb);
+	h1d_midp->Rebin(n_rb);
+	h1d_midmu->Rebin(n_rb);
+	h1d_mideg->Rebin(n_rb);
+	h1d_midother->Rebin(n_rb);
+	h1d_mc->Rebin(n_rb);
+	h1d_data->Rebin(n_rb);
+
+	h1d_data->Scale(1./(double)n_rb);
+	h1d_mc->Scale(1./(double)n_rb);
+	h1d_midother->Scale(1./(double)n_rb);
+	h1d_mideg->Scale(1./(double)n_rb);
+	h1d_midmu->Scale(1./(double)n_rb);
+	h1d_midp->Scale(1./(double)n_rb);
+	h1d_midpi->Scale(1./(double)n_rb);
+	h1d_midcosmic->Scale(1./(double)n_rb);
+	h1d_el->Scale(1./(double)n_rb);
+	h1d_inel->Scale(1./(double)n_rb);
+
+
+
 	//data/MC -----------------------------------------//
 	TH1D *R=(TH1D*)h1d_data->Clone();
 	R->Divide(h1d_data, h1d_mc);
@@ -94,12 +120,16 @@ void study_bkg_using_chi2pid(TString fin_mc, TString fin_data, TString rep, TStr
 	pad1->SetLogy();
 
 	float xmin=0.;
-	float xmax=20;
-        float ymax=3000;
+	//float xmax=20;
+	float xmax=40;
+        float ymax=3000; //logy
+        //float ymax=550; //logy
 
 	TH2D *f2d=new TH2D("f2d",Form("%s",""),100,xmin,xmax,3000,0,ymax); //logy
 	f2d->Draw();
 	f2d->GetXaxis()->SetLabelSize(0);
+	
+	
 	hs->Draw("hist same");
 	//h1d_mc->Draw("hist same");
 	h1d_data->Draw("ep same");
@@ -130,7 +160,8 @@ void study_bkg_using_chi2pid(TString fin_mc, TString fin_data, TString rep, TStr
         //
         //Beam Logo
         TLatex **txt_p1=new TLatex*[1];
-        txt_p1[0]=new TLatex(xmax-6.3, logo_y, Form("Protons (1 GeV/c)"));
+        //txt_p1[0]=new TLatex(xmax-6.3, logo_y, Form("Protons (1 GeV/c)")); //x:0-20
+        txt_p1[0]=new TLatex(xmax-12.3, logo_y, Form("Protons (1 GeV/c)")); //x:0-40
         txt_p1[0]->SetTextColor(1);
         txt_p1[0]->SetTextSize(0.05);
         txt_p1[0]->Draw();
@@ -162,10 +193,9 @@ void study_bkg_using_chi2pid(TString fin_mc, TString fin_data, TString rep, TStr
 	line1->Draw("same");
 	R->Draw("ep same");
 
-	//c_->Print(Form("%s/cosinereco_%s.eps",fout_path.Data(),"calosz"));
-	//c_->Print(Form("%s/cosinereco_%s_allrange.eps",fout_path.Data(),"calosz"));
-	//c_->Print(Form("%s/cosinereco_%s_allrange_liny.eps",fout_path.Data(),"calosz"));
-	c_->Print(Form("%s/bkg_study_%s_allrange_logy.eps",fout_path.Data(),rep.Data()));
+	//c_->Print(Form("%s/bkg_study_%s_allrange_logy.eps",fout_path.Data(),rep.Data()));
+	c_->Print(Form("%s/bkg_study_%s_0-40_rb_logy.eps",fout_path.Data(),rep.Data()));
+	//c_->Print(Form("%s/bkg_study_%s_allrange_liny.eps",fout_path.Data(),rep.Data()));
 
 
 

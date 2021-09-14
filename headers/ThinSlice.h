@@ -32,8 +32,26 @@ TH1D *h_truesliceid_inelastic_all;
 TH1D *h_truesliceid_inelastic_uf;
 TH1D *h_truesliceid_inelastic_cuts;
 TH1D *h_recosliceid_allevts_cuts;
+TH1D *h_recosliceid_allevts_cuts_inel;
+TH1D *h_recosliceid_allevts_cuts_el;
+TH1D *h_recosliceid_allevts_cuts_midcosmic;
+TH1D *h_recosliceid_allevts_cuts_midpi;
+TH1D *h_recosliceid_allevts_cuts_midp;
+TH1D *h_recosliceid_allevts_cuts_midmu;
+TH1D *h_recosliceid_allevts_cuts_mideg;
+TH1D *h_recosliceid_allevts_cuts_midother;
+
 TH1D *h_recosliceid_cuts;
 TH1D *h_recosliceid_inelastic_cuts;
+TH1D *h_recosliceid_recoinelastic_cuts;
+TH1D *h_recosliceid_recoinelastic_cuts_inel;
+TH1D *h_recosliceid_recoinelastic_cuts_el;
+TH1D *h_recosliceid_recoinelastic_cuts_midcosmic;
+TH1D *h_recosliceid_recoinelastic_cuts_midpi;
+TH1D *h_recosliceid_recoinelastic_cuts_midp;
+TH1D *h_recosliceid_recoinelastic_cuts_midmu;
+TH1D *h_recosliceid_recoinelastic_cuts_mideg;
+TH1D *h_recosliceid_recoinelastic_cuts_midother;
 
 double true_interactions[nthinslices];
 double true_incidents[nthinslices];
@@ -102,6 +120,7 @@ TH1D *reco_cosineTheta_midmu;
 TH1D *reco_cosineTheta_mideg;
 TH1D *reco_cosineTheta_midother;
 
+TH1D *reco_cosineTheta_Pos; //apply position cut
 TH1D *reco_cosineTheta_Pos_inel; //apply position cut
 TH1D *reco_cosineTheta_Pos_el;
 TH1D *reco_cosineTheta_Pos_midcosmic;
@@ -324,16 +343,54 @@ void BookHistograms() { //BookHistograms
 	h_truesliceid_inelastic_all = new TH1D("h_truesliceid_inelastic_all","h_truesliceid_inelastic_all;True SliceID", nthinslices + 2, -1, nthinslices + 1);
 	h_truesliceid_inelastic_cuts = new TH1D("h_truesliceid_inelastic_cuts","h_truesliceid_inelastic_cuts;True SliceID", nthinslices + 2, -1, nthinslices + 1);
 	h_recosliceid_allevts_cuts = new TH1D("h_recosliceid_allevts_cuts","h_recosliceid_allevts_cuts;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
+	h_recosliceid_allevts_cuts_inel = new TH1D("h_recosliceid_allevts_cuts_inel","h_recosliceid_allevts_cuts_inel;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
+	h_recosliceid_allevts_cuts_el = new TH1D("h_recosliceid_allevts_cuts_el","h_recosliceid_allevts_cuts_el;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
+	h_recosliceid_allevts_cuts_midcosmic = new TH1D("h_recosliceid_allevts_cuts_midcosmic","h_recosliceid_allevts_cuts_midcosmic;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
+	h_recosliceid_allevts_cuts_midpi = new TH1D("h_recosliceid_allevts_cuts_midpi","h_recosliceid_allevts_cuts_midpi;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
+	h_recosliceid_allevts_cuts_midp = new TH1D("h_recosliceid_allevts_cuts_midp","h_recosliceid_allevts_cuts_midp;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
+	h_recosliceid_allevts_cuts_midmu = new TH1D("h_recosliceid_allevts_cuts_midmu","h_recosliceid_allevts_cuts_midmu;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
+	h_recosliceid_allevts_cuts_mideg = new TH1D("h_recosliceid_allevts_cuts_mideg","h_recosliceid_allevts_cuts_mideg;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
+	h_recosliceid_allevts_cuts_midother = new TH1D("h_recosliceid_allevts_cuts_midother","h_recosliceid_allevts_cuts_midother;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
+
+
 	h_recosliceid_cuts = new TH1D("h_recosliceid_cuts","h_recosliceid_cuts;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
 	h_recosliceid_inelastic_cuts = new TH1D("h_recosliceid_inelastic_cuts","h_recosliceid_inelastic_cuts;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
+	h_recosliceid_recoinelastic_cuts = new TH1D("h_recosliceid_recoinelastic_cuts","h_recosliceid_recoinelastic_cuts;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
+	h_recosliceid_recoinelastic_cuts_inel = new TH1D("h_recosliceid_recoinelastic_cuts_inel","h_recosliceid_recoinelastic_cuts_inel;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
+	h_recosliceid_recoinelastic_cuts_el = new TH1D("h_recosliceid_recoinelastic_cuts_el","h_recosliceid_recoinelastic_cuts_el;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
+	h_recosliceid_recoinelastic_cuts_midcosmic = new TH1D("h_recosliceid_recoinelastic_cuts_midcosmic","h_recosliceid_recoinelastic_cuts_midcosmic;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
+	h_recosliceid_recoinelastic_cuts_midpi = new TH1D("h_recosliceid_recoinelastic_cuts_midpi","h_recosliceid_recoinelastic_cuts_midpi;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
+	h_recosliceid_recoinelastic_cuts_midp = new TH1D("h_recosliceid_recoinelastic_cuts_midp","h_recosliceid_recoinelastic_cuts_midp;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
+	h_recosliceid_recoinelastic_cuts_midmu = new TH1D("h_recosliceid_recoinelastic_cuts_midmu","h_recosliceid_recoinelastic_cuts_midmu;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
+	h_recosliceid_recoinelastic_cuts_mideg = new TH1D("h_recosliceid_recoinelastic_cuts_mideg","h_recosliceid_recoinelastic_cuts_mideg;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
+	h_recosliceid_recoinelastic_cuts_midother = new TH1D("h_recosliceid_recoinelastic_cuts_midother","h_recosliceid_recoinelastic_cuts_midother;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
 
 	h_truesliceid_all->Sumw2();
 	h_truesliceid_cuts->Sumw2();
 	h_truesliceid_inelastic_all->Sumw2();
 	h_truesliceid_inelastic_cuts->Sumw2();
 	h_recosliceid_allevts_cuts->Sumw2();
+	h_recosliceid_allevts_cuts_inel->Sumw2();
+	h_recosliceid_allevts_cuts_el->Sumw2();
+	h_recosliceid_allevts_cuts_midcosmic->Sumw2();
+	h_recosliceid_allevts_cuts_midpi->Sumw2();
+	h_recosliceid_allevts_cuts_midp->Sumw2();
+	h_recosliceid_allevts_cuts_midmu->Sumw2();
+	h_recosliceid_allevts_cuts_mideg->Sumw2();
+	h_recosliceid_allevts_cuts_midother->Sumw2();
+
+
 	h_recosliceid_cuts->Sumw2();
 	h_recosliceid_inelastic_cuts->Sumw2();
+	h_recosliceid_recoinelastic_cuts->Sumw2();
+	h_recosliceid_recoinelastic_cuts_inel->Sumw2();
+	h_recosliceid_recoinelastic_cuts_el->Sumw2();
+	h_recosliceid_recoinelastic_cuts_midcosmic->Sumw2();
+	h_recosliceid_recoinelastic_cuts_midpi->Sumw2();
+	h_recosliceid_recoinelastic_cuts_midp->Sumw2();
+	h_recosliceid_recoinelastic_cuts_midmu->Sumw2();
+	h_recosliceid_recoinelastic_cuts_mideg->Sumw2();
+	h_recosliceid_recoinelastic_cuts_midother->Sumw2();
 
 	for (int i = 0; i<nthinslices; ++i){
 		true_interactions[i] = 0;
@@ -403,6 +460,7 @@ void BookHistograms() { //BookHistograms
 	reco_cosineTheta_midother=new TH1D("reco_cosineTheta_midother","", n_cosine, cosine_min, cosine_max); reco_cosineTheta_midother->Sumw2();
 
 
+	reco_cosineTheta_Pos=new TH1D("reco_cosineTheta_Pos", "", n_cosine, cosine_min, cosine_max); reco_cosineTheta_Pos->Sumw2();
 	reco_cosineTheta_Pos_inel=new TH1D("reco_cosineTheta_Pos_inel", "", n_cosine, cosine_min, cosine_max); reco_cosineTheta_Pos_inel->Sumw2();
 	reco_cosineTheta_Pos_el=new TH1D("reco_cosineTheta_Pos_el", "", n_cosine, cosine_min, cosine_max); reco_cosineTheta_Pos_el->Sumw2();
 	reco_cosineTheta_Pos_midcosmic=new TH1D("reco_cosineTheta_Pos_midcosmic", "", n_cosine, cosine_min, cosine_max); reco_cosineTheta_Pos_midcosmic->Sumw2();
@@ -683,7 +741,8 @@ void CalcXS(const Unfold & uf) { //CalcXS
 	gr_truexs->Write("gr_truexs");
 
 	TH1D *hinc = (TH1D*)h_recosliceid_allevts_cuts->Clone("hinc");
-	TH1D *hint = (TH1D*)h_recosliceid_allevts_cuts->Clone("hint");
+	//TH1D *hint = (TH1D*)h_recosliceid_allevts_cuts->Clone("hint");
+	TH1D *hint = (TH1D*)h_recosliceid_recoinelastic_cuts->Clone("hint");
 	hinc->Multiply(uf.pur_Inc);
 	hint->Multiply(uf.pur_Int);
 
