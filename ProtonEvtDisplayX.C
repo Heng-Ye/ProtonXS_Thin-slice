@@ -266,6 +266,7 @@ void ProtonEvtDisplay::Loop() {
 
 		//cosine_theta/cut ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 		bool IsCosine=false;
+		bool IsFlip=false;
 		double cosine_beam_spec_primtrk=-99; 
 		//cosine_beam_spec_primtrk=beamDirx_spec->at(0)*primaryStartDirection[0]+beamDiry_spec->at(0)*primaryStartDirection[1]+beamDirz_spec->at(0)*primaryStartDirection[2]; //cosine between beam_spec and primary trk direction(trk before SCE corr)
 
@@ -285,7 +286,10 @@ void ProtonEvtDisplay::Loop() {
 			//beam_costh = dir.Dot(beamdir);
 			cosine_beam_spec_primtrk=dir.Dot(beamdir);
 
-			if (cosine_beam_spec_primtrk<0) { cosine_beam_spec_primtrk=-1.*cosine_beam_spec_primtrk; }
+			if (cosine_beam_spec_primtrk<0) { 
+				cosine_beam_spec_primtrk=-1.*cosine_beam_spec_primtrk; 
+				IsFlip=true;	
+			}
 			//if (cosine_beam_spec_primtrk>cosine_beam_primtrk_min) { IsCosine=true; }
 			if (cosine_beam_spec_primtrk>costh_min&&cosine_beam_spec_primtrk<costh_max) { IsCosine=true; }
 			//reco_cosineTheta->Fill(cosine_beam_spec_primtrk);
@@ -534,9 +538,11 @@ void ProtonEvtDisplay::Loop() {
 		//(MC/data) vs reco Slice ID using bkg-rich sample
 		//[1]misID:p rich sample
 		if (IsPos&&IsCaloSize&&IsPandoraSlice) { //if Pos
-			if (kinel&&cosine_beam_spec_primtrk<0.4&&reco_sliceID<=1) {
+			if (kinel&&reco_sliceID<=1) {
 				TString tit=Form("run%d evt:%d trackID:%d",run,event,primaryID);
-				TString fig_out=Form("/dune/data2/users/hyliao/evt_display/proton_cosTheta/trueinel_cosThetalt0.4/run%d_event%d_trackID%d_pdg%d_trklen%.2fcm.png",run,event,primaryID,beamtrackPdg,range_reco);
+				TString fig_out;
+				if (cosine_beam_spec_primtrk<0.9) fig_out=Form("/dune/data2/users/hyliao/evt_display/proton_cosTheta/trueinel_cosThetalt0.9/run%d_event%d_trackID%d_pdg%d_trklen%.2fcm_costheta%.2f.png",run,event,primaryID,beamtrackPdg,range_reco,cosine_beam_spec_primtrk);
+				if (cosine_beam_spec_primtrk>=0.9) fig_out=Form("/dune/data2/users/hyliao/evt_display/proton_cosTheta/trueinel_cosThetage0.9/run%d_event%d_trackID%d_pdg%d_trklen%.2fcm_costheta%.2f.png",run,event,primaryID,beamtrackPdg,range_reco,cosine_beam_spec_primtrk);
 
 				gStyle->SetOptStat(0); //no statistics box
 				gStyle->SetFrameBorderSize(3);
@@ -552,21 +558,31 @@ void ProtonEvtDisplay::Loop() {
 				//after entering TPC
 				TGraph *gr_trk_yz=new TGraph(primtrk_hitz->size(), &primtrk_hitz->at(0), &primtrk_hity->at(0));
 				TGraph *gr_trk_xz=new TGraph(primtrk_hitz->size(), &primtrk_hitz->at(0), &primtrk_hitx->at(0));
-
 				gr_trk_yz->SetMarkerStyle(20);
 				gr_trk_xz->SetMarkerStyle(20);
-				gr_trk_yz->SetMarkerColor(1);
-				gr_trk_xz->SetMarkerColor(1);
+				gr_trk_yz->SetMarkerColor(2);
+				gr_trk_xz->SetMarkerColor(2);
+
+				//after entering TPC, trkend
+				TGraph *gr_trkend_yz=new TGraph(1, &primtrk_hitz->at(-1+primtrk_hitz->size()), &primtrk_hity->at(-1+primtrk_hitz->size()));
+				TGraph *gr_trkend_xz=new TGraph(1, &primtrk_hitz->at(-1+primtrk_hitz->size()), &primtrk_hitx->at(-1+primtrk_hitz->size()));
+				gr_trkend_yz->SetMarkerStyle(20);
+				gr_trkend_xz->SetMarkerStyle(20);
+				gr_trkend_yz->SetMarkerColor(3);
+				gr_trkend_xz->SetMarkerColor(3);
+
 
 				//before tpc
-				TGraph *gr_btrk_yz=new TGraph(key_reach_tpc+1, &beamtrk_z->at(0), &beamtrk_y->at(0));
-				TGraph *gr_btrk_xz=new TGraph(key_reach_tpc+1, &beamtrk_z->at(0), &beamtrk_x->at(0));
-				gr_btrk_yz->SetMarkerStyle(20);
-				gr_btrk_xz->SetMarkerStyle(20);
+				//TGraph *gr_btrk_yz=new TGraph(key_reach_tpc+1, &beamtrk_z->at(0), &beamtrk_y->at(0));
+				//TGraph *gr_btrk_xz=new TGraph(key_reach_tpc+1, &beamtrk_z->at(0), &beamtrk_x->at(0));
+				TGraph *gr_btrk_yz=new TGraph(beamtrk_z->size(), &beamtrk_z->at(0), &beamtrk_y->at(0));
+				TGraph *gr_btrk_xz=new TGraph(beamtrk_z->size(), &beamtrk_z->at(0), &beamtrk_x->at(0));
+				gr_btrk_yz->SetMarkerStyle(24);
+				gr_btrk_xz->SetMarkerStyle(24);
 				gr_btrk_yz->SetMarkerColor(4);
 				gr_btrk_xz->SetMarkerColor(4);
 
-				TH2D *h2d_yz=new TH2D("h2d_yz","",520,-150,110,120,420-30,420+30); //bkg
+				TH2D *h2d_yz=new TH2D("h2d_yz","",190,-150,40,120,440-30,440+30); //bkg
 				c1->cd(1);
 				h2d_yz->GetXaxis()->SetTitle("Z [cm]");
 				h2d_yz->GetYaxis()->SetTitle("Y [cm]");
@@ -574,26 +590,27 @@ void ProtonEvtDisplay::Loop() {
 				h2d_yz->Draw();
 				gr_trk_yz->Draw("p same");
 				gr_btrk_yz->Draw("p same");
+				gr_trkend_yz->Draw("p same");
 
-				TH2D *h2d_xz=new TH2D("h2d_xz","",520,-150,110,120,-30-30,-30+30);
+				TH2D *h2d_xz=new TH2D("h2d_xz","",190,-150,40,120,-30-30,-30+30);
 				c1->cd(2);
 				h2d_xz->GetXaxis()->SetTitle("Z [cm]");
 				h2d_xz->GetYaxis()->SetTitle("X [cm]");
 				TString str_right;
-				TString str_right=Form("trklen:%.1f cm | SliceID:%d", range_reco, reco_sliceID);
+				if (IsFlip==false) str_right=Form("reco_trklen:%.1f cm | true_trklen:%.1f cm | SliceID:%d | cos#theta:%.2f", range_reco, range_true, reco_sliceID, cosine_beam_spec_primtrk);
+				if (IsFlip==true) str_right=Form("reco_trklen:%.1f cm | true_trklen:%.1f cm | SliceID:%d | cos#theta:-%.2f", range_reco, range_true, reco_sliceID, cosine_beam_spec_primtrk);
+
 				h2d_xz->SetTitle(str_right.Data());
 				h2d_xz->Draw();
 				gr_trk_xz->Draw("p same");
 				gr_btrk_xz->Draw("p same");
+				gr_trkend_xz->Draw("p same");
+
+
 				c1->Modified(); c1->Update();
 				c1->Print(fig_out.Data());
 
-
 			}
-
-
-
-
 		} //if Pos
 
 		//some ke calc. -------------------------------------------------------------------------------------//
