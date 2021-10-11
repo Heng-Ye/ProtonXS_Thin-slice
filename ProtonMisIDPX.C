@@ -54,6 +54,60 @@
 using namespace std;
 using namespace ROOT::Math;
 
+
+// define the parametric line equation
+void line(double t, const double *p, double &x, double &y, double &z) {
+	// a parametric line is define from 6 parameters but 4 are independent
+	// x0,y0,z0,z1,y1,z1 which are the coordinates of two points on the line
+	// can choose z0 = 0 if line not parallel to x-y plane and z1 = 1;
+	x = p[0] + p[1]*t;
+	y = p[2] + p[3]*t;
+	z = t;
+}
+
+bool first = true;
+
+// function Object to be minimized
+struct SumDistance2 {
+	// the TGraph is a data member of the object
+	TGraph2D *fGraph;
+
+	SumDistance2(TGraph2D *g) : fGraph(g) {}
+
+	// calculate distance line-point
+	double distance2(double x,double y,double z, const double *p) {
+		// distance line point is D= | (xp-x0) cross  ux |
+		// where ux is direction of line and x0 is a point in the line (like t = 0)
+		XYZVector xp(x,y,z);
+		XYZVector x0(p[0], p[2], 0. );
+		XYZVector x1(p[0] + p[1], p[2] + p[3], 1. );
+		XYZVector u = (x1-x0).Unit();
+		double d2 = ((xp-x0).Cross(u)).Mag2();
+		return d2;
+	}
+
+	// implementation of the function to be minimized
+	double operator() (const double *par) {
+		assert(fGraph != 0);
+		double * x = fGraph->GetX();
+		double * y = fGraph->GetY();
+		double * z = fGraph->GetZ();
+		int npoints = fGraph->GetN();
+		double sum = 0;
+		for (int i  = 0; i < npoints; ++i) {
+			double d = distance2(x[i],y[i],z[i],par);
+			sum += d;
+		}
+		if (first) {
+			std::cout << "Total Initial distance square = " << sum << std::endl;
+		}
+		first = false;
+		return sum;
+	}
+
+};
+
+
 void ProtonMisIDP::Loop() {
 	if (fChain == 0) return;
 
@@ -82,7 +136,9 @@ void ProtonMisIDP::Loop() {
 	//Unfold uf(nthinslices+2, -1, nthinslices+1);
 
 	//ThinSlice config. ---------------------------------------------------------------------------------------------------//
-	SetOutputFileName(Form("prod4a_misidpstudy_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4a_misidpstudy_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4a_misidpstudy_tightxy_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
+	SetOutputFileName(Form("prod4a_misidpstudy_dxycut_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
 
 	//book histograms --//
 	BookHistograms();
@@ -327,7 +383,7 @@ void ProtonMisIDP::Loop() {
 		bool IsBQ=false;
 		if (IsCosine&&IsPos) IsBQ=true;
 
-		if (IsPos&&IsCaloSize&&IsPandoraSlice) {
+		//if (IsPos&&IsCaloSize&&IsPandoraSlice) {
 			//Fill1DHist(reco_cosineTheta_Pos, cosine_beam_spec_primtrk);
 			//if (kinel) Fill1DHist(reco_cosineTheta_Pos_inel, cosine_beam_spec_primtrk);
 			//if (kel) Fill1DHist(reco_cosineTheta_Pos_el, cosine_beam_spec_primtrk);
@@ -337,7 +393,7 @@ void ProtonMisIDP::Loop() {
 			//if (kMIDmu) Fill1DHist(reco_cosineTheta_Pos_midmu, cosine_beam_spec_primtrk);
 			//if (kMIDeg) Fill1DHist(reco_cosineTheta_Pos_mideg, cosine_beam_spec_primtrk);
 			//if (kMIDother) Fill1DHist(reco_cosineTheta_Pos_midother, cosine_beam_spec_primtrk);
-		}
+		//}
 
 
 		//reco calorimetry ---------------------------------------------------------------------------//
@@ -414,7 +470,6 @@ void ProtonMisIDP::Loop() {
 				kereco_range+=pitch*dedx_predict(resrange_reco);
 				kereco_range2+=pitch*(double)gr_predict_dedx_resrange->Eval(resrange_reco);
 
-				//if (kinel) rangereco_dedxreco_TrueInEL->Fill(range_reco, cali_dedx);
 				//if (kel) { 
 					//rangereco_dedxreco_TrueEL->Fill(range_reco, cali_dedx);
 					//rr_dedx_truestop->Fill(resrange_reco, cali_dedx);
@@ -423,6 +478,9 @@ void ProtonMisIDP::Loop() {
 				trkdedx.push_back(cali_dedx);
 				trkres.push_back(resrange_reco);
 
+				if (kinel&&IsBQ) h2d_rr_dedx_inel->Fill(resrange_reco, cali_dedx);
+				if (kel&&IsBQ) h2d_rr_dedx_el->Fill(resrange_reco, cali_dedx);
+				if (kMIDp&&IsBQ) h2d_rr_dedx_misidp->Fill(resrange_reco, cali_dedx);
 			} //loop over reco hits of a given track
 
 			pid=chi2pid(trkdedx,trkres); //pid using stopping proton hypothesis
@@ -474,6 +532,91 @@ void ProtonMisIDP::Loop() {
 		} //stopping p region
 
 
+		//distance between projected beam spot at FF and 1st TPC hit ------------------------------------------------------------------------//
+		double zproj_beam=0; //set beam z at ff
+		double yproj_beam=0; //ini. value
+		double xproj_beam=0; //ini. value
+		int n_fit=5; //num of points used for fitting
+		
+                int key_reach_tpc=-99;
+                if (beamtrk_z->size()) {
+                	for (size_t kk=0; kk<beamtrk_z->size(); ++kk) {  //loop over all g4 hits
+                        	double zpos_beam=beamtrk_z->at(kk);
+                                if (zpos_beam>=0) {
+                                	key_reach_tpc=(int)kk;
+                                        break;
+                                }
+                        } //loop over all g4 hits
+			//cout<<"beamtrk_z->size():"<<beamtrk_z->size()<<endl; 
+			//std::cout<<"key_reach_tpc:"<<key_reach_tpc<<std::endl;
+
+			int key_fit_st=0;
+			int key_fit_ed=-1+(int)beamtrk_z->size();
+
+			if ((key_reach_tpc-n_fit)>=0) key_fit_st=key_reach_tpc-n_fit;
+			if (key_reach_tpc!=-99) key_fit_ed=key_reach_tpc; //if reach tpc	
+			//std::cout<<"key_fit_st-ed:"<<key_fit_st<<"-"<<key_fit_ed<<std::endl;
+
+			//start 3D line fit
+			TGraph2D *gr=new TGraph2D();
+			//cout<<"ck0"<<endl;
+   		  	//for (int N=key_fit_st; N<key_fit_ed; N++) {
+   		  	int nsize_fit=n_fit;
+			if ((int)beamtrk_z->size()<=n_fit) nsize_fit=(int)beamtrk_z->size();
+   		  	for (int N=0; N<nsize_fit; N++) {
+				gr->SetPoint(N, beamtrk_x->at(N+key_fit_st), beamtrk_y->at(N+key_fit_st), beamtrk_z->at(N+key_fit_st));
+   		    	}
+			//cout<<"ck1"<<endl;
+			//Initialization of parameters
+			//int N=(int)Z_RECO.size();
+			double ini_p1=(beamtrk_x->at(key_fit_ed)-beamtrk_x->at(key_fit_st))/(beamtrk_z->at(key_fit_ed)-beamtrk_z->at(key_fit_st));
+			double ini_p0=beamtrk_x->at(key_fit_st)-ini_p1*beamtrk_z->at(key_fit_st);
+			double ini_p3=beamtrk_y->at(key_fit_ed)-beamtrk_y->at(key_fit_st);
+			double ini_p2=beamtrk_y->at(key_fit_st)-ini_p3*beamtrk_z->at(key_fit_st);
+			//cout<<"ck2"<<endl;
+
+			ROOT::Fit::Fitter  fitter;
+			// make the functor objet
+			SumDistance2 sdist(gr);
+			ROOT::Math::Functor fcn(sdist,4);
+
+			// set the function and the initial parameter values
+  			double pStart[4]={ini_p0, ini_p1, ini_p2, ini_p3};   
+			fitter.SetFCN(fcn,pStart);
+			//cout<<"ck3"<<endl;
+
+			// set step sizes different than default ones (0.3 times parameter values)
+			//for (int ik = 0; ik < 4; ++ik) fitter.Config().ParSettings(ik).SetStepSize(0.01);
+			for (int ik = 0; ik < 4; ++ik) fitter.Config().ParSettings(ik).SetStepSize(0.01);
+			//cout<<"ck4"<<endl;
+
+			bool ok = fitter.FitFCN();
+			if (!ok) {
+				Error("line3Dfit","Line3D Fit failed");
+				//return 1;
+			}
+			//cout<<"ck5"<<endl;
+				
+			const ROOT::Fit::FitResult & result = fitter.Result();
+			std::cout << "Total final distance square " << result.MinFcnValue() << std::endl;
+			result.Print(std::cout);
+			//cout<<"ck6"<<endl;
+				
+			// get fit parameters
+			const double * parFit = result.GetParams();
+			yproj_beam=result.Parameter(2)+result.Parameter(3)*zproj_beam;
+			xproj_beam=result.Parameter(0)+result.Parameter(1)*zproj_beam;
+			cout<<"ck7"<<endl;
+
+			delete gr;
+
+                }
+
+			cout<<"ck3"<<endl;
+		bool is_beam_at_ff=false; //if the beam reach tpc
+		if (key_reach_tpc!=-99) { is_beam_at_ff=true; }
+
+
 
 		//kinetic energies -------------------------------------------------------------------//
 		//double ke_beam=1000.*p2ke(mom_beam); //ke_beam
@@ -487,9 +630,8 @@ void ProtonMisIDP::Loop() {
 		} //loop over simIDE points
 
 		//First point of MCParticle entering TPC ------------------------------------------------------------------------//
-		bool is_beam_at_ff=false; //if the beam reach tpc
-		int key_reach_tpc=-99;
-		if (beamtrk_z->size()){
+		//int key_reach_tpc=-99;
+		/*if (beamtrk_z->size()){
 			for (size_t kk=0; kk<beamtrk_z->size(); ++kk) {  //loop over all beam hits
 				double zpos_beam=beamtrk_z->at(kk);
 				if (zpos_beam>=0) {
@@ -501,8 +643,7 @@ void ProtonMisIDP::Loop() {
 			//for (size_t kk=0; kk<beamtrk_z->size(); ++kk) {  //loop over all beam hits
 			//cout<<"["<<kk<<"] beamtrk_z:"<<beamtrk_z->at(kk) <<" beamtrk_Eng:"<<beamtrk_Eng->at(kk)<<endl;
 			//} //loop over all beam hits
-		} 
-		if (key_reach_tpc!=-99) { is_beam_at_ff=true; }
+		}*/ 
 		//cout<<"key_reach_tpc:"<<key_reach_tpc<<endl;	
 		//cout<<"is_beam_at_ff:"<<is_beam_at_ff<<endl;
 
@@ -533,30 +674,130 @@ void ProtonMisIDP::Loop() {
 		//(MC/data) vs reco Slice ID using bkg-rich sample
 		//[1]misID:p rich sample
 		if (IsPos&&IsCaloSize&&IsPandoraSlice) { //if Pos
-			if (kinel) { //inel
+
+			int nn_cos=25;
+			float dcos=0.04;
+			double eff_len=-0.2;
+			if (range_true>0) { 
+				if (eff_len<3) eff_len=range_reco/range_true;
+				else eff_len=3;
+			}
+
+			double pid_here=pid;
+			if (pid>250) pid_here=250;
+
+			if (kinel) { //inel<Mouse>
 				h2d_recotrklen_truetrklen_inel->Fill(range_reco, range_true, cosine_beam_spec_primtrk);
 				h3d_recotrklen_truetrklen_cosTheta_inel->Fill(range_reco, range_true, cosine_beam_spec_primtrk);
 
-				h2d_ntrklen_chi2_inel->Fill(range_reco/csda_val_spec,pid,cosine_beam_spec_primtrk);
-				h3d_ntrklen_chi2_cosTheta_inel->Fill(range_reco/csda_val_spec,pid,cosine_beam_spec_primtrk);
+				h2d_ntrklen_chi2_inel->Fill(range_reco/csda_val_spec, pid, cosine_beam_spec_primtrk);
+				h3d_ntrklen_chi2_cosTheta_inel->Fill(range_reco/csda_val_spec, pid, cosine_beam_spec_primtrk);
+
+				tp2d_range_reco_true_chi2pid_inel->Fill(range_reco, range_true, pid);
+				for (int jj=0; jj<nn_cos; ++jj) {
+					float tmp_min=(float)jj*dcos;
+					float tmp_max=tmp_min+dcos;
+					if (cosine_beam_spec_primtrk>tmp_min&&cosine_beam_spec_primtrk<=tmp_max) {
+						tp2d_range_reco_true_inel[jj]->Fill(range_reco, range_true, cosine_beam_spec_primtrk);
+						tp2d_ntrklen_chi2_inel[jj]->Fill(range_reco/csda_val_spec, pid_here, cosine_beam_spec_primtrk);
+
+						tp2d_recorange_eff_inel[jj]->Fill(range_reco, eff_len, pid);
+	
+					}
+				}
+
+				if (range_true<=0) { //upstream interactions
+					h2d_true_xy_upstream_inel->Fill(beamtrk_x->at(-1+beamtrk_z->size()), beamtrk_y->at(-1+beamtrk_z->size()));
+					h2d_reco_xy_upstream_inel->Fill(primtrk_hitx->at(0), primtrk_hity->at(0));
+				} //upstream interactions
+				if (range_true>0) {
+					h2d_true_xy_inel->Fill(beamtrk_x->at(-1+beamtrk_z->size()), beamtrk_y->at(-1+beamtrk_z->size()));
+				}
+
+
 			} //inel
 			if (kel) { //el
 				h2d_recotrklen_truetrklen_el->Fill(range_reco, range_true, cosine_beam_spec_primtrk);
 				h3d_recotrklen_truetrklen_cosTheta_el->Fill(range_reco, range_true, cosine_beam_spec_primtrk);
 
-				h2d_ntrklen_chi2_el->Fill(range_reco/csda_val_spec,pid,cosine_beam_spec_primtrk);
-				h3d_ntrklen_chi2_cosTheta_el->Fill(range_reco/csda_val_spec,pid,cosine_beam_spec_primtrk);
+				h2d_ntrklen_chi2_el->Fill(range_reco/csda_val_spec, pid, cosine_beam_spec_primtrk);
+				h3d_ntrklen_chi2_cosTheta_el->Fill(range_reco/csda_val_spec, pid, cosine_beam_spec_primtrk);
+
+				tp2d_range_reco_true_chi2pid_el->Fill(range_reco, range_true, pid);
+				for (int jj=0; jj<nn_cos; ++jj) {
+					float tmp_min=(float)jj*dcos;
+					float tmp_max=tmp_min+dcos;
+					if (cosine_beam_spec_primtrk>tmp_min&&cosine_beam_spec_primtrk<=tmp_max) {
+						tp2d_range_reco_true_el[jj]->Fill(range_reco, range_true, cosine_beam_spec_primtrk);
+						tp2d_ntrklen_chi2_el[jj]->Fill(range_reco/csda_val_spec, pid_here, cosine_beam_spec_primtrk);
+	
+						tp2d_recorange_eff_el[jj]->Fill(range_reco, eff_len, pid);
+					}
+				}
+
+				if (range_true<=0) { //upstream interactions
+					h2d_true_xy_upstream_el->Fill(beamtrk_x->at(-1+beamtrk_z->size()), beamtrk_y->at(-1+beamtrk_z->size()));
+					h2d_reco_xy_upstream_el->Fill(primtrk_hitx->at(0), primtrk_hity->at(0));
+				} //upstream interactions
+				if (range_true>0) {
+					h2d_true_xy_el->Fill(beamtrk_x->at(-1+beamtrk_z->size()), beamtrk_y->at(-1+beamtrk_z->size()));
+				}
+
 			} //el
 			if (kMIDp) { //misidp
 				h2d_recotrklen_truetrklen_misidp->Fill(range_reco, range_true, cosine_beam_spec_primtrk);
 				h3d_recotrklen_truetrklen_cosTheta_misidp->Fill(range_reco, range_true, cosine_beam_spec_primtrk);
 
-				h2d_ntrklen_chi2_misidp->Fill(range_reco/csda_val_spec,pid,cosine_beam_spec_primtrk);
-				h3d_ntrklen_chi2_cosTheta_misidp->Fill(range_reco/csda_val_spec,pid,cosine_beam_spec_primtrk);
+				h2d_ntrklen_chi2_misidp->Fill(range_reco/csda_val_spec, pid, cosine_beam_spec_primtrk);
+				h3d_ntrklen_chi2_cosTheta_misidp->Fill(range_reco/csda_val_spec, pid, cosine_beam_spec_primtrk);
+
+				tp2d_range_reco_true_chi2pid_misidp->Fill(range_reco, range_true, pid);
+
+				if (range_true<=0) { //upstream int.
+					h1d_cosTheta_misidp_truerangeeq0->Fill(cosine_beam_spec_primtrk);
+					h2d_ntrklen_chi2_misidp_truerangeeq0->Fill(range_reco/csda_val_spec, pid);
+				} //upstream int. 
+				if (range_true>0) {
+					h1d_cosTheta_misidp_truerangegt0->Fill(cosine_beam_spec_primtrk);
+					h2d_ntrklen_chi2_misidp_truerangegt0->Fill(range_reco/csda_val_spec, pid);
+				}
+
+
+
+				for (int jj=0; jj<nn_cos; ++jj) {
+					float tmp_min=(float)jj*dcos;
+					float tmp_max=tmp_min+dcos;
+					if (cosine_beam_spec_primtrk>tmp_min&&cosine_beam_spec_primtrk<=tmp_max) {
+						tp2d_range_reco_true_misidp[jj]->Fill(range_reco, range_true, cosine_beam_spec_primtrk);
+						tp2d_ntrklen_chi2_misidp[jj]->Fill(range_reco/csda_val_spec, pid_here, cosine_beam_spec_primtrk);
+	
+						tp2d_recorange_eff_misidp[jj]->Fill(range_reco, eff_len, pid);
+					}
+				}
+
+				if (range_true<=0) { //upstream interactions
+					h2d_true_xy_upstream_misidp->Fill(beamtrk_x->at(-1+beamtrk_z->size()), beamtrk_y->at(-1+beamtrk_z->size()));
+					h2d_reco_xy_upstream_misidp->Fill(primtrk_hitx->at(0), primtrk_hity->at(0));
+				} //upstream interactions
+				if (range_true>0) {
+					h2d_true_xy_misidp->Fill(beamtrk_x->at(-1+beamtrk_z->size()), beamtrk_y->at(-1+beamtrk_z->size()));
+				}
+
+
 			} //misidp
 		} //if Pos
 
-
+		if (IsBQ&&IsCaloSize&&IsPandoraSlice) { //if BQ
+			//misidp-study
+			double d_beam_tpc=sqrt(pow(primtrk_hitx->at(0)-xproj_beam,2)+pow(primtrk_hity->at(0)-yproj_beam,2));
+			if (kMIDp) { //misidp
+				h2d_dxy_cosine_BQ_misidp->Fill(d_beam_tpc,cosine_beam_spec_primtrk);
+				if (range_true<=0) h2d_dxy_cosine_BQ_misidp_lenle0->Fill(d_beam_tpc,cosine_beam_spec_primtrk);
+				if (range_true>0) h2d_dxy_cosine_BQ_misidp_lengt0->Fill(d_beam_tpc,cosine_beam_spec_primtrk);
+			} //misidp
+			if (kinel) h2d_dxy_cosine_BQ_inel->Fill(d_beam_tpc,cosine_beam_spec_primtrk);
+			if (kel) h2d_dxy_cosine_BQ_el->Fill(d_beam_tpc,cosine_beam_spec_primtrk);
+		} //if BQ	
 
 
 		//some ke calc. -------------------------------------------------------------------------------------//
