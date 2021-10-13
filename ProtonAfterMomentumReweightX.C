@@ -49,6 +49,7 @@
 #include "./headers/util.h"
 //#include "./headers/SliceParams.h"
 //#include "./headers/ThinSlice.h"
+//#include "./headers/sce_map.h"
 
 using namespace std;
 using namespace ROOT::Math;
@@ -63,10 +64,57 @@ void ProtonAfterMomentumReweight::Loop() {
 	bool isTestSample=true;
 	//int true_sliceID = -1, reco_sliceID = -1;
 
+   	//LoadHist();
+	
+
+
 	//book histograms --------------------------------------------------------------------------------------------//
-	int n_b=30;
+	int n_b=150;
+	//int n_b=30;
 	double b_min=0;
 	double b_max=150;
+
+	TH1D *h1d_trklen_CaloSz=new TH1D(Form("h1d_trklen_CaloSz"), Form("MC CaloSz"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_el=new TH1D(Form("h1d_trklen_CaloSz_el"), Form("el"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_inel=new TH1D(Form("h1d_trklen_CaloSz_inel"), Form("inel"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_midcosmic=new TH1D(Form("h1d_trklen_CaloSz_midcosmic"), Form("midcosmic"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_midpi=new TH1D(Form("h1d_trklen_CaloSz_midpi"), Form("midpi"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_midp=new TH1D(Form("h1d_trklen_CaloSz_midp"), Form("midp"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_midmu=new TH1D(Form("h1d_trklen_CaloSz_midmu"), Form("midmu"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_mideg=new TH1D(Form("h1d_trklen_CaloSz_mideg"), Form("mideg"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_midother=new TH1D(Form("h1d_trklen_CaloSz_midother"), Form("midother"), n_b, b_min, b_max);
+
+	TH1D *h1d_trklen_CaloSz_bmrw=new TH1D(Form("h1d_trklen_CaloSz_bmrw"), Form("MC CaloSz_bmrw"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_bmrw_el=new TH1D(Form("h1d_trklen_CaloSz_bmrw_el"), Form("el"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_bmrw_inel=new TH1D(Form("h1d_trklen_CaloSz_bmrw_inel"), Form("inel"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_bmrw_midcosmic=new TH1D(Form("h1d_trklen_CaloSz_bmrw_midcosmic"), Form("midcosmic"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_bmrw_midpi=new TH1D(Form("h1d_trklen_CaloSz_bmrw_midpi"), Form("midpi"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_bmrw_midp=new TH1D(Form("h1d_trklen_CaloSz_bmrw_midp"), Form("midp"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_bmrw_midmu=new TH1D(Form("h1d_trklen_CaloSz_bmrw_midmu"), Form("midmu"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_bmrw_mideg=new TH1D(Form("h1d_trklen_CaloSz_bmrw_mideg"), Form("mideg"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_bmrw_midother=new TH1D(Form("h1d_trklen_CaloSz_bmrw_midother"), Form("midother"), n_b, b_min, b_max);
+
+	TH1D *h1d_trklen_Pos=new TH1D(Form("h1d_trklen_Pos"), Form("MC default"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_el=new TH1D(Form("h1d_trklen_Pos_el"), Form("el"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_inel=new TH1D(Form("h1d_trklen_Pos_inel"), Form("inel"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_midcosmic=new TH1D(Form("h1d_trklen_Pos_midcosmic"), Form("midcosmic"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_midpi=new TH1D(Form("h1d_trklen_Pos_midpi"), Form("midpi"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_midp=new TH1D(Form("h1d_trklen_Pos_midp"), Form("midp"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_midmu=new TH1D(Form("h1d_trklen_Pos_midmu"), Form("midmu"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_mideg=new TH1D(Form("h1d_trklen_Pos_mideg"), Form("mideg"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_midother=new TH1D(Form("h1d_trklen_Pos_midother"), Form("midother"), n_b, b_min, b_max);
+
+	TH1D *h1d_trklen_Pos_bmrw=new TH1D(Form("h1d_trklen_Pos_bmrw"), Form("MC default"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_bmrw_el=new TH1D(Form("h1d_trklen_Pos_bmrw_el"), Form("el"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_bmrw_inel=new TH1D(Form("h1d_trklen_Pos_bmrw_inel"), Form("inel"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_bmrw_midcosmic=new TH1D(Form("h1d_trklen_Pos_bmrw_midcosmic"), Form("midcosmic"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_bmrw_midpi=new TH1D(Form("h1d_trklen_Pos_bmrw_midpi"), Form("midpi"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_bmrw_midp=new TH1D(Form("h1d_trklen_Pos_bmrw_midp"), Form("midp"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_bmrw_midmu=new TH1D(Form("h1d_trklen_Pos_bmrw_midmu"), Form("midmu"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_bmrw_mideg=new TH1D(Form("h1d_trklen_Pos_bmrw_mideg"), Form("mideg"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_bmrw_midother=new TH1D(Form("h1d_trklen_Pos_bmrw_midother"), Form("midother"), n_b, b_min, b_max);
+
+
 	TH1D *h1d_trklen_BQ=new TH1D(Form("h1d_trklen_BQ"), Form("MC default"), n_b, b_min, b_max);
 	TH1D *h1d_trklen_BQ_el=new TH1D(Form("h1d_trklen_BQ_el"), Form("el"), n_b, b_min, b_max);
 	TH1D *h1d_trklen_BQ_inel=new TH1D(Form("h1d_trklen_BQ_inel"), Form("inel"), n_b, b_min, b_max);
@@ -107,6 +155,82 @@ void ProtonAfterMomentumReweight::Loop() {
 	TH1D *h1d_trklen_RecoInel_bmrw_midmu=new TH1D(Form("h1d_trklen_RecoInel_bmrw_midmu"), Form("midmu"), n_b, b_min, b_max);
 	TH1D *h1d_trklen_RecoInel_bmrw_mideg=new TH1D(Form("h1d_trklen_RecoInel_bmrw_mideg"), Form("mideg"), n_b, b_min, b_max);
 	TH1D *h1d_trklen_RecoInel_bmrw_midother=new TH1D(Form("h1d_trklen_RecoInel_bmrw_midother"), Form("midother"), n_b, b_min, b_max);
+
+	//endz
+	TH1D *h1d_endz_CaloSz=new TH1D(Form("h1d_endz_CaloSz"), Form("MC CaloSz"), n_b, b_min, b_max);
+	TH1D *h1d_endz_CaloSz_el=new TH1D(Form("h1d_endz_CaloSz_el"), Form("el"), n_b, b_min, b_max);
+	TH1D *h1d_endz_CaloSz_inel=new TH1D(Form("h1d_endz_CaloSz_inel"), Form("inel"), n_b, b_min, b_max);
+	TH1D *h1d_endz_CaloSz_midcosmic=new TH1D(Form("h1d_endz_CaloSz_midcosmic"), Form("midcosmic"), n_b, b_min, b_max);
+	TH1D *h1d_endz_CaloSz_midpi=new TH1D(Form("h1d_endz_CaloSz_midpi"), Form("midpi"), n_b, b_min, b_max);
+	TH1D *h1d_endz_CaloSz_midp=new TH1D(Form("h1d_endz_CaloSz_midp"), Form("midp"), n_b, b_min, b_max);
+	TH1D *h1d_endz_CaloSz_midmu=new TH1D(Form("h1d_endz_CaloSz_midmu"), Form("midmu"), n_b, b_min, b_max);
+	TH1D *h1d_endz_CaloSz_mideg=new TH1D(Form("h1d_endz_CaloSz_mideg"), Form("mideg"), n_b, b_min, b_max);
+	TH1D *h1d_endz_CaloSz_midother=new TH1D(Form("h1d_endz_CaloSz_midother"), Form("midother"), n_b, b_min, b_max);
+
+	TH1D *h1d_endz_Pos=new TH1D(Form("h1d_endz_Pos"), Form("MC Pos"), n_b, b_min, b_max);
+	TH1D *h1d_endz_Pos_el=new TH1D(Form("h1d_endz_Pos_el"), Form("el"), n_b, b_min, b_max);
+	TH1D *h1d_endz_Pos_inel=new TH1D(Form("h1d_endz_Pos_inel"), Form("inel"), n_b, b_min, b_max);
+	TH1D *h1d_endz_Pos_midcosmic=new TH1D(Form("h1d_endz_Pos_midcosmic"), Form("midcosmic"), n_b, b_min, b_max);
+	TH1D *h1d_endz_Pos_midpi=new TH1D(Form("h1d_endz_Pos_midpi"), Form("midpi"), n_b, b_min, b_max);
+	TH1D *h1d_endz_Pos_midp=new TH1D(Form("h1d_endz_Pos_midp"), Form("midp"), n_b, b_min, b_max);
+	TH1D *h1d_endz_Pos_midmu=new TH1D(Form("h1d_endz_Pos_midmu"), Form("midmu"), n_b, b_min, b_max);
+	TH1D *h1d_endz_Pos_mideg=new TH1D(Form("h1d_endz_Pos_mideg"), Form("mideg"), n_b, b_min, b_max);
+	TH1D *h1d_endz_Pos_midother=new TH1D(Form("h1d_endz_Pos_midother"), Form("midother"), n_b, b_min, b_max);
+
+	TH1D *h1d_endz_BQ=new TH1D(Form("h1d_endz_BQ"), Form("MC BQ"), n_b, b_min, b_max);
+	TH1D *h1d_endz_BQ_el=new TH1D(Form("h1d_endz_BQ_el"), Form("el"), n_b, b_min, b_max);
+	TH1D *h1d_endz_BQ_inel=new TH1D(Form("h1d_endz_BQ_inel"), Form("inel"), n_b, b_min, b_max);
+	TH1D *h1d_endz_BQ_midcosmic=new TH1D(Form("h1d_endz_BQ_midcosmic"), Form("midcosmic"), n_b, b_min, b_max);
+	TH1D *h1d_endz_BQ_midpi=new TH1D(Form("h1d_endz_BQ_midpi"), Form("midpi"), n_b, b_min, b_max);
+	TH1D *h1d_endz_BQ_midp=new TH1D(Form("h1d_endz_BQ_midp"), Form("midp"), n_b, b_min, b_max);
+	TH1D *h1d_endz_BQ_midmu=new TH1D(Form("h1d_endz_BQ_midmu"), Form("midmu"), n_b, b_min, b_max);
+	TH1D *h1d_endz_BQ_mideg=new TH1D(Form("h1d_endz_BQ_mideg"), Form("mideg"), n_b, b_min, b_max);
+	TH1D *h1d_endz_BQ_midother=new TH1D(Form("h1d_endz_BQ_midother"), Form("midother"), n_b, b_min, b_max);
+
+	//trklen vs endz
+	TH2D *h2d_trklen_endz_CaloSz=new TH2D(Form("h2d_trklen_endz_CaloSz"), Form("MC CaloSz"), n_b, b_min, b_max, n_b, b_min, b_max);
+	TH2D *h2d_trklen_endz_CaloSz_el=new TH2D(Form("h2d_trklen_endz_CaloSz_el"), Form("el"), n_b, b_min, b_max, n_b, b_min, b_max);
+	TH2D *h2d_trklen_endz_CaloSz_inel=new TH2D(Form("h2d_trklen_endz_CaloSz_inel"), Form("inel"), n_b, b_min, b_max, n_b, b_min, b_max);
+	TH2D *h2d_trklen_endz_CaloSz_midcosmic=new TH2D(Form("h2d_trklen_endz_CaloSz_midcosmic"), Form("midcosmic"), n_b, b_min, b_max, n_b, b_min, b_max);
+	TH2D *h2d_trklen_endz_CaloSz_midpi=new TH2D(Form("h2d_trklen_endz_CaloSz_midpi"), Form("midpi"), n_b, b_min, b_max, n_b, b_min, b_max);
+	TH2D *h2d_trklen_endz_CaloSz_midp=new TH2D(Form("h2d_trklen_endz_CaloSz_midp"), Form("midp"), n_b, b_min, b_max, n_b, b_min, b_max);
+	TH2D *h2d_trklen_endz_CaloSz_midmu=new TH2D(Form("h2d_trklen_endz_CaloSz_midmu"), Form("midmu"), n_b, b_min, b_max, n_b, b_min, b_max);
+	TH2D *h2d_trklen_endz_CaloSz_mideg=new TH2D(Form("h2d_trklen_endz_CaloSz_mideg"), Form("mideg"), n_b, b_min, b_max, n_b, b_min, b_max);
+	TH2D *h2d_trklen_endz_CaloSz_midother=new TH2D(Form("h2d_trklen_endz_CaloSz_midother"), Form("midother"), n_b, b_min, b_max, n_b, b_min, b_max);
+
+	TH2D *h2d_trklen_endz_Pos=new TH2D(Form("h2d_trklen_endz_Pos"), Form("MC Pos"), n_b, b_min, b_max, n_b, b_min, b_max);
+	TH2D *h2d_trklen_endz_Pos_el=new TH2D(Form("h2d_trklen_endz_Pos_el"), Form("el"), n_b, b_min, b_max, n_b, b_min, b_max);
+	TH2D *h2d_trklen_endz_Pos_inel=new TH2D(Form("h2d_trklen_endz_Pos_inel"), Form("inel"), n_b, b_min, b_max, n_b, b_min, b_max);
+	TH2D *h2d_trklen_endz_Pos_midcosmic=new TH2D(Form("h2d_trklen_endz_Pos_midcosmic"), Form("midcosmic"), n_b, b_min, b_max, n_b, b_min, b_max);
+	TH2D *h2d_trklen_endz_Pos_midpi=new TH2D(Form("h2d_trklen_endz_Pos_midpi"), Form("midpi"), n_b, b_min, b_max, n_b, b_min, b_max);
+	TH2D *h2d_trklen_endz_Pos_midp=new TH2D(Form("h2d_trklen_endz_Pos_midp"), Form("midp"), n_b, b_min, b_max, n_b, b_min, b_max);
+	TH2D *h2d_trklen_endz_Pos_midmu=new TH2D(Form("h2d_trklen_endz_Pos_midmu"), Form("midmu"), n_b, b_min, b_max, n_b, b_min, b_max);
+	TH2D *h2d_trklen_endz_Pos_mideg=new TH2D(Form("h2d_trklen_endz_Pos_mideg"), Form("mideg"), n_b, b_min, b_max, n_b, b_min, b_max);
+	TH2D *h2d_trklen_endz_Pos_midother=new TH2D(Form("h2d_trklen_endz_Pos_midother"), Form("midother"), n_b, b_min, b_max, n_b, b_min, b_max);
+
+	TH2D *h2d_trklen_endz_BQ=new TH2D(Form("h2d_trklen_endz_BQ"), Form("MC BQ"), n_b, b_min, b_max, n_b, b_min, b_max);
+	TH2D *h2d_trklen_endz_BQ_el=new TH2D(Form("h2d_trklen_endz_BQ_el"), Form("el"), n_b, b_min, b_max, n_b, b_min, b_max);
+	TH2D *h2d_trklen_endz_BQ_inel=new TH2D(Form("h2d_trklen_endz_BQ_inel"), Form("inel"), n_b, b_min, b_max, n_b, b_min, b_max);
+	TH2D *h2d_trklen_endz_BQ_midcosmic=new TH2D(Form("h2d_trklen_endz_BQ_midcosmic"), Form("midcosmic"), n_b, b_min, b_max, n_b, b_min, b_max);
+	TH2D *h2d_trklen_endz_BQ_midpi=new TH2D(Form("h2d_trklen_endz_BQ_midpi"), Form("midpi"), n_b, b_min, b_max, n_b, b_min, b_max);
+	TH2D *h2d_trklen_endz_BQ_midp=new TH2D(Form("h2d_trklen_endz_BQ_midp"), Form("midp"), n_b, b_min, b_max, n_b, b_min, b_max);
+	TH2D *h2d_trklen_endz_BQ_midmu=new TH2D(Form("h2d_trklen_endz_BQ_midmu"), Form("midmu"), n_b, b_min, b_max, n_b, b_min, b_max);
+	TH2D *h2d_trklen_endz_BQ_mideg=new TH2D(Form("h2d_trklen_endz_BQ_mideg"), Form("mideg"), n_b, b_min, b_max, n_b, b_min, b_max);
+	TH2D *h2d_trklen_endz_BQ_midother=new TH2D(Form("h2d_trklen_endz_BQ_midother"), Form("midother"), n_b, b_min, b_max, n_b, b_min, b_max);
+
+	//true len
+	TH1D *h1d_truetrklen_CaloSz=new TH1D(Form("h1d_truetrklen_CaloSz"), Form("MC CaloSz"), n_b, b_min, b_max);
+	TH1D *h1d_truetrklen_Pos=new TH1D(Form("h1d_truetrklen_Pos"), Form("MC Pos"), n_b, b_min, b_max);
+	TH1D *h1d_truetrklen_BQ=new TH1D(Form("h1d_truetrklen_BQ"), Form("MC BQ"), n_b, b_min, b_max);
+
+	//true endz
+	TH1D *h1d_trueendz_CaloSz=new TH1D(Form("h1d_trueendz_CaloSz"), Form("MC CaloSz"), n_b, b_min, b_max);
+	TH1D *h1d_trueendz_Pos=new TH1D(Form("h1d_trueendz_Pos"), Form("MC Pos"), n_b, b_min, b_max);
+	TH1D *h1d_trueendz_BQ=new TH1D(Form("h1d_trueendz_BQ"), Form("MC BQ"), n_b, b_min, b_max);
+
+	TH1D *h1d_trueendzSCE_CaloSz=new TH1D(Form("h1d_trueendzSCE_CaloSz"), Form("MC CaloSz"), n_b, b_min, b_max);
+	TH1D *h1d_trueendzSCE_Pos=new TH1D(Form("h1d_trueendzSCE_Pos"), Form("MC Pos"), n_b, b_min, b_max);
+	TH1D *h1d_trueendzSCE_BQ=new TH1D(Form("h1d_trueendzSCE_BQ"), Form("MC BQ"), n_b, b_min, b_max);
 
 	//------------------------------------------------------------------------------------------------------------//
 
@@ -158,6 +282,20 @@ void ProtonAfterMomentumReweight::Loop() {
 		double true_stz=primary_truth_StartPosition_MC[2];
 		double true_sty=primary_truth_StartPosition_MC[1];
 		double true_stx=primary_truth_StartPosition_MC[0];
+
+		double offset_z = 0;
+		double true_endz_sce=true_endz;
+		/*TVector3 true_Endpoint(true_endx, true_endy, true_endz);
+     		if (true_Endpoint.X()>0){
+       			//true_endz += RecoFwd_Displacement_Z_Pos->GetBinContent(RecoFwd_Displacement_Z_Pos->FindBin(true_beam_endX, true_beam_endY, true_beam_endZ));
+       			offset_z = InterpolateSplines(RecoFwd_Displacement_Z_Pos, true_Endpoint.X(), true_Endpoint.Y(), true_Endpoint.Z(), 3, 1, 2);
+     		}
+     		else{
+       			//true_endz += RecoFwd_Displacement_Z_Neg->GetBinContent(RecoFwd_Displacement_Z_Neg->FindBin(true_beam_endX, true_beam_endY, true_beam_endZ));
+       			offset_z = InterpolateSplines(RecoFwd_Displacement_Z_Neg, true_Endpoint.X(), true_Endpoint.Y(), true_Endpoint.Z(), 3, 1, 1);
+     		}
+     		//std::cout<<true_beam_endX<<" "<<true_beam_endY<<" "<<true_beam_endZ<<" "<<offset_z<<std::endl;
+     		true_endz_sce += offset_z;*/
 
 		bool IsTrueEndOutside=false;
 		if (true_endz<0.) IsTrueEndOutside=true;
@@ -217,6 +355,16 @@ void ProtonAfterMomentumReweight::Loop() {
 			reco_endx=primtrk_hitx->at(primtrk_dedx->size()-1);	
 			reco_endy=primtrk_hity->at(primtrk_dedx->size()-1);
 			reco_endz=primtrk_hitz->at(primtrk_dedx->size()-1);
+
+			if (reco_stz>reco_endz) {
+				reco_endx=primtrk_hitx->at(0); 
+				reco_endy=primtrk_hity->at(0);
+				reco_endz=primtrk_hitz->at(0);
+
+				reco_stx=primtrk_hitx->at(primtrk_dedx->size()-1);	
+				reco_sty=primtrk_hity->at(primtrk_dedx->size()-1);
+				reco_stz=primtrk_hitz->at(primtrk_dedx->size()-1);
+			}
 
 			double beam_dx=(reco_stx-mean_StartX)/sigma_StartX;
 			double beam_dy=(reco_sty-mean_StartY)/sigma_StartY;
@@ -361,9 +509,186 @@ void ProtonAfterMomentumReweight::Loop() {
 		double ke_trklen_MeV=1000.*ke_trklen; //[unit: MeV]
 		double ke_calo_MeV=0;
 
+		//Get true trklen ---------------------------------------------------------------------------------------//
+		double range_true=-999;
+		int key_st = 0;
+		double tmp_z = 9999;
+		vector<double> true_trklen_accum;
+		//cout<<"beamtrk_z->size():"<<beamtrk_z->size()<<endl;
+		true_trklen_accum.reserve(beamtrk_z->size()); // initialize true_trklen_accum
+		//cout<<"ck0"<<endl;
+		for (int iz=0; iz<(int)beamtrk_z->size(); iz++) {
+			if (abs(beamtrk_z->at(iz)) < tmp_z){
+				tmp_z = abs(beamtrk_z->at(iz));
+				key_st = iz; // find the point where the beam enters the TPC (find the smallest abs(Z))
+			}
+			//cout<<"ck0/"<<endl;
+			true_trklen_accum[iz] = 0.; // initialize true_trklen_accum
+			//cout<<"ck0///"<<endl;
+		}
+		//cout<<"ck1"<<endl;
+		for (int iz=key_st+1; iz<(int)beamtrk_z->size(); iz++){
+			if (iz == key_st+1) range_true = 0;
+			range_true += sqrt( pow(beamtrk_x->at(iz)-beamtrk_x->at(iz-1), 2)+
+					pow(beamtrk_y->at(iz)-beamtrk_y->at(iz-1), 2)+	
+					pow(beamtrk_z->at(iz)-beamtrk_z->at(iz-1), 2) );						    	
+			true_trklen_accum[iz] = range_true;
+		}
+
+
+
+
+		if (IsPandoraSlice&&IsCaloSize) { //calosz cut
+			//before bmrw
+			Fill1DHist(h1d_trklen_CaloSz, range_reco);
+			Fill1DHist(h1d_truetrklen_CaloSz, range_true);
+			Fill1DHist(h1d_trueendz_CaloSz, true_endz);
+			Fill1DHist(h1d_trueendzSCE_CaloSz, true_endz_sce);
+
+			if (kinel) Fill1DHist(h1d_trklen_CaloSz_inel, range_reco); 
+			if (kel) Fill1DHist(h1d_trklen_CaloSz_el, range_reco); 
+			if (kMIDcosmic) Fill1DHist(h1d_trklen_CaloSz_midcosmic, range_reco); 
+			if (kMIDpi) Fill1DHist(h1d_trklen_CaloSz_midpi, range_reco);
+			if (kMIDp) Fill1DHist(h1d_trklen_CaloSz_midp, range_reco);
+			if (kMIDmu) Fill1DHist(h1d_trklen_CaloSz_midmu, range_reco);
+			if (kMIDeg) Fill1DHist(h1d_trklen_CaloSz_mideg, range_reco);
+			if (kMIDother) Fill1DHist(h1d_trklen_CaloSz_midother, range_reco);
+
+			//before bmrw
+			Fill1DHist(h1d_endz_CaloSz, reco_endz);
+
+			if (kinel) Fill1DHist(h1d_endz_CaloSz_inel, reco_endz); 
+			if (kel) Fill1DHist(h1d_endz_CaloSz_el, reco_endz); 
+			if (kMIDcosmic) Fill1DHist(h1d_endz_CaloSz_midcosmic, reco_endz); 
+			if (kMIDpi) Fill1DHist(h1d_endz_CaloSz_midpi, reco_endz);
+			if (kMIDp) Fill1DHist(h1d_endz_CaloSz_midp, reco_endz);
+			if (kMIDmu) Fill1DHist(h1d_endz_CaloSz_midmu, reco_endz);
+			if (kMIDeg) Fill1DHist(h1d_endz_CaloSz_mideg, reco_endz);
+			if (kMIDother) Fill1DHist(h1d_endz_CaloSz_midother, reco_endz);
+
+
+			//before bmrw
+			h2d_trklen_endz_CaloSz->Fill(range_reco, reco_endz);
+
+			if (kinel) h2d_trklen_endz_CaloSz_inel->Fill(range_reco, reco_endz);
+			if (kel) h2d_trklen_endz_CaloSz_el->Fill(range_reco, reco_endz); 
+			if (kMIDcosmic) h2d_trklen_endz_CaloSz_midcosmic->Fill(range_reco, reco_endz);
+			if (kMIDpi) h2d_trklen_endz_CaloSz_midpi->Fill(range_reco, reco_endz);
+			if (kMIDp) h2d_trklen_endz_CaloSz_midp->Fill(range_reco, reco_endz);
+			if (kMIDmu) h2d_trklen_endz_CaloSz_midmu->Fill(range_reco, reco_endz);
+			if (kMIDeg) h2d_trklen_endz_CaloSz_mideg->Fill(range_reco, reco_endz);
+			if (kMIDother) h2d_trklen_endz_CaloSz_midother->Fill(range_reco, reco_endz);
+
+			double mom_rw_minchi2=1.;
+			if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) { //beam-mom cut (within 3-sigma)
+				mom_rw_minchi2=bmrw_func->Eval(mom_beam_spec*1000.); //bmrw
+				Fill1DWHist(h1d_trklen_CaloSz_bmrw, range_reco, mom_rw_minchi2);
+
+				if (kinel) Fill1DWHist(h1d_trklen_CaloSz_bmrw_inel, range_reco, mom_rw_minchi2); 
+				if (kel) Fill1DWHist(h1d_trklen_CaloSz_bmrw_el, range_reco, mom_rw_minchi2); 
+				if (kMIDcosmic) Fill1DWHist(h1d_trklen_CaloSz_bmrw_midcosmic, range_reco, mom_rw_minchi2); 
+				if (kMIDpi) Fill1DWHist(h1d_trklen_CaloSz_bmrw_midpi, range_reco, mom_rw_minchi2);
+				if (kMIDp) Fill1DWHist(h1d_trklen_CaloSz_bmrw_midp, range_reco, mom_rw_minchi2);
+				if (kMIDmu) Fill1DWHist(h1d_trklen_CaloSz_bmrw_midmu, range_reco, mom_rw_minchi2);
+				if (kMIDeg) Fill1DWHist(h1d_trklen_CaloSz_bmrw_mideg, range_reco, mom_rw_minchi2);
+				if (kMIDother) Fill1DWHist(h1d_trklen_CaloSz_bmrw_midother, range_reco, mom_rw_minchi2);
+
+			} //beam-mom cut (within 3-sigma)
+			else { //tail of beam
+				Fill1DWHist(h1d_trklen_CaloSz_bmrw, range_reco, 1); //set weight to one
+
+				if (kinel) Fill1DWHist(h1d_trklen_CaloSz_bmrw_inel, range_reco, 1); 
+				if (kel) Fill1DWHist(h1d_trklen_CaloSz_bmrw_el, range_reco, 1); 
+				if (kMIDcosmic) Fill1DWHist(h1d_trklen_CaloSz_bmrw_midcosmic, range_reco, 1); 
+				if (kMIDpi) Fill1DWHist(h1d_trklen_CaloSz_bmrw_midpi, range_reco, 1);
+				if (kMIDp) Fill1DWHist(h1d_trklen_CaloSz_bmrw_midp, range_reco, 1);
+				if (kMIDmu) Fill1DWHist(h1d_trklen_CaloSz_bmrw_midmu, range_reco, 1);
+				if (kMIDeg) Fill1DWHist(h1d_trklen_CaloSz_bmrw_mideg, range_reco, 1);
+				if (kMIDother) Fill1DWHist(h1d_trklen_CaloSz_bmrw_midother, range_reco, 1);
+
+			} //tail of beam			
+		} //calosz cut
+
+		if (IsPos&&IsPandoraSlice&&IsCaloSize) { //pos cut
+			//before bmrw
+			Fill1DHist(h1d_trklen_Pos, range_reco);
+			Fill1DHist(h1d_truetrklen_Pos, range_true);
+			Fill1DHist(h1d_trueendz_Pos, true_endz);
+			Fill1DHist(h1d_trueendzSCE_Pos, true_endz_sce);
+
+			if (kinel) Fill1DHist(h1d_trklen_Pos_inel, range_reco); 
+			if (kel) Fill1DHist(h1d_trklen_Pos_el, range_reco); 
+			if (kMIDcosmic) Fill1DHist(h1d_trklen_Pos_midcosmic, range_reco); 
+			if (kMIDpi) Fill1DHist(h1d_trklen_Pos_midpi, range_reco);
+			if (kMIDp) Fill1DHist(h1d_trklen_Pos_midp, range_reco);
+			if (kMIDmu) Fill1DHist(h1d_trklen_Pos_midmu, range_reco);
+			if (kMIDeg) Fill1DHist(h1d_trklen_Pos_mideg, range_reco);
+			if (kMIDother) Fill1DHist(h1d_trklen_Pos_midother, range_reco);
+
+			//before bmrw
+			Fill1DHist(h1d_endz_Pos, reco_endz);
+
+			if (kinel) Fill1DHist(h1d_endz_Pos_inel, reco_endz); 
+			if (kel) Fill1DHist(h1d_endz_Pos_el, reco_endz); 
+			if (kMIDcosmic) Fill1DHist(h1d_endz_Pos_midcosmic, reco_endz); 
+			if (kMIDpi) Fill1DHist(h1d_endz_Pos_midpi, reco_endz);
+			if (kMIDp) Fill1DHist(h1d_endz_Pos_midp, reco_endz);
+			if (kMIDmu) Fill1DHist(h1d_endz_Pos_midmu, reco_endz);
+			if (kMIDeg) Fill1DHist(h1d_endz_Pos_mideg, reco_endz);
+			if (kMIDother) Fill1DHist(h1d_endz_Pos_midother, reco_endz);
+
+
+			//before bmrw
+			h2d_trklen_endz_Pos->Fill(range_reco, reco_endz);
+
+			if (kinel) h2d_trklen_endz_Pos_inel->Fill(range_reco, reco_endz);
+			if (kel) h2d_trklen_endz_Pos_el->Fill(range_reco, reco_endz); 
+			if (kMIDcosmic) h2d_trklen_endz_Pos_midcosmic->Fill(range_reco, reco_endz);
+			if (kMIDpi) h2d_trklen_endz_Pos_midpi->Fill(range_reco, reco_endz);
+			if (kMIDp) h2d_trklen_endz_Pos_midp->Fill(range_reco, reco_endz);
+			if (kMIDmu) h2d_trklen_endz_Pos_midmu->Fill(range_reco, reco_endz);
+			if (kMIDeg) h2d_trklen_endz_Pos_mideg->Fill(range_reco, reco_endz);
+			if (kMIDother) h2d_trklen_endz_Pos_midother->Fill(range_reco, reco_endz);
+
+			double mom_rw_minchi2=1.;
+			if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) { //beam-mom cut (within 3-sigma)
+				mom_rw_minchi2=bmrw_func->Eval(mom_beam_spec*1000.); //bmrw
+				Fill1DWHist(h1d_trklen_Pos_bmrw, range_reco, mom_rw_minchi2);
+
+				if (kinel) Fill1DWHist(h1d_trklen_Pos_bmrw_inel, range_reco, mom_rw_minchi2); 
+				if (kel) Fill1DWHist(h1d_trklen_Pos_bmrw_el, range_reco, mom_rw_minchi2); 
+				if (kMIDcosmic) Fill1DWHist(h1d_trklen_Pos_bmrw_midcosmic, range_reco, mom_rw_minchi2); 
+				if (kMIDpi) Fill1DWHist(h1d_trklen_Pos_bmrw_midpi, range_reco, mom_rw_minchi2);
+				if (kMIDp) Fill1DWHist(h1d_trklen_Pos_bmrw_midp, range_reco, mom_rw_minchi2);
+				if (kMIDmu) Fill1DWHist(h1d_trklen_Pos_bmrw_midmu, range_reco, mom_rw_minchi2);
+				if (kMIDeg) Fill1DWHist(h1d_trklen_Pos_bmrw_mideg, range_reco, mom_rw_minchi2);
+				if (kMIDother) Fill1DWHist(h1d_trklen_Pos_bmrw_midother, range_reco, mom_rw_minchi2);
+
+			} //beam-mom cut (within 3-sigma)
+			else { //tail of beam
+				Fill1DWHist(h1d_trklen_Pos_bmrw, range_reco, 1); //set weight to one
+
+				if (kinel) Fill1DWHist(h1d_trklen_Pos_bmrw_inel, range_reco, 1); 
+				if (kel) Fill1DWHist(h1d_trklen_Pos_bmrw_el, range_reco, 1); 
+				if (kMIDcosmic) Fill1DWHist(h1d_trklen_Pos_bmrw_midcosmic, range_reco, 1); 
+				if (kMIDpi) Fill1DWHist(h1d_trklen_Pos_bmrw_midpi, range_reco, 1);
+				if (kMIDp) Fill1DWHist(h1d_trklen_Pos_bmrw_midp, range_reco, 1);
+				if (kMIDmu) Fill1DWHist(h1d_trklen_Pos_bmrw_midmu, range_reco, 1);
+				if (kMIDeg) Fill1DWHist(h1d_trklen_Pos_bmrw_mideg, range_reco, 1);
+				if (kMIDother) Fill1DWHist(h1d_trklen_Pos_bmrw_midother, range_reco, 1);
+
+			} //tail of beam			
+		} //pos cut
+
+
+
+
 		if (IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
 			//before bmrw
 			Fill1DHist(h1d_trklen_BQ, range_reco);
+			Fill1DHist(h1d_truetrklen_BQ, range_true);
+			Fill1DHist(h1d_trueendz_BQ, true_endz);
+			Fill1DHist(h1d_trueendzSCE_BQ, true_endz_sce);
 
 			if (kinel) Fill1DHist(h1d_trklen_BQ_inel, range_reco); 
 			if (kel) Fill1DHist(h1d_trklen_BQ_el, range_reco); 
@@ -373,6 +698,30 @@ void ProtonAfterMomentumReweight::Loop() {
 			if (kMIDmu) Fill1DHist(h1d_trklen_BQ_midmu, range_reco);
 			if (kMIDeg) Fill1DHist(h1d_trklen_BQ_mideg, range_reco);
 			if (kMIDother) Fill1DHist(h1d_trklen_BQ_midother, range_reco);
+
+			//before bmrw
+			Fill1DHist(h1d_endz_BQ, reco_endz);
+
+			if (kinel) Fill1DHist(h1d_endz_BQ_inel, reco_endz); 
+			if (kel) Fill1DHist(h1d_endz_BQ_el, reco_endz); 
+			if (kMIDcosmic) Fill1DHist(h1d_endz_BQ_midcosmic, reco_endz); 
+			if (kMIDpi) Fill1DHist(h1d_endz_BQ_midpi, reco_endz);
+			if (kMIDp) Fill1DHist(h1d_endz_BQ_midp, reco_endz);
+			if (kMIDmu) Fill1DHist(h1d_endz_BQ_midmu, reco_endz);
+			if (kMIDeg) Fill1DHist(h1d_endz_BQ_mideg, reco_endz);
+			if (kMIDother) Fill1DHist(h1d_endz_BQ_midother, reco_endz);
+
+			//before bmrw
+			h2d_trklen_endz_BQ->Fill(range_reco, reco_endz);
+
+			if (kinel) h2d_trklen_endz_BQ_inel->Fill(range_reco, reco_endz);
+			if (kel) h2d_trklen_endz_BQ_el->Fill(range_reco, reco_endz); 
+			if (kMIDcosmic) h2d_trklen_endz_BQ_midcosmic->Fill(range_reco, reco_endz);
+			if (kMIDpi) h2d_trklen_endz_BQ_midpi->Fill(range_reco, reco_endz);
+			if (kMIDp) h2d_trklen_endz_BQ_midp->Fill(range_reco, reco_endz);
+			if (kMIDmu) h2d_trklen_endz_BQ_midmu->Fill(range_reco, reco_endz);
+			if (kMIDeg) h2d_trklen_endz_BQ_mideg->Fill(range_reco, reco_endz);
+			if (kMIDother) h2d_trklen_endz_BQ_midother->Fill(range_reco, reco_endz);
 
 			double mom_rw_minchi2=1.;
 			if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) { //beam-mom cut (within 3-sigma)
@@ -401,7 +750,10 @@ void ProtonAfterMomentumReweight::Loop() {
 				if (kMIDeg) Fill1DWHist(h1d_trklen_BQ_bmrw_mideg, range_reco, 1);
 				if (kMIDother) Fill1DWHist(h1d_trklen_BQ_bmrw_midother, range_reco, 1);
 
-			} //tail of beam			
+			} //tail of beam
+
+			
+			
 		} //basic cuts
 
 
@@ -453,7 +805,54 @@ void ProtonAfterMomentumReweight::Loop() {
 	} //main entry loop
 
 	//save results ---------------------------------------------------------//
-   	TFile *fout = new TFile("mc_proton_after_bmrw.root","RECREATE");
+   	//TFile *fout = new TFile("mc_proton_after_bmrw.root","RECREATE");
+   	//TFile *fout = new TFile("mc_proton_tightxy_after_bmrw.root","RECREATE");
+   	TFile *fout = new TFile("mc_proton_after_bmrw_HD.root","RECREATE");
+
+		h1d_trklen_CaloSz->Write();
+		h1d_trklen_CaloSz_inel->Write();
+		h1d_trklen_CaloSz_el->Write();
+		h1d_trklen_CaloSz_midcosmic->Write();
+		h1d_trklen_CaloSz_midpi->Write();
+		h1d_trklen_CaloSz_midp->Write();
+		h1d_trklen_CaloSz_midmu->Write();
+		h1d_trklen_CaloSz_mideg->Write();
+		h1d_trklen_CaloSz_midother->Write();
+
+		h1d_trklen_CaloSz_bmrw->Write();
+		h1d_trklen_CaloSz_bmrw_inel->Write();
+		h1d_trklen_CaloSz_bmrw_el->Write();
+		h1d_trklen_CaloSz_bmrw_midcosmic->Write();
+		h1d_trklen_CaloSz_bmrw_midpi->Write();
+		h1d_trklen_CaloSz_bmrw_midp->Write();
+		h1d_trklen_CaloSz_bmrw_midmu->Write();
+		h1d_trklen_CaloSz_bmrw_mideg->Write();
+		h1d_trklen_CaloSz_bmrw_midother->Write();
+
+
+
+		h1d_trklen_Pos->Write();
+		h1d_trklen_Pos_inel->Write();
+		h1d_trklen_Pos_el->Write();
+		h1d_trklen_Pos_midcosmic->Write();
+		h1d_trklen_Pos_midpi->Write();
+		h1d_trklen_Pos_midp->Write();
+		h1d_trklen_Pos_midmu->Write();
+		h1d_trklen_Pos_mideg->Write();
+		h1d_trklen_Pos_midother->Write();
+
+		h1d_trklen_Pos_bmrw->Write();
+		h1d_trklen_Pos_bmrw_inel->Write();
+		h1d_trklen_Pos_bmrw_el->Write();
+		h1d_trklen_Pos_bmrw_midcosmic->Write();
+		h1d_trklen_Pos_bmrw_midpi->Write();
+		h1d_trklen_Pos_bmrw_midp->Write();
+		h1d_trklen_Pos_bmrw_midmu->Write();
+		h1d_trklen_Pos_bmrw_mideg->Write();
+		h1d_trklen_Pos_bmrw_midother->Write();
+
+
+
 		h1d_trklen_BQ->Write();
 		h1d_trklen_BQ_inel->Write();
 		h1d_trklen_BQ_el->Write();
@@ -494,6 +893,79 @@ void ProtonAfterMomentumReweight::Loop() {
 		h1d_trklen_RecoInel_bmrw_midmu->Write();
 		h1d_trklen_RecoInel_bmrw_mideg->Write();
 		h1d_trklen_RecoInel_bmrw_midother->Write();
+
+
+		h1d_endz_CaloSz->Write();
+		h1d_endz_CaloSz_inel->Write();
+		h1d_endz_CaloSz_el->Write();
+		h1d_endz_CaloSz_midcosmic->Write();
+		h1d_endz_CaloSz_midpi->Write();
+		h1d_endz_CaloSz_midp->Write();
+		h1d_endz_CaloSz_midmu->Write();
+		h1d_endz_CaloSz_mideg->Write();
+		h1d_endz_CaloSz_midother->Write();
+
+		h1d_endz_Pos->Write();
+		h1d_endz_Pos_inel->Write();
+		h1d_endz_Pos_el->Write();
+		h1d_endz_Pos_midcosmic->Write();
+		h1d_endz_Pos_midpi->Write();
+		h1d_endz_Pos_midp->Write();
+		h1d_endz_Pos_midmu->Write();
+		h1d_endz_Pos_mideg->Write();
+		h1d_endz_Pos_midother->Write();
+
+		h1d_endz_BQ->Write();
+		h1d_endz_BQ_inel->Write();
+		h1d_endz_BQ_el->Write();
+		h1d_endz_BQ_midcosmic->Write();
+		h1d_endz_BQ_midpi->Write();
+		h1d_endz_BQ_midp->Write();
+		h1d_endz_BQ_midmu->Write();
+		h1d_endz_BQ_mideg->Write();
+		h1d_endz_BQ_midother->Write();
+
+		h2d_trklen_endz_CaloSz->Write();
+		h2d_trklen_endz_CaloSz_inel->Write();
+		h2d_trklen_endz_CaloSz_el->Write();
+		h2d_trklen_endz_CaloSz_midcosmic->Write();
+		h2d_trklen_endz_CaloSz_midpi->Write();
+		h2d_trklen_endz_CaloSz_midp->Write();
+		h2d_trklen_endz_CaloSz_midmu->Write();
+		h2d_trklen_endz_CaloSz_mideg->Write();
+		h2d_trklen_endz_CaloSz_midother->Write();
+
+		h2d_trklen_endz_Pos->Write();
+		h2d_trklen_endz_Pos_inel->Write();
+		h2d_trklen_endz_Pos_el->Write();
+		h2d_trklen_endz_Pos_midcosmic->Write();
+		h2d_trklen_endz_Pos_midpi->Write();
+		h2d_trklen_endz_Pos_midp->Write();
+		h2d_trklen_endz_Pos_midmu->Write();
+		h2d_trklen_endz_Pos_mideg->Write();
+		h2d_trklen_endz_Pos_midother->Write();
+
+		h2d_trklen_endz_BQ->Write();
+		h2d_trklen_endz_BQ_inel->Write();
+		h2d_trklen_endz_BQ_el->Write();
+		h2d_trklen_endz_BQ_midcosmic->Write();
+		h2d_trklen_endz_BQ_midpi->Write();
+		h2d_trklen_endz_BQ_midp->Write();
+		h2d_trklen_endz_BQ_midmu->Write();
+		h2d_trklen_endz_BQ_mideg->Write();
+		h2d_trklen_endz_BQ_midother->Write();
+
+		h1d_truetrklen_CaloSz->Write();
+		h1d_truetrklen_Pos->Write();
+		h1d_truetrklen_BQ->Write();
+
+		h1d_trueendz_CaloSz->Write();
+		h1d_trueendz_Pos->Write();
+		h1d_trueendz_BQ->Write();
+
+		h1d_trueendzSCE_CaloSz->Write();
+		h1d_trueendzSCE_Pos->Write();
+		h1d_trueendzSCE_BQ->Write();
 
 	fout->Close();
 
