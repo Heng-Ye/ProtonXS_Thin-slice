@@ -42,6 +42,7 @@
 #include <vector>
 #include <fstream>
 #include <string>
+#include "TGraphAsymmErrors.h"
 
 #include "./cali/dedx_function_35ms.h"
 #include "./headers/BasicParameters.h"
