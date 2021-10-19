@@ -161,4 +161,54 @@ TString file_bmrw=Form("bmrw_bestfit.root");
 TFile *f_bmrw=new TFile(Form("%s%s",fpath_bmrw.Data(),file_bmrw.Data()));
 TF1 *bmrw_func=(TF1 *)f_bmrw->Get("bmrw_minchi2");
 
+//efficiency calc.-------------------------------------------------------------------//
+double err_p(double nom, double denom) {
+	double ef=nom/denom;
+
+        double err_p=0;
+        double err_m=0;
+        if (ef>0.&&ef<1.) {
+        	err_p=(1.0/(sqrt(denom)))*sqrt((ef*(1.0-ef)));
+                err_m=err_p;
+        }
+        else {
+        	double inverse_denom=1./denom;
+                double err=1-pow(0.72,inverse_denom);
+
+                if (ef==0.) {
+                	err_p=err;
+                        err_m=0.;
+                }
+                if (ef==1.) {
+                	err_p=0.;
+                        err_m=err;
+                }
+        }
+      	return err_p;
+}
+
+double err_m(double nom, double denom) {
+	double ef=nom/denom;
+
+        double err_p=0;
+        double err_m=0;
+        if (ef>0.&&ef<1.) {
+        	err_p=(1.0/(sqrt(denom)))*sqrt((ef*(1.0-ef)));
+                err_m=err_p;
+        }
+        else {
+        	double inverse_denom=1./denom;
+                double err=1-pow(0.72,inverse_denom);
+
+                if (ef==0.) {
+                	err_p=err;
+                        err_m=0.;
+                }
+                if (ef==1.) {
+                	err_p=0.;
+                        err_m=err;
+                }
+        }
+      	return err_m;
+}
 
