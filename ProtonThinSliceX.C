@@ -210,6 +210,26 @@ void ProtonThinSlice::Loop() {
 		if (IsPureEL==1) cout<<"Summary(TrueEnd, Endoutside, Bm, Orig, EPDG):("<<2<<", "<<IsTrueEndOutside<<", "<<IsBeamMatch<<", "<<primary_truth_byE_origin<<", "<<primary_truth_byE_PDG<<")"<<endl;	
 		//if (IsPureMCS==1) cout<<"Summary(TrueEnd, Endoutside, Bm, Orig, EPDG):("<<3<<", "<<IsTrueEndOutside<<", "<<IsBeamMatch<<", "<<primary_truth_byE_origin<<", "<<primary_truth_byE_PDG<<")"<<endl;	
 
+		//First point of MCParticle entering TPC ------------------------------------------------------------------------//
+		bool is_beam_at_ff=false; //if the beam reach tpc
+		int key_reach_tpc=-99;
+		if (beamtrk_z->size()){
+			for (size_t kk=0; kk<beamtrk_z->size(); ++kk) {  //loop over all beam hits
+				double zpos_beam=beamtrk_z->at(kk);
+				if (zpos_beam>=0) {
+					key_reach_tpc=(int)kk;
+					break;
+				}
+			} //loop over all beam hits
+
+			//for (size_t kk=0; kk<beamtrk_z->size(); ++kk) {  //loop over all beam hits
+			//cout<<"["<<kk<<"] beamtrk_z:"<<beamtrk_z->at(kk) <<" beamtrk_Eng:"<<beamtrk_Eng->at(kk)<<endl;
+			//} //loop over all beam hits
+		} 
+		if (key_reach_tpc!=-99) { is_beam_at_ff=true; }
+		cout<<"key_reach_tpc:"<<key_reach_tpc<<endl;	
+		cout<<"is_beam_at_ff:"<<is_beam_at_ff<<endl;
+
 		//Get true trklen ---------------------------------------------------------------------------------------//
 		double range_true=-999;
 		int key_st = 0;
@@ -228,8 +248,9 @@ void ProtonThinSlice::Loop() {
 			//cout<<"ck0///"<<endl;
 		}
 		//cout<<"ck1"<<endl;
-		for (int iz=key_st+1; iz<(int)beamtrk_z->size(); iz++){
-			if (iz == key_st+1) range_true = 0;
+		//for (int iz=key_st+1; iz<(int)beamtrk_z->size(); iz++){
+		for (int iz=key_reach_tpc+1; iz<(int)beamtrk_z->size(); iz++){
+			if (iz == key_reach_tpc+1) range_true = 0;
 			range_true += sqrt( pow(beamtrk_x->at(iz)-beamtrk_x->at(iz-1), 2)+
 					pow(beamtrk_y->at(iz)-beamtrk_y->at(iz-1), 2)+	
 					pow(beamtrk_z->at(iz)-beamtrk_z->at(iz-1), 2) );						    	
@@ -599,25 +620,6 @@ void ProtonThinSlice::Loop() {
 			ke_simide+=primtrk_true_edept->at(hk);
 		} //loop over simIDE points
 
-		//First point of MCParticle entering TPC ------------------------------------------------------------------------//
-		bool is_beam_at_ff=false; //if the beam reach tpc
-		int key_reach_tpc=-99;
-		if (beamtrk_z->size()){
-			for (size_t kk=0; kk<beamtrk_z->size(); ++kk) {  //loop over all beam hits
-				double zpos_beam=beamtrk_z->at(kk);
-				if (zpos_beam>=0) {
-					key_reach_tpc=(int)kk;
-					break;
-				}
-			} //loop over all beam hits
-
-			//for (size_t kk=0; kk<beamtrk_z->size(); ++kk) {  //loop over all beam hits
-			//cout<<"["<<kk<<"] beamtrk_z:"<<beamtrk_z->at(kk) <<" beamtrk_Eng:"<<beamtrk_Eng->at(kk)<<endl;
-			//} //loop over all beam hits
-		} 
-		if (key_reach_tpc!=-99) { is_beam_at_ff=true; }
-		cout<<"key_reach_tpc:"<<key_reach_tpc<<endl;	
-		cout<<"is_beam_at_ff:"<<is_beam_at_ff<<endl;
 
 		double KE_ff=0;
 		//if (is_beam_at_ff) KE_ff=1000.*beamtrk_Eng->at(key_reach_tpc); //unit:MeV
