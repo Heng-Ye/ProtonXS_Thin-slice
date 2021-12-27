@@ -60,19 +60,20 @@ void plot_startZ() {
 	c_->Divide(1,2);
 	c_->cd(1);
 	zst_mc->Scale((double)zst_data->Integral()/(double)zst_mc->Integral());
-	zst_mc->SetTitle("; StartZ [cm]; Counts");
+	zst_mc->SetTitle("CaloSz Cut; Reco. StartZ [cm]; Counts");
+	zst_mc->GetXaxis()->SetRangeUser(-4,9);
 	zst_mc->Draw("hist");
 	zst_data->Draw("hist same");
 
-        TLegend *leg0 = new TLegend(0.7,0.7,.85,0.9);
+        TLegend *leg0 = new TLegend(0.5,0.65,.85,0.88);
         leg0->SetFillStyle(0);
         leg0->AddEntry(zst_data, "Data (after SCE corr.)", "l");
         leg0->AddEntry(zst_mc, "MC (after SCE corr.)", "l");
         leg0->Draw();
 
 	c_->cd(2);
-	zEnd_true->SetTitle("Inelastic Scattering Protons; StartZ (Truth) [cm]; Counts");
-	zEnd_true->GetXaxis()->SetRangeUser(-40,50);
+	zEnd_true->SetTitle("Inelastic Scattering Protons; True StartZ [cm]; Counts");
+	zEnd_true->GetXaxis()->SetRangeUser(-30,50);
 	zEnd_true->Draw("hist");
 
 

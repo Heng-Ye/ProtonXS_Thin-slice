@@ -1,6 +1,6 @@
 #include "THStack.h"
 
-void plot_trklentrue(TString fin, TString fout_path, TString str_cut) {
+void plot_trklentrue(TString fin, TString fin_data, TString fout_path, TString str_cut) {
 
 	gROOT->LoadMacro(" ~/protoDUNEStyle.C"); //load pDUNE style
 	gROOT->SetStyle("protoDUNEStyle");
@@ -10,19 +10,26 @@ void plot_trklentrue(TString fin, TString fout_path, TString str_cut) {
 	gStyle->SetTitleAlign(23); 
 	//gStyle->SetOptStat(0);
 	
+	//data --------------------------------------------------------------------------------------//
+	TFile *f_data = TFile::Open(fin_data.Data());
+	TH1D *trklen_data=(TH1D *)f_data->Get(Form("h1d_trklen_%s",str_cut.Data()));
+	trklen_data->SetMarkerColor(1);
+	trklen_data->SetLineColor(1);
+	int n_data=trklen_data->Integral();
+	
 	//mc ----------------------------------------------------------------------------------------//
 	TFile *f0 = TFile::Open(fin.Data());
 
-	TH1D *trklen_inel=(TH1D *)f0->Get(Form("h1d_truetrklen_inel_%s",str_cut.Data()));
-	TH1D *trklen_el=(TH1D *)f0->Get(Form("h1d_truetrklen_el_%s",str_cut.Data()));
+	TH1D *trklen_inel=(TH1D *)f0->Get(Form("h1d_truetrklen_%s_inel",str_cut.Data()));
+	TH1D *trklen_el=(TH1D *)f0->Get(Form("h1d_truetrklen_%s_el",str_cut.Data()));
 
-	TH1D *trklen_midcosmic=(TH1D *)f0->Get(Form("h1d_truetrklen_midcosmic_%s",str_cut.Data()));
-	TH1D *trklen_midpi=(TH1D *)f0->Get(Form("h1d_truetrklen_midpi_%s",str_cut.Data()));
-	TH1D *trklen_midp=(TH1D *)f0->Get(Form("h1d_truetrklen_midp_%s",str_cut.Data()));
+	TH1D *trklen_midcosmic=(TH1D *)f0->Get(Form("h1d_truetrklen_%s_midcosmic",str_cut.Data()));
+	TH1D *trklen_midpi=(TH1D *)f0->Get(Form("h1d_truetrklen_%s_midpi",str_cut.Data()));
+	TH1D *trklen_midp=(TH1D *)f0->Get(Form("h1d_truetrklen_%s_midp",str_cut.Data()));
 
-	TH1D *trklen_midmu=(TH1D *)f0->Get(Form("h1d_truetrklen_midmu_%s",str_cut.Data()));
-	TH1D *trklen_mideg=(TH1D *)f0->Get(Form("h1d_truetrklen_mideg_%s",str_cut.Data()));
-	TH1D *trklen_midother=(TH1D *)f0->Get(Form("h1d_truetrklen_midother_%s",str_cut.Data()));
+	TH1D *trklen_midmu=(TH1D *)f0->Get(Form("h1d_truetrklen_%s_midmu",str_cut.Data()));
+	TH1D *trklen_mideg=(TH1D *)f0->Get(Form("h1d_truetrklen_%s_mideg",str_cut.Data()));
+	TH1D *trklen_midother=(TH1D *)f0->Get(Form("h1d_truetrklen_%s_midother",str_cut.Data()));
 
 	trklen_inel->SetFillColor(2); trklen_inel->SetLineColor(2);
 	trklen_el->SetFillColor(4); trklen_el->SetLineColor(4);
@@ -45,8 +52,7 @@ void plot_trklentrue(TString fin, TString fout_path, TString str_cut) {
 	int n_mc_midother=trklen_midother->Integral();
 	int n_mc=n_mc_inel+n_mc_el+n_mc_midcosmic+n_mc_midpi+n_mc_midp+n_mc_midmu+n_mc_mideg+n_mc_midother;
 
-	//double norm_mc=(double)n_data/(double)n_mc;
-	double norm_mc=1;
+	double norm_mc=(double)n_data/(double)n_mc;
 	trklen_inel->Scale(norm_mc);
 	trklen_el->Scale(norm_mc);
 	trklen_midcosmic->Scale(norm_mc);
@@ -58,7 +64,7 @@ void plot_trklentrue(TString fin, TString fout_path, TString str_cut) {
 
 	//--------------------------------------------------------------------------------------------//
 
-	trklen_inel->GetXaxis()->SetTitle("Truth Track Length [cm]");
+	trklen_inel->GetXaxis()->SetTitle("Track Length [cm]");
 
 	THStack* hs=new THStack("hs","");
 	hs->Add(trklen_inel);
@@ -79,16 +85,18 @@ void plot_trklentrue(TString fin, TString fout_path, TString str_cut) {
 
 	c_->Divide(1,1);
 	c_->cd(1);
-	TH2D *f2d=new TH2D("f2d",Form("%s",str_cut.Data()),136,-4,132,1100,0,1100);
-	f2d->GetXaxis()->SetTitle("Truth Track Length [cm]");
+	//TH2D *f2d=new TH2D("f2d",Form("%s",str_cut.Data()),136,-4,132,250,0,250);
+	//TH2D *f2d=new TH2D("f2d",Form("%s",str_cut.Data()),44,-4,40,250,0,250);
+	TH2D *f2d=new TH2D("f2d",Form("%s",str_cut.Data()),41,-1,40,300,0,300);
+	f2d->GetXaxis()->SetTitle("Track Length [cm]");
 	f2d->Draw();
 	//c_->cd(1)->SetLogy();
 	hs->Draw("hist same");
-	//trklen_data->Draw("ep same");
+	trklen_data->Draw("ep same");
 
 	TLegend *leg = new TLegend(0.2,0.6,0.8,0.9);
 	leg->SetFillStyle(0);
-	//leg->AddEntry(trklen_data, "Data", "ep");
+	leg->AddEntry(trklen_data, "Data", "ep");
 	leg->AddEntry(trklen_inel, "Inel","f");
 	leg->AddEntry(trklen_el, "El","f");
 
@@ -103,6 +111,7 @@ void plot_trklentrue(TString fin, TString fout_path, TString str_cut) {
 	leg->SetNColumns(3);
 	leg->Draw();
 
-	c_->Print(Form("%s/trklentruth_%s.eps",fout_path.Data(),str_cut.Data()));
+	//c_->Print(Form("%s/trklentrue_%s.eps",fout_path.Data(),str_cut.Data()));
+	c_->Print(Form("%s/trklentrue_%s_zoom.eps",fout_path.Data(),str_cut.Data()));
 
 }

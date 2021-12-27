@@ -5,27 +5,46 @@
 #include "../headers/SliceParams.h"
 #include "../headers/TemplateFitter.h"
 
-void plot_truelen_eff() {
+void plot_truelen_dist_beforeafter_fix() {
 
-	//TString file=Form("../mc_truelen.root");
-	TString file=Form("../mc_truelen_new_fixtruelen.root");
-	TFile *fin = TFile::Open(file.Data());
+	TString file1=Form("../mc_truelen_keff.root");
+	TFile *fin1 = TFile::Open(file1.Data());
+	TH1D *h1d1=(TH1D *)fin1->Get(Form("h1d_truetrklen_NoCut_inel"));
 
-	TH1D *h1d_truetrklen_NoCut=(TH1D *)fin->Get(Form("h1d_truetrklen_NoCut_inel"));
-	TH1D *h1d_truetrklen_Pan=(TH1D *)fin->Get(Form("h1d_truetrklen_Pan_inel"));
-	TH1D *h1d_truetrklen_CaloSz=(TH1D *)fin->Get(Form("h1d_truetrklen_CaloSz_inel"));
-	TH1D *h1d_truetrklen_Pos=(TH1D *)fin->Get(Form("h1d_truetrklen_Pos_inel"));
-	TH1D *h1d_truetrklen_BQ=(TH1D *)fin->Get(Form("h1d_truetrklen_BQ_inel"));
-	TH1D *h1d_truetrklen_RecoInel=(TH1D *)fin->Get(Form("h1d_truetrklen_RecoInel_inel"));
-	TH1D *h1d_truetrklen_BeamMatch=(TH1D *)fin->Get(Form("h1d_truetrklen_BeamMatch_inel"));
+	TString file2=Form("../mc_truelen_new_fixtruelen.root");
+	TFile *fin2 = TFile::Open(file2.Data());
+	TH1D *h1d2=(TH1D *)fin2->Get(Form("h1d_truetrklen_NoCut_inel"));
 
-	TGraphAsymmErrors *Eff_NoCut=(TGraphAsymmErrors *)fin->Get(Form("Eff_NoCut_inel"));
-	TGraphAsymmErrors *Eff_Pan=(TGraphAsymmErrors *)fin->Get(Form("Eff_Pan_inel"));
-	TGraphAsymmErrors *Eff_CaloSz=(TGraphAsymmErrors *)fin->Get(Form("Eff_CaloSz_inel"));
-	TGraphAsymmErrors *Eff_Pos=(TGraphAsymmErrors *)fin->Get(Form("Eff_Pos_inel"));
-	TGraphAsymmErrors *Eff_BQ=(TGraphAsymmErrors *)fin->Get(Form("Eff_BQ_inel"));
-	TGraphAsymmErrors *Eff_RecoInel=(TGraphAsymmErrors *)fin->Get(Form("Eff_RecoInel_inel"));
-	TGraphAsymmErrors *Eff_BeamMatch=(TGraphAsymmErrors *)fin->Get(Form("Eff_BeamMatch_inel"));
+	h1d1->SetLineColor(1);
+	h1d2->SetLineColor(2);
+	
+	
+
+
+/*
+        //const int n_scan=25;
+        const int n_scan=20;
+        TH2D *h2d_XY[n_scan];
+        double truelen_st=-10; //scan from truelen=0
+        //double truelen_st=-60; //scan from truelen=0
+        double d_truelen=2; //every 2 cm
+        vector<double> seg_true_len;
+        for (int j=0; j<n_scan; ++j) {
+                double seg_st=truelen_st+(double)j*d_truelen;
+                seg_true_len.push_back(seg_st);
+		h2d_XY[j]=(TH2D *)fin->Get(Form("h2d_trueXY_NoCut_inel_%d",j));
+		h2d_XY[j]->SetTitle(Form("True EndZ: %.1f - %.1f cm; True X [cm]; True Y [cm]", seg_st-d_truelen, seg_st));
+
+		TCanvas *c_ = new TCanvas("c_", "c_", 1200, 900);
+		c_->Divide(1,1);
+		h2d_XY[j]->Draw("colz");
+	
+		TString fig_out=Form("plots_bkgstudy/h2d_xy/h2dXY_zend_%.1f_%.1f.png", seg_st-d_truelen, seg_st);
+		c_->Print(fig_out.Data());
+
+        }
+*/
+
 
 	//config -------------------------------------------------------//
 	gROOT->LoadMacro(" ~/protoDUNEStyle.C"); //load pDUNE style
@@ -56,13 +75,41 @@ void plot_truelen_eff() {
 	//gStyle->SetPadRightMargin(0.17);
 	//config -------------------------------------------------------//
 
-	TLine *line=new TLine(0,1,120,1);
-	line->SetLineStyle(2);
+	//TLine *line=new TLine(0,1,120,1);
+	//line->SetLineStyle(2);
+
+
+
+
+	
 
 	//inel
 	TCanvas *c_ = new TCanvas("c_", "c_", 1200, 900);
 	c_->Divide(1,1);
+	c_->SetLogy();
+	h1d1->SetTitle("; True Track Length [cm]; Counts");
+	h1d1->GetXaxis()->SetRangeUser(0,50);
+	h1d1->Draw("hist");
+	h1d2->Draw("hist same");
+
+	TLegend *leg1 = new TLegend(0.2,0.65,0.85,0.9);
+	leg1->SetFillStyle(0);
+	leg1->AddEntry(h1d1, "Before fix","l");
+	leg1->AddEntry(h1d2, "After fix","l");
+	leg1->Draw();
+
+	//TString fig_out=Form("plots_bkgstudy/truelen_before_after_fix.eps");
+	TString fig_out=Form("plots_bkgstudy/truelen_before_after_fix_zoom.eps");
+	c_->Print(fig_out.Data());
+
+
+
+
+/*
+
+
 	//c_->SetLogy();
+	//
 	h1d_truetrklen_NoCut->SetLineColor(15);
 	h1d_truetrklen_Pan->SetLineColor(6);
 	h1d_truetrklen_CaloSz->SetLineColor(1);
@@ -71,9 +118,7 @@ void plot_truelen_eff() {
 	h1d_truetrklen_RecoInel->SetLineColor(4);
 	h1d_truetrklen_BeamMatch->SetLineColor(7);
 
-	//TH2D *f2d=new TH2D("f2d","",150, 0, 150, 200, 0.1, 20000);
-	//TH2D *f2d=new TH2D("f2d","",150, 0, 150, 200, 0.1, 2000);
-	TH2D *f2d=new TH2D("f2d","",150, 0, 25, 200, 0.1, 2000);
+	TH2D *f2d=new TH2D("f2d","",150, 0, 150, 200, 0.1, 20000);
 	f2d->GetXaxis()->SetTitle("True Track Length [cm]");
 	f2d->GetYaxis()->SetTitle("Counts");
 	f2d->Draw();
@@ -98,15 +143,14 @@ void plot_truelen_eff() {
 	leg->Draw();
 
 
-	TString fig_out=Form("plots_bkgstudy/truelen_cuts_liny_zoom.eps");
+	TString fig_out=Form("plots_bkgstudy/truelen_cuts.eps");
 	c_->Print(fig_out.Data());
 
 
 	TCanvas *c_1 = new TCanvas("c_1", "c_1", 1200, 900);
 	c_1->Divide(1,1);
 
-	TH2D *f2d1=new TH2D("f2d1","",30,0,25,150,0,1.5);
-	//TH2D *f2d1=new TH2D("f2d1","",30,0,120,150,0,1.5);
+	TH2D *f2d1=new TH2D("f2d1","",30,0,120,150,0,1.5);
 	//TH2D *f2d1=new TH2D("f2d1","",50, 0, 50,150,0,1.5);
 	f2d1->GetXaxis()->SetTitle("True Track Length [cm]");
 	f2d1->GetYaxis()->SetTitle("Efficiency");
@@ -162,16 +206,16 @@ void plot_truelen_eff() {
 	leg1->SetNColumns(3);
 	leg1->Draw();
 
-	TString fig_out1=Form("plots_bkgstudy/eff_truelen_cuts_new_zoom.eps");
+	//TString fig_out1=Form("plots_bkgstudy/eff_truelen_cuts.eps");
 	//TString fig_out1=Form("plots_bkgstudy/eff_truelen_cuts_zoom1.eps");
-	//TString fig_out1=Form("plots_bkgstudy/eff_truelen_cuts_zoom3.eps");
+	TString fig_out1=Form("plots_bkgstudy/eff_truelen_cuts_zoom3.eps");
 	c_1->Print(fig_out1.Data());
 
 	
 
 
 
-/*
+
 	gPad->Update();
 	for (int j=0; j<nn_cos; ++j) {
         	float tmp_min=(float)j*dcos;

@@ -5,27 +5,47 @@
 #include "../headers/SliceParams.h"
 #include "../headers/TemplateFitter.h"
 
-void plot_truelen_eff() {
+void Pal2()
+{
+   static Int_t  colors[50];
+   static Bool_t initialized = kFALSE;
+ 
+   Double_t Red[3]    = { 1.00, 0.50, 0.00};
+   Double_t Green[3]  = { 0.50, 0.00, 1.00};
+   Double_t Blue[3]   = { 1.00, 0.00, 0.50};
+   Double_t Length[3] = { 0.00, 0.50, 1.00 };
+ 
+   if(!initialized){
+      Int_t FI = TColor::CreateGradientColorTable(3,Length,Red,Green,Blue,50);
+      for (int i=0; i<50; i++) colors[i] = FI+i;
+      initialized = kTRUE;
+      return;
+   }
+   gStyle->SetPalette(50,colors);
+}
 
-	//TString file=Form("../mc_truelen.root");
-	TString file=Form("../mc_truelen_new_fixtruelen.root");
+void plot_thetaxz_yz() {
+
+	TString file=Form("../mc_truelen.root");
 	TFile *fin = TFile::Open(file.Data());
 
-	TH1D *h1d_truetrklen_NoCut=(TH1D *)fin->Get(Form("h1d_truetrklen_NoCut_inel"));
-	TH1D *h1d_truetrklen_Pan=(TH1D *)fin->Get(Form("h1d_truetrklen_Pan_inel"));
-	TH1D *h1d_truetrklen_CaloSz=(TH1D *)fin->Get(Form("h1d_truetrklen_CaloSz_inel"));
-	TH1D *h1d_truetrklen_Pos=(TH1D *)fin->Get(Form("h1d_truetrklen_Pos_inel"));
-	TH1D *h1d_truetrklen_BQ=(TH1D *)fin->Get(Form("h1d_truetrklen_BQ_inel"));
-	TH1D *h1d_truetrklen_RecoInel=(TH1D *)fin->Get(Form("h1d_truetrklen_RecoInel_inel"));
-	TH1D *h1d_truetrklen_BeamMatch=(TH1D *)fin->Get(Form("h1d_truetrklen_BeamMatch_inel"));
+	TProfile2D *h2d_thetaXZ_thetaYZ_BQ_inel=(TProfile2D *)fin->Get("h2d_thetaXZ_thetaYZ_BQ_inel");
+	TProfile2D *h2d_thetaXZ_thetaYZ_BQ_el=(TProfile2D *)fin->Get("h2d_thetaXZ_thetaYZ_BQ_el");
+	TProfile2D *h2d_thetaXZ_thetaYZ_BQ_misidp=(TProfile2D *)fin->Get("h2d_thetaXZ_thetaYZ_BQ_misidp");
 
-	TGraphAsymmErrors *Eff_NoCut=(TGraphAsymmErrors *)fin->Get(Form("Eff_NoCut_inel"));
-	TGraphAsymmErrors *Eff_Pan=(TGraphAsymmErrors *)fin->Get(Form("Eff_Pan_inel"));
-	TGraphAsymmErrors *Eff_CaloSz=(TGraphAsymmErrors *)fin->Get(Form("Eff_CaloSz_inel"));
-	TGraphAsymmErrors *Eff_Pos=(TGraphAsymmErrors *)fin->Get(Form("Eff_Pos_inel"));
-	TGraphAsymmErrors *Eff_BQ=(TGraphAsymmErrors *)fin->Get(Form("Eff_BQ_inel"));
-	TGraphAsymmErrors *Eff_RecoInel=(TGraphAsymmErrors *)fin->Get(Form("Eff_RecoInel_inel"));
-	TGraphAsymmErrors *Eff_BeamMatch=(TGraphAsymmErrors *)fin->Get(Form("Eff_BeamMatch_inel"));
+	TProfile2D *h2d_thetaXZ_thetaYZ_Pos_inel=(TProfile2D *)fin->Get("h2d_thetaXZ_thetaYZ_Pos_inel");
+	TProfile2D *h2d_thetaXZ_thetaYZ_Pos_el=(TProfile2D *)fin->Get("h2d_thetaXZ_thetaYZ_Pos_el");
+	TProfile2D *h2d_thetaXZ_thetaYZ_Pos_misidp=(TProfile2D *)fin->Get("h2d_thetaXZ_thetaYZ_Pos_misidp");
+
+
+	h2d_thetaXZ_thetaYZ_BQ_inel->SetTitle("Inel. [BQ Cut]; #Theta_{XZ} [deg]; #Theta_{YZ} [deg]");
+	h2d_thetaXZ_thetaYZ_BQ_el->SetTitle("El. [BQ Cut]; #Theta_{XZ} [deg]; #Theta_{YZ} [deg]");
+	h2d_thetaXZ_thetaYZ_BQ_misidp->SetTitle("MisID:P [BQ Cut]; #Theta_{XZ} [deg]; #Theta_{YZ} [deg]");
+
+	h2d_thetaXZ_thetaYZ_Pos_inel->SetTitle("Inel. [Pos Cut]; #Theta_{XZ} [deg]; #Theta_{YZ} [deg]");
+	h2d_thetaXZ_thetaYZ_Pos_el->SetTitle("El. [Pos Cut]; #Theta_{XZ} [deg]; #Theta_{YZ} [deg]");
+	h2d_thetaXZ_thetaYZ_Pos_misidp->SetTitle("MisID:P [Pos Cut]; #Theta_{XZ} [deg]; #Theta_{YZ} [deg]");
+
 
 	//config -------------------------------------------------------//
 	gROOT->LoadMacro(" ~/protoDUNEStyle.C"); //load pDUNE style
@@ -56,13 +76,57 @@ void plot_truelen_eff() {
 	//gStyle->SetPadRightMargin(0.17);
 	//config -------------------------------------------------------//
 
+
+	//inel
+	//gStyle->SetPalette(kBlueRedYellow);
+	//gStyle->SetPalette(kRainBow);
+	gStyle->SetPalette(kBlackBody);
+	//gStyle->SetPalette(kCMYK);
+	//gStyle->SetPalette(kGreenPink);
+	//gStyle->SetPalette(kPastel);
+	//gStyle->SetPalette(kTemperatureMap);
+	//gStyle->SetPalette(kColorPrintableOnGrey);
+   	//TExec *ex2 = new TExec("ex2","Pal2();");
+   	//ex2->Draw();
+
+	TCanvas *c_ = new TCanvas("c_", "c_", 1200, 900);
+	c_->Divide(1,1);
+	//TH2D *f2d=new TH2D("f2d","",15,-1,150,15,-1,150);
+	//f2d->SetTitle(";#Theta_{XZ}[deg];#Theta_{YZ}[deg]");
+	//f2d->Draw();
+	
+	//TProfile2D *h2d=(TProfile2D *)h2d_thetaXZ_thetaYZ_Pos_misidp->Clone();
+	//TProfile2D *h2d=(TProfile2D *)h2d_thetaXZ_thetaYZ_Pos_inel->Clone();
+	//TProfile2D *h2d=(TProfile2D *)h2d_thetaXZ_thetaYZ_Pos_el->Clone();
+	
+	//TProfile2D *h2d=(TProfile2D *)h2d_thetaXZ_thetaYZ_BQ_misidp->Clone();
+	//TProfile2D *h2d=(TProfile2D *)h2d_thetaXZ_thetaYZ_BQ_inel->Clone();
+	TProfile2D *h2d=(TProfile2D *)h2d_thetaXZ_thetaYZ_BQ_el->Clone();
+
+
+	h2d->GetXaxis()->SetRangeUser(-1,150);
+	h2d->GetYaxis()->SetRangeUser(-1,150);
+	h2d->Draw("colz");
+
+	//c_->Print("./plots_bkgstudy/thetaxz_thetayz_Pos_misidp.eps");
+	//c_->Print("./plots_bkgstudy/thetaxz_thetayz_Pos_inel.eps");
+	//c_->Print("./plots_bkgstudy/thetaxz_thetayz_Pos_el.eps");
+
+	//c_->Print("./plots_bkgstudy/thetaxz_thetayz_BQ_misidp.eps");
+	//c_->Print("./plots_bkgstudy/thetaxz_thetayz_BQ_inel.eps");
+	c_->Print("./plots_bkgstudy/thetaxz_thetayz_BQ_el.eps");
+
+
+
+
+/*
 	TLine *line=new TLine(0,1,120,1);
 	line->SetLineStyle(2);
 
 	//inel
 	TCanvas *c_ = new TCanvas("c_", "c_", 1200, 900);
 	c_->Divide(1,1);
-	//c_->SetLogy();
+	c_->SetLogy();
 	h1d_truetrklen_NoCut->SetLineColor(15);
 	h1d_truetrklen_Pan->SetLineColor(6);
 	h1d_truetrklen_CaloSz->SetLineColor(1);
@@ -71,9 +135,7 @@ void plot_truelen_eff() {
 	h1d_truetrklen_RecoInel->SetLineColor(4);
 	h1d_truetrklen_BeamMatch->SetLineColor(7);
 
-	//TH2D *f2d=new TH2D("f2d","",150, 0, 150, 200, 0.1, 20000);
-	//TH2D *f2d=new TH2D("f2d","",150, 0, 150, 200, 0.1, 2000);
-	TH2D *f2d=new TH2D("f2d","",150, 0, 25, 200, 0.1, 2000);
+	TH2D *f2d=new TH2D("f2d","",150, 0, 150, 200, 0.1, 20000);
 	f2d->GetXaxis()->SetTitle("True Track Length [cm]");
 	f2d->GetYaxis()->SetTitle("Counts");
 	f2d->Draw();
@@ -98,15 +160,14 @@ void plot_truelen_eff() {
 	leg->Draw();
 
 
-	TString fig_out=Form("plots_bkgstudy/truelen_cuts_liny_zoom.eps");
+	TString fig_out=Form("plots_bkgstudy/truelen_cuts.eps");
 	c_->Print(fig_out.Data());
 
 
 	TCanvas *c_1 = new TCanvas("c_1", "c_1", 1200, 900);
 	c_1->Divide(1,1);
 
-	TH2D *f2d1=new TH2D("f2d1","",30,0,25,150,0,1.5);
-	//TH2D *f2d1=new TH2D("f2d1","",30,0,120,150,0,1.5);
+	TH2D *f2d1=new TH2D("f2d1","",30,0,120,150,0,1.5);
 	//TH2D *f2d1=new TH2D("f2d1","",50, 0, 50,150,0,1.5);
 	f2d1->GetXaxis()->SetTitle("True Track Length [cm]");
 	f2d1->GetYaxis()->SetTitle("Efficiency");
@@ -162,16 +223,16 @@ void plot_truelen_eff() {
 	leg1->SetNColumns(3);
 	leg1->Draw();
 
-	TString fig_out1=Form("plots_bkgstudy/eff_truelen_cuts_new_zoom.eps");
+	//TString fig_out1=Form("plots_bkgstudy/eff_truelen_cuts.eps");
 	//TString fig_out1=Form("plots_bkgstudy/eff_truelen_cuts_zoom1.eps");
-	//TString fig_out1=Form("plots_bkgstudy/eff_truelen_cuts_zoom3.eps");
+	TString fig_out1=Form("plots_bkgstudy/eff_truelen_cuts_zoom3.eps");
 	c_1->Print(fig_out1.Data());
 
 	
 
 
 
-/*
+
 	gPad->Update();
 	for (int j=0; j<nn_cos; ++j) {
         	float tmp_min=(float)j*dcos;

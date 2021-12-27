@@ -1,41 +1,41 @@
 //#include "../headers/BasicAnaFunc.h"
 #include <vector>
 #include <iostream>
-#include "TGraphAsymmErrors.h"
 #include "../headers/SliceParams.h"
 #include "../headers/TemplateFitter.h"
 
-void plot_truelen_eff() {
+void plot_mc_misidp_using_beamlineinfo() {
 
-	//TString file=Form("../mc_truelen.root");
-	TString file=Form("../mc_truelen_new_fixtruelen.root");
-	TFile *fin = TFile::Open(file.Data());
+	TString file_mc=Form("../prod4a_misidpstudy_dxycut_dx4cm_25slcs.root");
+	TFile *fin_mc = TFile::Open(file_mc.Data());
 
-	TH1D *h1d_truetrklen_NoCut=(TH1D *)fin->Get(Form("h1d_truetrklen_NoCut_inel"));
-	TH1D *h1d_truetrklen_Pan=(TH1D *)fin->Get(Form("h1d_truetrklen_Pan_inel"));
-	TH1D *h1d_truetrklen_CaloSz=(TH1D *)fin->Get(Form("h1d_truetrklen_CaloSz_inel"));
-	TH1D *h1d_truetrklen_Pos=(TH1D *)fin->Get(Form("h1d_truetrklen_Pos_inel"));
-	TH1D *h1d_truetrklen_BQ=(TH1D *)fin->Get(Form("h1d_truetrklen_BQ_inel"));
-	TH1D *h1d_truetrklen_RecoInel=(TH1D *)fin->Get(Form("h1d_truetrklen_RecoInel_inel"));
-	TH1D *h1d_truetrklen_BeamMatch=(TH1D *)fin->Get(Form("h1d_truetrklen_BeamMatch_inel"));
+	TString file_data=Form("/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/realdata/p1gev/code_timedep_trkpos/protodune-sp_runset_5387_reco2/data_run5387_prod4reco2_bkgstudy_dx4cm_25slcs_largerbin.root");
+	TFile *fin_data = TFile::Open(file_data.Data());
 
-	TGraphAsymmErrors *Eff_NoCut=(TGraphAsymmErrors *)fin->Get(Form("Eff_NoCut_inel"));
-	TGraphAsymmErrors *Eff_Pan=(TGraphAsymmErrors *)fin->Get(Form("Eff_Pan_inel"));
-	TGraphAsymmErrors *Eff_CaloSz=(TGraphAsymmErrors *)fin->Get(Form("Eff_CaloSz_inel"));
-	TGraphAsymmErrors *Eff_Pos=(TGraphAsymmErrors *)fin->Get(Form("Eff_Pos_inel"));
-	TGraphAsymmErrors *Eff_BQ=(TGraphAsymmErrors *)fin->Get(Form("Eff_BQ_inel"));
-	TGraphAsymmErrors *Eff_RecoInel=(TGraphAsymmErrors *)fin->Get(Form("Eff_RecoInel_inel"));
-	TGraphAsymmErrors *Eff_BeamMatch=(TGraphAsymmErrors *)fin->Get(Form("Eff_BeamMatch_inel"));
+
+	TH1D *h1d_dxy_misidp_lenle0=(TH1D*)fin_mc->Get(Form("h1d_dxy_BQ_misidp_lenle0"));
+	TH1D *h1d_dxy_misidp_lengt0=(TH1D*)fin_mc->Get(Form("h1d_dxy_BQ_misidp_lengt0"));
+	TH1D *h1d_dxy_inel=(TH1D*)fin_mc->Get(Form("h1d_dxy_BQ_inel"));
+	TH1D *h1d_dxy_el=(TH1D*)fin_mc->Get(Form("h1d_dxy_BQ_el"));
+
+	TH1D *h1d_dxy_data=(TH1D*)fin_data->Get(Form("h1d_dxy_BQ"));
+
+
+	h1d_dxy_misidp_lengt0->SetLineColor(3);
+	h1d_dxy_misidp_lenle0->SetLineColor(6);
+	h1d_dxy_inel->SetLineColor(2);
+	h1d_dxy_el->SetLineColor(4);
 
 	//config -------------------------------------------------------//
 	gROOT->LoadMacro(" ~/protoDUNEStyle.C"); //load pDUNE style
 	gROOT->SetStyle("protoDUNEStyle");
 	gROOT->ForceStyle();
-	gStyle->SetOptStat(0);
+	//gStyle->SetOptStat(0);
 	gStyle->SetTitleX(0.5);
 	gStyle->SetTitleYOffset(1.2);
-	//gStyle->SetTitleX(0.5);
+	gStyle->SetTitleXOffset(2.4);
 	gStyle->SetTitleAlign(23); 
+	gStyle->SetTitleX(0.5);
 	gStyle->SetOptStat(0);
 	gStyle->SetPadLeftMargin(0.15);
         gStyle->SetFrameLineWidth(1);
@@ -54,124 +54,102 @@ void plot_truelen_eff() {
 	//gStyle->SetPalette(kBlackBody);
 	//gStyle->SetPadTopMargin(0.2);
 	//gStyle->SetPadRightMargin(0.17);
-	//config -------------------------------------------------------//
+	//get data -------------------------------------------------------------------------------------//
+
+	TCanvas *c_ = new TCanvas("c_", "c_", 1000, 1200);
+	c_->Divide(1,3);
+	c_->cd(1);
+	c_->cd(1)->SetLogy();
+	//gStyle->SetTitleX(0.99);
+	//gStyle->SetOptStat(0);
+	h1d_dxy_misidp_lengt0->GetXaxis()->SetTitleOffset(1.45);
+	h1d_dxy_misidp_lengt0->SetTitle("BQ; #sqrt{(X_{beam}-X_{TPC})^{2}+(Y_{beam}-Y_{TPC})^{2}} [cm];Counts");
+	h1d_dxy_misidp_lengt0->Draw("hist");
+	h1d_dxy_misidp_lenle0->Draw("hist same");
+
+
+	TLegend *leg = new TLegend(0.7,0.65,0.85,0.84);
+	leg->SetFillStyle(0);
+	leg->AddEntry(h1d_dxy_misidp_lengt0, "MisID:P_lenGT0","l");
+	leg->AddEntry(h1d_dxy_misidp_lenle0, "MisID:P_lenLE0","l");
+	leg->Draw();
+
+	c_->cd(2);
+	c_->cd(2)->SetLogy();
+	h1d_dxy_inel->SetTitle("; #sqrt{(X_{beam}-X_{TPC})^{2}+(Y_{beam}-Y_{TPC})^{2}} [cm]; Counts");
+	h1d_dxy_inel->GetXaxis()->SetTitleOffset(1.45);
+	h1d_dxy_inel->Draw("hist same");
+	h1d_dxy_el->Draw("hist same");
+
+	TLegend *leg2 = new TLegend(0.7,0.65,0.85,0.84);
+	leg2->SetFillStyle(0);
+	leg2->AddEntry(h1d_dxy_inel, "Inel.","l");
+	leg2->AddEntry(h1d_dxy_el, "El.","l");
+	leg2->Draw();
+
+	//c_->Print("./plots_bkgstudy/h1d_misidp_cut.eps");
+
+
+	//TCanvas *c_d = new TCanvas("c_d", "c_d", 1200, 400);
+	//c_d->Divide(1,1);
+	//c_d->cd(1);
+	//c_d->cd(1)->SetLogy();
+	c_->cd(3)->SetLogy();
+
+	h1d_dxy_data->GetXaxis()->SetTitleOffset(1.45);
+	h1d_dxy_data->SetTitle("BQ; #sqrt{(X_{beam}-X_{TPC})^{2}+(Y_{beam}-Y_{TPC})^{2}} [cm];Counts");
+	h1d_dxy_data->SetLineColor(2);
+	h1d_dxy_data->Draw("hist");
+
+	TLegend *leg3 = new TLegend(0.7,0.65,0.85,0.84);
+	leg3->SetFillStyle(0);
+	leg3->AddEntry(h1d_dxy_data, "Data","l");
+	leg3->Draw();
+	//c_d->Print("./plots_bkgstudy/h1d_data.eps");
+	c_->Print("./plots_bkgstudy/h1d_dxy_all.eps");
+
+
+/*
+	TFile *fin = TFile::Open(file.Data());
+
+        //int nn_cos=10;
+	//const int nnn_cos=10;
+        //float dcos=0.1;
+
+        int nn_cos=25;
+	const int nnn_cos=25;
+        float dcos=0.04;
+
+	TProfile2D *tp2d_recorange_eff_el[nnn_cos];
+	TProfile2D *tp2d_recorange_eff_inel[nnn_cos];
+	TProfile2D *tp2d_recorange_eff_misidp[nnn_cos];
+
+	TProfile2D *tp2d_ntrklen_chi2_el[nnn_cos];
+	TProfile2D *tp2d_ntrklen_chi2_inel[nnn_cos];
+	TProfile2D *tp2d_ntrklen_chi2_misidp[nnn_cos];
+	for (int j=0; j<nn_cos; ++j) {
+		tp2d_recorange_eff_el[j]=(TProfile2D *)fin->Get(Form("tp2d_recorange_eff_el_%d",j));
+		tp2d_recorange_eff_inel[j]=(TProfile2D *)fin->Get(Form("tp2d_recorange_eff_inel_%d",j));
+		tp2d_recorange_eff_misidp[j]=(TProfile2D *)fin->Get(Form("tp2d_recorange_eff_misidp_%d",j));
+
+		tp2d_ntrklen_chi2_el[j]=(TProfile2D *)fin->Get(Form("tp2d_ntrklen_chi2_el_%d",j));
+		tp2d_ntrklen_chi2_inel[j]=(TProfile2D *)fin->Get(Form("tp2d_ntrklen_chi2_inel_%d",j));
+		tp2d_ntrklen_chi2_misidp[j]=(TProfile2D *)fin->Get(Form("tp2d_ntrklen_chi2_misidp_%d",j));
+	}
+
+	//cosTheta - slice-by-slice ----------------------------//
+	gStyle->SetPadBottomMargin(0.1);
+	//gStyle->SetPadLeftMargin(0.15);
+	//gStyle->SetPadRightMargin(0);
+	//gStyle->SetPadTopMargin(-0.16);
 
 	TLine *line=new TLine(0,1,120,1);
 	line->SetLineStyle(2);
 
 	//inel
-	TCanvas *c_ = new TCanvas("c_", "c_", 1200, 900);
-	c_->Divide(1,1);
-	//c_->SetLogy();
-	h1d_truetrklen_NoCut->SetLineColor(15);
-	h1d_truetrklen_Pan->SetLineColor(6);
-	h1d_truetrklen_CaloSz->SetLineColor(1);
-	h1d_truetrklen_Pos->SetLineColor(2);
-	h1d_truetrklen_BQ->SetLineColor(3);
-	h1d_truetrklen_RecoInel->SetLineColor(4);
-	h1d_truetrklen_BeamMatch->SetLineColor(7);
+	TCanvas *c_inel = new TCanvas("c_inel", "c_inel", 1200, 900);
+	c_inel->Divide(5,5);
 
-	//TH2D *f2d=new TH2D("f2d","",150, 0, 150, 200, 0.1, 20000);
-	//TH2D *f2d=new TH2D("f2d","",150, 0, 150, 200, 0.1, 2000);
-	TH2D *f2d=new TH2D("f2d","",150, 0, 25, 200, 0.1, 2000);
-	f2d->GetXaxis()->SetTitle("True Track Length [cm]");
-	f2d->GetYaxis()->SetTitle("Counts");
-	f2d->Draw();
-	h1d_truetrklen_NoCut->Draw("hist same");
-
-	h1d_truetrklen_Pan->Draw("hist same");
-	h1d_truetrklen_CaloSz->Draw("hist same");
-	h1d_truetrklen_Pos->Draw("hist same");
-	h1d_truetrklen_BQ->Draw("hist same");
-	h1d_truetrklen_RecoInel->Draw("hist same");
-	h1d_truetrklen_BeamMatch->Draw("hist same");
-
-	TLegend *leg = new TLegend(0.6,0.65,0.85,0.9);
-	leg->SetFillStyle(0);
-	leg->AddEntry(h1d_truetrklen_NoCut, "True Inel.","l");
-	leg->AddEntry(h1d_truetrklen_Pan, "Pandora Slice","l");
-	leg->AddEntry(h1d_truetrklen_CaloSz, "Calo Size","l");
-	leg->AddEntry(h1d_truetrklen_Pos, "Position","l");
-	leg->AddEntry(h1d_truetrklen_BQ, "BQ (Pos+Cos#Theta)","l");
-	leg->AddEntry(h1d_truetrklen_RecoInel, "Reco Inel.","l");
-	leg->AddEntry(h1d_truetrklen_BeamMatch, "Beam Match","l");
-	leg->Draw();
-
-
-	TString fig_out=Form("plots_bkgstudy/truelen_cuts_liny_zoom.eps");
-	c_->Print(fig_out.Data());
-
-
-	TCanvas *c_1 = new TCanvas("c_1", "c_1", 1200, 900);
-	c_1->Divide(1,1);
-
-	TH2D *f2d1=new TH2D("f2d1","",30,0,25,150,0,1.5);
-	//TH2D *f2d1=new TH2D("f2d1","",30,0,120,150,0,1.5);
-	//TH2D *f2d1=new TH2D("f2d1","",50, 0, 50,150,0,1.5);
-	f2d1->GetXaxis()->SetTitle("True Track Length [cm]");
-	f2d1->GetYaxis()->SetTitle("Efficiency");
-	f2d1->Draw();
-
-	Eff_NoCut->SetLineColor(15);
-	Eff_NoCut->SetMarkerColor(15);
-
-	Eff_Pan->SetLineColor(6);
-	Eff_Pan->SetMarkerColor(6);
-
-	Eff_CaloSz->SetLineColor(1);
-	Eff_CaloSz->SetMarkerColor(1);
-
-	Eff_Pos->SetLineColor(2);
-	Eff_Pos->SetMarkerColor(2);
-
-	Eff_BQ->SetLineColor(3);
-	Eff_BQ->SetMarkerColor(3);
-
-	Eff_RecoInel->SetLineColor(4);
-	Eff_RecoInel->SetMarkerColor(4);
-
-	Eff_BeamMatch->SetLineColor(7);
-	Eff_BeamMatch->SetMarkerColor(7);
-
-	Eff_NoCut->SetMarkerStyle(20);
-	Eff_Pan->SetMarkerStyle(20);
-	Eff_CaloSz->SetMarkerStyle(20);
-	Eff_Pos->SetMarkerStyle(20);
-	Eff_BQ->SetMarkerStyle(20);
-	Eff_RecoInel->SetMarkerStyle(20);
-	Eff_BeamMatch->SetMarkerStyle(20);
-
-
-	Eff_NoCut->Draw("p same");
-	Eff_Pan->Draw("p same");
-	Eff_CaloSz->Draw("p same");
-	Eff_Pos->Draw("p same");
-	Eff_BQ->Draw("p same");
-	Eff_RecoInel->Draw("p same");
-	Eff_BeamMatch->Draw("p same");
-
-	TLegend *leg1 = new TLegend(0.2,0.65,0.85,0.9);
-	leg1->SetFillStyle(0);
-	leg1->AddEntry(h1d_truetrklen_NoCut, "True Inel.","l");
-	leg1->AddEntry(h1d_truetrklen_Pan, "Pandora Slice","l");
-	leg1->AddEntry(h1d_truetrklen_CaloSz, "Calo Size","l");
-	leg1->AddEntry(h1d_truetrklen_Pos, "Position","l");
-	leg1->AddEntry(h1d_truetrklen_BQ, "BQ (Pos+Cos#Theta)","l");
-	leg1->AddEntry(h1d_truetrklen_RecoInel, "Reco Inel.","l");
-	leg1->AddEntry(h1d_truetrklen_BeamMatch, "Beam Match","l");
-	leg1->SetNColumns(3);
-	leg1->Draw();
-
-	TString fig_out1=Form("plots_bkgstudy/eff_truelen_cuts_new_zoom.eps");
-	//TString fig_out1=Form("plots_bkgstudy/eff_truelen_cuts_zoom1.eps");
-	//TString fig_out1=Form("plots_bkgstudy/eff_truelen_cuts_zoom3.eps");
-	c_1->Print(fig_out1.Data());
-
-	
-
-
-
-/*
 	gPad->Update();
 	for (int j=0; j<nn_cos; ++j) {
         	float tmp_min=(float)j*dcos;
@@ -394,8 +372,8 @@ void plot_truelen_eff() {
 
 	TString fig1_out_misidp=Form("plots_bkgstudy/tp2d_ntrklen_chi2pid_misidp.eps");
 	c1_misidp->Print(fig1_out_misidp.Data());
-*/
 
+*/
 
 /*
 	for (int j=0; j<nn_cos; ++j) {

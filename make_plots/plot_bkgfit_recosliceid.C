@@ -1,8 +1,8 @@
 //#include "../headers/BasicFunctions.h"
 #include <vector>
 #include <iostream>
+#include "THStack.h"
 #include "../headers/TemplateFitter.h"
-
 
 void plot_bkgfit_recosliceid(TString fin, TString fin_data, TString fout_path, TString fout_filename, TString rep, TString title1) {
 
@@ -37,7 +37,18 @@ void plot_bkgfit_recosliceid(TString fin, TString fin_data, TString fout_path, T
 	TH1D *h1d_mideg=(TH1D *)f_mc->Get(Form("%s_mideg",rep.Data()));
 	TH1D *h1d_midother=(TH1D *)f_mc->Get(Form("%s_midother", rep.Data()));
 
+	h1d_inel->Sumw2();
+	h1d_el->Sumw2();
+h1d_midcosmic->Sumw2();
+h1d_midpi->Sumw2();
+h1d_midp->Sumw2();
+h1d_midmu->Sumw2();
+h1d_mideg->Sumw2();
+h1d_midother->Sumw2();
+
+
 	TH1D *h1d_mc=(TH1D*)h1d_inel->Clone(); h1d_mc->Sumw2();
+	h1d_mc->SetName("h1d_mc");
 	h1d_mc->Add(h1d_el);
 	h1d_mc->Add(h1d_midcosmic);
 	h1d_mc->Add(h1d_midpi);
@@ -45,6 +56,7 @@ void plot_bkgfit_recosliceid(TString fin, TString fin_data, TString fout_path, T
 	h1d_mc->Add(h1d_midmu);
 	h1d_mc->Add(h1d_mideg);
 	h1d_mc->Add(h1d_midother);
+	
 
 	TH1D *MC_2=(TH1D *)f_mc->Get(Form("%s_midp", rep.Data())); 
 	TH1D *MC_1=(TH1D *)h1d_inel->Clone(); MC_1->Sumw2();
@@ -76,11 +88,14 @@ void plot_bkgfit_recosliceid(TString fin, TString fin_data, TString fout_path, T
 	int n_mc=n_mc_inel+n_mc_el+n_mc_midcosmic+n_mc_midpi+n_mc_midp+n_mc_midmu+n_mc_mideg+n_mc_midother;
 
 	double norm_mc=(double)n_data/(double)n_mc;
+	//double norm_mc=1;
 
 
+	cout<<"n_data:"<<n_data<<endl;
+	cout<<"n_mc:"<<n_mc<<endl;
+	cout<<"h1d_inel:"<<h1d_inel->Integral()<<endl;
 
-
-
+	
 	h1d_inel->Scale(norm_mc);
 	h1d_el->Scale(norm_mc);
 	h1d_midcosmic->Scale(norm_mc);
@@ -94,12 +109,9 @@ void plot_bkgfit_recosliceid(TString fin, TString fin_data, TString fout_path, T
 	MC_1->Scale(norm_mc);
 	MC_2->Scale(norm_mc);
 
+	cout<<"h1d_inel:"<<h1d_inel->Integral()<<endl;
 
-	//h1d_mc->GetXaxis()->SetTitle("#chi^{2}PID");
-	
-	cout<<"n_mc:"<<n_mc<<endl;
-	//cout<<"h1d_mc->Integral():"<<h1d_mc->Integral()<<endl;
-
+	//prepare stack histo.
 	THStack* hs=new THStack("hs","");
 	hs->Add(h1d_inel);
 	hs->Add(h1d_el);
@@ -109,6 +121,12 @@ void plot_bkgfit_recosliceid(TString fin, TString fin_data, TString fout_path, T
 	hs->Add(h1d_midmu);
 	hs->Add(h1d_mideg);
 	hs->Add(h1d_midother);
+
+	//h1d_mc->GetXaxis()->SetTitle("#chi^{2}PID");
+	
+	cout<<"n_mc:"<<n_mc<<endl;
+	//cout<<"hs->Integral():"<<hs->Integral()<<endl;
+
 
         //data/MC -----------------------------------------//
         TH1D *R=(TH1D*)h1d_data->Clone();
@@ -134,7 +152,8 @@ void plot_bkgfit_recosliceid(TString fin, TString fin_data, TString fout_path, T
 	f2d->SetTitle(title.Data());
 	f2d->GetYaxis()->SetTitleOffset(1.);
 	f2d->Draw();
-	hs->Draw("same hist");
+	hs->Draw("hist same");
+	h1d_mc->Draw("same hist");
 	h1d_data->Draw("ep same");
 
 	TLegend *leg = new TLegend(0.2,0.65,0.8,0.9);

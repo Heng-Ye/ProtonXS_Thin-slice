@@ -1,5 +1,5 @@
-#define ProtonTrueLen_cxx
-#include "ProtonTrueLen.h"
+#define ProtonVertexEfficiency_cxx
+#include "ProtonVertexEfficiency.h"
 
 #include <TH2.h>
 #include <TH1.h>
@@ -110,7 +110,7 @@ struct SumDistance2 {
 };
 /////////////////////////////////
 
-void ProtonTrueLen::Loop() {
+void ProtonVertexEfficiency::Loop() {
 	if (fChain == 0) return;
 
 	Long64_t nentries = fChain->GetEntries();
@@ -122,99 +122,112 @@ void ProtonTrueLen::Loop() {
 
 
 	//book histograms --------------------------------------------------------------------------------------------//
-	int n_b=150;
+	int n_b=300;
 	double b_min=0;
 	double b_max=150;
 
-	int n_dr=300;
-	double dr_min=0;
+	int n_dr=600;
+	double dr_min=-150;
 	double dr_max=150;
 
 	int n_dcos=100;
 	double dcos_min=0;
 	double dcos_max=1;
 
-	TH1D *h1d_truetrklen_NoCut_inel=new TH1D(Form("h1d_truetrklen_NoCut_inel"), Form(""), n_b, b_min, b_max);	
-	TH1D *h1d_truetrklen_Pan_inel=new TH1D(Form("h1d_truetrklen_Pan_inel"), Form(""), n_b, b_min, b_max);	
-	TH1D *h1d_truetrklen_CaloSz_inel=new TH1D(Form("h1d_truetrklen_CaloSz_inel"), Form(""), n_b, b_min, b_max);	
-	TH1D *h1d_truetrklen_Pos_inel=new TH1D(Form("h1d_truetrklen_Pos_inel"), Form(""), n_b, b_min, b_max);	
-	TH1D *h1d_truetrklen_BQ_inel=new TH1D(Form("h1d_truetrklen_BQ_inel"), Form(""), n_b, b_min, b_max);	
-	TH1D *h1d_truetrklen_RecoInel_inel=new TH1D(Form("h1d_truetrklen_RecoInel_inel"), Form(""), n_b, b_min, b_max);	
-	TH1D *h1d_truetrklen_BeamMatch_inel=new TH1D(Form("h1d_truetrklen_BeamMatch_inel"), Form(""), n_b, b_min, b_max);
-	h1d_truetrklen_NoCut_inel->Sumw2();
-	h1d_truetrklen_Pan_inel->Sumw2();
-	h1d_truetrklen_CaloSz_inel->Sumw2();
-	h1d_truetrklen_Pos_inel->Sumw2();
-	h1d_truetrklen_BQ_inel->Sumw2();
-	h1d_truetrklen_RecoInel_inel->Sumw2();
-	h1d_truetrklen_BeamMatch_inel->Sumw2();
+	
+
+	//pans
+	TH2D *h2d_trklen_dr_PanS=new TH2D(Form("h2d_trklen_dr_PanS"), Form("h2d_trklen_dr_PanS"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_trklen_dr_PanS_el=new TH2D(Form("h2d_trklen_dr_PanS_el"), Form("h2d_trklen_dr_PanS_el"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_trklen_dr_PanS_inel=new TH2D(Form("h2d_trklen_dr_PanS_inel"), Form("h2d_trklen_dr_PanS_inel"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_trklen_dr_PanS_misidp=new TH2D(Form("h2d_trklen_dr_PanS_misidp"), Form("h2d_trklen_dr_PanS_misidp"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+
+	//calosz
+	TH2D *h2d_trklen_dr_CaloSz=new TH2D(Form("h2d_trklen_dr_CaloSz"), Form("h2d_trklen_dr_CaloSz"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_trklen_dr_CaloSz_el=new TH2D(Form("h2d_trklen_dr_CaloSz_el"), Form("h2d_trklen_dr_CaloSz_el"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_trklen_dr_CaloSz_inel=new TH2D(Form("h2d_trklen_dr_CaloSz_inel"), Form("h2d_trklen_dr_CaloSz_inel"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_trklen_dr_CaloSz_misidp=new TH2D(Form("h2d_trklen_dr_CaloSz_misidp"), Form("h2d_trklen_dr_CaloSz_misidp"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+
+	//pos
+	TH2D *h2d_trklen_dr_Pos=new TH2D(Form("h2d_trklen_dr_Pos"), Form("h2d_trklen_dr_Pos"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_trklen_dr_Pos_el=new TH2D(Form("h2d_trklen_dr_Pos_el"), Form("h2d_trklen_dr_Pos_el"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_trklen_dr_Pos_inel=new TH2D(Form("h2d_trklen_dr_Pos_inel"), Form("h2d_trklen_dr_Pos_inel"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_trklen_dr_Pos_misidp=new TH2D(Form("h2d_trklen_dr_Pos_misidp"), Form("h2d_trklen_dr_Pos_misidp"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+
+	//bq
+	TH2D *h2d_trklen_dr_BQ=new TH2D(Form("h2d_trklen_dr_BQ"), Form("h2d_trklen_dr_BQ"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_trklen_dr_BQ_el=new TH2D(Form("h2d_trklen_dr_BQ_el"), Form("h2d_trklen_dr_BQ_el"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_trklen_dr_BQ_inel=new TH2D(Form("h2d_trklen_dr_BQ_inel"), Form("h2d_trklen_dr_BQ_inel"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_trklen_dr_BQ_misidp=new TH2D(Form("h2d_trklen_dr_BQ_misidp"), Form("h2d_trklen_dr_BQ_misidp"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+
+	//reco inel
+	TH2D *h2d_trklen_dr_RecoInel=new TH2D(Form("h2d_trklen_dr_RecoInel"), Form("h2d_trklen_dr_RecoInel"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_trklen_dr_RecoInel_el=new TH2D(Form("h2d_trklen_dr_RecoInel_el"), Form("h2d_trklen_dr_RecoInel_el"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_trklen_dr_RecoInel_inel=new TH2D(Form("h2d_trklen_dr_RecoInel_inel"), Form("h2d_trklen_dr_RecoInel_inel"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_trklen_dr_RecoInel_2060_inel=new TH2D(Form("h2d_trklen_dr_RecoInel_2060_inel"), Form("h2d_trklen_dr_RecoInel_2060_inel"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_trklen_dr_RecoInel_0010_inel=new TH2D(Form("h2d_trklen_dr_RecoInel_0010_inel"), Form("h2d_trklen_dr_RecoInel_0010_inel"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_trklen_dr_RecoInel_misidp=new TH2D(Form("h2d_trklen_dr_RecoInel_misidp"), Form("h2d_trklen_dr_RecoInel_misidp"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_truetrklen_dr_RecoInel_inel=new TH2D(Form("h2d_truetrklen_dr_RecoInel_inel"), Form("h2d_truetrklen_dr_RecoInel_inel"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+
+	TH2D *h2d_trklen_dr_RecoInel_GOOD=new TH2D(Form("h2d_trklen_dr_RecoInel_GOOD"), Form("h2d_trklen_dr_RecoInel_GOOD"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_trklen_dr_RecoInel_BAD=new TH2D(Form("h2d_trklen_dr_RecoInel_BAD"), Form("h2d_trklen_dr_RecoInel_BAD"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_trklen_dr_RecoInel_UGLY=new TH2D(Form("h2d_trklen_dr_RecoInel_UGLY"), Form("h2d_trklen_dr_RecoInel_UGLY"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+
+	//reco el
+	TH2D *h2d_trklen_dr_RecoEl=new TH2D(Form("h2d_trklen_dr_RecoEl"), Form("h2d_trklen_dr_RecoEl"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_trklen_dr_RecoEl_el=new TH2D(Form("h2d_trklen_dr_RecoEl_el"), Form("h2d_trklen_dr_RecoEl_el"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_trklen_dr_RecoEl_inel=new TH2D(Form("h2d_trklen_dr_RecoEl_inel"), Form("h2d_trklen_dr_RecoEl_inel"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_trklen_dr_RecoEl_misidp=new TH2D(Form("h2d_trklen_dr_RecoEl_misidp"), Form("h2d_trklen_dr_RecoEl_misidp"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_truetrklen_dr_RecoEl_el=new TH2D(Form("h2d_truetrklen_dr_RecoEl_el"), Form("h2d_truetrklen_dr_RecoEl_el"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
 
 
-	int n_endz=200;
-	double endz_min=-50;
-	double endz_max=150;
-	TH2D *h2d_truetrklen_trueendz_CaloSz_inel=new TH2D(Form("h2d_truetrklen_trueendz_CaloSz_inel"), Form(""), n_b, b_min, b_max, n_endz, endz_min, endz_max);	
-	TH1D *h1d_trueendz_CaloSz_inel=new TH1D(Form("h1d_trueendz_CaloSz_inel"), Form(""), n_endz, endz_min, endz_max);	
-
-
-	TH2D *h2d_truetrklen_ketrue_NoCut_inel=new TH2D(Form("h2d_truetrklen_ketrue_NoCut_inel"), Form(""), n_b, b_min, b_max,500,0,500);	
-	TH2D *h2d_truetrklen_ketrue_Pan_inel=new TH2D(Form("h2d_truetrklen_ketrue_Pan_inel"), Form(""), n_b, b_min, b_max,500,0,500);	
-	TH2D *h2d_truetrklen_ketrue_CaloSz_inel=new TH2D(Form("h2d_truetrklen_ketrue_CaloSz_inel"), Form(""), n_b, b_min, b_max,500,0,500);	
-
-	TH2D *h2d_truetrklen_keff_NoCut_inel=new TH2D(Form("h2d_truetrklen_keff_NoCut_inel"), Form(""), n_b, b_min, b_max,500,0,500);	
-
-	TH2D *h2d_trueEndZ_ketrue_NoCut_inel=new TH2D(Form("h2d_trueEndZ_ketrue_NoCut_inel"), Form(""), 350, -200, 150,800,0,800);	
-	TH2D *h2d_trueZ_ketrue_NoCut_inel=new TH2D(Form("h2d_trueZ_ketrue_NoCut_inel"), Form(""), 3500, -200, 150, 800, 0, 800);	
-
-	int n_x=110*5;
-	double x_min=-60;
-	double x_max=50;
-
-	int n_y=110*5;
-	double y_min=390;
-	double y_max=500;
-
-	const int n_scan=25; 
-	TH2D *h2d_trueXY_NoCut_inel[n_scan];
-	//double truelen_st=-10; //scan from truelen=0
-	double truelen_st=-2; //scan from truelen=0
-	//double truelen_st=-60; //scan from truelen=0
-	double d_truelen=2; //every 2 cm
-	vector<double> seg_true_len;
-	for (int j=0; j<n_scan; ++j) {
-		double seg_st=truelen_st+(double)j*d_truelen;
-		seg_true_len.push_back(seg_st);
-		h2d_trueXY_NoCut_inel[j]=new TH2D(Form("h2d_trueXY_NoCut_inel_%d",j), Form("EndZ:%.1f-%.1f cm",seg_st,seg_st-d_truelen), n_x, x_min, x_max, n_y, y_min, y_max);
-	}
-
-
-	//TH2D *h2d_trueXY_truelen05_NoCut_inel=new TH2D(Form("h2d_trueXY_truelen05_NoCut_inel"), Form(""), n_x, x_min, x_max, n_y, y_min, y_max);	
-	//TH2D *h2d_trueXY_truelen510_NoCut_inel=new TH2D(Form("h2d_trueXY_truelen510_NoCut_inel"), Form(""), n_x, x_min, x_max, n_y, y_min, y_max);	
-	//TH2D *h2d_trueXY_truelen1015_NoCut_inel=new TH2D(Form("h2d_trueXY_truelen1015_NoCut_inel"), Form(""), n_x, x_min, x_max, n_y, y_min, y_max);	
-	//TH2D *h2d_trueXY_truelen1520_NoCut_inel=new TH2D(Form("h2d_trueXY_truelen1520_NoCut_inel"), Form(""), n_x, x_min, x_max, n_y, y_min, y_max);	
-	//TH2D *h2d_trueXY_truelen2025_NoCut_inel=new TH2D(Form("h2d_trueXY_truelen2025_NoCut_inel"), Form(""), n_x, x_min, x_max, n_y, y_min, y_max);	
-	//TH2D *h2d_trueXY_truelen2530_NoCut_inel=new TH2D(Form("h2d_trueXY_truelen2530_NoCut_inel"), Form(""), n_x, x_min, x_max, n_y, y_min, y_max);	
-	//TH2D *h2d_trueXY_truelen3035_NoCut_inel=new TH2D(Form("h2d_trueXY_truelen3035_NoCut_inel"), Form(""), n_x, x_min, x_max, n_y, y_min, y_max);	
-
-	//TH3D *h3d_trueXYZ_NoCut_inel=new TH3D(Form("h3d_trueXYZ_NoCut_inel"), Form(""), n_x, x_min, x_max, n_y, y_min, y_max,1200,0,120);	
+	//RecoInel+MisID:P-rich
+	TH2D *h2d_trklen_dr_RecoInelMIDP=new TH2D(Form("h2d_trklen_dr_RecoInelMIDP"), Form("h2d_trklen_dr_RecoInelMIDP"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_trklen_dr_RecoInelMIDP_el=new TH2D(Form("h2d_trklen_dr_RecoInelMIDP_el"), Form("h2d_trklen_dr_RecoInelMIDP_el"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_trklen_dr_RecoInelMIDP_inel=new TH2D(Form("h2d_trklen_dr_RecoInelMIDP_inel"), Form("h2d_trklen_dr_RecoInelMIDP_inel"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_trklen_dr_RecoInelMIDP_misidp=new TH2D(Form("h2d_trklen_dr_RecoInelMIDP_misidp"), Form("h2d_trklen_dr_RecoInelMIDP_misidp"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_truetrklen_dr_RecoInelMIDP_inel=new TH2D(Form("h2d_truetrklen_dr_RecoInelMIDP_inel"), Form("h2d_truetrklen_dr_RecoInelMIDP_inel"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_truetrklen_dr_RecoInelMIDP_misidp=new TH2D(Form("h2d_truetrklen_dr_RecoInelMIDP_misidp"), Form("h2d_truetrklen_dr_RecoInelMIDP_misidp"), n_b, b_min, b_max, n_dr, dr_min, dr_max);
 
 
 
-	//theta_yz vs theta_xz
-	int n_thetaYZ=3600;
-	double thetaYZ_min=-180;
-	double thetaYZ_max=180;
-	int n_thetaXZ=3600;
-	double thetaXZ_min=-180;
-	double thetaXZ_max=180;
-	TProfile2D* h2d_thetaXZ_thetaYZ_BQ_inel=new TProfile2D("h2d_thetaXZ_thetaYZ_BQ_inel","",n_thetaXZ,thetaXZ_min,thetaXZ_max,n_thetaYZ,thetaYZ_min,thetaYZ_max);
-	TProfile2D* h2d_thetaXZ_thetaYZ_BQ_misidp=new TProfile2D("h2d_thetaXZ_thetaYZ_BQ_misidp","",n_thetaXZ,thetaXZ_min,thetaXZ_max,n_thetaYZ,thetaYZ_min,thetaYZ_max);
-	TProfile2D* h2d_thetaXZ_thetaYZ_BQ_el=new TProfile2D("h2d_thetaXZ_thetaYZ_BQ_el","",n_thetaXZ,thetaXZ_min,thetaXZ_max,n_thetaYZ,thetaYZ_min,thetaYZ_max);
+	//cos_vs_dr pos
+	int n_cos=100;
+	double cos_min=0.;
+	double cos_max=1.;
+	TH2D *h2d_cos_dr_Pos=new TH2D(Form("h2d_cos_dr_Pos"), Form("h2d_cos_dr_Pos"), n_cos, cos_min, cos_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_cos_dr_Pos_el=new TH2D(Form("h2d_cos_dr_Pos_el"), Form("h2d_cos_dr_Pos_el"), n_cos, cos_min, cos_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_cos_dr_Pos_inel=new TH2D(Form("h2d_cos_dr_Pos_inel"), Form("h2d_cos_dr_Pos_inel"), n_cos, cos_min, cos_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_cos_dr_Pos_misidp=new TH2D(Form("h2d_cos_dr_Pos_misidp"), Form("h2d_cos_dr_Pos_misidp"), n_cos, cos_min, cos_max, n_dr, dr_min, dr_max);
 
-	TProfile2D* h2d_thetaXZ_thetaYZ_Pos_inel=new TProfile2D("h2d_thetaXZ_thetaYZ_Pos_inel","",n_thetaXZ,thetaXZ_min,thetaXZ_max,n_thetaYZ,thetaYZ_min,thetaYZ_max);
-	TProfile2D* h2d_thetaXZ_thetaYZ_Pos_misidp=new TProfile2D("h2d_thetaXZ_thetaYZ_Pos_misidp","",n_thetaXZ,thetaXZ_min,thetaXZ_max,n_thetaYZ,thetaYZ_min,thetaYZ_max);
-	TProfile2D* h2d_thetaXZ_thetaYZ_Pos_el=new TProfile2D("h2d_thetaXZ_thetaYZ_Pos_el","",n_thetaXZ,thetaXZ_min,thetaXZ_max,n_thetaYZ,thetaYZ_min,thetaYZ_max);
-	//------------------------------------------------------------------------------------------------------------//
+	TH2D *h2d_cos_dr_PosRecoInel=new TH2D(Form("h2d_cos_dr_PosRecoInel"), Form("h2d_cos_dr_PosRecoInel"), n_cos, cos_min, cos_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_cos_dr_PosRecoInel_el=new TH2D(Form("h2d_cos_dr_PosRecoInel_el"), Form("h2d_cos_dr_PosRecoInel_el"), n_cos, cos_min, cos_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_cos_dr_PosRecoInel_inel=new TH2D(Form("h2d_cos_dr_PosRecoInel_inel"), Form("h2d_cos_dr_PosRecoInel_inel"), n_cos, cos_min, cos_max, n_dr, dr_min, dr_max);
+	TH2D *h2d_cos_dr_PosRecoInel_misidp=new TH2D(Form("h2d_cos_dr_PosRecoInel_misidp"), Form("h2d_cos_dr_PosRecoInel_misidp"), n_cos, cos_min, cos_max, n_dr, dr_min, dr_max);
+
+	TH2D *h2d_trklen_cos_PosRecoInel=new TH2D(Form("h2d_trklen_cos_PosRecoInel"), Form("h2d_trklen_cos_PosRecoInel"), n_b, b_min, b_max, n_cos, cos_min, cos_max);
+	TH2D *h2d_trklen_cos_PosRecoInel_el=new TH2D(Form("h2d_trklen_cos_PosRecoInel_el"), Form("h2d_trklen_cos_PosRecoInel_el"), n_b, b_min, b_max, n_cos, cos_min, cos_max);
+	TH2D *h2d_trklen_cos_PosRecoInel_inel=new TH2D(Form("h2d_trklen_cos_PosRecoInel_inel"), Form("h2d_trklen_cos_PosRecoInel_inel"), n_b, b_min, b_max, n_cos, cos_min, cos_max);
+	TH2D *h2d_trklen_cos_PosRecoInel_misidp=new TH2D(Form("h2d_trklen_cos_PosRecoInel_misidp"), Form("h2d_trklen_cos_PosRecoInel_misidp"), n_b, b_min, b_max, n_cos, cos_min, cos_max);
+
+	//Edept_per_recolen vs ntrklen
+	int n_avedept=120;
+	double avedept_min=0;
+	double avedept_max=12;
+	int n_ntrklen=150.;
+	double ntrklen_min=0.;
+	double ntrklen_max=1.5;
+	//bq
+	TH2D *h2d_ntrklen_avedept_BQ=new TH2D(Form("h2d_ntrklen_avedept_BQ"), Form("h2d_ntrklen_avedept_BQ"), n_ntrklen, ntrklen_min, ntrklen_max, n_avedept, avedept_min, avedept_max);
+	TH2D *h2d_ntrklen_avedept_BQ_inel=new TH2D(Form("h2d_ntrklen_avedept_BQ_inel"), Form("h2d_ntrklen_avedept_BQ_inel"), n_ntrklen, ntrklen_min, ntrklen_max, n_avedept, avedept_min, avedept_max);
+	TH2D *h2d_ntrklen_avedept_BQ_el=new TH2D(Form("h2d_ntrklen_avedept_BQ_el"), Form("h2d_ntrklen_avedept_BQ_el"), n_ntrklen, ntrklen_min, ntrklen_max, n_avedept, avedept_min, avedept_max);
+	TH2D *h2d_ntrklen_avedept_BQ_misidp=new TH2D(Form("h2d_ntrklen_avedept_BQ_misidp"), Form("h2d_ntrklen_avedept_BQ_misidp"), n_ntrklen, ntrklen_min, ntrklen_max, n_avedept, avedept_min, avedept_max);
+	//pos
+	TH2D *h2d_ntrklen_avedept_Pos=new TH2D(Form("h2d_ntrklen_avedept_Pos"), Form("h2d_ntrklen_avedept_Pos"), n_ntrklen, ntrklen_min, ntrklen_max, n_avedept, avedept_min, avedept_max);
+	TH2D *h2d_ntrklen_avedept_Pos_inel=new TH2D(Form("h2d_ntrklen_avedept_Pos_inel"), Form("h2d_ntrklen_avedept_Pos_inel"), n_ntrklen, ntrklen_min, ntrklen_max, n_avedept, avedept_min, avedept_max);
+	TH2D *h2d_ntrklen_avedept_Pos_el=new TH2D(Form("h2d_ntrklen_avedept_Pos_el"), Form("h2d_ntrklen_avedept_Pos_el"), n_ntrklen, ntrklen_min, ntrklen_max, n_avedept, avedept_min, avedept_max);
+	TH2D *h2d_ntrklen_avedept_Pos_misidp=new TH2D(Form("h2d_ntrklen_avedept_Pos_misidp"), Form("h2d_ntrklen_avedept_Pos_misidp"), n_ntrklen, ntrklen_min, ntrklen_max, n_avedept, avedept_min, avedept_max);
+
 
         //MC Beam Mom Gaussian 
         double m1=1007.1482; //MC prod4a [spec]
@@ -394,6 +407,8 @@ void ProtonTrueLen::Loop() {
 		if (cosine_beam_spec_primtrk<0) { cosine_beam_spec_primtrk=-1.*cosine_beam_spec_primtrk; }
 		if (cosine_beam_spec_primtrk>cosine_beam_primtrk_min) { IsCosine=true; }
 
+		bool IsMIDP=false;
+		if (cosine_beam_spec_primtrk<0.9) IsMIDP=true;
 		//thetayz, thetaxz
 
 
@@ -418,7 +433,7 @@ void ProtonTrueLen::Loop() {
 
 		int index_reco_endz=0;
 		double wid_reco_max=-9999;
-		double range_reco=-999;
+		double range_reco=99999;
 		vector<double> reco_trklen_accum;
   		reco_trklen_accum.reserve(primtrk_hitz->size());
 		double kereco_calo=0;
@@ -651,7 +666,9 @@ void ProtonTrueLen::Loop() {
 		bool IsGood_Inel=false;
 		//cout<<"true_endz/y/x:"<<true_endz<<"/"<<true_endy<<"/"<<true_endx<<endl;
 		//cout<<"beamtrk_z/y/x:"<<beamtrk_z->at(-1+beamtrk_z->size())<<"/"<<beamtrk_y->at(-1+beamtrk_y->size())<<"/"<<beamtrk_x->at(-1+beamtrk_x->size())<<endl;
-		double dr=sqrt(pow(reco_endx-true_endx,2)+pow(reco_endy-true_endy,2)+pow(reco_endz-true_endz,2));
+		///double dr=sqrt(pow(reco_endx-true_endx,2)+pow(reco_endy-true_endy,2)+pow(reco_endz-true_endz,2));
+
+		double dr=range_reco-range_true;
 		//if (dr<=dr_cut_inel) IsGood_Inel=true;
 
 		//KE_true
@@ -684,97 +701,165 @@ void ProtonTrueLen::Loop() {
 	     	//if ((primtrk_trkid_true->at(k)[h])!=-1) { //remove shower	
 	        //ke_true-=primtrk_edept_true->at(k)[h]; //ke_true of each hit
 
+		double tmp_dr=dr;
+		if (tmp_dr>dr_max) tmp_dr=dr_max;
+		if (tmp_dr<dr_min) tmp_dr=dr_min;	
 
-		if (IsPureInEL) { //true inel
-			Fill1DHist(h1d_truetrklen_NoCut_inel, range_true);
-			double tmp_range_true=range_true;
-			if (tmp_range_true<0) tmp_range_true=0;
+		//double tmp_trklen=range_true;
+		double tmp_trklen=range_reco;
+		if (tmp_trklen<b_min) tmp_trklen=b_min;
+		if (tmp_trklen>b_max) tmp_trklen=b_max;
 
-			h2d_truetrklen_ketrue_NoCut_inel->Fill(tmp_range_true, KE_true);
-			h2d_truetrklen_keff_NoCut_inel->Fill(tmp_range_true, KE_ff);
-			//h2d_trueEndZ_ketrue_NoCut_inel->Fill(beamtrk_z->at(-1+beamtrk_z->size()), KE_true);
-			h2d_trueEndZ_ketrue_NoCut_inel->Fill(beamtrk_z->at(-1+beamtrk_z->size()), 1000.*(beamtrk_Eng->at(-1+beamtrk_z->size())));
+		double tmp_cos=cosine_beam_spec_primtrk;
+		if (tmp_cos<cos_min) tmp_cos=cos_min;
+		if (tmp_cos>cos_max) tmp_cos=cos_max;
 
-			//if (is_beam_at_ff) { //if primary protons entering tpc
-			if (beamtrk_z->size()) {
-				//for (int iz=key_reach_tpc+1; iz<(int)beamtrk_z->size(); iz++){
-				for (int iz=0; iz<(int)beamtrk_z->size(); iz++){
-					h2d_trueZ_ketrue_NoCut_inel->Fill(beamtrk_z->at(iz), 1000.*(beamtrk_Eng->at(iz)));
-
-					//if (tmp_range_true>=0&&tmp_range_true<5) h2d_trueXY_truelen05_NoCut_inel->Fill(beamtrk_x->at(iz), beamtrk_y->at(iz));
-					//if (tmp_range_true>=5&&tmp_range_true<10) h2d_trueXY_truelen510_NoCut_inel->Fill(beamtrk_x->at(iz), beamtrk_y->at(iz));
-					//if (tmp_range_true>=10&&tmp_range_true<15) h2d_trueXY_truelen1015_NoCut_inel->Fill(beamtrk_x->at(iz), beamtrk_y->at(iz));
-					//if (tmp_range_true>=15&&tmp_range_true<20) h2d_trueXY_truelen1520_NoCut_inel->Fill(beamtrk_x->at(iz), beamtrk_y->at(iz));
-					//if (tmp_range_true>=20&&tmp_range_true<25) h2d_trueXY_truelen2025_NoCut_inel->Fill(beamtrk_x->at(iz), beamtrk_y->at(iz));
-					//if (tmp_range_true>=25&&tmp_range_true<30) h2d_trueXY_truelen2530_NoCut_inel->Fill(beamtrk_x->at(iz), beamtrk_y->at(iz));
-					//if (tmp_range_true>=30&&tmp_range_true<35) h2d_trueXY_truelen3035_NoCut_inel->Fill(beamtrk_x->at(iz), beamtrk_y->at(iz));
-					//h3d_trueXYZ_NoCut_inel->Fill(beamtrk_x->at(iz), beamtrk_y->at(iz), beamtrk_z->at(iz));
-					//for (int j=0; j<n_scan; ++j) {
-						//double min=seg_true_len.at(j)-d_truelen;
-						//double max=seg_true_len.at(j);
-						//if (tmp_range_true>=min&&tmp_range_true<max) h2d_trueXY_NoCut_inel[j]->Fill(beamtrk_x->at(iz), beamtrk_y->at(iz));
-						//if (true_endz>=min&&true_endz<max) h2d_trueXY_NoCut_inel[j]->Fill(beamtrk_x->at(iz), beamtrk_y->at(iz));
-						//if (beamtrk_z->at(iz)>=min&&beamtrk_z->at(iz)<max) h2d_trueXY_NoCut_inel[j]->Fill(beamtrk_x->at(iz), beamtrk_y->at(iz));
-					//}
-				}
-			}
-			//} //if primary protons entering tpc
-
-
-
-
-			if (IsPandoraSlice) {
-				Fill1DHist(h1d_truetrklen_Pan_inel, range_true);
-				h2d_truetrklen_ketrue_Pan_inel->Fill(range_true, KE_true);
-				if (IsCaloSize) {
-					Fill1DHist(h1d_truetrklen_CaloSz_inel, range_true);
-					h2d_truetrklen_ketrue_CaloSz_inel->Fill(range_true, KE_true);
-
-					//double tmp_trueendz=beamtrk_z->at(key_reach_tpc+1);
-					double tmp_trueendz=true_endz;
-					if (tmp_trueendz<=endz_min) tmp_trueendz=endz_min;
-					h2d_truetrklen_trueendz_CaloSz_inel->Fill(range_true, tmp_trueendz);
-					Fill1DHist(h1d_trueendz_CaloSz_inel, true_endz);
-					if (IsPos) {
-						Fill1DHist(h1d_truetrklen_Pos_inel, range_true);
-						if (IsBQ) {
-							Fill1DHist(h1d_truetrklen_BQ_inel, range_true);
-							if (IsRecoInEL) {
-								Fill1DHist(h1d_truetrklen_RecoInel_inel, range_true);
-								if (IsBeamMatch) {
-									Fill1DHist(h1d_truetrklen_BeamMatch_inel, range_true);
-								}
-							}
-						}
-				}	}
-			}
-		} //true inel
-
-
-		//theta_xz vs theta_yz
-		if (IsBQ&&IsCaloSize&&IsPandoraSlice) { //BQ
-			if (kinel) {
-				h2d_thetaXZ_thetaYZ_BQ_inel->Fill(thetaXZ_deg, thetaYZ_deg, cosine_beam_spec_primtrk);
-			}
-			if (kel) {
-				h2d_thetaXZ_thetaYZ_BQ_el->Fill(thetaXZ_deg, thetaYZ_deg, cosine_beam_spec_primtrk);
-			}
-			if (kMIDp) {
-				h2d_thetaXZ_thetaYZ_BQ_misidp->Fill(thetaXZ_deg, thetaYZ_deg, cosine_beam_spec_primtrk);
-			}
-		} //BQ
+		double tmp_ntrklen=range_reco/csda_val_spec;
+		if (tmp_ntrklen<ntrklen_min) tmp_ntrklen=ntrklen_min;
+		if (tmp_ntrklen>ntrklen_max) tmp_ntrklen=ntrklen_max;
 		
-		if (IsPos&&IsCaloSize&&IsPandoraSlice) { //Pos
+		double tmp_avedept=kereco_calo/range_reco;
+		if (tmp_avedept<avedept_min) tmp_avedept=avedept_min;
+		if (tmp_avedept>avedept_max) tmp_avedept=avedept_max;
+
+
+
+
+		if (IsPandoraSlice) { //PanS
+			h2d_trklen_dr_PanS->Fill(tmp_trklen, tmp_dr);
 			if (kinel) {
-				h2d_thetaXZ_thetaYZ_Pos_inel->Fill(thetaXZ_deg, thetaYZ_deg, cosine_beam_spec_primtrk);
+				h2d_trklen_dr_PanS_inel->Fill(tmp_trklen, tmp_dr);
 			}
 			if (kel) {
-				h2d_thetaXZ_thetaYZ_Pos_el->Fill(thetaXZ_deg, thetaYZ_deg, cosine_beam_spec_primtrk);
+				h2d_trklen_dr_PanS_el->Fill(tmp_trklen, tmp_dr);
 			}
 			if (kMIDp) {
-				h2d_thetaXZ_thetaYZ_Pos_misidp->Fill(thetaXZ_deg, thetaYZ_deg, cosine_beam_spec_primtrk);
+				h2d_trklen_dr_PanS_misidp->Fill(tmp_trklen, tmp_dr);
+			}
+		} //PanS
+
+		if (IsCaloSize&&IsPandoraSlice) { //CaloSz
+			h2d_trklen_dr_CaloSz->Fill(tmp_trklen, tmp_dr);
+			if (kinel) {
+				h2d_trklen_dr_CaloSz_inel->Fill(tmp_trklen, tmp_dr);
+			}
+			if (kel) {
+				h2d_trklen_dr_CaloSz_el->Fill(tmp_trklen, tmp_dr);
+			}
+			if (kMIDp) {
+				h2d_trklen_dr_CaloSz_misidp->Fill(tmp_trklen, tmp_dr);
+			}
+		} //CaloSz
+	
+		if (IsPos&&IsCaloSize&&IsPandoraSlice) { //Pos
+			h2d_trklen_dr_Pos->Fill(tmp_trklen, tmp_dr);
+			h2d_cos_dr_Pos->Fill(tmp_cos, tmp_dr);
+			h2d_ntrklen_avedept_Pos->Fill(tmp_ntrklen, tmp_avedept);
+			if (kinel) {
+				h2d_trklen_dr_Pos_inel->Fill(tmp_trklen, tmp_dr);
+				h2d_cos_dr_Pos_inel->Fill(tmp_cos, tmp_dr);
+				h2d_ntrklen_avedept_Pos_inel->Fill(tmp_ntrklen, tmp_avedept);
+			}
+			if (kel) {
+				h2d_trklen_dr_Pos_el->Fill(tmp_trklen, tmp_dr);
+				h2d_cos_dr_Pos_el->Fill(tmp_cos, tmp_dr);
+				h2d_ntrklen_avedept_Pos_el->Fill(tmp_ntrklen, tmp_avedept);
+			}
+			if (kMIDp) {
+				h2d_trklen_dr_Pos_misidp->Fill(tmp_trklen, tmp_dr);
+				h2d_cos_dr_Pos_misidp->Fill(tmp_cos, tmp_dr);
+				h2d_ntrklen_avedept_Pos_misidp->Fill(tmp_ntrklen, tmp_avedept);
 			}
 		} //Pos
+
+
+		if (IsBQ&&IsCaloSize&&IsPandoraSlice) { //BQ
+			h2d_trklen_dr_BQ->Fill(tmp_trklen, tmp_dr);
+			h2d_ntrklen_avedept_BQ->Fill(tmp_ntrklen, tmp_avedept);
+			if (kinel) {
+				h2d_trklen_dr_BQ_inel->Fill(tmp_trklen, tmp_dr);
+				h2d_ntrklen_avedept_BQ_inel->Fill(tmp_ntrklen, tmp_avedept);
+			}
+			if (kel) {
+				h2d_trklen_dr_BQ_el->Fill(tmp_trklen, tmp_dr);
+				h2d_ntrklen_avedept_BQ_el->Fill(tmp_ntrklen, tmp_avedept);
+			}
+			if (kMIDp) {
+				h2d_trklen_dr_BQ_misidp->Fill(tmp_trklen, tmp_dr);
+				h2d_ntrklen_avedept_BQ_misidp->Fill(tmp_ntrklen, tmp_avedept);
+			}
+		} //BQ
+
+		if (IsRecoInEL&&IsBQ&&IsCaloSize&&IsPandoraSlice) { //RecoInel
+			h2d_trklen_dr_RecoInel->Fill(tmp_trklen, tmp_dr);
+
+			if (kinel) {
+				h2d_trklen_dr_RecoInel_inel->Fill(tmp_trklen, tmp_dr);
+				h2d_truetrklen_dr_RecoInel_inel->Fill(range_true, tmp_dr);
+				if (tmp_trklen>=20&&tmp_trklen<=60) h2d_trklen_dr_RecoInel_2060_inel->Fill(tmp_trklen, tmp_dr);
+				if (tmp_trklen>=0&&tmp_trklen<=10) h2d_trklen_dr_RecoInel_0010_inel->Fill(tmp_trklen, tmp_dr);
+
+				if (tmp_dr>=-3&&tmp_dr<=3) h2d_trklen_dr_RecoInel_GOOD->Fill(tmp_trklen, tmp_dr);
+				if (tmp_dr<-3) h2d_trklen_dr_RecoInel_BAD->Fill(tmp_trklen, tmp_dr);
+				if (tmp_dr>3) h2d_trklen_dr_RecoInel_UGLY->Fill(tmp_trklen, tmp_dr);
+			}
+			if (kel) {
+				h2d_trklen_dr_RecoInel_el->Fill(tmp_trklen, tmp_dr);
+			}
+			if (kMIDp) {
+				h2d_trklen_dr_RecoInel_misidp->Fill(tmp_trklen, tmp_dr);
+			}
+		} //RecoInel
+
+
+		if (IsRecoStop&&IsBQ&&IsCaloSize&&IsPandoraSlice) { //RecoEl
+			h2d_trklen_dr_RecoEl->Fill(tmp_trklen, tmp_dr);
+
+			if (kinel) {
+				h2d_trklen_dr_RecoEl_inel->Fill(tmp_trklen, tmp_dr);
+				h2d_truetrklen_dr_RecoEl_el->Fill(range_true, tmp_dr);
+			}
+			if (kel) {
+				h2d_trklen_dr_RecoEl_el->Fill(tmp_trklen, tmp_dr);
+			}
+			if (kMIDp) {
+				h2d_trklen_dr_RecoEl_misidp->Fill(tmp_trklen, tmp_dr);
+			}
+		} //RecoEl
+
+		if (IsRecoInEL&&IsPos&&IsCaloSize&&IsPandoraSlice) { //Pos+RecoInel
+			h2d_cos_dr_PosRecoInel->Fill(tmp_cos, tmp_dr);
+			h2d_trklen_cos_PosRecoInel->Fill(tmp_trklen, tmp_cos);
+			if (kinel) {
+				h2d_cos_dr_PosRecoInel_inel->Fill(tmp_cos, tmp_dr);
+				h2d_trklen_cos_PosRecoInel_inel->Fill(tmp_trklen, tmp_cos);
+			}
+			if (kel) {
+				h2d_cos_dr_PosRecoInel_el->Fill(tmp_cos, tmp_dr);
+				h2d_trklen_cos_PosRecoInel_el->Fill(tmp_trklen, tmp_cos);
+			}
+			if (kMIDp) {
+				h2d_cos_dr_PosRecoInel_misidp->Fill(tmp_cos, tmp_dr);
+				h2d_trklen_cos_PosRecoInel_misidp->Fill(tmp_trklen, tmp_cos);
+			}
+		} //Pos+RecoInel
+
+
+		if (IsRecoInEL&&IsMIDP&&IsPos&&IsCaloSize&&IsPandoraSlice) { //Pos+RecoInel+MidP
+			h2d_trklen_dr_RecoInelMIDP->Fill(tmp_trklen, tmp_dr);
+			if (kinel) {
+				h2d_trklen_dr_RecoInelMIDP_inel->Fill(tmp_trklen, tmp_dr);
+				h2d_truetrklen_dr_RecoInelMIDP_inel->Fill(range_true, tmp_dr);
+			}
+			if (kel) {
+				h2d_trklen_dr_RecoInelMIDP_el->Fill(tmp_trklen, tmp_dr);
+			}
+			if (kMIDp) {
+				h2d_trklen_dr_RecoInelMIDP_misidp->Fill(tmp_trklen, tmp_dr);
+				h2d_truetrklen_dr_RecoInelMIDP_misidp->Fill(range_true, tmp_dr);
+			}
+		} //Pos+RecoInel+MidP
+
 
 
 
@@ -783,191 +868,86 @@ void ProtonTrueLen::Loop() {
 	} //main entry loop
 
 
-	//eff.
-	TH1D *h1d_eff_NoCut_inel=(TH1D*)h1d_truetrklen_NoCut_inel->Clone();
-	h1d_eff_NoCut_inel->Divide(h1d_eff_NoCut_inel);
-	h1d_eff_NoCut_inel->SetName("h1d_eff_NoCut_inel");
-
-	TH1D *h1d_eff_Pan_inel=(TH1D*)h1d_truetrklen_Pan_inel->Clone();
-	h1d_eff_Pan_inel->Divide(h1d_truetrklen_NoCut_inel);
-	h1d_eff_Pan_inel->SetName("h1d_eff_Pan_inel");
-
-	TH1D *h1d_eff_CaloSz_inel=(TH1D*)h1d_truetrklen_CaloSz_inel->Clone();
-	h1d_eff_CaloSz_inel->Divide(h1d_truetrklen_NoCut_inel);
-	h1d_eff_CaloSz_inel->SetName("h1d_eff_CaloSz_inel");
-
-	TH1D *h1d_eff_Pos_inel=(TH1D*)h1d_truetrklen_Pos_inel->Clone();
-	h1d_eff_Pos_inel->Divide(h1d_truetrklen_NoCut_inel);
-	h1d_eff_Pos_inel->SetName("h1d_eff_Pos_inel");
-
-	TH1D *h1d_eff_BQ_inel=(TH1D*)h1d_truetrklen_BQ_inel->Clone();
-	h1d_eff_BQ_inel->Divide(h1d_truetrklen_NoCut_inel);
-	h1d_eff_BQ_inel->SetName("h1d_eff_BQ_inel");
-
-	TH1D *h1d_eff_RecoInel_inel=(TH1D*)h1d_truetrklen_RecoInel_inel->Clone();
-	h1d_eff_RecoInel_inel->Divide(h1d_truetrklen_NoCut_inel);
-	h1d_eff_RecoInel_inel->SetName("h1d_eff_RecoInel_inel");
-
-	TH1D *h1d_eff_BeamMatch_inel=(TH1D*)h1d_truetrklen_BeamMatch_inel->Clone();
-	h1d_eff_BeamMatch_inel->Divide(h1d_truetrklen_NoCut_inel);
-	h1d_eff_BeamMatch_inel->SetName("h1d_eff_BeamMatch_inel");
-
-	//Eff with asym error bars
-	vector<double> eff_NoCut_inel;
-	vector<double> er_p_NoCut_inel;
-	vector<double> er_m_NoCut_inel;
-
-	vector<double> eff_Pan_inel;
-	vector<double> er_p_Pan_inel;
-	vector<double> er_m_Pan_inel;
-
-	vector<double> x; //true len
-	vector<double> errx;
-
-	vector<double> eff_CaloSz_inel;
-	vector<double> er_p_CaloSz_inel;
-	vector<double> er_m_CaloSz_inel;
-
-	vector<double> eff_Pos_inel;
-	vector<double> er_p_Pos_inel;
-	vector<double> er_m_Pos_inel;
-
-	vector<double> eff_BQ_inel;
-	vector<double> er_p_BQ_inel;
-	vector<double> er_m_BQ_inel;
-
-	vector<double> eff_RecoInel_inel;
-	vector<double> er_p_RecoInel_inel;
-	vector<double> er_m_RecoInel_inel;
-
-	vector<double> eff_BeamMatch_inel;
-	vector<double> er_p_BeamMatch_inel;
-	vector<double> er_m_BeamMatch_inel;
-	
-	for(int j=1; j<=h1d_truetrklen_NoCut_inel->GetNbinsX(); ++j) {
-		double denom=h1d_truetrklen_NoCut_inel->GetBinContent(j);
-		if(denom==0) continue; //no zero in denominator
-		
-		x.push_back(h1d_truetrklen_NoCut_inel->GetBinCenter(j));
-		errx.push_back(0);
-
-		//No cut
-		eff_NoCut_inel.push_back(1);
-		er_p_NoCut_inel.push_back(0);
-		er_m_NoCut_inel.push_back(0);
-
-		//PanS
-		double nom_Pan_inel=h1d_truetrklen_Pan_inel->GetBinContent(j);
-		eff_Pan_inel.push_back(nom_Pan_inel/denom);
-		er_p_Pan_inel.push_back(err_p(nom_Pan_inel,denom));
-		er_m_Pan_inel.push_back(err_m(nom_Pan_inel,denom));
-
-		//CaloSz
-		double nom_CaloSz_inel=h1d_truetrklen_CaloSz_inel->GetBinContent(j);
-		eff_CaloSz_inel.push_back(nom_CaloSz_inel/denom);
-		er_p_CaloSz_inel.push_back(err_p(nom_CaloSz_inel,denom));
-		er_m_CaloSz_inel.push_back(err_m(nom_CaloSz_inel,denom));
-
-		//Pos
-		double nom_Pos_inel=h1d_truetrklen_Pos_inel->GetBinContent(j);
-		eff_Pos_inel.push_back(nom_Pos_inel/denom);
-		er_p_Pos_inel.push_back(err_p(nom_Pos_inel,denom));
-		er_m_Pos_inel.push_back(err_m(nom_Pos_inel,denom));
-
-		//BQ
-		double nom_BQ_inel=h1d_truetrklen_BQ_inel->GetBinContent(j);
-		eff_BQ_inel.push_back(nom_BQ_inel/denom);
-		er_p_BQ_inel.push_back(err_p(nom_BQ_inel,denom));
-		er_m_BQ_inel.push_back(err_m(nom_BQ_inel,denom));
-
-		//RecoInel
-		double nom_RecoInel_inel=h1d_truetrklen_RecoInel_inel->GetBinContent(j);
-		eff_RecoInel_inel.push_back(nom_RecoInel_inel/denom);
-		er_p_RecoInel_inel.push_back(err_p(nom_RecoInel_inel,denom));
-		er_m_RecoInel_inel.push_back(err_m(nom_RecoInel_inel,denom));
-
-		//Beam Match
-		double nom_BeamMatch_inel=h1d_truetrklen_BeamMatch_inel->GetBinContent(j);
-		eff_BeamMatch_inel.push_back(nom_BeamMatch_inel/denom);
-		er_p_BeamMatch_inel.push_back(err_p(nom_BeamMatch_inel,denom));
-		er_m_BeamMatch_inel.push_back(err_m(nom_BeamMatch_inel,denom));
-	}
-
-	TGraphAsymmErrors *Eff_NoCut_inel = new TGraphAsymmErrors(eff_NoCut_inel.size(), &x[0], &eff_NoCut_inel[0], &errx[0], &errx[0], &er_m_NoCut_inel[0], &er_m_NoCut_inel[0]);  Eff_NoCut_inel->SetName("Eff_NoCut_inel");
-	TGraphAsymmErrors *Eff_Pan_inel = new TGraphAsymmErrors(eff_Pan_inel.size(), &x[0], &eff_Pan_inel[0], &errx[0], &errx[0], &er_m_Pan_inel[0], &er_m_Pan_inel[0]);  Eff_Pan_inel->SetName("Eff_Pan_inel");
-	TGraphAsymmErrors *Eff_CaloSz_inel = new TGraphAsymmErrors(eff_CaloSz_inel.size(), &x[0], &eff_CaloSz_inel[0], &errx[0], &errx[0], &er_m_CaloSz_inel[0], &er_m_CaloSz_inel[0]);  Eff_CaloSz_inel->SetName("Eff_CaloSz_inel");
-	TGraphAsymmErrors *Eff_Pos_inel = new TGraphAsymmErrors(eff_Pos_inel.size(), &x[0], &eff_Pos_inel[0], &errx[0], &errx[0], &er_m_Pos_inel[0], &er_m_Pos_inel[0]);  Eff_Pos_inel->SetName("Eff_Pos_inel");
-	TGraphAsymmErrors *Eff_BQ_inel = new TGraphAsymmErrors(eff_BQ_inel.size(), &x[0], &eff_BQ_inel[0], &errx[0], &errx[0], &er_m_BQ_inel[0], &er_m_BQ_inel[0]);  Eff_BQ_inel->SetName("Eff_BQ_inel");
-	TGraphAsymmErrors *Eff_RecoInel_inel = new TGraphAsymmErrors(eff_RecoInel_inel.size(), &x[0], &eff_RecoInel_inel[0], &errx[0], &errx[0], &er_m_RecoInel_inel[0], &er_m_RecoInel_inel[0]);  Eff_RecoInel_inel->SetName("Eff_RecoInel_inel");
-	TGraphAsymmErrors *Eff_BeamMatch_inel = new TGraphAsymmErrors(eff_BeamMatch_inel.size(), &x[0], &eff_BeamMatch_inel[0], &errx[0], &errx[0], &er_m_BeamMatch_inel[0], &er_m_BeamMatch_inel[0]);  Eff_BeamMatch_inel->SetName("Eff_BeamMatch_inel");
-
-
-
 	//save results ---------------------------------------------------------//
-   	//TFile *fout = new TFile("mc_truelen.root","RECREATE");
-   	//TFile *fout = new TFile("mc_truelen_around50.root","RECREATE");
-   	//TFile *fout = new TFile("mc_truelen_truelen20cm.root","RECREATE");
-   	//TFile *fout = new TFile("mc_truelen_keff.root","RECREATE");
-   	TFile *fout = new TFile("mc_truelen_fixtruelencalc.root","RECREATE");
-		h1d_truetrklen_NoCut_inel->Write();
-		h1d_truetrklen_Pan_inel->Write();
-		h1d_truetrklen_CaloSz_inel->Write();
-		h1d_truetrklen_Pos_inel->Write();
-		h1d_truetrklen_BQ_inel->Write();
-		h1d_truetrklen_RecoInel_inel->Write();
-		h1d_truetrklen_BeamMatch_inel->Write();
+   	//TFile *fout = new TFile("mc_vtx.root","RECREATE");
+   	TFile *fout = new TFile("mc_vtx_rangereco.root","RECREATE");
 
-		h1d_eff_NoCut_inel->Write();
-		h1d_eff_Pan_inel->Write();
-		h1d_eff_CaloSz_inel->Write();
-		h1d_eff_Pos_inel->Write();
-		h1d_eff_BQ_inel->Write();
-		h1d_eff_RecoInel_inel->Write();
-		h1d_eff_BeamMatch_inel->Write();
+		h2d_trklen_dr_PanS->Write();
+		h2d_trklen_dr_PanS_el->Write();
+		h2d_trklen_dr_PanS_inel->Write();
+		h2d_trklen_dr_PanS_misidp->Write();
 
-		Eff_NoCut_inel->Write();
-		Eff_Pan_inel->Write();
-		Eff_CaloSz_inel->Write();
-		Eff_Pos_inel->Write();
-		Eff_BQ_inel->Write();
-		Eff_RecoInel_inel->Write();
-		Eff_BeamMatch_inel->Write();
+		h2d_trklen_dr_CaloSz->Write();
+		h2d_trklen_dr_CaloSz_el->Write();
+		h2d_trklen_dr_CaloSz_inel->Write();
+		h2d_trklen_dr_CaloSz_misidp->Write();
 
-		h2d_thetaXZ_thetaYZ_BQ_inel->Write();
-		h2d_thetaXZ_thetaYZ_BQ_misidp->Write();
-		h2d_thetaXZ_thetaYZ_BQ_el->Write();
+		h2d_trklen_dr_Pos->Write();
+		h2d_trklen_dr_Pos_el->Write();
+		h2d_trklen_dr_Pos_inel->Write();
+		h2d_trklen_dr_Pos_misidp->Write();
 
-		h2d_thetaXZ_thetaYZ_Pos_inel->Write();
-		h2d_thetaXZ_thetaYZ_Pos_misidp->Write();
-		h2d_thetaXZ_thetaYZ_Pos_el->Write();
+		h2d_trklen_dr_BQ->Write();
+		h2d_trklen_dr_BQ_el->Write();
+		h2d_trklen_dr_BQ_inel->Write();
+		h2d_trklen_dr_BQ_misidp->Write();
 
-		h2d_truetrklen_trueendz_CaloSz_inel->Write();
-		h1d_trueendz_CaloSz_inel->Write();
+		h2d_trklen_dr_RecoInel->Write();
+		h2d_trklen_dr_RecoInel_el->Write();
+		h2d_trklen_dr_RecoInel_inel->Write();
+		h2d_trklen_dr_RecoInel_misidp->Write();
+
+		h2d_trklen_dr_RecoInel_2060_inel->Write();
+		h2d_trklen_dr_RecoInel_0010_inel->Write();
+
+		h2d_trklen_dr_RecoInel_BAD->Write();
+		h2d_trklen_dr_RecoInel_UGLY->Write();
+		h2d_trklen_dr_RecoInel_GOOD->Write();
+
+		h2d_truetrklen_dr_RecoInel_inel->Write();
 
 
+		h2d_trklen_dr_RecoEl->Write();
+		h2d_trklen_dr_RecoEl_el->Write();
+		h2d_trklen_dr_RecoEl_inel->Write();
+		h2d_trklen_dr_RecoEl_misidp->Write();
+		h2d_truetrklen_dr_RecoEl_el->Write();
 
-		h2d_truetrklen_ketrue_NoCut_inel->Write();
-		h2d_truetrklen_keff_NoCut_inel->Write();
-
-		h2d_truetrklen_ketrue_Pan_inel->Write();
-		h2d_truetrklen_ketrue_CaloSz_inel->Write();
 
 
-		h2d_trueEndZ_ketrue_NoCut_inel->Write();
-		h2d_trueZ_ketrue_NoCut_inel->Write();
+		h2d_cos_dr_Pos->Write();
+		h2d_cos_dr_Pos_el->Write();
+		h2d_cos_dr_Pos_inel->Write();
+		h2d_cos_dr_Pos_misidp->Write();
 
-		//h2d_trueXY_truelen05_NoCut_inel->Write();
-		//h2d_trueXY_truelen510_NoCut_inel->Write();
-		//h2d_trueXY_truelen1015_NoCut_inel->Write();
-		//h2d_trueXY_truelen1520_NoCut_inel->Write();
-		//h2d_trueXY_truelen2025_NoCut_inel->Write();
-		//h2d_trueXY_truelen2530_NoCut_inel->Write();
-		//h2d_trueXY_truelen3035_NoCut_inel->Write();
-		//h3d_trueXYZ_NoCut_inel->Write();
+		h2d_ntrklen_avedept_Pos->Write();
+		h2d_ntrklen_avedept_Pos_inel->Write();
+		h2d_ntrklen_avedept_Pos_el->Write();
+		h2d_ntrklen_avedept_Pos_misidp->Write();
 
-		//for (int j=0; j<n_scan; ++j) { 
-			//h2d_trueXY_NoCut_inel[j]->Write();
-		//}
+		h2d_ntrklen_avedept_BQ->Write();
+		h2d_ntrklen_avedept_BQ_inel->Write();
+		h2d_ntrklen_avedept_BQ_el->Write();
+		h2d_ntrklen_avedept_BQ_misidp->Write();
+
+		h2d_cos_dr_PosRecoInel->Write();
+		h2d_cos_dr_PosRecoInel_inel->Write();	
+		h2d_cos_dr_PosRecoInel_el->Write();	
+		h2d_cos_dr_PosRecoInel_misidp->Write();
+
+		h2d_trklen_cos_PosRecoInel->Write();
+		h2d_trklen_cos_PosRecoInel_inel->Write();
+		h2d_trklen_cos_PosRecoInel_el->Write();
+		h2d_trklen_cos_PosRecoInel_misidp->Write();
+
+
+		h2d_trklen_dr_RecoInelMIDP->Write();
+		h2d_trklen_dr_RecoInelMIDP_el->Write();
+		h2d_trklen_dr_RecoInelMIDP_inel->Write();
+		h2d_trklen_dr_RecoInelMIDP_misidp->Write();
+		h2d_truetrklen_dr_RecoInelMIDP_inel->Write();
+		h2d_truetrklen_dr_RecoInelMIDP_misidp->Write();
+
 	fout->Close();
 
 
