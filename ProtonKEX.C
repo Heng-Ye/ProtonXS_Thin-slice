@@ -77,7 +77,10 @@ void ProtonKE::Loop() {
 
 	//ke of stopping protons
 	TH1D *h1d_kerange_stop=new TH1D("h1d_kerange_stop","", nke, kemin, kemax); //range-based calc. (stopping protons)
+	TH1D *h1d_kecalo=new TH1D("h1d_kecalo","", nke, kemin, kemax); //calorimetric-based calc. (all reco. protons)
 	TH1D *h1d_kecalo_stop=new TH1D("h1d_kecalo_stop","", nke, kemin, kemax); //calorimetric-based calc. (stopping protons)
+	TH1D *h1d_kecalo_recoinel=new TH1D("h1d_kecalo_recoinel","", nke, kemin, kemax); //calorimetric-based calc. (reco. inel. protons)
+	TH1D *h1d_kecalo_recoel=new TH1D("h1d_kecalo_recoel","", nke, kemin, kemax); //calorimetric-based calc. (reco. inel. protons)
 
 	//upstream energy loss
 	int ndke=600;
@@ -521,6 +524,7 @@ void ProtonKE::Loop() {
 
 
 			h1d_dke->Fill(ke_beam_spec_MeV-ke_ff);
+			h1d_kecalo->Fill(ke_calo_MeV);
 			if (kinel) { //inel
 				h1d_dke_inel->Fill(ke_beam_spec_MeV-ke_ff);
 			} //inel
@@ -535,9 +539,11 @@ void ProtonKE::Loop() {
 
 			if (IsRecoInEL) {
 				h1d_dke_recoinel->Fill(ke_beam_spec_MeV-ke_ff);
+				h1d_kecalo_recoinel->Fill(ke_calo_MeV);
 			}
 			if (IsRecoEL) {
 				h1d_dke_recoel->Fill(ke_beam_spec_MeV-ke_ff);
+				h1d_kecalo_recoel->Fill(ke_calo_MeV);
 			}
 
 			if (IsRecoStop) { //reco stop
@@ -592,7 +598,10 @@ void ProtonKE::Loop() {
 		kebeam_fit->Write();
 		kebeam_stop_fit->Write();
 
+		h1d_kecalo->Write();
 		h1d_kecalo_stop->Write();
+		h1d_kecalo_recoinel->Write();
+		h1d_kecalo_recoel->Write();
 		h1d_kerange_stop->Write();
 
 		h1d_dke->Write();
