@@ -76,20 +76,27 @@ void ProtonKE::Loop() {
 	TH1D *h1d_keff_stop=new TH1D("h1d_keff_stop","", nke, kemin, kemax); //ke at ff (stopping protons)
 
 	//ke of stopping protons
-	TH1D *h1d_kerange_stop=new TH1D("h1d_kerange_stop","", nke, kemin, kemax);
-	TH1D *h1d_kecalo_stop=new TH1D("h1d_kecalo_stop","", nke, kemin, kemax);
+	TH1D *h1d_kerange_stop=new TH1D("h1d_kerange_stop","", nke, kemin, kemax); //range-based calc. (stopping protons)
+	TH1D *h1d_kecalo_stop=new TH1D("h1d_kecalo_stop","", nke, kemin, kemax); //calorimetric-based calc. (stopping protons)
 
 	//upstream energy loss
 	int ndke=600;
 	double dkemin=0;
 	double dkemax=600;
 
-	TH1D *h1d_dke_stop=new TH1D("h1d_dke_stop","", ndke, dkemin, dkemax); //ke_beam-ke_el
-	TH1D *h1d_dke_el=new TH1D("h1d_dke_el","", ndke, dkemin, dkemax); //ke_beam-ke_el
-	TH1D *h1d_dke_inel=new TH1D("h1d_dke_inel","", ndke, dkemin, dkemax); //ke_beam-ke_inel
-	TH1D *h1d_dke_misidp=new TH1D("h1d_dke_misidp","", ndke, dkemin, dkemax); //ke_beam-ke_misidp
+	//reco_label
+	TH1D *h1d_dke=new TH1D("h1d_dke","", ndke, dkemin, dkemax); //ke_beam-ke_ff
+	TH1D *h1d_dke_stop=new TH1D("h1d_dke_stop","", ndke, dkemin, dkemax); //ke_beam-ke_ff
+	TH1D *h1d_dke_recoinel=new TH1D("h1d_dke_recoinel","", ndke, dkemin, dkemax); //ke_beam-ke_ff
+	TH1D *h1d_dke_recoel=new TH1D("h1d_dke_recoel","", ndke, dkemin, dkemax); //ke_beam-ke_ff
+
+	//true_label
+	TH1D *h1d_dke_el=new TH1D("h1d_dke_el","", ndke, dkemin, dkemax); //ke_beam-ke_ff
+	TH1D *h1d_dke_inel=new TH1D("h1d_dke_inel","", ndke, dkemin, dkemax); //ke_beam-ke_ff
+	TH1D *h1d_dke_misidp=new TH1D("h1d_dke_misidp","", ndke, dkemin, dkemax); //ke_beam-ke_ff
 	//------------------------------------------------------------------------------------------------------------------------//
 
+	//Beam momentum reweighting ----------------------------------------------------------------------------------------------//
 	//MC Beam Mom Gaussian 
 	double m1=1007.1482; //MC prod4a [spec]
 	double s1=60.703307; //MC prod4a [spec]
@@ -163,9 +170,8 @@ void ProtonKE::Loop() {
 			cnt_array++;
 			} //sigma loop
 	} //mu loop
+	//------------------------------------------------------------------------------------------------------------------------//
 
-
-	//Weighted Gaussians & Weighting function ----------------------------------------------------------------------------------------------------------------------------------------------//
 
 	for (Long64_t jentry=0; jentry<nentries;jentry++) { //main entry loop
 		Long64_t ientry = LoadTree(jentry);
@@ -384,12 +390,13 @@ void ProtonKE::Loop() {
 		//Reco stopping/Inel p cut
 		bool IsRecoStop=false;
 		bool IsRecoInEL=false;
+		bool IsRecoEL=false;
 		double mom_beam_spec=-99; mom_beam_spec=beamMomentum_spec->at(0);
 		//double range_reco=-99; if (!primtrk_range->empty()) range_reco=primtrk_range->at(0); //reco primary trklen
 		double csda_val_spec=csda_range_vs_mom_sm->Eval(mom_beam_spec);
 
 		if ((range_reco/csda_val_spec)>=min_norm_trklen_csda&&(range_reco/csda_val_spec)<max_norm_trklen_csda) IsRecoStop=true;
-		if ((range_reco/csda_val_spec)<min_norm_trklen_csda) IsRecoInEL=true;
+		//if ((range_reco/csda_val_spec)<min_norm_trklen_csda) IsRecoInEL=true;
 
                 //PID parameter & cut
                 double pid=-99;
@@ -424,12 +431,12 @@ void ProtonKE::Loop() {
                 } //beam quality cut
 
 		if ((range_reco/csda_val_spec)<min_norm_trklen_csda) { //inel region
-			//if (pid>pid_1) IsRecoInEL=true; 
-			//if (pid<=pid_1) IsRecoStop=true; 
+			if (pid>pid_1) IsRecoInEL=true; 
+			if (pid<=pid_1) IsRecoEL=true; 
 		} //inel region
 		if ((range_reco/csda_val_spec)>=min_norm_trklen_csda&&(range_reco/csda_val_spec)<max_norm_trklen_csda) { //stopping p region
-			//if (pid>pid_2) IsRecoInEL=true; 
-			//if (pid<=pid_2) IsRecoStop=true;
+			if (pid>pid_2) IsRecoInEL=true; 
+			if (pid<=pid_2) IsRecoEL=true;
 		} //stopping p region
 
 
@@ -513,6 +520,7 @@ void ProtonKE::Loop() {
 			//} //xy
 
 
+			h1d_dke->Fill(ke_beam_spec_MeV-ke_ff);
 			if (kinel) { //inel
 				h1d_dke_inel->Fill(ke_beam_spec_MeV-ke_ff);
 			} //inel
@@ -525,21 +533,21 @@ void ProtonKE::Loop() {
 				h1d_dke_misidp->Fill(ke_beam_spec_MeV-ke_ff);
 			} //misid:p
 
+			if (IsRecoInEL) {
+				h1d_dke_recoinel->Fill(ke_beam_spec_MeV-ke_ff);
+			}
+			if (IsRecoEL) {
+				h1d_dke_recoel->Fill(ke_beam_spec_MeV-ke_ff);
+			}
+
 			if (IsRecoStop) { //reco stop
 				h1d_kebeam_stop->Fill(ke_beam_spec_MeV);
 				h1d_keff_stop->Fill(ke_ff);
-
 
 				h1d_kecalo_stop->Fill(ke_calo_MeV);
 				h1d_kerange_stop->Fill(ke_trklen_MeV);
 				
 				h1d_dke_stop->Fill(ke_beam_spec_MeV-ke_ff);
-
-
-
-
-
- 
 
 				//if (IsXY) { //xy-cut
 					//h1d_trklen_stop_XY->Fill(range_reco);
@@ -587,7 +595,11 @@ void ProtonKE::Loop() {
 		h1d_kecalo_stop->Write();
 		h1d_kerange_stop->Write();
 
+		h1d_dke->Write();
 		h1d_dke_stop->Write();
+		h1d_dke_recoinel->Write();
+		h1d_dke_recoel->Write();
+
 		h1d_dke_el->Write();
 		h1d_dke_inel->Write();
 		h1d_dke_misidp->Write();
