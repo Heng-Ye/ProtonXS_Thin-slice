@@ -70,6 +70,7 @@ void ProtonKE::Loop() {
 	//beam
 	TH1D *h1d_kebeam=new TH1D("h1d_kebeam","", nke, kemin, kemax); //ke from beamline inst.
 	TH1D *h1d_kebeam_stop=new TH1D("h1d_kebeam_stop","", nke, kemin, kemax); //ke from beamline inst. (stopping protons)
+	TH1D *h1d_kebeam_stop_bmrw=new TH1D("h1d_kebeam_stop_bmrw","", nke, kemin, kemax); //ke from beamline inst. (stopping protons)
 
 	//ff [truth info] 
 	TH1D *h1d_keff=new TH1D("h1d_keff","", nke, kemin, kemax); //ke at ff
@@ -77,6 +78,7 @@ void ProtonKE::Loop() {
 
 	//ke of stopping protons
 	TH1D *h1d_kerange_stop=new TH1D("h1d_kerange_stop","", nke, kemin, kemax); //range-based calc. (stopping protons)
+	TH1D *h1d_kerange_stop_bmrw=new TH1D("h1d_kerange_stop_bmrw","", nke, kemin, kemax); //range-based calc. (stopping protons)
 	TH1D *h1d_kecalo=new TH1D("h1d_kecalo","", nke, kemin, kemax); //calorimetric-based calc. (all reco. protons)
 	TH1D *h1d_kecalo_stop=new TH1D("h1d_kecalo_stop","", nke, kemin, kemax); //calorimetric-based calc. (stopping protons)
 	TH1D *h1d_kecalo_stop_bmrw=new TH1D("h1d_kecalo_stop_bmrw","", nke, kemin, kemax); //calorimetric-based calc. (stopping protons)
@@ -565,14 +567,14 @@ void ProtonKE::Loop() {
 				h1d_kecalo_recoinel_bmrw->Fill(ke_calo_MeV,mom_rw_minchi2);
 				h1d_dKE_recoinel->Fill(ke_beam_spec_MeV-ke_calo_MeV);
 
-				if (kinel) h1d_kecalo_recoinel_bmrw_inel->Fill(ke_calo_MeV,mom_rw_minchi2);
-				if (kel) h1d_kecalo_recoinel_bmrw_el->Fill(ke_calo_MeV,mom_rw_minchi2);
-				if (kMIDcosmic) h1d_kecalo_recoinel_bmrw_midcosmic->Fill(ke_calo_MeV,mom_rw_minchi2);
-				if (kMIDpi) h1d_kecalo_recoinel_bmrw_midpi->Fill(ke_calo_MeV,mom_rw_minchi2);
-				if (kMIDp) h1d_kecalo_recoinel_bmrw_midp->Fill(ke_calo_MeV,mom_rw_minchi2);
-				if (kMIDmu) h1d_kecalo_recoinel_bmrw_midmu->Fill(ke_calo_MeV,mom_rw_minchi2);
-				if (kMIDeg) h1d_kecalo_recoinel_bmrw_mideg->Fill(ke_calo_MeV,mom_rw_minchi2);
-				if (kMIDother) h1d_kecalo_recoinel_bmrw_midother->Fill(ke_calo_MeV,mom_rw_minchi2);
+				//if (kinel) h1d_kecalo_recoinel_bmrw_inel->Fill(ke_calo_MeV,mom_rw_minchi2);
+				//if (kel) h1d_kecalo_recoinel_bmrw_el->Fill(ke_calo_MeV,mom_rw_minchi2);
+				//if (kMIDcosmic) h1d_kecalo_recoinel_bmrw_midcosmic->Fill(ke_calo_MeV,mom_rw_minchi2);
+				//if (kMIDpi) h1d_kecalo_recoinel_bmrw_midpi->Fill(ke_calo_MeV,mom_rw_minchi2);
+				//if (kMIDp) h1d_kecalo_recoinel_bmrw_midp->Fill(ke_calo_MeV,mom_rw_minchi2);
+				//if (kMIDmu) h1d_kecalo_recoinel_bmrw_midmu->Fill(ke_calo_MeV,mom_rw_minchi2);
+				//if (kMIDeg) h1d_kecalo_recoinel_bmrw_mideg->Fill(ke_calo_MeV,mom_rw_minchi2);
+				//if (kMIDother) h1d_kecalo_recoinel_bmrw_midother->Fill(ke_calo_MeV,mom_rw_minchi2);
 
 			}
 			if (IsRecoEL) {
@@ -610,6 +612,8 @@ void ProtonKE::Loop() {
 						} //rw loop
 					} //tail of the beam	
 				//} //xy-cut
+				h1d_kebeam_stop_bmrw->Fill(ke_beam_spec_MeV,mom_rw);
+				h1d_kerange_stop_bmrw->Fill(ke_trklen_MeV,mom_rw);
 			} //reco stop
 		} //basic cuts
 
@@ -628,37 +632,52 @@ void ProtonKE::Loop() {
 	TF1* kerange_stop_fit; kerange_stop_fit=VFit(h1d_kerange_stop, 2);
 	kerange_stop_fit->SetName("kerange_stop_fit");
 
+	TF1* keff_stop_fit; keff_stop_fit=VFit(h1d_keff_stop, 2);
+	keff_stop_fit->SetName("keff_stop_fit");
+
+	TF1* kerange_stop_bmrw_fit; kerange_stop_bmrw_fit=VFit(h1d_kerange_stop_bmrw, 2);
+	kerange_stop_bmrw_fit->SetName("kerange_stop_bmrw_fit");
+
+	TF1* kebeam_stop_bmrw_fit; kebeam_stop_bmrw_fit=VFit(h1d_kebeam_stop_bmrw, 2);
+	kebeam_stop_bmrw_fit->SetName("kebeam_stop_bmrw_fit");
+
 
 
 	//save results...
    	TFile *fout = new TFile("mc_ke.root","RECREATE");
 		h1d_kebeam->Write();
 		h1d_kebeam_stop->Write();
+		h1d_kebeam_stop_bmrw->Write();
 
 		h1d_keff->Write();
 		h1d_keff_stop->Write();
 
 		kebeam_fit->Write();
 		kebeam_stop_fit->Write();
+		kebeam_stop_bmrw_fit->Write();
+
 		kecalo_stop_fit->Write();
 		kerange_stop_fit->Write();
+		kerange_stop_bmrw_fit->Write();
+		keff_stop_fit->Write();
 
 		h1d_kecalo->Write();
 		h1d_kecalo_stop->Write();
 		h1d_kecalo_stop_bmrw->Write();
 		h1d_kecalo_recoinel->Write();
 		h1d_kecalo_recoinel_bmrw->Write();
-		h1d_kecalo_recoinel_bmrw_inel->Write();
-		h1d_kecalo_recoinel_bmrw_el->Write();
-		h1d_kecalo_recoinel_bmrw_midcosmic->Write();
-		h1d_kecalo_recoinel_bmrw_midpi->Write();
-		h1d_kecalo_recoinel_bmrw_midp->Write();
-		h1d_kecalo_recoinel_bmrw_midmu->Write();
-		h1d_kecalo_recoinel_bmrw_mideg->Write();
-		h1d_kecalo_recoinel_bmrw_midother->Write();
+		//h1d_kecalo_recoinel_bmrw_inel->Write();
+		//h1d_kecalo_recoinel_bmrw_el->Write();
+		//h1d_kecalo_recoinel_bmrw_midcosmic->Write();
+		//h1d_kecalo_recoinel_bmrw_midpi->Write();
+		//h1d_kecalo_recoinel_bmrw_midp->Write();
+		//h1d_kecalo_recoinel_bmrw_midmu->Write();
+		//h1d_kecalo_recoinel_bmrw_mideg->Write();
+		//h1d_kecalo_recoinel_bmrw_midother->Write();
 
 		h1d_kecalo_recoel->Write();
 		h1d_kerange_stop->Write();
+		h1d_kerange_stop_bmrw->Write();
 
 		h1d_dke->Write();
 		h1d_dke_stop->Write();
