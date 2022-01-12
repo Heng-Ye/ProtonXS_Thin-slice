@@ -601,8 +601,8 @@ void ProtonKE::Loop() {
 				double mom_rw_minchi2=1.;
 				if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=gng[index_minchi2]->Eval(mom_beam_spec*1000.); //bmrw
 
-				h1d_kebeam_stop_bmrw->Fill(ke_beam_spec_MeV, mom_rw);
-				h1d_kerange_stop_bmrw->Fill(ke_trklen_MeV, mom_rw);
+				h1d_kebeam_stop_bmrw->Fill(ke_beam_spec_MeV, mom_rw_minchi2);
+				h1d_kerange_stop_bmrw->Fill(ke_trklen_MeV, mom_rw_minchi2);
 			} //reco stop
 		} //basic cuts
 
