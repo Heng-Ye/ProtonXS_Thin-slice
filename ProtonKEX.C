@@ -63,12 +63,13 @@ void ProtonKE::Loop() {
 	//int true_sliceID = -1, reco_sliceID = -1;
 
 	//Kinetic energies -------------------------------------------------------------------------------------------------------//
-	int nke=300;
+	int nke=100;
 	double kemin=0;
 	double kemax=600;
 
 	//beam
 	TH1D *h1d_kebeam=new TH1D("h1d_kebeam","", nke, kemin, kemax); //ke from beamline inst.
+	TH1D *h1d_kebeam_bmrw=new TH1D("h1d_kebeam_bmrw","", nke, kemin, kemax); //ke from beamline inst.
 	TH1D *h1d_kebeam_stop=new TH1D("h1d_kebeam_stop","", nke, kemin, kemax); //ke from beamline inst. (stopping protons)
 	TH1D *h1d_kebeam_stop_bmrw=new TH1D("h1d_kebeam_stop_bmrw","", nke, kemin, kemax); //ke from beamline inst. (stopping protons)
 
@@ -202,6 +203,7 @@ void ProtonKE::Loop() {
 		Long64_t ientry = LoadTree(jentry);
 		if (ientry < 0) break;
 		nb = fChain->GetEntry(jentry);   nbytes += nb;
+                if (jentry%10000==0) std::cout<<jentry<<"/"<<nentries<<std::endl;
 
 		isTestSample = true;
 		if (ientry%2 == 0) isTestSample = false; //Divide MC sample by 2 parts: test+ufold
@@ -534,6 +536,7 @@ void ProtonKE::Loop() {
 			double mom_rw_minchi2=1.;
 			if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=gng[index_minchi2]->Eval(mom_beam_spec*1000.); //bmrw
 
+			h1d_kebeam_bmrw->Fill(ke_beam_spec_MeV, mom_rw_minchi2);
 			//h1d_trklen_bmrw->Fill(range_reco, mom_rw_minchi2); 
 			//h1d_zend_bmrw->Fill(reco_endz, mom_rw_minchi2);	
 
@@ -595,25 +598,11 @@ void ProtonKE::Loop() {
 				h1d_dke_stop->Fill(ke_beam_spec_MeV-ke_ff);
 				h1d_dKE_stop->Fill(ke_beam_spec_MeV-ke_calo_MeV);
 
+				double mom_rw_minchi2=1.;
+				if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=gng[index_minchi2]->Eval(mom_beam_spec*1000.); //bmrw
 
-				//if (IsXY) { //xy-cut
-					//h1d_trklen_stop_XY->Fill(range_reco);
-					double mom_rw=1.;
-					if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) { //beam-mom cut (within 3-sigma)
-						for (int ig = 0; ig < n_1d; ++ig) { //rw loop
-							mom_rw=gng[ig]->Eval(mom_beam_spec*1000.);
-							//h1d_trklen_rw[ig]->Fill(range_reco,mom_rw); //beam-mom rw using stopping protons
-						} //rw loop
-					} //beam-mom cut (within 3-sigma)
-					else { //tail of beam
-					//if ((mom_beam_spec*1000.)<mu_min||(mom_beam_spec*1000.)>mu_max) { //tail of the beam
-						for (int ig = 0; ig < n_1d; ++ig) { //rw loop
-							//h1d_trklen_rw[ig]->Fill(range_reco); //beam-mom rw 
-						} //rw loop
-					} //tail of the beam	
-				//} //xy-cut
-				h1d_kebeam_stop_bmrw->Fill(ke_beam_spec_MeV,mom_rw);
-				h1d_kerange_stop_bmrw->Fill(ke_trklen_MeV,mom_rw);
+				h1d_kebeam_stop_bmrw->Fill(ke_beam_spec_MeV, mom_rw);
+				h1d_kerange_stop_bmrw->Fill(ke_trklen_MeV, mom_rw);
 			} //reco stop
 		} //basic cuts
 
@@ -622,6 +611,9 @@ void ProtonKE::Loop() {
 	//Fit Gaussians on momenta ...
 	TF1* kebeam_fit; kebeam_fit=VFit(h1d_kebeam, 2);
 	kebeam_fit->SetName("kebeam_fit");
+
+	TF1* kebeam_bmrw_fit; kebeam_bmrw_fit=VFit(h1d_kebeam_bmrw, 2);
+	kebeam_bmrw_fit->SetName("kebeam_bmrw_fit");
 
 	TF1* kebeam_stop_fit; kebeam_stop_fit=VFit(h1d_kebeam_stop, 2);
 	kebeam_stop_fit->SetName("kebeam_stop_fit");
@@ -646,6 +638,8 @@ void ProtonKE::Loop() {
 	//save results...
    	TFile *fout = new TFile("mc_ke.root","RECREATE");
 		h1d_kebeam->Write();
+		h1d_kebeam_bmrw->Write();
+
 		h1d_kebeam_stop->Write();
 		h1d_kebeam_stop_bmrw->Write();
 
@@ -653,6 +647,7 @@ void ProtonKE::Loop() {
 		h1d_keff_stop->Write();
 
 		kebeam_fit->Write();
+		kebeam_bmrw_fit->Write();
 		kebeam_stop_fit->Write();
 		kebeam_stop_bmrw_fit->Write();
 
