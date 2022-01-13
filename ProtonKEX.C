@@ -166,9 +166,9 @@ void ProtonKE::Loop() {
 	TH1D *h1d_keff2_recoel=new TH1D("h1d_keff2_recoel","", nke, kemin, kemax); //keff=ke_beam-const. E-loss
 
 	//keff bias
-	int ndkeff=180;
+	int ndkeff=320;
 	double dkeff_min=-800;
-	double dkeff_max=100;
+	double dkeff_max=800;
 
 	TH1D *h1d_dkeff_recoinel=new TH1D("h1d_dkeff_recoinel","", ndkeff, dkeff_min, dkeff_max); 
 	TH1D *h1d_dkeff_recoel=new TH1D("h1d_dkeff_recoel","", ndkeff, dkeff_min, dkeff_max); 
@@ -917,10 +917,6 @@ void ProtonKE::Loop() {
 		h1d_keff0_recoinel->Write();
 		h1d_keff2_recoinel->Write();
 
-		h1d_dkeff_recoinel->Write();
-		h1d_dkeff_recoel->Write();
-		h1d_dkeff_stop->Write();
-		h1d_dkeff_all->Write();
 
 
 		h1d_keff_recoel->Write();
@@ -966,6 +962,12 @@ void ProtonKE::Loop() {
 		h1d_dKE_recoinel->Write();
 		h1d_dKE_recoel->Write();
 
+
+
+		h1d_dkeff_recoinel->Write();
+		h1d_dkeff_recoel->Write();
+		h1d_dkeff_stop->Write();
+		h1d_dkeff_all->Write();
 
 		h2d_trklen_ke_recoinel->Write();
 		h2d_trklen_ke2_recoinel->Write();
