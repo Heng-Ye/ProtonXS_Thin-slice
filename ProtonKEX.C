@@ -3,7 +3,6 @@
 
 #include <TH2.h>
 #include <TH1.h>
-#include "TH2D.h"
 #include <TStyle.h>
 #include <TCanvas.h>
 #include <TLegend.h>
@@ -84,9 +83,9 @@ void ProtonKE::Loop() {
 
 
 	//Kinetic energies -------------------------------------------------------------------------------------------------------//
-	int nke=100;
+	int nke=160;
 	double kemin=0;
-	double kemax=600;
+	double kemax=800;
 
 	//beam
 	TH1D *h1d_kebeam=new TH1D("h1d_kebeam","", nke, kemin, kemax); //ke from beamline inst.
@@ -95,10 +94,25 @@ void ProtonKE::Loop() {
 	TH1D *h1d_kebeam_stop_bmrw=new TH1D("h1d_kebeam_stop_bmrw","", nke, kemin, kemax); //ke from beamline inst. (stopping protons)
 
 	//ff [truth info] 
-	TH1D *h1d_keff=new TH1D("h1d_keff","", nke, kemin, kemax); //ke at ff
-	TH1D *h1d_keff2=new TH1D("h1d_keff2","", nke, kemin, kemax); //ke at ff
+	TH1D *h1d_keff=new TH1D("h1d_keff","", nke, kemin, kemax); //keff at z=0
+	TH1D *h1d_keff2=new TH1D("h1d_keff2","", nke, kemin, kemax); //keff=ke_beam-const. E-loss
+	TH1D *h1d_keff0=new TH1D("h1d_keff0","", nke, kemin, kemax); //keff at tpc entrance
+
+	TH1D *h1d_keff_inel=new TH1D("h1d_keff_inel","", nke, kemin, kemax); 
+	TH1D *h1d_keff_el=new TH1D("h1d_keff_el","", nke, kemin, kemax); 
+	TH1D *h1d_keff_midcosmic=new TH1D("h1d_keff_midcosmic","", nke, kemin, kemax); 
+	TH1D *h1d_keff_midpi=new TH1D("h1d_keff_midpi","", nke, kemin, kemax); 
+	TH1D *h1d_keff_midp=new TH1D("h1d_keff_midp","", nke, kemin, kemax); 
+	TH1D *h1d_keff_midmu=new TH1D("h1d_keff_midmu","", nke, kemin, kemax); 
+	TH1D *h1d_keff_mideg=new TH1D("h1d_keff_mideg","", nke, kemin, kemax); 
+	TH1D *h1d_keff_midother=new TH1D("h1d_keff_midother","", nke, kemin, kemax); 
+
+
+
 	TH1D *h1d_keff_stop=new TH1D("h1d_keff_stop","", nke, kemin, kemax); //ke at ff (stopping protons)
 	TH1D *h1d_keff2_stop=new TH1D("h1d_keff2_stop","", nke, kemin, kemax); //ke at ff (stopping protons)
+	TH1D *h1d_keff0_stop=new TH1D("h1d_keff0_stop","", nke, kemin, kemax); //ke at ff (stopping protons)
+
 
 	//ke of stopping protons
 	TH1D *h1d_kerange_stop=new TH1D("h1d_kerange_stop","", nke, kemin, kemax); //range-based calc. (stopping protons)
@@ -109,8 +123,6 @@ void ProtonKE::Loop() {
 
 	TH1D *h1d_kecalo_recoinel=new TH1D("h1d_kecalo_recoinel","", nke, kemin, kemax); //calorimetric-based calc. (reco. inel. protons)
 	TH1D *h1d_kecalo_recoinel_bmrw=new TH1D("h1d_kecalo_recoinel_bmrw","", nke, kemin, kemax); //calorimetric-based calc. (reco. inel. protons)
-	TH1D *h1d_keff_recoinel=new TH1D("h1d_keff_recoinel","", nke, kemin, kemax); //calorimetric-based calc. (reco. inel. protons)
-	TH1D *h1d_keff2_recoinel=new TH1D("h1d_keff2_recoinel","", nke, kemin, kemax); //calorimetric-based calc. (reco. inel. protons)
 
 	TH1D *h1d_kecalo_recoel=new TH1D("h1d_kecalo_recoel","", nke, kemin, kemax); //calorimetric-based calc. (reco. inel. protons)
 
@@ -123,6 +135,70 @@ void ProtonKE::Loop() {
 	TH1D *h1d_kecalo_recoinel_bmrw_midmu=new TH1D("h1d_kecalo_recoinel_bmrw_midmu","", nke, kemin, kemax); //calorimetric-based calc. (reco. inel. protons)
 	TH1D *h1d_kecalo_recoinel_bmrw_mideg=new TH1D("h1d_kecalo_recoinel_bmrw_mideg","", nke, kemin, kemax); //calorimetric-based calc. (reco. inel. protons)
 	TH1D *h1d_kecalo_recoinel_bmrw_midother=new TH1D("h1d_kecalo_recoinel_bmrw_midother","", nke, kemin, kemax); //calorimetric-based calc. (reco. inel. protons)
+
+	//keff of recoinel
+	TH1D *h1d_keff_recoinel=new TH1D("h1d_keff_recoinel","", nke, kemin, kemax); //keff at z=0
+	TH1D *h1d_keff_recoinel_inel=new TH1D("h1d_keff_recoinel_inel","", nke, kemin, kemax); 
+	TH1D *h1d_keff_recoinel_el=new TH1D("h1d_keff_recoinel_el","", nke, kemin, kemax); 
+	TH1D *h1d_keff_recoinel_midcosmic=new TH1D("h1d_keff_recoinel_midcosmic","", nke, kemin, kemax); 
+	TH1D *h1d_keff_recoinel_midpi=new TH1D("h1d_keff_recoinel_midpi","", nke, kemin, kemax); 
+	TH1D *h1d_keff_recoinel_midp=new TH1D("h1d_keff_recoinel_midp","", nke, kemin, kemax); 
+	TH1D *h1d_keff_recoinel_midmu=new TH1D("h1d_keff_recoinel_midmu","", nke, kemin, kemax); 
+	TH1D *h1d_keff_recoinel_mideg=new TH1D("h1d_keff_recoinel_mideg","", nke, kemin, kemax); 
+	TH1D *h1d_keff_recoinel_midother=new TH1D("h1d_keff_recoinel_midother","", nke, kemin, kemax); 
+
+	TH1D *h1d_keff0_recoinel=new TH1D("h1d_keff0_recoinel","", nke, kemin, kemax); //keff at tpc entrance
+	TH1D *h1d_keff2_recoinel=new TH1D("h1d_keff2_recoinel","", nke, kemin, kemax); //keff=ke_beam-const. E-loss
+
+	//keff of recoel
+	TH1D *h1d_keff_recoel=new TH1D("h1d_keff_recoel","", nke, kemin, kemax); //keff at z=0
+	TH1D *h1d_keff_recoel_inel=new TH1D("h1d_keff_recoel_inel","", nke, kemin, kemax); 
+	TH1D *h1d_keff_recoel_el=new TH1D("h1d_keff_recoel_el","", nke, kemin, kemax); 
+	TH1D *h1d_keff_recoel_midcosmic=new TH1D("h1d_keff_recoel_midcosmic","", nke, kemin, kemax); 
+	TH1D *h1d_keff_recoel_midpi=new TH1D("h1d_keff_recoel_midpi","", nke, kemin, kemax); 
+	TH1D *h1d_keff_recoel_midp=new TH1D("h1d_keff_recoel_midp","", nke, kemin, kemax); 
+	TH1D *h1d_keff_recoel_midmu=new TH1D("h1d_keff_recoel_midmu","", nke, kemin, kemax); 
+	TH1D *h1d_keff_recoel_mideg=new TH1D("h1d_keff_recoel_mideg","", nke, kemin, kemax); 
+	TH1D *h1d_keff_recoel_midother=new TH1D("h1d_keff_recoel_midother","", nke, kemin, kemax); 
+
+	TH1D *h1d_keff0_recoel=new TH1D("h1d_keff0_recoel","", nke, kemin, kemax); //keff at tpc entrance
+	TH1D *h1d_keff2_recoel=new TH1D("h1d_keff2_recoel","", nke, kemin, kemax); //keff=ke_beam-const. E-loss
+
+	//keff bias
+	int ndkeff=180;
+	double dkeff_min=-800;
+	double dkeff_max=100;
+
+	TH1D *h1d_dkeff_recoinel=new TH1D("h1d_dkeff_recoinel","", ndkeff, dkeff_min, dkeff_max); 
+	TH1D *h1d_dkeff_recoel=new TH1D("h1d_dkeff_recoel","", ndkeff, dkeff_min, dkeff_max); 
+	TH1D *h1d_dkeff_stop=new TH1D("h1d_dkeff_stop","", ndkeff, dkeff_min, dkeff_max); 
+	TH1D *h1d_dkeff_all=new TH1D("h1d_dkeff_all","", ndkeff, dkeff_min, dkeff_max); 
+
+	//ke vs trklen
+	int n2d_trklen=140;
+	double n2d_trklen_min=0;
+	double n2d_trklen_max=140;
+	TH2D *h2d_trklen_ke_recoinel=new TH2D("h2d_trklen_ke_recoinel","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, nke, kemin, kemax); 
+	TH2D *h2d_trklen_ke2_recoinel=new TH2D("h2d_trklen_ke2_recoinel","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, nke, kemin, kemax);
+	TH2D *h2d_trklen_dke_recoinel=new TH2D("h2d_trklen_dke_recoinel","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, ndkeff, dkeff_min, dkeff_max);
+	
+	TH2D *h2d_trklen_ke_recoel=new TH2D("h2d_trklen_ke_recoel","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, nke, kemin, kemax); 
+	TH2D *h2d_trklen_ke2_recoel=new TH2D("h2d_trklen_ke2_recoel","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, nke, kemin, kemax);
+	TH2D *h2d_trklen_dke_recoel=new TH2D("h2d_trklen_dke_recoel","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, ndkeff, dkeff_min, dkeff_max);
+
+	TH2D *h2d_trklen_ke_stop=new TH2D("h2d_trklen_ke_stop","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, nke, kemin, kemax); 
+	TH2D *h2d_trklen_ke2_stop=new TH2D("h2d_trklen_ke2_stop","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, nke, kemin, kemax);
+	TH2D *h2d_trklen_dke_stop=new TH2D("h2d_trklen_dke_stop","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, ndkeff, dkeff_min, dkeff_max);
+	
+	TH2D *h2d_trklen_ke_all=new TH2D("h2d_trklen_ke_all","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, nke, kemin, kemax); 
+	TH2D *h2d_trklen_ke2_all=new TH2D("h2d_trklen_ke2_all","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, nke, kemin, kemax);
+	TH2D *h2d_trklen_dke_all=new TH2D("h2d_trklen_dke_all","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, ndkeff, dkeff_min, dkeff_max);
+
+
+
+
+
+
 
 
 	//upstream energy loss
@@ -494,12 +570,34 @@ void ProtonKE::Loop() {
 		} //stopping p region
 
 
-		//kinetic energies
+		//kinetic energies ---------------------------------------------------------------//
 		//double ke_beam=1000.*p2ke(mom_beam); //ke_beam
 		double ke_beam_spec=p2ke(mom_beam_spec); //ke_beam_spec [GeV]
 		double ke_beam_spec_MeV=1000.*ke_beam_spec; //ke_beam_spec [MeV]
 		double ke_trklen=ke_vs_csda_range_sm->Eval(range_reco); //[unit: GeV]
 		double ke_trklen_MeV=1000.*ke_trklen; //[unit: MeV]
+
+		//First point of MCParticle entering TPC ------------------------------------------------------------------//
+		bool is_beam_at_ff=false;
+		int key_reach_tpc=-99;
+		if (beamtrk_z->size()){
+			for (size_t kk=0; kk<beamtrk_z->size(); ++kk) {  //loop over all beam hits
+				double zpos_beam=beamtrk_z->at(kk);
+				if (zpos_beam>=0) {
+					key_reach_tpc=(int)kk;
+					break;
+				}
+			} //loop over all beam hits
+
+			//for (size_t kk=0; kk<beamtrk_z->size(); ++kk) {  //loop over all beam hits
+			//cout<<"["<<kk<<"] beamtrk_z:"<<beamtrk_z->at(kk) <<" beamtrk_Eng:"<<beamtrk_Eng->at(kk)<<endl;
+			//} //loop over all beam hits
+		} 
+		if (key_reach_tpc!=-99) { is_beam_at_ff=true; }
+
+
+		double KE_ff_tpc=-999;
+		if (is_beam_at_ff) KE_ff_tpc=1000.*(beamtrk_Eng->at(key_reach_tpc)); //MeV
 
 		//double p_trklen=ke2p(ke_trklen);
 		//double ke_simide=0;
@@ -556,6 +654,36 @@ void ProtonKE::Loop() {
 			h1d_kebeam->Fill(ke_beam_spec_MeV);
 			h1d_keff->Fill(ke_ff);
 			h1d_keff2->Fill(ke_beam_spec_MeV-Eloss_mc);
+			h1d_keff0->Fill(KE_ff_tpc);
+			Fill1DHist(h1d_dkeff_all, ke_beam_spec_MeV-Eloss_mc-ke_ff);
+			h2d_trklen_ke_all->Fill(range_reco, (ke_ff-ke_calo_MeV));
+			h2d_trklen_ke2_all->Fill(range_reco, (ke_beam_spec_MeV-Eloss_mc-ke_calo_MeV));
+			h2d_trklen_dke_all->Fill(range_reco, (ke_beam_spec_MeV-Eloss_mc-ke_ff));
+
+			if (kinel) { 
+				h1d_keff_inel->Fill(ke_ff);
+			}
+			if (kel) { 
+				h1d_keff_el->Fill(ke_ff);
+			}
+			if (kMIDcosmic) { 
+				h1d_keff_midcosmic->Fill(ke_ff);
+			}
+			if (kMIDpi) { 
+				h1d_keff_midpi->Fill(ke_ff);
+			}
+			if (kMIDp) { 
+				h1d_keff_midp->Fill(ke_ff);
+			}
+			if (kMIDmu) { 
+				h1d_keff_midmu->Fill(ke_ff);
+			}
+			if (kMIDeg) { 
+				h1d_keff_mideg->Fill(ke_ff);
+			}
+			if (kMIDother) { 
+				h1d_keff_midother->Fill(ke_ff);					
+			}
 
 
 			//h1d_trklen->Fill(range_reco);	
@@ -596,31 +724,100 @@ void ProtonKE::Loop() {
 				h1d_dke_recoinel->Fill(ke_beam_spec_MeV-ke_ff);
 				h1d_kecalo_recoinel->Fill(ke_calo_MeV);
 				h1d_keff_recoinel->Fill(ke_ff);
+				h1d_keff0_recoinel->Fill(KE_ff_tpc);
 				h1d_keff2_recoinel->Fill(ke_beam_spec_MeV-Eloss_mc);
 				h1d_kecalo_recoinel_bmrw->Fill(ke_calo_MeV,mom_rw_minchi2);
 				h1d_dKE_recoinel->Fill(ke_beam_spec_MeV-ke_calo_MeV);
 
-				//if (kinel) h1d_kecalo_recoinel_bmrw_inel->Fill(ke_calo_MeV,mom_rw_minchi2);
-				//if (kel) h1d_kecalo_recoinel_bmrw_el->Fill(ke_calo_MeV,mom_rw_minchi2);
-				//if (kMIDcosmic) h1d_kecalo_recoinel_bmrw_midcosmic->Fill(ke_calo_MeV,mom_rw_minchi2);
-				//if (kMIDpi) h1d_kecalo_recoinel_bmrw_midpi->Fill(ke_calo_MeV,mom_rw_minchi2);
-				//if (kMIDp) h1d_kecalo_recoinel_bmrw_midp->Fill(ke_calo_MeV,mom_rw_minchi2);
-				//if (kMIDmu) h1d_kecalo_recoinel_bmrw_midmu->Fill(ke_calo_MeV,mom_rw_minchi2);
-				//if (kMIDeg) h1d_kecalo_recoinel_bmrw_mideg->Fill(ke_calo_MeV,mom_rw_minchi2);
-				//if (kMIDother) h1d_kecalo_recoinel_bmrw_midother->Fill(ke_calo_MeV,mom_rw_minchi2);
+				Fill1DHist(h1d_dkeff_recoinel, ke_beam_spec_MeV-Eloss_mc-ke_ff);
+				h2d_trklen_ke_recoinel->Fill(range_reco, (ke_ff-ke_calo_MeV));
+				h2d_trklen_ke2_recoinel->Fill(range_reco, (ke_beam_spec_MeV-Eloss_mc-ke_calo_MeV));
+				h2d_trklen_dke_recoinel->Fill(range_reco, (ke_beam_spec_MeV-Eloss_mc-ke_ff));
 
+				if (kinel) { 
+					h1d_kecalo_recoinel_bmrw_inel->Fill(ke_calo_MeV, mom_rw_minchi2);
+					h1d_keff_recoinel_inel->Fill(ke_ff);
+				}
+				if (kel) { 
+					h1d_kecalo_recoinel_bmrw_el->Fill(ke_calo_MeV, mom_rw_minchi2);
+					h1d_keff_recoinel_el->Fill(ke_ff);
+				}
+				if (kMIDcosmic) { 
+					h1d_kecalo_recoinel_bmrw_midcosmic->Fill(ke_calo_MeV, mom_rw_minchi2);
+					h1d_keff_recoinel_midcosmic->Fill(ke_ff);
+				}
+				if (kMIDpi) { 
+					h1d_kecalo_recoinel_bmrw_midpi->Fill(ke_calo_MeV, mom_rw_minchi2);
+					h1d_keff_recoinel_midpi->Fill(ke_ff);
+				}
+				if (kMIDp) { 
+					h1d_kecalo_recoinel_bmrw_midp->Fill(ke_calo_MeV, mom_rw_minchi2);
+					h1d_keff_recoinel_midp->Fill(ke_ff);
+				}
+				if (kMIDmu) { 
+					h1d_kecalo_recoinel_bmrw_midmu->Fill(ke_calo_MeV, mom_rw_minchi2);
+					h1d_keff_recoinel_midmu->Fill(ke_ff);
+				}
+				if (kMIDeg) { 
+					h1d_kecalo_recoinel_bmrw_mideg->Fill(ke_calo_MeV, mom_rw_minchi2);
+					h1d_keff_recoinel_mideg->Fill(ke_ff);
+				}
+				if (kMIDother) { 
+					h1d_kecalo_recoinel_bmrw_midother->Fill(ke_calo_MeV, mom_rw_minchi2);
+					h1d_keff_recoinel_midother->Fill(ke_ff);					
+				}
 			}
 			if (IsRecoEL) {
 				h1d_dke_recoel->Fill(ke_beam_spec_MeV-ke_ff);
 				h1d_kecalo_recoel->Fill(ke_calo_MeV);
 				h1d_dKE_recoel->Fill(ke_beam_spec_MeV-ke_calo_MeV);
 
+				h1d_keff_recoel->Fill(ke_ff);
+				h1d_keff0_recoel->Fill(KE_ff_tpc);
+				h1d_keff2_recoel->Fill(ke_beam_spec_MeV-Eloss_mc);
+
+				Fill1DHist(h1d_dkeff_reconel, ke_beam_spec_MeV-Eloss_mc-ke_ff);
+				h2d_trklen_ke_recoel->Fill(range_reco, (ke_ff-ke_calo_MeV));
+				h2d_trklen_ke2_recoel->Fill(range_reco, (ke_beam_spec_MeV-Eloss_mc-ke_calo_MeV));
+				h2d_trklen_dke_recoel->Fill(range_reco, (ke_beam_spec_MeV-Eloss_mc-ke_ff));
+
+				if (kinel) { 
+					h1d_keff_recoel_inel->Fill(ke_ff);
+				}
+				if (kel) { 
+					h1d_keff_recoel_el->Fill(ke_ff);
+				}
+				if (kMIDcosmic) { 
+					h1d_keff_recoel_midcosmic->Fill(ke_ff);
+				}
+				if (kMIDpi) { 
+					h1d_keff_recoel_midpi->Fill(ke_ff);
+				}
+				if (kMIDp) { 
+					h1d_keff_recoel_midp->Fill(ke_ff);
+				}
+				if (kMIDmu) { 
+					h1d_keff_recoel_midmu->Fill(ke_ff);
+				}
+				if (kMIDeg) { 
+					h1d_keff_recoel_mideg->Fill(ke_ff);
+				}
+				if (kMIDother) { 
+					h1d_keff_recoel_midother->Fill(ke_ff);					
+				}
+
 			}
 
 			if (IsRecoStop) { //reco stop
 				h1d_kebeam_stop->Fill(ke_beam_spec_MeV);
 				h1d_keff_stop->Fill(ke_ff);
+				h1d_keff0_stop->Fill(KE_ff_tpc);
 				h1d_keff2_stop->Fill(ke_beam_spec_MeV-Eloss_mc);
+
+				Fill1DHist(h1d_dkeff_stop, ke_beam_spec_MeV-Eloss_mc-ke_ff);
+				h2d_trklen_ke_stop->Fill(range_reco, (ke_ff-ke_calo_MeV));
+				h2d_trklen_ke2_stop->Fill(range_reco, (ke_beam_spec_MeV-Eloss_mc-ke_calo_MeV));
+				h2d_trklen_dke_stop->Fill(range_reco, (ke_beam_spec_MeV-Eloss_mc-ke_ff));
 
 				h1d_kecalo_stop->Fill(ke_calo_MeV);
 				h1d_kecalo_stop_bmrw->Fill(ke_calo_MeV,mom_rw_minchi2);
@@ -676,7 +873,18 @@ void ProtonKE::Loop() {
 
 		h1d_keff->Write();
 		h1d_keff2->Write();
+		h1d_keff0->Write();
+		h1d_keff_inel->Write();
+		h1d_keff_el->Write();
+		h1d_keff_midcosmic->Write();
+		h1d_keff_midpi->Write();
+		h1d_keff_midp->Write();
+		h1d_keff_midmu->Write();
+		h1d_keff_mideg->Write();
+		h1d_keff_midother->Write();
+
 		h1d_keff_stop->Write();
+		h1d_keff0_stop->Write();
 		h1d_keff2_stop->Write();
 
 		kebeam_fit->Write();
@@ -692,18 +900,52 @@ void ProtonKE::Loop() {
 		h1d_kecalo->Write();
 		h1d_kecalo_stop->Write();
 		h1d_kecalo_stop_bmrw->Write();
+
 		h1d_kecalo_recoinel->Write();
+
 		h1d_keff_recoinel->Write();
+		h1d_keff_recoinel_inel->Write();
+		h1d_keff_recoinel_el->Write();
+		h1d_keff_recoinel_midcosmic->Write();
+		h1d_keff_recoinel_midpi->Write();
+		h1d_keff_recoinel_midp->Write();
+		h1d_keff_recoinel_midmu->Write();
+		h1d_keff_recoinel_mideg->Write();
+		h1d_keff_recoinel_midother->Write();
+
+		h1d_keff0_recoinel->Write();
 		h1d_keff2_recoinel->Write();
+
+		h1d_dkeff_recoinel->Write();
+		h1d_dkeff_recoel->Write();
+		h1d_dkeff_stop->Write();
+		h1d_dkeff_all->Write();
+
+
+		h1d_keff_recoel->Write();
+		h1d_keff_recoel_inel->Write();
+		h1d_keff_recoel_el->Write();
+		h1d_keff_recoel_midcosmic->Write();
+		h1d_keff_recoel_midpi->Write();
+		h1d_keff_recoel_midp->Write();
+		h1d_keff_recoel_midmu->Write();
+		h1d_keff_recoel_mideg->Write();
+		h1d_keff_recoel_midother->Write();
+
+		h1d_keff0_recoel->Write();
+		h1d_keff2_recoel->Write();
+
+
+		//Edept (recoinel) after reweighting --------
 		h1d_kecalo_recoinel_bmrw->Write();
-		//h1d_kecalo_recoinel_bmrw_inel->Write();
-		//h1d_kecalo_recoinel_bmrw_el->Write();
-		//h1d_kecalo_recoinel_bmrw_midcosmic->Write();
-		//h1d_kecalo_recoinel_bmrw_midpi->Write();
-		//h1d_kecalo_recoinel_bmrw_midp->Write();
-		//h1d_kecalo_recoinel_bmrw_midmu->Write();
-		//h1d_kecalo_recoinel_bmrw_mideg->Write();
-		//h1d_kecalo_recoinel_bmrw_midother->Write();
+		h1d_kecalo_recoinel_bmrw_inel->Write();
+		h1d_kecalo_recoinel_bmrw_el->Write();
+		h1d_kecalo_recoinel_bmrw_midcosmic->Write();
+		h1d_kecalo_recoinel_bmrw_midpi->Write();
+		h1d_kecalo_recoinel_bmrw_midp->Write();
+		h1d_kecalo_recoinel_bmrw_midmu->Write();
+		h1d_kecalo_recoinel_bmrw_mideg->Write();
+		h1d_kecalo_recoinel_bmrw_midother->Write();
 
 		h1d_kecalo_recoel->Write();
 		h1d_kerange_stop->Write();
@@ -722,6 +964,26 @@ void ProtonKE::Loop() {
 		h1d_dKE_stop->Write();
 		h1d_dKE_recoinel->Write();
 		h1d_dKE_recoel->Write();
+
+
+		h2d_trklen_ke_recoinel->Write();
+		h2d_trklen_ke2_recoinel->Write();
+		h2d_trklen_dke_recoinel->Write();
+
+		h2d_trklen_ke_recoel->Write();
+		h2d_trklen_ke2_recoel->Write();
+		h2d_trklen_dke_recoel->Write();
+
+		h2d_trklen_ke_stop->Write();
+		h2d_trklen_ke2_stop->Write();
+		h2d_trklen_dke_stop->Write();
+
+		h2d_trklen_ke_all->Write();
+		h2d_trklen_ke2_all->Write();
+		h2d_trklen_dke_all->Write();
+
+
+
 
 	fout->Close();
 
