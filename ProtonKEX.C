@@ -777,7 +777,7 @@ void ProtonKE::Loop() {
 				h1d_keff0_recoel->Fill(KE_ff_tpc);
 				h1d_keff2_recoel->Fill(ke_beam_spec_MeV-Eloss_mc);
 
-				Fill1DHist(h1d_dkeff_reconel, ke_beam_spec_MeV-Eloss_mc-ke_ff);
+				Fill1DHist(h1d_dkeff_recoel, ke_beam_spec_MeV-Eloss_mc-ke_ff);
 				h2d_trklen_ke_recoel->Fill(range_reco, (ke_ff-ke_calo_MeV));
 				h2d_trklen_ke2_recoel->Fill(range_reco, (ke_beam_spec_MeV-Eloss_mc-ke_calo_MeV));
 				h2d_trklen_dke_recoel->Fill(range_reco, (ke_beam_spec_MeV-Eloss_mc-ke_ff));
