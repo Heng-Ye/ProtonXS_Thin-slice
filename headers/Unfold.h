@@ -99,13 +99,21 @@ void Unfold::SaveHistograms(){
   pur_Inc->Divide(pur_den_Inc);
   pur_Inc->Write("pur_Inc");
 
-  TH2D *hint = (TH2D*)response_SliceID_Int.Hresponse();
-  hint->SetTitle("Proton Inelastic Scatterings;Reco Slice ID;True Slice ID");
-  hint->Write("response_SliceID_Int");
+  //TH2D *hint = (TH2D*)response_SliceID_Int.Hresponse();
+  //hint->SetTitle("Proton Inelastic Scatterings;Reco Slice ID;True Slice ID");
+  //hint->Write("response_SliceID_Int");
 
-  TH2D *hinc = (TH2D*)response_SliceID_Inc.Hresponse();
-  hinc->SetTitle("All Protons; Reco Slice ID; True Slice ID");
-  hinc->Write("response_SliceID_Inc");
+  //TH2D *hinc = (TH2D*)response_SliceID_Inc.Hresponse();
+  //hinc->SetTitle("All Protons; Reco Slice ID; True Slice ID");
+  //hinc->Write("response_SliceID_Inc");
+
+  response_SliceID_Int.SetName("response_SliceID_Int");
+  response_SliceID_Int.Write();
+
+  response_SliceID_Inc.SetName("response_SliceID_Inc");
+  response_SliceID_Inc.Write();
+	
+
 }
 
 //#endif
