@@ -143,6 +143,7 @@ void ProtonThinSliceData::Loop() {
 	//SetOutputFileName(Form("prod4a_thinslice_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4a_thinslice_dx%dcm_%dslcs_nofixtruelen.root", name_thinslicewidth, nthinslices)); //output file name
 	SetOutputFileName(Form("prod4areco2_data_thinslice_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_data_thinslice_dx%dcm_%dslcs_nobmrw.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4a_thinslice_dx%dcm_%dslcs_1stHitKEff.root", name_thinslicewidth, nthinslices)); //output file name
 
 	//book histograms --//
@@ -841,27 +842,27 @@ void ProtonThinSliceData::Loop() {
 		if (kinel) { //pure inel
 			n_inel++;
 			Fill1DHist(trklen_true_inel_NoCut, range_true);
-			Fill1DHist(trklen_reco_inel_NoCut, range_reco);
+			Fill1DWHist(trklen_reco_inel_NoCut, range_reco, mom_rw_minchi2);
 			Fill1DHist(dtrklen_inel_NoCut, range_reco-range_true);
 			if (IsPandoraSlice) { //pandora
 				n_inel_pan++;
 				Fill1DHist(trklen_true_inel_PanS, range_true);
-				Fill1DHist(trklen_reco_inel_PanS, range_reco);
+				Fill1DWHist(trklen_reco_inel_PanS, range_reco, mom_rw_minchi2);
 				Fill1DHist(dtrklen_inel_PanS,range_reco-range_true);
 				if (IsCaloSize) { //calosz
 					n_inel_calsz++;
 					Fill1DHist(trklen_true_inel_CaloSz, range_true);
-					Fill1DHist(trklen_reco_inel_CaloSz, range_reco);
+					Fill1DWHist(trklen_reco_inel_CaloSz, range_reco, mom_rw_minchi2);
 					Fill1DHist(dtrklen_inel_CaloSz, range_reco-range_true);
 					if (IsBQ) { //bq
 						n_inel_bq++;
 						Fill1DHist(trklen_true_inel_BQ, range_true);
-						Fill1DHist(trklen_reco_inel_BQ, range_reco);
+						Fill1DWHist(trklen_reco_inel_BQ, range_reco, mom_rw_minchi2);
 						Fill1DHist(dtrklen_inel_BQ, range_reco-range_true);
 						if (IsRecoInEL) { //reco inel
 							n_inel_recoinel++;
 							Fill1DHist(trklen_true_inel_RecoInel, range_true);
-							Fill1DHist(trklen_reco_inel_RecoInel, range_reco);
+							Fill1DWHist(trklen_reco_inel_RecoInel, range_reco, mom_rw_minchi2);
 							Fill1DHist(dtrklen_inel_RecoInel, range_reco-range_true);
 						} //reco inel
 					} //bq
@@ -873,27 +874,27 @@ void ProtonThinSliceData::Loop() {
 		if (kel) { //pure el
 			n_el++;
 			Fill1DHist(trklen_true_el_NoCut, range_true);
-			Fill1DHist(trklen_reco_el_NoCut, range_reco);
+			Fill1DWHist(trklen_reco_el_NoCut, range_reco, mom_rw_minchi2);
 			Fill1DHist(dtrklen_el_NoCut, range_reco-range_true);
 			if (IsPandoraSlice) { //pandora
 				n_el_pan++;
 				Fill1DHist(trklen_true_el_PanS, range_true);
-				Fill1DHist(trklen_reco_el_PanS, range_reco);
+				Fill1DWHist(trklen_reco_el_PanS, range_reco, mom_rw_minchi2);
 				Fill1DHist(dtrklen_el_PanS, range_reco-range_true);
 				if (IsCaloSize) { //calosz
 					n_el_calsz++;
 					Fill1DHist(trklen_true_el_CaloSz, range_true);
-					Fill1DHist(trklen_reco_el_CaloSz, range_reco);
+					Fill1DWHist(trklen_reco_el_CaloSz, range_reco, mom_rw_minchi2);
 					Fill1DHist(dtrklen_el_CaloSz, range_reco-range_true);
 					if (IsBQ) { //bq
 						n_el_bq++;
 						Fill1DHist(trklen_true_el_BQ, range_true);
-						Fill1DHist(trklen_reco_el_BQ, range_reco);
+						Fill1DWHist(trklen_reco_el_BQ, range_reco, mom_rw_minchi2);
 						Fill1DHist(dtrklen_el_BQ, range_reco-range_true);
 						if (IsRecoInEL) { //reco inel
 							n_el_recoinel++;
 							Fill1DHist(trklen_true_el_RecoInel, range_true);
-							Fill1DHist(trklen_reco_el_RecoInel, range_reco);
+							Fill1DWHist(trklen_reco_el_RecoInel, range_reco, mom_rw_minchi2);
 							Fill1DHist(dtrklen_el_RecoInel, range_reco-range_true);
 						} //reco inel
 					} //bq
@@ -905,27 +906,27 @@ void ProtonThinSliceData::Loop() {
 		if (kMIDcosmic) { //mid:cosmic
 			n_midcosmic++;
 			Fill1DHist(trklen_true_midcosmic_NoCut, range_true);
-			Fill1DHist(trklen_reco_midcosmic_NoCut, range_reco);
+			Fill1DWHist(trklen_reco_midcosmic_NoCut, range_reco, mom_rw_minchi2);
 			Fill1DHist(dtrklen_midcosmic_NoCut, range_reco-range_true);
 			if (IsPandoraSlice) { //pandora
 				n_midcosmic_pan++;
 				Fill1DHist(trklen_true_midcosmic_PanS, range_true);
-				Fill1DHist(trklen_reco_midcosmic_PanS, range_reco);
+				Fill1DWHist(trklen_reco_midcosmic_PanS, range_reco, mom_rw_minchi2);
 				Fill1DHist(dtrklen_midcosmic_PanS, range_reco-range_true);
 				if (IsCaloSize) { //calosz
 					n_midcosmic_calsz++;
 					Fill1DHist(trklen_true_midcosmic_CaloSz, range_true);
-					Fill1DHist(trklen_reco_midcosmic_CaloSz, range_reco);
+					Fill1DWHist(trklen_reco_midcosmic_CaloSz, range_reco, mom_rw_minchi2);
 					Fill1DHist(dtrklen_midcosmic_CaloSz, range_reco-range_true);
 					if (IsBQ) { //bq
 						n_midcosmic_bq++;
 						Fill1DHist(trklen_true_midcosmic_BQ, range_true);
-						Fill1DHist(trklen_reco_midcosmic_BQ, range_reco);
+						Fill1DWHist(trklen_reco_midcosmic_BQ, range_reco, mom_rw_minchi2);
 						Fill1DHist(dtrklen_midcosmic_BQ, range_reco-range_true);
 						if (IsRecoInEL) { //reco inel
 							n_midcosmic_recoinel++;
 							Fill1DHist(trklen_true_midcosmic_RecoInel, range_true);
-							Fill1DHist(trklen_reco_midcosmic_RecoInel, range_reco);
+							Fill1DWHist(trklen_reco_midcosmic_RecoInel, range_reco, mom_rw_minchi2);
 							Fill1DHist(dtrklen_midcosmic_RecoInel, range_reco-range_true);
 						} //reco inel
 					} //bq
@@ -937,27 +938,27 @@ void ProtonThinSliceData::Loop() {
 		if (kMIDpi) { //mid:pi
 			n_midpi++;
 			Fill1DHist(trklen_true_midpi_NoCut, range_true);
-			Fill1DHist(trklen_reco_midpi_NoCut, range_reco);
+			Fill1DWHist(trklen_reco_midpi_NoCut, range_reco, mom_rw_minchi2);
 			Fill1DHist(dtrklen_midpi_NoCut, range_reco-range_true);
 			if (IsPandoraSlice) { //pandora
 				n_midpi_pan++;
 				Fill1DHist(trklen_true_midpi_PanS, range_true);
-				Fill1DHist(trklen_reco_midpi_PanS, range_reco);
+				Fill1DWHist(trklen_reco_midpi_PanS, range_reco, mom_rw_minchi2);
 				Fill1DHist(dtrklen_midpi_PanS, range_reco-range_true);
 				if (IsCaloSize) { //calosz
 					n_midpi_calsz++;
 					Fill1DHist(trklen_true_midpi_CaloSz, range_true);
-					Fill1DHist(trklen_reco_midpi_CaloSz, range_reco);
+					Fill1DWHist(trklen_reco_midpi_CaloSz, range_reco, mom_rw_minchi2);
 					Fill1DHist(dtrklen_midpi_CaloSz, range_reco-range_true);
 					if (IsBQ) { //bq
 						n_midpi_bq++;
 						Fill1DHist(trklen_true_midpi_BQ, range_true);
-						Fill1DHist(trklen_reco_midpi_BQ, range_reco);
+						Fill1DWHist(trklen_reco_midpi_BQ, range_reco, mom_rw_minchi2);
 						Fill1DHist(dtrklen_midpi_BQ, range_reco-range_true);
 						if (IsRecoInEL) { //reco inel
 							n_midpi_recoinel++;
 							Fill1DHist(trklen_true_midpi_RecoInel, range_true);
-							Fill1DHist(trklen_reco_midpi_RecoInel, range_reco);
+							Fill1DWHist(trklen_reco_midpi_RecoInel, range_reco, mom_rw_minchi2);
 							Fill1DHist(dtrklen_midpi_RecoInel, range_reco-range_true);
 						} //reco inel
 					} //bq
@@ -969,27 +970,27 @@ void ProtonThinSliceData::Loop() {
 		if (kMIDp) { //mid:p
 			n_midp++;
 			Fill1DHist(trklen_true_midp_NoCut, range_true);
-			Fill1DHist(trklen_reco_midp_NoCut, range_reco);
+			Fill1DWHist(trklen_reco_midp_NoCut, range_reco, mom_rw_minchi2);
 			Fill1DHist(dtrklen_midp_NoCut, range_reco-range_true);
 			if (IsPandoraSlice) { //pandora
 				n_midp_pan++;
 				Fill1DHist(trklen_true_midp_PanS, range_true);
-				Fill1DHist(trklen_reco_midp_PanS, range_reco);
+				Fill1DWHist(trklen_reco_midp_PanS, range_reco, mom_rw_minchi2);
 				Fill1DHist(dtrklen_midp_PanS, range_reco-range_true);
 				if (IsCaloSize) { //calosz
 					n_midp_calsz++;
 					Fill1DHist(trklen_true_midp_CaloSz, range_true);
-					Fill1DHist(trklen_reco_midp_CaloSz, range_reco);
+					Fill1DWHist(trklen_reco_midp_CaloSz, range_reco, mom_rw_minchi2);
 					Fill1DHist(dtrklen_midp_CaloSz, range_reco-range_true);
 					if (IsBQ) { //bq
 						n_midp_bq++;
 						Fill1DHist(trklen_true_midp_BQ, range_true);
-						Fill1DHist(trklen_reco_midp_BQ, range_reco);
+						Fill1DWHist(trklen_reco_midp_BQ, range_reco, mom_rw_minchi2);
 						Fill1DHist(dtrklen_midp_BQ, range_reco-range_true);
 						if (IsRecoInEL) { //reco inel
 							n_midp_recoinel++;
 							Fill1DHist(trklen_true_midp_RecoInel, range_true);
-							Fill1DHist(trklen_reco_midp_RecoInel, range_reco);
+							Fill1DWHist(trklen_reco_midp_RecoInel, range_reco, mom_rw_minchi2);
 							Fill1DHist(dtrklen_midp_RecoInel, range_reco-range_true);
 						} //reco inel
 					} //bq
@@ -1001,27 +1002,27 @@ void ProtonThinSliceData::Loop() {
 		if (kMIDmu) { //mid:mu
 			n_midmu++;
 			Fill1DHist(trklen_true_midmu_NoCut, range_true);
-			Fill1DHist(trklen_reco_midmu_NoCut, range_reco);
+			Fill1DWHist(trklen_reco_midmu_NoCut, range_reco, mom_rw_minchi2);
 			Fill1DHist(dtrklen_midmu_NoCut, range_reco-range_true);
 			if (IsPandoraSlice) { //pandora
 				n_midmu_pan++;
 				Fill1DHist(trklen_true_midmu_PanS, range_true);
-				Fill1DHist(trklen_reco_midmu_PanS, range_reco);
+				Fill1DWHist(trklen_reco_midmu_PanS, range_reco, mom_rw_minchi2);
 				Fill1DHist(dtrklen_midmu_PanS, range_reco-range_true);
 				if (IsCaloSize) { //calosz
 					n_midmu_calsz++;
 					Fill1DHist(trklen_true_midmu_CaloSz, range_true);
-					Fill1DHist(trklen_reco_midmu_CaloSz, range_reco);
+					Fill1DWHist(trklen_reco_midmu_CaloSz, range_reco, mom_rw_minchi2);
 					Fill1DHist(dtrklen_midmu_CaloSz, range_reco-range_true);
 					if (IsBQ) { //bq
 						n_midmu_bq++;
 						Fill1DHist(trklen_true_midmu_BQ, range_true);
-						Fill1DHist(trklen_reco_midmu_BQ, range_reco);
+						Fill1DWHist(trklen_reco_midmu_BQ, range_reco, mom_rw_minchi2);
 						Fill1DHist(dtrklen_midmu_BQ, range_reco-range_true);
 						if (IsRecoInEL) { //reco inel
 							n_midmu_recoinel++;
 							Fill1DHist(trklen_true_midmu_RecoInel, range_true);
-							Fill1DHist(trklen_reco_midmu_RecoInel, range_reco);
+							Fill1DWHist(trklen_reco_midmu_RecoInel, range_reco, mom_rw_minchi2);
 							Fill1DHist(dtrklen_midmu_RecoInel, range_reco-range_true);
 						} //reco inel
 					} //bq
@@ -1033,27 +1034,27 @@ void ProtonThinSliceData::Loop() {
 		if (kMIDeg) { //mid:eg
 			n_mideg++;
 			Fill1DHist(trklen_true_mideg_NoCut, range_true);
-			Fill1DHist(trklen_reco_mideg_NoCut, range_reco);
+			Fill1DWHist(trklen_reco_mideg_NoCut, range_reco, mom_rw_minchi2);
 			Fill1DHist(dtrklen_mideg_NoCut, range_reco-range_true);
 			if (IsPandoraSlice) { //pandora
 				n_mideg_pan++;
 				Fill1DHist(trklen_true_mideg_PanS, range_true);
-				Fill1DHist(trklen_reco_mideg_PanS, range_reco);
+				Fill1DWHist(trklen_reco_mideg_PanS, range_reco, mom_rw_minchi2);
 				Fill1DHist(dtrklen_mideg_PanS, range_reco-range_true);
 				if (IsCaloSize) { //calosz
 					n_mideg_calsz++;
 					Fill1DHist(trklen_true_mideg_CaloSz, range_true);
-					Fill1DHist(trklen_reco_mideg_CaloSz, range_reco);
+					Fill1DWHist(trklen_reco_mideg_CaloSz, range_reco, mom_rw_minchi2);
 					Fill1DHist(dtrklen_mideg_CaloSz, range_reco-range_true);
 					if (IsBQ) { //bq
 						n_mideg_bq++;
 						Fill1DHist(trklen_true_mideg_BQ, range_true);
-						Fill1DHist(trklen_reco_mideg_BQ, range_reco);
+						Fill1DWHist(trklen_reco_mideg_BQ, range_reco, mom_rw_minchi2);
 						Fill1DHist(dtrklen_mideg_BQ, range_reco-range_true);
 						if (IsRecoInEL) { //reco inel
 							n_mideg_recoinel++;
 							Fill1DHist(trklen_true_mideg_RecoInel, range_true);
-							Fill1DHist(trklen_reco_mideg_RecoInel, range_reco);
+							Fill1DWHist(trklen_reco_mideg_RecoInel, range_reco, mom_rw_minchi2);
 							Fill1DHist(dtrklen_mideg_RecoInel, range_reco-range_true);
 						} //reco inel
 					} //bq
@@ -1065,27 +1066,27 @@ void ProtonThinSliceData::Loop() {
 		if (kMIDother) { //mid:other
 			n_midother++;
 			Fill1DHist(trklen_true_midother_NoCut, range_true);
-			Fill1DHist(trklen_reco_midother_NoCut, range_reco);
+			Fill1DWHist(trklen_reco_midother_NoCut, range_reco, mom_rw_minchi2);
 			Fill1DHist(dtrklen_midother_NoCut, range_reco-range_true);
 			if (IsPandoraSlice) { //pandora
 				n_midother_pan++;
 				Fill1DHist(trklen_true_midother_PanS, range_true);
-				Fill1DHist(trklen_reco_midother_PanS, range_reco);
+				Fill1DWHist(trklen_reco_midother_PanS, range_reco, mom_rw_minchi2);
 				Fill1DHist(dtrklen_midother_PanS, range_reco-range_true);
 				if (IsCaloSize) { //calosz
 					n_midother_calsz++;
 					Fill1DHist(trklen_true_midother_CaloSz, range_true);
-					Fill1DHist(trklen_reco_midother_CaloSz, range_reco);
+					Fill1DWHist(trklen_reco_midother_CaloSz, range_reco, mom_rw_minchi2);
 					Fill1DHist(dtrklen_midother_CaloSz, range_reco-range_true);
 					if (IsBQ) { //bq
 						n_midother_bq++;
 						Fill1DHist(trklen_true_midother_BQ, range_true);
-						Fill1DHist(trklen_reco_midother_BQ, range_reco);
+						Fill1DWHist(trklen_reco_midother_BQ, range_reco, mom_rw_minchi2);
 						Fill1DHist(dtrklen_midother_BQ, range_reco-range_true);
 						if (IsRecoInEL) { //reco inel
 							n_midother_recoinel++;
 							Fill1DHist(trklen_true_midother_RecoInel, range_true);
-							Fill1DHist(trklen_reco_midother_RecoInel, range_reco);
+							Fill1DWHist(trklen_reco_midother_RecoInel, range_reco, mom_rw_minchi2);
 							Fill1DHist(dtrklen_midother_RecoInel, range_reco-range_true);
 						} //reco inel
 					} //bq
@@ -1335,7 +1336,7 @@ void ProtonThinSliceData::Loop() {
 
 		//save results -------//
 		uf.SaveHistograms();
-		CalcXS(uf);
+		//CalcXS(uf); //do not need this func
 		SaveHistograms();
 
 		//counting -- summary -----------------------------------------------------//
