@@ -26,10 +26,10 @@ TH1D *reco_AngCorr;
 TH1D *true_AngCorr;
 
 TH1D *h_truesliceid_all;
-TH1D *h_truesliceid_uf;
+//TH1D *h_truesliceid_uf;
 TH1D *h_truesliceid_cuts;
 TH1D *h_truesliceid_inelastic_all;
-TH1D *h_truesliceid_inelastic_uf;
+//TH1D *h_truesliceid_inelastic_uf;
 TH1D *h_truesliceid_inelastic_cuts;
 TH1D *h_recosliceid_allevts_cuts;
 TH1D *h_recosliceid_allevts_cuts_inel;
@@ -321,6 +321,10 @@ TH1D *ntrklen_midother_BQ;
 //trklen vs ke
 TH2D *trklen_ke_true_inel;
 TH2D *trklen_ke_true_el;
+
+//truth inc/int
+TH1D *h_true_incidents;
+TH1D *h_true_interactions;
 
 void BookHistograms() { //BookHistograms
 	outputFile = TFile::Open(fOutputFileName.c_str(), "recreate"); //open output file
@@ -681,6 +685,12 @@ void BookHistograms() { //BookHistograms
 	trklen_ke_true_inel=new TH2D("trklen_ke_true_inel","",n_ntrklen, st_ntrklen, ed_ntrklen, dke, ke_st, ke_end);
 	trklen_ke_true_el=new TH2D("trklen_ke_true_el","",n_ntrklen, st_ntrklen, ed_ntrklen, dke, ke_st, ke_end);
 
+	//truth inc/int
+	h_true_incidents=new TH1D("h_true_incidents","true_incidents", nthinslices, 0, nthinslices-1);
+	h_true_interactions=new TH1D("h_true_interactions","true_interactions", nthinslices, 0, nthinslices-1);
+	h_true_incidents->Sumw2();
+	h_true_interactions->Sumw2();
+	
 
 } //BookHistograms
 
@@ -688,8 +698,8 @@ void BookHistograms() { //BookHistograms
 void SaveHistograms() { //SaveHistograms
 	outputFile->cd();
 	outputFile->Write();
-	h_truesliceid_uf->Write("h_truesliceid_uf");
-	h_truesliceid_inelastic_uf->Write("h_truesliceid_inelastic_uf");
+	//h_truesliceid_uf->Write("h_truesliceid_uf");
+	//h_truesliceid_inelastic_uf->Write("h_truesliceid_inelastic_uf");
 
 
 } //SaveHistograms
@@ -761,8 +771,8 @@ void CalcXS(const Unfold & uf) { //CalcXS
 	//  RooUnfoldSvd     unfold_Inc (&uf.response_SliceID_Inc, uf.pur_num_Inc, 20);   // OR
 	//  RooUnfoldSvd     unfold_Int (&uf.response_SliceID_Int, uf.pur_num_Int, 20);   // OR
 
-	h_truesliceid_uf = (TH1D*) unfold_Inc.Hreco();
-	h_truesliceid_inelastic_uf = (TH1D*) unfold_Int.Hreco();
+	//h_truesliceid_uf = (TH1D*) unfold_Inc.Hreco();
+	//h_truesliceid_inelastic_uf = (TH1D*) unfold_Int.Hreco();
 
 } //CalcXS
 

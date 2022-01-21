@@ -142,7 +142,8 @@ void ProtonThinSliceData::Loop() {
 	//ThinSlice config. ---------------------------------------------------------------------------------------------------//
 	//SetOutputFileName(Form("prod4a_thinslice_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4a_thinslice_dx%dcm_%dslcs_nofixtruelen.root", name_thinslicewidth, nthinslices)); //output file name
-	SetOutputFileName(Form("prod4areco2_data_thinslice_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_data_thinslice_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
+	SetOutputFileName(Form("prod4areco2_mc_validate_thinslice_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_data_thinslice_dx%dcm_%dslcs_nobmrw.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4a_thinslice_dx%dcm_%dslcs_1stHitKEff.root", name_thinslicewidth, nthinslices)); //output file name
 
@@ -162,6 +163,7 @@ void ProtonThinSliceData::Loop() {
 
 		isTestSample = true;
 		if (ientry%2 == 0) isTestSample = false; //Divide MC sample by 2 parts: test+ufold
+		if (isTestSample) continue; //only Not test sample
 
 		true_sliceID = -1;
 		reco_sliceID = -1;
@@ -1333,6 +1335,12 @@ void ProtonThinSliceData::Loop() {
 
 
 		} //main entry loop
+
+		//save true inc & int arrays to histograms -------------------------------------//
+		for (int iii = 0; iii<nthinslices; ++iii){
+			h_true_incidents->SetBinContent(iii+1, true_incidents[iii]);
+			h_true_interactions->SetBinContent(iii+1, true_interactions[iii]);
+		}
 
 		//save results -------//
 		uf.SaveHistograms();
