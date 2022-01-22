@@ -341,24 +341,23 @@ void make_dataXS() {
 	double err_sliceid[nthinslices] = {0};
 
         for (int i = 0; i<nthinslices; ++i) {
-		sliceid[i]=i;
+		sliceid[i]=i+.5;
+
 		//int[inelastic]
-		reco_int[i]=data_int_uf->GetBinContent(i+1);
-		err_reco_int[i]=data_int_uf->GetBinError(i+1);
+		reco_int[i]=data_int_uf->GetBinContent(i+2);
+		err_reco_int[i]=data_int_uf->GetBinError(i+2);
 
 		//inc[all]
     		for (int j=i; j<=nthinslices; ++j){
-      			reco_inc[i] += data_inc_uf->GetBinContent(j+1);
-      			err_reco_inc[i] += pow(data_inc_uf->GetBinError(j+1),2);
+      			reco_inc[i] += data_inc_uf->GetBinContent(j+2);
+      			err_reco_inc[i] += pow(data_inc_uf->GetBinError(j+2),2);
     		}
 		err_reco_inc[i]=sqrt(err_reco_inc[i]);
 	}
 
-		//for (int ij = 0; ij<=true_sliceID; ++ij){
-			//if (ij<nthinslices) ++true_incidents[ij];
-		//}
-
-
+	//for (int ij = 0; ij<=true_sliceID; ++ij){
+		//if (ij<nthinslices) ++true_incidents[ij];
+	//}
 
 	double reco_xs[nthinslices] = {0};
 	double err_reco_xs[nthinslices] = {0};
@@ -377,7 +376,7 @@ void make_dataXS() {
   	gr_truexs->SetNameTitle("gr_truexs", "; Energy (MeV); Cross-section [mb]");
   	gr_recoxs->SetNameTitle("gr_recoxs", "; Energy (MeV); Cross-section [mb]");
 
-	//All protons ----------------------------------------//
+	//All protons ---------------------------------------------------------------------//
 	//[1]data with mc components
 	TCanvas *c_inc=new TCanvas(Form("c_inc"),"",900, 600);
 	gStyle->SetTitleX(0.5); 
@@ -385,7 +384,8 @@ void make_dataXS() {
 
 	c_inc->Divide(1,1);
 	c_inc->cd(1);
-	TH2D *f2d_inc=new TH2D("f2d_inc",Form("%s","All Protons"),21,0,21,80,0,8000);
+	float ymax_evt=6000;
+	TH2D *f2d_inc=new TH2D("f2d_inc",Form("%s","All Protons"),21,0,21,80,0,ymax_evt);
 	f2d_inc->GetXaxis()->SetTitle("Reco SliceID (End point)");
 	f2d_inc->Draw();
 	hs_inc->Draw("hist same");
@@ -407,7 +407,7 @@ void make_dataXS() {
 
 	leg_inc->SetNColumns(3);
 	leg_inc->Draw();
-	//c_inc->Print(Form("./plot_dataXS/data_recosliceid_inc.eps"));
+	c_inc->Print(Form("./plot_dataXS/data_recosliceid_inc.eps"));
 
 	//[2]bkg subtraction
 	TCanvas *c_inc2=new TCanvas(Form("c_inc2"),"",900, 600);
@@ -416,7 +416,7 @@ void make_dataXS() {
 
 	c_inc2->Divide(1,1);
 	c_inc2->cd(1);
-	TH2D *f2d_inc2=new TH2D("f2d_inc2",Form("%s","INC"),21,0,21,80,0,8000);
+	TH2D *f2d_inc2=new TH2D("f2d_inc2",Form("%s","INC"),21,0,21,80,0,ymax_evt);
 	f2d_inc2->SetTitle("All protons; Reco SliceID (End point); Events");
 	f2d_inc2->Draw();
 
@@ -428,6 +428,7 @@ void make_dataXS() {
 	data_inc->Draw("ep same");
 	data_inc_bkgfree->SetMarkerColor(7);
 	data_inc_bkgfree->SetLineColor(7);
+	data_inc_bkgfree->SetMarkerStyle(24);
 	data_inc_bkgfree->Draw("ep same");
 
 	TLegend *leg_inc2 = new TLegend(0.2,0.6,0.8,0.9);
@@ -438,6 +439,8 @@ void make_dataXS() {
 	leg_inc2->AddEntry(mc_inc_el, "Selected MC Truth [El.]","f");
 	//leg_inc2->SetNColumns(3);
 	leg_inc2->Draw();
+	c_inc2->Print(Form("./plot_dataXS/data_recosliceid_bkgsub_inc.eps"));
+	
 	
 	//[3]data unfolding (true sliceID)
 	TCanvas *c_inc3=new TCanvas(Form("c_inc3"),"",900, 600);
@@ -449,8 +452,6 @@ void make_dataXS() {
 	TH2D *f2d_inc3=new TH2D("f2d_inc3",Form("%s","All protons"),22,-1,21,100,0,10000);
 	f2d_inc3->SetTitle("All protons; True SliceID (End point); Events");
 	f2d_inc3->Draw();
-	data_inc_bkgfree->SetLineColor(7);
-	data_inc_bkgfree->SetMarkerColor(7);
 	data_inc_bkgfree->Draw("ep same");
 
 	data_inc_uf->SetLineColor(4);
@@ -471,6 +472,8 @@ void make_dataXS() {
 	leg_inc3->AddEntry(data_inc_uf, "Unfolding","ep");
 	leg_inc3->AddEntry(mc_truesliceID_all,"True Protons","l");
 	leg_inc3->Draw();
+	c_inc3->Print(Form("./plot_dataXS/data_recosliceid_uf_inc.eps"));
+
 
 	//[4] eff & purity
 	TCanvas *c_inc4=new TCanvas(Form("c_inc4"),"",900, 600);
@@ -486,6 +489,8 @@ void make_dataXS() {
 	pur_inc->SetMarkerColor(2);
 	pur_inc->SetLineColor(2);
 	pur_inc->Draw("same");
+	c_inc4->Print(Form("./plot_dataXS/data_eff_pur_inc.eps"));
+
 
 	//[5]Ninc distribution
 	TCanvas *c_inc5=new TCanvas(Form("c_inc5"),"",900, 600);
@@ -494,12 +499,14 @@ void make_dataXS() {
 
 	c_inc5->Divide(1,1);
 	c_inc5->cd(1);
-	TH2D *f2d_inc5=new TH2D("f2d_inc5",Form("%s",""),22,-1,21,80,0,8000);
+	TH2D *f2d_inc5=new TH2D("f2d_inc5",Form("%s",""),22,-1,21,10,0,150000);
 	f2d_inc5->SetTitle("All protons; True SliceID; Events");
 	f2d_inc5->Draw();
 	mc_true_incidents->SetLineColor(2);
-	mc_true_incidents->Draw();
+	mc_true_incidents->Draw("same");
 	gr_reco_inc->Draw("ep same");
+	c_inc5->Print(Form("./plot_dataXS/incident_inc.eps"));
+
 	
 	//inelastic scattering protons ------------------------------------------------//
 	//[1]data with mc components
@@ -509,7 +516,7 @@ void make_dataXS() {
 
 	c_int->Divide(1,1);
 	c_int->cd(1);
-	TH2D *f2d_int=new TH2D("f2d_int",Form("%s","Proton Inelastic Scatterings"),21,0,21,80,0,8000);
+	TH2D *f2d_int=new TH2D("f2d_int",Form("%s","Proton Inelastic Scatterings"),21,0,21,80,0,ymax_evt);
 	f2d_int->GetXaxis()->SetTitle("Reco SliceID");
 	f2d_int->Draw();
 	hs_int->Draw("hist same");
@@ -532,7 +539,6 @@ void make_dataXS() {
 
 	leg_int->SetNColumns(3);
 	leg_int->Draw();
-
 	c_int->Print(Form("./plot_dataXS/fakedata_recosliceid_int.eps"));
 
 
@@ -543,14 +549,15 @@ void make_dataXS() {
 
 	c_int2->Divide(1,1);
 	c_int2->cd(1);
-	TH2D *f2d_int2=new TH2D("f2d_int2",Form("%s","INT"),21,0,21,80,0,8000);
+	TH2D *f2d_int2=new TH2D("f2d_int2",Form("%s","INT"),21,0,21,80,0,ymax_evt);
 	f2d_int2->SetTitle("Proton Inelasic Scatterings; Reco SliceID; Events");
 	f2d_int2->Draw();
 	mc_int_inel->SetLineColor(2); //mc 
 	mc_int_inel->Draw("hist same");
 	data_int->Draw("ep same");
-	data_int_bkgfree->SetMarkerColor(7);
-	data_int_bkgfree->SetLineColor(7);
+	data_int_bkgfree->SetMarkerColor(3);
+	data_int_bkgfree->SetLineColor(3);
+	data_int_bkgfree->SetMarkerStyle(24);
 	data_int_bkgfree->Draw("ep same");
 
 	TLegend *leg_int2 = new TLegend(0.2,0.6,0.8,0.9);
@@ -560,7 +567,7 @@ void make_dataXS() {
 	leg_int2->AddEntry(mc_int_inel, "Selected MC Truth","f");
 	leg_int2->Draw();
 
-	//c_int->Print(Form("./plot_dataXS/data_recosliceid_int.eps"));
+	c_int2->Print(Form("./plot_dataXS/data_recosliceid_bkgsub_int.eps"));
 
 
 	//[3]data unfolding (true sliceID)
@@ -573,8 +580,6 @@ void make_dataXS() {
 	TH2D *f2d_int3=new TH2D("f2d_int3",Form("%s","INT"),22,-1,21,100,0,10000);
 	f2d_int3->SetTitle("Proton Inelasic Scatterings; True SliceID; Events");
 	f2d_int3->Draw();
-	data_int_bkgfree->SetLineColor(7);
-	data_int_bkgfree->SetMarkerColor(7);
 	data_int_bkgfree->Draw("ep same");
 
 	data_int_uf->SetLineColor(4);
@@ -584,6 +589,8 @@ void make_dataXS() {
 
 	mc_truesliceID_inel->SetLineColor(2);
 	mc_truesliceID_inel->Draw("hist same");
+
+	//mc_true_interactions->Draw("hist same");
 
 	//TH1D* data_int_bkgfree_eff=(TH1D *)data_int_bkgfree->Clone();
 	//data_int_bkgfree_eff->Divide(eff_int);
@@ -598,6 +605,9 @@ void make_dataXS() {
 	//leg_int2->SetNColumns(3);
 	leg_int3->Draw();
 
+	c_int3->Print(Form("./plot_dataXS/data_recosliceid_uf_int.eps"));
+
+
 	//[4] eff & purity
 	TCanvas *c_int4=new TCanvas(Form("c_int4"),"",900, 600);
 	gStyle->SetTitleX(0.5); 
@@ -609,22 +619,25 @@ void make_dataXS() {
 	f2d_int4->SetTitle("Proton Inelasic Scatterings; Reco SliceID; Efficiency");
 	f2d_int4->Draw();
 	eff_int->Draw("same");
-
 	c_int4->Update();
 
-	//pur_int->SetStats(kFALSE);
+	pur_int->SetStats(kFALSE);
+  	Float_t rightmax_pur_int=1.2*pur_int->GetMaximum();
 	//Double_t min_pur_int=pur_int->GetMinimum();
-  	//Float_t rightmax_pur_int=1.2*pur_int->GetMaximum();
-  	//Float_t scale_pur_int=gPad->GetUymax()/rightmax_pur_int;
-  	//pur_int->Scale(scale_pur_int);
+  	Float_t scale_pur_int=gPad->GetUymax()/rightmax_pur_int;
+  	pur_int->Scale(scale_pur_int);
 	pur_int->SetMarkerColor(2);
 	pur_int->SetLineColor(2);
 	pur_int->Draw("same");
 
-  	//TGaxis *ax_pur_int = new TGaxis(gPad->GetUxmax(), gPad->GetUymin(),
-          //         gPad->GetUxmax(), gPad->GetUymax(),
-            //       0, 1.2, 510, "+LG");
-  	//ax_pur_int->Draw("Y+");
+  	TGaxis *ax_pur_int = new TGaxis(gPad->GetUxmax(), gPad->GetUymin(),
+                   gPad->GetUxmax(), gPad->GetUymax(),
+                   0, rightmax_pur_int, 510, "+L");
+	ax_pur_int->SetLineColor(kRed);
+   	ax_pur_int->SetLabelColor(kRed);
+  	ax_pur_int->Draw("");
+  	//
+	c_int4->Print(Form("./plot_dataXS/data_eff_pur_int.eps"));
 
 
 
@@ -663,20 +676,24 @@ void make_dataXS() {
         gr_truexs->SetLineWidth(2);
         gr_truexs->SetMarkerColor(3);
         gr_truexs->SetLineColor(3);
+        gr_truexs->SetMarkerStyle(21);
+        gr_truexs->SetMarkerSize(1.5);
         gr_truexs->Draw("p same");
 
         gr_recoxs->SetLineWidth(2);
         gr_recoxs->SetMarkerColor(1);
         gr_recoxs->SetLineColor(1);
+        gr_recoxs->SetMarkerStyle(20);
+        gr_recoxs->SetMarkerSize(1.5);
         gr_recoxs->Draw("p same");
 
-        TLegend *leg_xs = new TLegend(0.3,0.55,0.8,0.85);
+        TLegend *leg_xs = new TLegend(0.6,0.6,0.9,0.85);
         leg_xs->SetFillStyle(0);
         leg_xs->AddEntry(total_inel_KE, "Geant4", "l");
-        leg_xs->AddEntry(gr_truexs, "MC truth", "pe");
-        leg_xs->AddEntry(gr_recoxs, "MC reco", "pe");
+        leg_xs->AddEntry(gr_truexs, "MC Truth", "pe");
+        leg_xs->AddEntry(gr_recoxs, "MC Reco", "pe");
         leg_xs->Draw();
-	c_xs->Print(Form("./plot_dataXS/xs_fakedata.eps"));
+	c_xs->Print(Form("./plot_dataXS/xs_data.eps"));
 
 
 

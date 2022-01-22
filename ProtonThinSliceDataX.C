@@ -143,7 +143,13 @@ void ProtonThinSliceData::Loop() {
 	//SetOutputFileName(Form("prod4a_thinslice_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4a_thinslice_dx%dcm_%dslcs_nofixtruelen.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_data_thinslice_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
-	SetOutputFileName(Form("prod4areco2_mc_validate_thinslice_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_thinslice_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_thinslice_dx%dcm_%dslcs_nobmrw.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_thinslice_dx%dcm_%dslcs_bmrw.root", name_thinslicewidth, nthinslices)); //output file name
+	SetOutputFileName(Form("prod4areco2_mc_thinslice_dx%dcm_%dslcs_nobmrw.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_validate_thinslice_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_test_thinslice_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_all_thinslice_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_data_thinslice_dx%dcm_%dslcs_nobmrw.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4a_thinslice_dx%dcm_%dslcs_1stHitKEff.root", name_thinslicewidth, nthinslices)); //output file name
 
@@ -163,7 +169,8 @@ void ProtonThinSliceData::Loop() {
 
 		isTestSample = true;
 		if (ientry%2 == 0) isTestSample = false; //Divide MC sample by 2 parts: test+ufold
-		if (isTestSample) continue; //only Not test sample
+		//if (isTestSample) continue; //only validate sample
+		//if (!isTestSample) continue; //only test sample
 
 		true_sliceID = -1;
 		reco_sliceID = -1;
@@ -752,7 +759,7 @@ void ProtonThinSliceData::Loop() {
 		//double range_reco=-99; if (!primtrk_range->empty()) range_reco=primtrk_range->at(0); //reco primary trklen
 		double mom_rw_minchi2=1.; //weight for beam-momentum-reweight
 		if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) { //beam-mom (within 3-sigma)
-			mom_rw_minchi2=bmrw_func->Eval(mom_beam_spec*1000.); //bmrw, set weight if beam mom. within 3-sigma
+			//mom_rw_minchi2=bmrw_func->Eval(mom_beam_spec*1000.); //bmrw, set weight if beam mom. within 3-sigma
 		} //beam-mom (within 3-sigma)
 
 		double csda_val_spec=csda_range_vs_mom_sm->Eval(mom_beam_spec);
@@ -1153,33 +1160,32 @@ void ProtonThinSliceData::Loop() {
 			}
 		}
 
-		//INC histograms ------------------------------------------------------------//
-		for (int ij = 0; ij<=true_sliceID; ++ij){
-			if (ij<nthinslices) ++true_incidents[ij];
-		}
-
-		//if (isTestSample) { //if test sample 
+		if (isTestSample) { //if test sample 
 			h_truesliceid_all->Fill(true_sliceID);
-		//} //if test sample
-		//else { //if NOT test sample
+		} //if test sample
+		else { //if NOT test sample
 			uf.eff_den_Inc->Fill(true_sliceID);
-		//} //if NOT test sample
+			for (int ij = 0; ij<=true_sliceID; ++ij){
+				if (ij<nthinslices) ++true_incidents[ij];
+			}
+		} //if NOT test sample
 		if (PassCuts_INC&&IsBeamMatch) { //if passing all basic cuts
-			//if (isTestSample) { //if test sample
+			if (isTestSample) { //if test sample
 				h_recosliceid_cuts->Fill(reco_sliceID, mom_rw_minchi2); 
 				h_truesliceid_cuts->Fill(true_sliceID);
-			//} //if test sample
-			//else{ //if NOT test sample
+			} //if test sample
+			else{ //if NOT test sample
 				uf.eff_num_Inc->Fill(true_sliceID);
 				uf.pur_num_Inc->Fill(reco_sliceID, mom_rw_minchi2);
 				uf.response_SliceID_Inc.Fill(reco_sliceID, true_sliceID, mom_rw_minchi2);
-			//} //if NOT test sample
+			} //if NOT test sample
 		} //if passing all basic cuts
 		else { //if NOT passing all cuts
-			//if (!isTestSample){
+			if (!isTestSample){
 				uf.response_SliceID_Inc.Miss(true_sliceID);
+				//uf.response_SliceID_Inc.Miss(true_sliceID, mom_rw_minchi2);
 				//std::cout<<true_sliceID<<std::endl;
-			//}
+			}
 		} //if NOT passing all cuts
 
 		//INT histograms ------------------------------------------------------------//
@@ -1187,37 +1193,36 @@ void ProtonThinSliceData::Loop() {
 			n_test_recoinel++;
 			if (IsBeamMatch) n_kinel++;
 
-			//if (isTestSample){
+			if (isTestSample){
 				h_truesliceid_inelastic_all->Fill(true_sliceID);
-			//}
-			//else{ //NOT test sample for unfolding
+			}
+			else{ //NOT test sample for unfolding
 				uf.eff_den_Int->Fill(true_sliceID);
 				n_test_recoinel_sample++;
 				if (IsBeamMatch) n_kinel2++;
-			//} //NOT test sample for unfolding
-
-
+			} //NOT test sample for unfolding
 
 			if (PassCuts_INT&&IsBeamMatch) { //if pass reco inel cuts
-				//if (isTestSample){
+				if (isTestSample){
 					h_recosliceid_inelastic_cuts->Fill(reco_sliceID, mom_rw_minchi2);
 					h_truesliceid_inelastic_cuts->Fill(true_sliceID);
-				//}
-				//else{
+				}
+				else{
 					uf.eff_num_Int->Fill(true_sliceID);
 					uf.pur_num_Int->Fill(reco_sliceID, mom_rw_minchi2);
 					uf.response_SliceID_Int.Fill(reco_sliceID, true_sliceID, mom_rw_minchi2);
-				//}
+				}
 			} //if pass reco inel cuts
 			else{ //if NOT pass all basic cuts
-				//if (!isTestSample) { 
+				if (!isTestSample) { 
 					uf.response_SliceID_Int.Miss(true_sliceID);
-				//}
+					//uf.response_SliceID_Int.Miss(true_sliceID, mom_rw_minchi2);
+				}
 			} //if not pass all basic cuts
 		} //pure inel
 
 		if (PassCuts_INC) { //if pass all cuts
-			//if (isTestSample){ //if test sample
+			if (isTestSample){ //if test sample
 				h_recosliceid_allevts_cuts->Fill(reco_sliceID, mom_rw_minchi2);
 				if (kinel) h_recosliceid_allevts_cuts_inel->Fill(reco_sliceID, mom_rw_minchi2);
 				if (kel) h_recosliceid_allevts_cuts_el->Fill(reco_sliceID, mom_rw_minchi2);
@@ -1227,15 +1232,15 @@ void ProtonThinSliceData::Loop() {
 				if (kMIDmu) h_recosliceid_allevts_cuts_midmu->Fill(reco_sliceID, mom_rw_minchi2);
 				if (kMIDeg) h_recosliceid_allevts_cuts_mideg->Fill(reco_sliceID, mom_rw_minchi2);
 				if (kMIDother) h_recosliceid_allevts_cuts_midother->Fill(reco_sliceID, mom_rw_minchi2);				
-			//} //if test sample
-			//else { //if NOT test sample
+			} //if test sample
+			else { //if NOT test sample
 				uf.pur_den->Fill(reco_sliceID, mom_rw_minchi2);
 				uf.pur_den_Inc->Fill(reco_sliceID, mom_rw_minchi2);
-			//} //if NOT test sample
+			} //if NOT test sample
 		} //if pass all cuts
 
 		if (PassCuts_INT) { //if pass reco inel cut
-			//if (isTestSample){ //if test sample
+			if (isTestSample){ //if test sample
 				h_recosliceid_recoinelastic_cuts->Fill(reco_sliceID, mom_rw_minchi2);
 				if (kinel) h_recosliceid_recoinelastic_cuts_inel->Fill(reco_sliceID, mom_rw_minchi2);
 				if (kel) h_recosliceid_recoinelastic_cuts_el->Fill(reco_sliceID, mom_rw_minchi2);
@@ -1245,17 +1250,20 @@ void ProtonThinSliceData::Loop() {
 				if (kMIDmu) h_recosliceid_recoinelastic_cuts_midmu->Fill(reco_sliceID, mom_rw_minchi2);
 				if (kMIDeg) h_recosliceid_recoinelastic_cuts_mideg->Fill(reco_sliceID, mom_rw_minchi2);
 				if (kMIDother) h_recosliceid_recoinelastic_cuts_midother->Fill(reco_sliceID, mom_rw_minchi2);
-			//} //if test sample
-			//else { //if NOT test sample
+			} //if test sample
+			else { //if NOT test sample
 				uf.pur_den_Int->Fill(reco_sliceID, mom_rw_minchi2);
-			//} //if NOT test sample
+			} //if NOT test sample
 		} //if pass reco inel cut
 
 		//reco/truth KEs
 		if (IsPureInEL) { //is pure inelastic
-			if (true_sliceID < nthinslices && true_sliceID>=0){
-				++true_interactions[true_sliceID];
-			}
+			if (!isTestSample){ //if validation sample
+				if (true_sliceID < nthinslices && true_sliceID>=0){
+					++true_interactions[true_sliceID];
+				}
+			} //if validation sample
+
 			//reco ke
 			if (IsCaloSize==true&&IsBeamMatch==true) { //calo & beam_match
 				std::vector<std::vector<double>> vincE(nthinslices);
@@ -1327,14 +1335,10 @@ void ProtonThinSliceData::Loop() {
 				dir_true = dir_true.Unit();
 				true_AngCorr->Fill(dir_true.Z());
 			} //if true container not empty
-			} //if pure inelastic
+		} //if pure inelastic
 
 
-
-
-
-
-		} //main entry loop
+	} //main entry loop
 
 		//save true inc & int arrays to histograms -------------------------------------//
 		for (int iii = 0; iii<nthinslices; ++iii){
