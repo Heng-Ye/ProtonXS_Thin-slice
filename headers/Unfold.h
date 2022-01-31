@@ -16,6 +16,9 @@ class Unfold {
   RooUnfoldResponse response_SliceID_Int;  //Interaction
   RooUnfoldResponse response_SliceID_Inc;  //Incident
 
+  //RooUnfoldResponse response_SliceID_shape_Int;  //Interaction [by shape]
+  //RooUnfoldResponse response_SliceID_shape_Inc;  //Incident [by shape]
+
   TH1D *eff_num_Int; //Interaction efficiency numerator
   TH1D *eff_den_Int; //Interaction efficiency denominator
 
@@ -32,6 +35,11 @@ class Unfold {
   TH1D *eff_Inc;
   TH1D *pur_Int;
   TH1D *pur_Inc;
+
+  TH1D *res_Inc_reco;	
+  TH1D *res_Inc_truth;	
+  TH1D *res_Int_reco;	
+  TH1D *res_Int_truth;	
 
   void SaveHistograms();
 
@@ -65,6 +73,18 @@ Unfold::Unfold(int nb, double xlo, double xhi)
   pur_den->Sumw2();
   pur_den_Inc->Sumw2();
   pur_den_Int->Sumw2();
+
+
+
+  res_Inc_reco = new TH1D("res_Inc_reco", "res_Inc_reco", nb, xlo, xhi);
+  res_Inc_truth = new TH1D("res_Inc_truth", "res_Inc_truth", nb, xlo, xhi);	
+  res_Int_reco = new TH1D("res_Int_reco", "res_Int_reco", nb, xlo, xhi);
+  res_Int_truth = new TH1D("res_Int_truth", "res_Int_truth", nb, xlo, xhi);	
+
+  res_Inc_reco->Sumw2();
+  res_Inc_truth->Sumw2();
+  res_Int_reco->Sumw2();
+  res_Int_truth->Sumw2();	
 
 
 }  
@@ -107,12 +127,20 @@ void Unfold::SaveHistograms(){
   //hinc->SetTitle("All Protons; Reco Slice ID; True Slice ID");
   //hinc->Write("response_SliceID_Inc");
 
-  response_SliceID_Int.SetName("response_SliceID_Int");
-  response_SliceID_Int.Write();
+  //response_SliceID_Int.SetName("response_SliceID_Int");
+  response_SliceID_Int.Write("response_SliceID_Int");
 
-  response_SliceID_Inc.SetName("response_SliceID_Inc");
-  response_SliceID_Inc.Write();
-	
+  //response_SliceID_Inc.SetName("response_SliceID_Inc");
+  response_SliceID_Inc.Write("response_SliceID_Inc");
+
+  //response_SliceID_shape_Inc.Write("response_SliceID_shape_Inc");	
+  //response_SliceID_shape_Int.Write("response_SliceID_shape_Int");	
+
+  res_Inc_reco->Write("res_Inc_reco");
+  res_Inc_truth->Write("res_Inc_truth");
+  res_Int_reco->Write("res_Int_reco");
+  res_Int_truth->Write("res_Int_truth");	
+
 
 }
 
