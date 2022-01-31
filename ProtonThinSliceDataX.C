@@ -146,6 +146,11 @@ void ProtonThinSliceData::Loop() {
 	//SetOutputFileName(Form("prod4areco2_mc_thinslice_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_thinslice_dx%dcm_%dslcs_nobmrw.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_thinslice_dx%dcm_%dslcs_bmrw.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_thinslice_dx%dcm_%dslcs_nobmrw.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_thinslice_dx%dcm_%dslcs_nobmrw_highresolKE.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_thinslice_dx%dcm_%dslcs_nobmrw_highresolKE_nopatchontrue.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_thinslice_dx%dcm_%dslcs_nobmrw_highresolKE_BeamCut.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_thinslice_dx%dcm_%dslcs_nobmrw_highresolKE_noBeamCut.root", name_thinslicewidth, nthinslices)); //output file name
 	SetOutputFileName(Form("prod4areco2_mc_thinslice_dx%dcm_%dslcs_nobmrw.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_validate_thinslice_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_test_thinslice_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
@@ -303,32 +308,17 @@ void ProtonThinSliceData::Loop() {
 		cout<<"is_beam_at_ff:"<<is_beam_at_ff<<endl;
 
 		//Get true trklen ---------------------------------------------------------------------------------------//
-		double range_true=-999;
 		int key_st = 0;
 		double tmp_z = 9999;
 		vector<double> true_trklen_accum;
-		//cout<<"beamtrk_z->size():"<<beamtrk_z->size()<<endl;
 		true_trklen_accum.reserve(beamtrk_z->size()); // initialize true_trklen_accum
-		//cout<<"ck0"<<endl;
-		if (is_beam_at_ff) {
-			for (int iz=0; iz<(int)beamtrk_z->size(); iz++) {
-				if (abs(beamtrk_z->at(iz)) < tmp_z){
-					tmp_z = abs(beamtrk_z->at(iz));
-					key_st = iz; // find the point where the beam enters the TPC (find the smallest abs(Z))
-				}
-				//cout<<"ck0/"<<endl;
-				true_trklen_accum[iz] = 0.; // initialize true_trklen_accum
-				//cout<<"ck0///"<<endl;
+		for (int iz=0; iz<(int)beamtrk_z->size(); iz++) {
+			if (abs(beamtrk_z->at(iz)) < tmp_z){
+				tmp_z = abs(beamtrk_z->at(iz));
+				key_st = iz; // find the point where the beam enters the TPC (find the smallest abs(Z))
 			}
-			//cout<<"ck1"<<endl;
-			//for (int iz=key_st+1; iz<(int)beamtrk_z->size(); iz++){
-			//for (int iz=key_reach_tpc+1; iz<(int)beamtrk_z->size(); iz++){
-				//if (iz == key_reach_tpc+1) range_true = 0;
-					//range_true += sqrt( pow(beamtrk_x->at(iz)-beamtrk_x->at(iz-1), 2)+
-						//pow(beamtrk_y->at(iz)-beamtrk_y->at(iz-1), 2)+	
-						//pow(beamtrk_z->at(iz)-beamtrk_z->at(iz-1), 2) );						    	
-					//true_trklen_accum[iz] = range_true;
-			//}
+			if (is_beam_at_ff) true_trklen_accum[iz] = 0.; // initialize true_trklen_accum [beam at ff]
+			if (!is_beam_at_ff) true_trklen_accum[iz] = -1; // initialize true_trklen_accum [beam not at ff]
 		}
 
 		//fix on the truth length by adding distance between 1st tpc hit to front face ------------------------------------------------------//
@@ -408,22 +398,25 @@ void ProtonThinSliceData::Loop() {
 
 		//[2] Range compensation -------------------------------------------------------
 		double range_true_patch=0;
-		if (is_beam_at_ff) {
+		if (is_beam_at_ff) { //is beam at ff
 			//calculate distance 1st hit and pojected point at TPC front face
 			range_true_patch = sqrt( pow(beamtrk_x->at(key_reach_tpc)-xproj_beam, 2)+
 					pow(beamtrk_y->at(key_reach_tpc)-yproj_beam, 2)+	
 					pow(beamtrk_z->at(key_reach_tpc)-zproj_beam, 2) );
 			//range_true_patch=0; //no fix on true len
+		} //if entering tpc
 
-			//true_trklen_accum
-			for (int iz=key_reach_tpc+1; iz<(int)beamtrk_z->size(); iz++) {
-				if (iz == key_reach_tpc+1) range_true = range_true_patch;
+		//true_trklen_accum
+		double range_true=-9999;
+		if (is_beam_at_ff) { //is beam at ff
+		  for (int iz=key_reach_tpc+1; iz<(int)beamtrk_z->size(); iz++) {
+			if (iz == key_reach_tpc+1) range_true = range_true_patch;
 					range_true += sqrt( pow(beamtrk_x->at(iz)-beamtrk_x->at(iz-1), 2)+
 						pow(beamtrk_y->at(iz)-beamtrk_y->at(iz-1), 2)+	
 						pow(beamtrk_z->at(iz)-beamtrk_z->at(iz-1), 2) );						    	
-					true_trklen_accum[iz] = range_true;
-			}						    	
-		}
+				true_trklen_accum[iz] = range_true;
+		  }
+		} //is beam at ff						    	
 
 
 		//fix on the truth length by adding distance between 1st tpc hit to front face ------------------------------------------------------//
@@ -1291,7 +1284,7 @@ void ProtonThinSliceData::Loop() {
 						for (size_t j = 0; j<vincE[i].size(); ++j){
 							sum_incE += vincE[i][j];
 						}
-						reco_incE[i]->Fill(sum_incE/vincE[i].size());
+						reco_incE[i]->Fill(sum_incE/(double)vincE[i].size());
 					}
 				}
 
@@ -1306,9 +1299,10 @@ void ProtonThinSliceData::Loop() {
 
 			//truth KEs
 			if (!beamtrk_Eng->empty()) { //if true container not empty
+			//if (!beamtrk_Eng->empty()&&(1000.*beamtrk_Eng->at(0)<600.)) { //if true container not empty
 				std::vector<std::vector<double>> vincE_true(nthinslices);
 				for (int hk=0; hk<(int)beamtrk_Eng->size()-1; ++hk) { //loop over true hits
-					//double thisZ=beamtrk_z->at(hk);
+					double thisZ=beamtrk_z->at(hk);
 					//int this_sliceID = int(thisZ/thinslicewidth);
 					double thisLen=true_trklen_accum[hk];
 					int this_sliceID = int(thisLen/thinslicewidth);
@@ -1317,6 +1311,23 @@ void ProtonThinSliceData::Loop() {
 					if (this_sliceID>=nthinslices) continue;
 					if (this_sliceID<0) continue;
 					vincE_true[this_sliceID].push_back(this_incE);
+
+
+
+					//test
+					double fX1=20.4585; //X of 1st point
+					double fY1=591.912; //Y of 1st point
+					double fX2=106.418; //X of 2nd point
+					double fY2=250.525; //Y of 2nd point
+					double m=(fY2-fY1)/(fX2-fX1);
+					double b=fY1-m*fX1;
+
+					//if (this_incE>(b+m*thisLen)) {
+						KEtrue_z_inel->Fill(thisZ, this_incE);
+						KEtrue_range_inel->Fill(thisLen, this_incE);
+						true_z_range_inel->Fill(thisZ, thisLen);
+						true_z_range_KEtrue_inel->Fill(thisZ, thisLen, this_incE);
+					//}	
 				}//loop over true hits (last point always has KE = 0)
 
 				for (size_t i = 0; i<vincE_true.size(); ++i){
@@ -1325,9 +1336,12 @@ void ProtonThinSliceData::Loop() {
 						for (size_t j = 0; j<vincE_true[i].size(); ++j){
 							sum_incE_true += vincE_true[i][j];
 						}
-						true_incE[i]->Fill(sum_incE_true/vincE_true[i].size());
+						true_incE[i]->Fill(sum_incE_true/(double)vincE_true[i].size());
 					}
 				}
+
+				KEtrue_Beam_inel->Fill(1000.*beamtrk_Eng->at(0));
+        			KEtrue_ff_inel->Fill(ke_ff);
 
 				TVector3 pt0_true(true_stx, true_sty, true_stz);
 				TVector3 pt1_true(true_endx, true_endy, true_endz);
