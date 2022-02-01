@@ -1154,10 +1154,10 @@ void ProtonThinSliceData::Loop() {
 		}
 
 		if (isTestSample) { //if test sample 
-			h_truesliceid_all->Fill(true_sliceID);
+			h_truesliceid_all->Fill(true_sliceID, mom_rw_minchi2);
 		} //if test sample
 		else { //if NOT test sample
-			uf.eff_den_Inc->Fill(true_sliceID);
+			uf.eff_den_Inc->Fill(true_sliceID, mom_rw_minchi2);
 			for (int ij = 0; ij<=true_sliceID; ++ij){
 				if (ij<nthinslices) ++true_incidents[ij];
 			}
@@ -1165,21 +1165,21 @@ void ProtonThinSliceData::Loop() {
 		if (PassCuts_INC&&IsBeamMatch) { //if passing all basic cuts
 			if (isTestSample) { //if test sample
 				h_recosliceid_cuts->Fill(reco_sliceID, mom_rw_minchi2); 
-				h_truesliceid_cuts->Fill(true_sliceID);
+				h_truesliceid_cuts->Fill(true_sliceID, mom_rw_minchi2);
 			} //if test sample
 			else{ //if NOT test sample
-				uf.eff_num_Inc->Fill(true_sliceID);
+				uf.eff_num_Inc->Fill(true_sliceID, mom_rw_minchi2);
 				uf.pur_num_Inc->Fill(reco_sliceID, mom_rw_minchi2);
 				uf.response_SliceID_Inc.Fill(reco_sliceID, true_sliceID, mom_rw_minchi2);
 				
 				uf.res_Inc_reco->Fill(reco_sliceID, mom_rw_minchi2);
-				uf.res_Inc_truth->Fill(true_sliceID);
+				uf.res_Inc_truth->Fill(true_sliceID, mom_rw_minchi2);
 			} //if NOT test sample
 		} //if passing all basic cuts
 		else { //if NOT passing all cuts
 			if (!isTestSample){
-				uf.response_SliceID_Inc.Miss(true_sliceID);
-				uf.res_Inc_truth->Fill(true_sliceID);
+				uf.response_SliceID_Inc.Miss(true_sliceID, mom_rw_minchi2);
+				uf.res_Inc_truth->Fill(true_sliceID, mom_rw_minchi2);
 				//uf.response_SliceID_Inc.Miss(true_sliceID, mom_rw_minchi2);
 				//std::cout<<true_sliceID<<std::endl;
 			}
@@ -1191,10 +1191,10 @@ void ProtonThinSliceData::Loop() {
 			if (IsBeamMatch) n_kinel++;
 
 			if (isTestSample){
-				h_truesliceid_inelastic_all->Fill(true_sliceID);
+				h_truesliceid_inelastic_all->Fill(true_sliceID, mom_rw_minchi2);
 			}
 			else{ //NOT test sample for unfolding
-				uf.eff_den_Int->Fill(true_sliceID);
+				uf.eff_den_Int->Fill(true_sliceID, mom_rw_minchi2);
 				n_test_recoinel_sample++;
 				if (IsBeamMatch) n_kinel2++;
 			} //NOT test sample for unfolding
@@ -1202,21 +1202,21 @@ void ProtonThinSliceData::Loop() {
 			if (PassCuts_INT&&IsBeamMatch) { //if pass reco inel cuts
 				if (isTestSample){
 					h_recosliceid_inelastic_cuts->Fill(reco_sliceID, mom_rw_minchi2);
-					h_truesliceid_inelastic_cuts->Fill(true_sliceID);
+					h_truesliceid_inelastic_cuts->Fill(true_sliceID, mom_rw_minchi2);
 				}
 				else{
-					uf.eff_num_Int->Fill(true_sliceID);
+					uf.eff_num_Int->Fill(true_sliceID, mom_rw_minchi2);
 					uf.pur_num_Int->Fill(reco_sliceID, mom_rw_minchi2);
 					uf.response_SliceID_Int.Fill(reco_sliceID, true_sliceID, mom_rw_minchi2);
 
 					uf.res_Int_reco->Fill(reco_sliceID, mom_rw_minchi2);
-					uf.res_Int_truth->Fill(true_sliceID);
+					uf.res_Int_truth->Fill(true_sliceID, mom_rw_minchi2);
 				}
 			} //if pass reco inel cuts
 			else{ //if NOT pass all basic cuts
 				if (!isTestSample) { 
-					uf.response_SliceID_Int.Miss(true_sliceID);
-					uf.res_Int_truth->Fill(true_sliceID);
+					uf.response_SliceID_Int.Miss(true_sliceID, mom_rw_minchi2);
+					uf.res_Int_truth->Fill(true_sliceID, mom_rw_minchi2);
 					//uf.response_SliceID_Int.Miss(true_sliceID, mom_rw_minchi2);
 				}
 			} //if not pass all basic cuts

@@ -75,11 +75,23 @@ void make_dataXS() {
         //TString fmc="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/mcdata/sce/MC_PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1/xs_thinslice/prod4areco2_mc_thinslice_dx5cm_20slcs.root";
         //TString fdata="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/mcdata/sce/MC_PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1/xs_thinslice/prod4areco2_mc_thinslice_dx5cm_20slcs.root";
 
-        TString fmc="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/mcdata/sce/MC_PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1/xs_thinslice/prod4areco2_mc_thinslice_dx5cm_20slcs_nobmrw.root";
-        TString fdata="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/mcdata/sce/MC_PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1/xs_thinslice/prod4areco2_mc_thinslice_dx5cm_20slcs_nobmrw.root";
-
         //TString fmc="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/mcdata/sce/MC_PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1/xs_thinslice/prod4areco2_data_thinslice_dx4cm_25slcs.root";
         //TString fdata="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/realdata/p1gev/code_timedep_trkpos/protodune-sp_runset_5387_reco2/data_run5387_prod4a_thinslice_dx4cm_25slcs.root";
+
+        //TString fmc="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/mcdata/sce/MC_PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1/xs_thinslice/prod4areco2_mc_thinslice_dx5cm_20slcs_nobmrw.root";
+        //TString fdata="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/mcdata/sce/MC_PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1/xs_thinslice/prod4areco2_mc_thinslice_dx5cm_20slcs_nobmrw.root";
+
+        //TString fmc="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/mcdata/sce/MC_PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1/xs_thinslice/prod4areco2_mc_thinslice_dx5cm_20slcs_nobmrw_highresolKE.root";
+        //TString fdata="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/mcdata/sce/MC_PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1/xs_thinslice/prod4areco2_mc_thinslice_dx5cm_20slcs_nobmrw_highresolKE.root";
+
+        //TString fmc="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/mcdata/sce/MC_PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1/xs_thinslice/prod4areco2_mc_thinslice_dx5cm_20slcs_nobmrw_highresolKE_BeamCut.root";
+        //TString fdata="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/mcdata/sce/MC_PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1/xs_thinslice/prod4areco2_mc_thinslice_dx5cm_20slcs_nobmrw_highresolKE_BeamCut.root";
+
+        //TString fmc="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/mcdata/sce/MC_PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1/xs_thinslice/prod4areco2_mc_thinslice_dx5cm_20slcs_nobmrw.root";
+        //TString fdata="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/mcdata/sce/MC_PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1/xs_thinslice/prod4areco2_mc_thinslice_dx5cm_20slcs_nobmrw.root";
+
+        TString fmc="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/mcdata/sce/MC_PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1/xs_thinslice/prod4areco2_mc_thinslice_dx5cm_20slcs_bmrw.root";
+        TString fdata="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/mcdata/sce/MC_PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1/xs_thinslice/prod4areco2_mc_thinslice_dx5cm_20slcs_bmrw.root";
 
 	TString str_inc=Form("h_recosliceid_allevts_cuts");
 	TString str_int=Form("h_recosliceid_recoinelastic_cuts");
@@ -150,6 +162,10 @@ void make_dataXS() {
 	int n_mc_inc=n_mc_inc_inel+n_mc_inc_el+n_mc_inc_midcosmic+n_mc_inc_midpi+n_mc_inc_midp+n_mc_inc_midmu+n_mc_inc_mideg+n_mc_inc_midother;
 	double norm_mc_inc=(double)n_data_inc/(double)n_mc_inc;
 	cout<<"norm_mc_inc="<<norm_mc_inc<<"="<<"n_data_inc:"<<n_data_inc<<"/"<<"n_mc_inc:"<<n_mc_inc<<endl;
+	cout<<"INC purity (El+Inel)/(all except misid:p):"<<100.*(float)(n_mc_inc_inel+n_mc_inc_el)/(float)(n_mc_inc)<<endl;
+	cout<<"n_mc_inc_midp:"<<n_mc_inc_midp<<endl;
+	cout<<"n_mc_inc_inel+n_mc_inc_el="<<n_mc_inc_inel+n_mc_inc_el<<endl;
+
 
 	mc_inc_inel->Scale(norm_mc_inc);
 	mc_inc_el->Scale(norm_mc_inc);
@@ -201,6 +217,10 @@ void make_dataXS() {
 	int n_mc_int_midother=mc_int_midother->Integral();
 	int n_mc_int=n_mc_int_inel+n_mc_int_el+n_mc_int_midcosmic+n_mc_int_midpi+n_mc_int_midp+n_mc_int_midmu+n_mc_int_mideg+n_mc_int_midother;
 	double norm_mc_int=(double)n_data_int/(double)n_mc_int;
+	cout<<"INT purity (inel/all):"<<100.*n_mc_int_inel/n_mc_int<<endl;
+	cout<<"INT purity (el/all):"<<100.*n_mc_int_el/n_mc_int<<endl;
+	cout<<"INT purity (misidp/all):"<<100.*n_mc_int_midp/n_mc_int<<endl;
+
 
 	mc_int_inel->Scale(norm_mc_int);
 	mc_int_el->Scale(norm_mc_int);
@@ -267,20 +287,31 @@ void make_dataXS() {
 	//unfolding ---------------------------------------------------------------------------------------------//
 	//response matrix from mc
 	//Response matrix as a 2D-histogram: (x,y)=(measured,truth)
-	RooUnfoldResponse *res_inc=(RooUnfoldResponse*)f_mc->Get("response_SliceID_Inc"); res_inc->SetName("res_inc"); //inc(WARNING:: ONLY used without bmrw)
-	RooUnfoldBayes uf_inc (res_inc, data_inc_bkgfree, 4); //inc
+	//RooUnfoldResponse *res_inc=(RooUnfoldResponse*)f_mc->Get("response_SliceID_Inc"); res_inc->SetName("res_inc"); //inc(WARNING:: ONLY used without bmrw)
 
+	//Response using shape
+	TH1D* res_Inc_reco=(TH1D*)f_mc->Get("res_Inc_reco"); res_Inc_reco->SetName("res_Inc_reco");
+	TH1D* res_Inc_truth=(TH1D*)f_mc->Get("res_Inc_truth"); res_Inc_truth->SetName("res_Inc_truth");
+	RooUnfoldResponse *res_inc=new RooUnfoldResponse(res_Inc_reco, res_Inc_truth, "res_inc","res_inc");
+	
 	//sansity check on the response matrix
 	std::cout<<"res_inc->GetDimensionMeasured():"<<res_inc->GetDimensionMeasured()<<std::endl;
 	std::cout<<"res_inc->GetDimensionTruth():"<<res_inc->GetDimensionTruth()<<std::endl;
 	std::cout<<"res_inc->GetNbinsMeasured():"<<res_inc->GetNbinsMeasured()<<std::endl;
 	std::cout<<"res_inc->GetNbinsTruth():"<<res_inc->GetNbinsTruth()<<std::endl; 
 
+	//Unfolding
+	RooUnfoldBayes uf_inc (res_inc, data_inc_bkgfree, 4); //inc
+
 	//std::cout<<"GetIterations:"<<uf_inc.GetIterations()<<std::endl;
 	//std::cout<<"GetSmoothing:"<<uf_inc.GetSmoothing()<<std::endl;
 	//uf_inc.Print();
 
-	RooUnfoldResponse *res_int=(RooUnfoldResponse*)f_mc->Get("response_SliceID_Int"); res_int->SetName("res_int"); //int
+	//RooUnfoldResponse *res_int=(RooUnfoldResponse*)f_mc->Get("response_SliceID_Int"); res_int->SetName("res_int"); //int
+	TH1D* res_Int_reco=(TH1D*)f_mc->Get("res_Int_reco"); res_Int_reco->SetName("res_Int_reco");
+	TH1D* res_Int_truth=(TH1D*)f_mc->Get("res_Int_truth"); res_Int_truth->SetName("res_Int_truth");
+	//RooUnfoldResponse res_int(res_Int_reco, res_Int_truth, res_int);
+	RooUnfoldResponse *res_int=new RooUnfoldResponse(res_Int_reco, res_Int_truth, "res_int","res_int");
 	RooUnfoldBayes uf_int (res_int, data_int_bkgfree, 4);
 
 	//std::cout<<"data_inc_bkgfree x-axis bin:"<<data_inc_bkgfree->GetNbinsX()<<std::endl;
@@ -305,8 +336,9 @@ void make_dataXS() {
 	double avg_trueincE[nthinslices] = {0};
 	double err_recoincE[nthinslices] = {0};
 	double err_trueincE[nthinslices] = {0};
+	cout<<"nthinslices:"<<nthinslices<<endl;
         for (int i = 0; i<nthinslices; ++i){
-                slcid[i] = i;
+                slcid[i] = i+.5;
 		reco_incE[i]=(TH1D* )f_mc->Get(Form("reco_incE_%d",i));
 		true_incE[i]=(TH1D* )f_mc->Get(Form("true_incE_%d",i));
 
@@ -348,8 +380,7 @@ void make_dataXS() {
 	//}
 	
         for (int i = 0; i<nthinslices; ++i) {
-		sliceid[i]=(i-1)+.5;
-		//if (i>0) sliceid[i]+=sliceid[i-1]+1;
+		sliceid[i]=i+.5;
 
 		//int[inelastic]
 		reco_int[i]=data_int_uf->GetBinContent(i+2);
@@ -375,17 +406,23 @@ void make_dataXS() {
     			err_reco_xs[i]=xs_const*sqrt(pow(reco_int[i]*err_reco_inc[i]/reco_inc[i]/(reco_inc[i]-reco_int[i]),2)+pow(err_reco_int[i]/(reco_inc[i]-reco_int[i]),2));
 		}
         }
-  	TGraphErrors *gr_truexs = new TGraphErrors(nthinslices, avg_trueincE, true_xs, err_trueincE, err_true_xs);
-  	TGraphErrors *gr_recoxs = new TGraphErrors(nthinslices, avg_trueincE, reco_xs, err_trueincE, err_reco_xs);
+  	TGraphErrors *gr_truexs = new TGraphErrors(nthinslices, &avg_trueincE[0], &true_xs[0], &err_trueincE[0], &err_true_xs[0]);
+  	TGraphErrors *gr_recoxs = new TGraphErrors(nthinslices, &avg_trueincE[0], &reco_xs[0], &err_recoincE[0], &err_reco_xs[0]);
 
-  	TGraphErrors *gr_reco_inc = new TGraphErrors(nthinslices, sliceid, reco_inc, err_sliceid, err_reco_inc);
-  	TGraphErrors *gr_reco_int = new TGraphErrors(nthinslices, sliceid, reco_int, err_sliceid, err_reco_int);
+  	TGraphErrors *gr_reco_inc = new TGraphErrors(nthinslices, slcid, reco_inc, err_sliceid, err_reco_inc);
+  	TGraphErrors *gr_reco_int = new TGraphErrors(nthinslices, slcid, reco_int, err_sliceid, err_reco_int);
+
+  	TGraphErrors *gr_sliceid_recoincE = new TGraphErrors(nthinslices, slcid, avg_recoincE, err_sliceid, err_recoincE);
+  	TGraphErrors *gr_sliceid_trueincE = new TGraphErrors(nthinslices, slcid, avg_trueincE, err_sliceid, err_trueincE);
+
 	gr_reco_inc->SetNameTitle("gr_reco_inc", "; SliceID; Events");
 	gr_reco_int->SetNameTitle("gr_reco_int", "; ; ");
 
-
   	gr_truexs->SetNameTitle("gr_truexs", "; Energy (MeV); Cross-section [mb]");
   	gr_recoxs->SetNameTitle("gr_recoxs", "; Energy (MeV); Cross-section [mb]");
+
+	gr_sliceid_recoincE->SetNameTitle("gr_sliceid_recoincE; SliceID; Proton Kinetic Energy [MeV]");
+	gr_sliceid_trueincE->SetNameTitle("gr_sliceid_trueincE; SliceID; Proton Kinetic Energy [MeV]");
 
 	//All protons ---------------------------------------------------------------------//
 	//[1]data with mc components
@@ -398,7 +435,7 @@ void make_dataXS() {
 	c_inc->Divide(1,1);
 	c_inc->cd(1);
 	float ymax_evt=6000;
-	TH2D *f2d_inc=new TH2D("f2d_inc",Form("%s","All Protons"),21,0,21,80,0,ymax_evt);
+	TH2D *f2d_inc=new TH2D("f2d_inc",Form("%s","All Protons"),22,-1,21,80,0,ymax_evt);
 	f2d_inc->SetTitle("All Protons; Reco SliceID (End point); Events");
 	f2d_inc->GetYaxis()->SetTitleOffset(1.3);
 	f2d_inc->Draw();
@@ -432,7 +469,7 @@ void make_dataXS() {
 
 	c_inc2->Divide(1,1);
 	c_inc2->cd(1);
-	TH2D *f2d_inc2=new TH2D("f2d_inc2",Form("%s","INC"),21,0,21,80,0,ymax_evt);
+	TH2D *f2d_inc2=new TH2D("f2d_inc2",Form("%s","INC"),22,-1,21,80,0,ymax_evt);
 	f2d_inc2->SetTitle("All protons; Reco SliceID (End point); Events");
 	f2d_inc2->GetYaxis()->SetTitleOffset(1.3);
 	f2d_inc2->Draw();
@@ -512,7 +549,9 @@ void make_dataXS() {
 	double av_eff_inc=0;
 	double err_av_eff_inc=0;
 	double cnt_eff_inc=0;
+	cout<<"\neff_inc->GetNbinsX():"<<eff_inc->GetNbinsX()<<endl;
 	for (int k=0; k<eff_inc->GetNbinsX(); ++k) {
+		if (k==0) cout<<"eff 1st bin, slice #:"<<eff_inc->GetBinCenter(k)<<"\n\n"<<endl;
 		if (eff_inc->GetBinContent(k+1)) { 
 			cnt_eff_inc++;
 			av_eff_inc+=eff_inc->GetBinContent(k+1);
@@ -579,7 +618,7 @@ void make_dataXS() {
 	gStyle->SetPadLeftMargin(0.12); 
 	c_inc5->Divide(1,1);
 	c_inc5->cd(1);
-	TH2D *f2d_inc5=new TH2D("f2d_inc5",Form("%s",""),22,-1,21,10,0,150000);
+	TH2D *f2d_inc5=new TH2D("f2d_inc5",Form("%s",""),21,0,21,10,0,150000);
 	f2d_inc5->SetTitle("All protons; True SliceID; Events");
 	f2d_inc5->Draw();
 	mc_true_incidents->SetLineColor(2);
@@ -779,7 +818,7 @@ void make_dataXS() {
 	c_inct->cd(1);
 	c_inct->cd(1)->SetLogy();
 
-        TH2D *f2d_inct=new TH2D("f2d_inct","",22,-1,21,6000,100,1500000);
+        TH2D *f2d_inct=new TH2D("f2d_inct","",21,0,21,6000,100,1500000);
         f2d_inct->SetTitle("Reconstructed Incident/Inelastic Protons; SliceID; Events");
         f2d_inct->GetYaxis()->SetTitleOffset(1.3);
         f2d_inct->Draw("");
@@ -802,8 +841,102 @@ void make_dataXS() {
         leg_inct->Draw();
 	c_inct->Print(Form("./plot_dataXS/reco_inc_int.eps"));
 
+	//sliceID vs KE
+	gStyle->SetEndErrorSize(0);
+	TCanvas *c_id_ke=new TCanvas(Form("c_id_ke"),"",900, 600);
+        gStyle->SetPadRightMargin(0.0);
+ 	gStyle->SetPadLeftMargin(0.16);
+    	gStyle->SetPadRightMargin(0.04);//0.02
+	c_id_ke->Divide(1,1);
+	c_id_ke->cd(1);
+
+	gr_sliceid_recoincE->SetMarkerColor(2);
+	gr_sliceid_recoincE->SetLineColor(2);
+	gr_sliceid_trueincE->SetMarkerColor(1);
+	
+        TH2D *f2d_id_ke=new TH2D("f2d_id_ke","",21,0,21,500,50,500);	
+	f2d_id_ke->SetTitle("; SliceID; Proton Kinetic Energy [MeV]");
+	f2d_id_ke->Draw();
+	gr_sliceid_trueincE->Draw("p same");
+	gr_sliceid_recoincE->Draw("p same");
+
+        TLegend *leg_idke = new TLegend(0.6,0.6,0.9,0.85);
+        leg_idke->SetFillStyle(0);
+        leg_idke->AddEntry(gr_sliceid_trueincE, "KE Truth", "pe");
+        leg_idke->AddEntry(gr_sliceid_recoincE, "KE Reco", "pe");
+        leg_idke->Draw();
+	c_id_ke->Print("./plot_dataXS/true_recoKE_sliceID.eps");
+
+	
+
+	//demo KE 
+        gStyle->SetPadRightMargin(0.0);
+ 	gStyle->SetPadLeftMargin(0.16);
+    	gStyle->SetPadRightMargin(0.04);//0.02
+
+        TCanvas *c_ke = new TCanvas("c_ke", "c_ke", 1400, 900);
+	c_ke->Divide(1,1);
+	c_ke->cd(1)->SetLogy();
+	c_ke->cd(1);
+	
+	TH1D *TrueKE_DEMO_0=(TH1D *)f_mc->Get(Form("true_incE_%d",6));
+	TrueKE_DEMO_0->SetLineColor(2);
+	TrueKE_DEMO_0->SetLineWidth(2);
+	TrueKE_DEMO_0->SetFillColor(2);
+	TrueKE_DEMO_0->SetFillStyle(3353);
+	TrueKE_DEMO_0->GetXaxis()->SetTitle("Proton Kinetic Energy [MeV]");
+	TrueKE_DEMO_0->GetYaxis()->SetTitle("Events");
+	TrueKE_DEMO_0->Draw("hist");
+	cout<<"\n\nTrueKE_DEMO_0:"<<TrueKE_DEMO_0->GetMean()<<" +- "<<TrueKE_DEMO_0->GetMeanError()<<endl;
+	cout<<"gPad->GetUymax():"<<gPad->GetUymax()<<endl;
+	//TLine lll(TrueKE_DEMO_0->GetMean(),0,TrueKE_DEMO_0->GetMean(),90000);
+	TLine lll(TrueKE_DEMO_0->GetMean(),0,TrueKE_DEMO_0->GetMean(),30000);
+	lll.SetLineStyle(2);
+	lll.SetLineWidth(2);
+        lll.Draw("same");
+
+         TLegend *leg_slc = new TLegend(0.5,0.6,0.95,0.9);
+         leg_slc->SetFillStyle(0);
+         leg_slc->AddEntry((TObject*)0, Form("<KE>=%.2f #pm %.2f MeV", TrueKE_DEMO_0->GetMean(), TrueKE_DEMO_0->GetMeanError()), "");
+         leg_slc->Draw();
 
 
+	c_ke->Print("./plot_dataXS/trueKE_sliceID6.eps");
+
+
+        for (int i = 0; i<nthinslices; ++i){
+
+        	TCanvas *c_slc = new TCanvas("c_slc", "c_slc", 1400, 900);
+		c_slc->Divide(1,1);
+		c_slc->cd(1)->SetLogy();
+		c_slc->cd(1);
+
+		TString str_slcslc;
+        	if (i==0) str_slcslc=Form("./plot_dataXS/trueKE_slc-by-slc.pdf("); 
+		if (i>0&&i<nthinslices-1) str_slcslc=Form("./plot_dataXS/trueKE_slc-by-slc.pdf"); 
+		if (i==nthinslices-1) str_slcslc=Form("./plot_dataXS/trueKE_slc-by-slc.pdf)"); 
+
+		TH1D *htmp=(TH1D* )f_mc->Get(Form("true_incE_%d",i));
+		htmp->GetXaxis()->SetTitle("Proton Kinetic Energy [MeV]");
+		htmp->GetYaxis()->SetTitle("Events");
+		htmp->SetLineColor(1);
+		htmp->SetLineWidth(2);
+		htmp->SetFillColor(0);
+		htmp->SetFillStyle(3353);
+
+		htmp->Draw("hist");
+
+        	TLegend *leg_slc = new TLegend(0.6,0.6,0.9,0.85);
+        	leg_slc->SetFillStyle(0);
+        	leg_slc->AddEntry((TObject*)0, Form("<KE>:%.2f MeV",htmp->GetMean()), "");
+        	leg_slc->AddEntry((TObject*)0, Form("RMS KE:%.2f MeV",htmp->GetRMS()), "");
+		leg_slc->Draw();
+
+		c_slc->Print(str_slcslc.Data());
+		delete c_slc;
+		delete leg_slc;
+
+	}
 
 
 
