@@ -87,11 +87,11 @@ void make_dataXS() {
         //TString fmc="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/mcdata/sce/MC_PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1/xs_thinslice/prod4areco2_mc_thinslice_dx5cm_20slcs_nobmrw_highresolKE_BeamCut.root";
         //TString fdata="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/mcdata/sce/MC_PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1/xs_thinslice/prod4areco2_mc_thinslice_dx5cm_20slcs_nobmrw_highresolKE_BeamCut.root";
 
-        //TString fmc="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/mcdata/sce/MC_PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1/xs_thinslice/prod4areco2_mc_thinslice_dx5cm_20slcs_nobmrw.root";
-        //TString fdata="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/mcdata/sce/MC_PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1/xs_thinslice/prod4areco2_mc_thinslice_dx5cm_20slcs_nobmrw.root";
+        TString fmc="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/mcdata/sce/MC_PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1/xs_thinslice/prod4areco2_mc_thinslice_dx5cm_20slcs_nobmrw.root";
+        TString fdata="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/mcdata/sce/MC_PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1/xs_thinslice/prod4areco2_mc_thinslice_dx5cm_20slcs_nobmrw.root";
 
-        TString fmc="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/mcdata/sce/MC_PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1/xs_thinslice/prod4areco2_mc_thinslice_dx5cm_20slcs_bmrw.root";
-        TString fdata="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/mcdata/sce/MC_PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1/xs_thinslice/prod4areco2_mc_thinslice_dx5cm_20slcs_bmrw.root";
+        //TString fmc="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/mcdata/sce/MC_PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1/xs_thinslice/prod4areco2_mc_thinslice_dx5cm_20slcs_bmrw.root";
+        //TString fdata="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/mcdata/sce/MC_PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1/xs_thinslice/prod4areco2_mc_thinslice_dx5cm_20slcs_bmrw.root";
 
 	TString str_inc=Form("h_recosliceid_allevts_cuts");
 	TString str_int=Form("h_recosliceid_recoinelastic_cuts");
@@ -287,12 +287,12 @@ void make_dataXS() {
 	//unfolding ---------------------------------------------------------------------------------------------//
 	//response matrix from mc
 	//Response matrix as a 2D-histogram: (x,y)=(measured,truth)
-	//RooUnfoldResponse *res_inc=(RooUnfoldResponse*)f_mc->Get("response_SliceID_Inc"); res_inc->SetName("res_inc"); //inc(WARNING:: ONLY used without bmrw)
+	RooUnfoldResponse *res_inc=(RooUnfoldResponse*)f_mc->Get("response_SliceID_Inc"); res_inc->SetName("res_inc"); //inc(WARNING:: ONLY used without bmrw)
 
 	//Response using shape
-	TH1D* res_Inc_reco=(TH1D*)f_mc->Get("res_Inc_reco"); res_Inc_reco->SetName("res_Inc_reco");
-	TH1D* res_Inc_truth=(TH1D*)f_mc->Get("res_Inc_truth"); res_Inc_truth->SetName("res_Inc_truth");
-	RooUnfoldResponse *res_inc=new RooUnfoldResponse(res_Inc_reco, res_Inc_truth, "res_inc","res_inc");
+	//TH1D* res_Inc_reco=(TH1D*)f_mc->Get("res_Inc_reco"); res_Inc_reco->SetName("res_Inc_reco");
+	//TH1D* res_Inc_truth=(TH1D*)f_mc->Get("res_Inc_truth"); res_Inc_truth->SetName("res_Inc_truth");
+	//RooUnfoldResponse *res_inc=new RooUnfoldResponse(res_Inc_reco, res_Inc_truth, "res_inc","res_inc");
 	
 	//sansity check on the response matrix
 	std::cout<<"res_inc->GetDimensionMeasured():"<<res_inc->GetDimensionMeasured()<<std::endl;
@@ -307,11 +307,11 @@ void make_dataXS() {
 	//std::cout<<"GetSmoothing:"<<uf_inc.GetSmoothing()<<std::endl;
 	//uf_inc.Print();
 
-	//RooUnfoldResponse *res_int=(RooUnfoldResponse*)f_mc->Get("response_SliceID_Int"); res_int->SetName("res_int"); //int
-	TH1D* res_Int_reco=(TH1D*)f_mc->Get("res_Int_reco"); res_Int_reco->SetName("res_Int_reco");
-	TH1D* res_Int_truth=(TH1D*)f_mc->Get("res_Int_truth"); res_Int_truth->SetName("res_Int_truth");
+	RooUnfoldResponse *res_int=(RooUnfoldResponse*)f_mc->Get("response_SliceID_Int"); res_int->SetName("res_int"); //int
+	//TH1D* res_Int_reco=(TH1D*)f_mc->Get("res_Int_reco"); res_Int_reco->SetName("res_Int_reco");
+	//TH1D* res_Int_truth=(TH1D*)f_mc->Get("res_Int_truth"); res_Int_truth->SetName("res_Int_truth");
 	//RooUnfoldResponse res_int(res_Int_reco, res_Int_truth, res_int);
-	RooUnfoldResponse *res_int=new RooUnfoldResponse(res_Int_reco, res_Int_truth, "res_int","res_int");
+	//RooUnfoldResponse *res_int=new RooUnfoldResponse(res_Int_reco, res_Int_truth, "res_int","res_int");
 	RooUnfoldBayes uf_int (res_int, data_int_bkgfree, 4);
 
 	//std::cout<<"data_inc_bkgfree x-axis bin:"<<data_inc_bkgfree->GetNbinsX()<<std::endl;
@@ -336,6 +336,10 @@ void make_dataXS() {
 	double avg_trueincE[nthinslices] = {0};
 	double err_recoincE[nthinslices] = {0};
 	double err_trueincE[nthinslices] = {0};
+
+	double reco_trueincE[nthinslices] = {0};
+	double err_reco_trueincE[nthinslices] = {0};
+
 	cout<<"nthinslices:"<<nthinslices<<endl;
         for (int i = 0; i<nthinslices; ++i){
                 slcid[i] = i+.5;
@@ -346,6 +350,10 @@ void make_dataXS() {
                 err_trueincE[i] = true_incE[i]->GetMeanError();
                 avg_recoincE[i] = reco_incE[i]->GetMean();
                 err_recoincE[i] = reco_incE[i]->GetMeanError();
+
+		reco_trueincE[i] = avg_recoincE[i] - avg_trueincE[i];
+		err_reco_trueincE[i] = sqrt(pow(err_trueincE[i],2)+pow(err_recoincE[i],2));
+
 		//cout<<"avg_recoincE["<<i<<"]:"<<avg_recoincE[i]<<endl;
         }
 	
@@ -414,6 +422,8 @@ void make_dataXS() {
 
   	TGraphErrors *gr_sliceid_recoincE = new TGraphErrors(nthinslices, slcid, avg_recoincE, err_sliceid, err_recoincE);
   	TGraphErrors *gr_sliceid_trueincE = new TGraphErrors(nthinslices, slcid, avg_trueincE, err_sliceid, err_trueincE);
+	TGraphErrors *gr_sliceid_recotrueincE = new TGraphErrors(nthinslices, &(slcid[0]), &(reco_trueincE[0]), 0, &(err_reco_trueincE[0]));
+
 
 	gr_reco_inc->SetNameTitle("gr_reco_inc", "; SliceID; Events");
 	gr_reco_int->SetNameTitle("gr_reco_int", "; ; ");
@@ -423,6 +433,8 @@ void make_dataXS() {
 
 	gr_sliceid_recoincE->SetNameTitle("gr_sliceid_recoincE; SliceID; Proton Kinetic Energy [MeV]");
 	gr_sliceid_trueincE->SetNameTitle("gr_sliceid_trueincE; SliceID; Proton Kinetic Energy [MeV]");
+
+	gr_sliceid_recotrueincE->SetNameTitle("gr_sliceid_recotrueincE; SliceID; Reco KE - True KE [MeV]");
 
 	//All protons ---------------------------------------------------------------------//
 	//[1]data with mc components
@@ -867,7 +879,23 @@ void make_dataXS() {
         leg_idke->Draw();
 	c_id_ke->Print("./plot_dataXS/true_recoKE_sliceID.eps");
 
+	//reco KE - true KE ----------------------------------------------//
+        gStyle->SetPadRightMargin(0.0);
+ 	gStyle->SetPadLeftMargin(0.16);
+    	gStyle->SetPadRightMargin(0.04);//0.02
+        TCanvas *c_dke = new TCanvas("c_dke", "c_dke", 1400, 900);
+	c_dke->Divide(1,1);
+	c_dke->cd(1);
+
+        TH2D *f2d_id_dke=new TH2D("f2d_id_dke","",21,0,21,30,-20,10);	
+	f2d_id_dke->SetTitle("; SliceID; Reco KE - True KE [MeV]");
+	f2d_id_dke->Draw();
+	gr_sliceid_recotrueincE->SetMarkerColor(2);
+	gr_sliceid_recotrueincE->SetLineColor(2);
+	gr_sliceid_recotrueincE->Draw("p same");
+	c_dke->Print("./plot_dataXS/dKE_sliceID.eps");
 	
+
 
 	//demo KE 
         gStyle->SetPadRightMargin(0.0);
