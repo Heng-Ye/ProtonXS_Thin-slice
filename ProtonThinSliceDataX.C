@@ -1172,14 +1172,14 @@ void ProtonThinSliceData::Loop() {
 				uf.pur_num_Inc->Fill(reco_sliceID, mom_rw_minchi2);
 				uf.response_SliceID_Inc.Fill(reco_sliceID, true_sliceID, mom_rw_minchi2);
 				
-				uf.res_Inc_reco.Fill(reco_sliceID, mom_rw_minchi2);
-				uf.res_Inc_truth.Fill(true_sliceID);
+				uf.res_Inc_reco->Fill(reco_sliceID, mom_rw_minchi2);
+				uf.res_Inc_truth->Fill(true_sliceID);
 			} //if NOT test sample
 		} //if passing all basic cuts
 		else { //if NOT passing all cuts
 			if (!isTestSample){
 				uf.response_SliceID_Inc.Miss(true_sliceID);
-				uf.res_Inc_truth.Fill(true_sliceID);
+				uf.res_Inc_truth->Fill(true_sliceID);
 				//uf.response_SliceID_Inc.Miss(true_sliceID, mom_rw_minchi2);
 				//std::cout<<true_sliceID<<std::endl;
 			}
@@ -1209,14 +1209,14 @@ void ProtonThinSliceData::Loop() {
 					uf.pur_num_Int->Fill(reco_sliceID, mom_rw_minchi2);
 					uf.response_SliceID_Int.Fill(reco_sliceID, true_sliceID, mom_rw_minchi2);
 
-					uf.res_Int_reco.Fill(reco_sliceID, mom_rw_minchi2);
-					uf.res_Int_truth.Fill(true_sliceID);
+					uf.res_Int_reco->Fill(reco_sliceID, mom_rw_minchi2);
+					uf.res_Int_truth->Fill(true_sliceID);
 				}
 			} //if pass reco inel cuts
 			else{ //if NOT pass all basic cuts
 				if (!isTestSample) { 
 					uf.response_SliceID_Int.Miss(true_sliceID);
-					uf.res_Int_truth.Fill(true_sliceID);
+					uf.res_Int_truth->Fill(true_sliceID);
 					//uf.response_SliceID_Int.Miss(true_sliceID, mom_rw_minchi2);
 				}
 			} //if not pass all basic cuts
