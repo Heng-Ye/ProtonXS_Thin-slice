@@ -41,6 +41,7 @@
 #include <vector>
 #include <fstream>
 #include <string>
+#include "TVector3.h"
 
 #include "./cali/dedx_function_35ms.h"
 #include "./headers/BasicParameters.h"
@@ -48,10 +49,67 @@
 #include "./headers/SliceParams.h"
 #include "./headers/util.h"
 //#include "./headers/ThinSlice.h"
-#include "./headers/BackgroundStudy.h"
+//#include "./headers/BackgroundStudy.h"
+
+//#include "./headers/ThinSlice.h"
 
 using namespace std;
 using namespace ROOT::Math;
+
+/////////////////////////////////
+// define the parametric line equation
+void line(double t, const double *p, double &x, double &y, double &z) {
+	// a parametric line is define from 6 parameters but 4 are independent
+	// x0,y0,z0,z1,y1,z1 which are the coordinates of two points on the line
+	// can choose z0 = 0 if line not parallel to x-y plane and z1 = 1;
+	x = p[0] + p[1]*t;
+	y = p[2] + p[3]*t;
+	z = t;
+}
+
+bool first = true;
+
+// function Object to be minimized
+struct SumDistance2 {
+	// the TGraph is a data member of the object
+	TGraph2D *fGraph;
+
+	SumDistance2(TGraph2D *g) : fGraph(g) {}
+
+	// calculate distance line-point
+	double distance2(double x,double y,double z, const double *p) {
+		// distance line point is D= | (xp-x0) cross  ux |
+		// where ux is direction of line and x0 is a point in the line (like t = 0)
+		XYZVector xp(x,y,z);
+		XYZVector x0(p[0], p[2], 0. );
+		XYZVector x1(p[0] + p[1], p[2] + p[3], 1. );
+		XYZVector u = (x1-x0).Unit();
+		double d2 = ((xp-x0).Cross(u)).Mag2();
+		return d2;
+	}
+
+	// implementation of the function to be minimized
+	double operator() (const double *par) {
+		assert(fGraph != 0);
+		double * x = fGraph->GetX();
+		double * y = fGraph->GetY();
+		double * z = fGraph->GetZ();
+		int npoints = fGraph->GetN();
+		double sum = 0;
+		for (int i  = 0; i < npoints; ++i) {
+			double d = distance2(x[i],y[i],z[i],par);
+			sum += d;
+		}
+		if (first) {
+			std::cout << "Total Initial distance square = " << sum << std::endl;
+		}
+		first = false;
+		return sum;
+	}
+
+};
+/////////////////////////////////
+
 
 void ProtonEvtDisplay::Loop() {
 	if (fChain == 0) return;
@@ -83,10 +141,10 @@ void ProtonEvtDisplay::Loop() {
 	//ThinSlice config. ---------------------------------------------------------------------------------------------------//
 	//SetOutputFileName(Form("prod4a_bkgstudy_dx%dcm_%dslcs_largerbin.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4a_bkgstudy_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
-	//SetOutputFileName(Form("prod4a_thinslice_dx%dcm_%dslcs_1stHitKEff.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("evt_Demp_%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
 
 	//book histograms --//
-	BookHistograms();
+	//BookHistograms();
 
 	Long64_t nentries = fChain->GetEntries();
 	std::cout<<"nentries: "<<nentries<<std::endl;
@@ -153,6 +211,31 @@ void ProtonEvtDisplay::Loop() {
 			IsTrueEndOutside=true;
 		}
 
+		//First point of MCParticle entering TPC ------------------------------------------------------------------------//
+		bool is_beam_at_ff=false; //if the beam reach tpc
+		int key_reach_tpc=-99;
+		if (beamtrk_z->size()){
+			for (size_t kk=0; kk<beamtrk_z->size(); ++kk) {  //loop over all beam hits
+				double zpos_beam=beamtrk_z->at(kk);
+				if (zpos_beam>=0) {
+					key_reach_tpc=(int)kk;
+					break;
+				}
+			} //loop over all beam hits
+
+			//for (size_t kk=0; kk<beamtrk_z->size(); ++kk) {  //loop over all beam hits
+			//cout<<"["<<kk<<"] beamtrk_z:"<<beamtrk_z->at(kk) <<" beamtrk_Eng:"<<beamtrk_Eng->at(kk)<<endl;
+			//} //loop over all beam hits
+		} 
+		if (key_reach_tpc!=-99) { is_beam_at_ff=true; }
+		//cout<<"key_reach_tpc:"<<key_reach_tpc<<endl;	
+		//cout<<"is_beam_at_ff:"<<is_beam_at_ff<<endl;
+
+		double KE_ff=0;
+		if (is_beam_at_ff) KE_ff=1000.*beamtrk_Eng->at(key_reach_tpc); //unit:MeV
+		//KE_ff=ke_ff; //use KE exactly at z=0
+		//---------------------------------------------------------------------------------------------------------------//
+
 		//Get true trklen ---------------------------------------------------------------------------------------//
 		double range_true=-999;
 		int key_st = 0;
@@ -161,30 +244,111 @@ void ProtonEvtDisplay::Loop() {
 		//cout<<"beamtrk_z->size():"<<beamtrk_z->size()<<endl;
 		true_trklen_accum.reserve(beamtrk_z->size()); // initialize true_trklen_accum
 		//cout<<"ck0"<<endl;
-		for (int iz=0; iz<(int)beamtrk_z->size(); iz++) {
-			if (abs(beamtrk_z->at(iz)) < tmp_z){
-				tmp_z = abs(beamtrk_z->at(iz));
-				key_st = iz; // find the point where the beam enters the TPC (find the smallest abs(Z))
+		if (is_beam_at_ff) {
+			for (int iz=0; iz<(int)beamtrk_z->size(); iz++) {
+				if (abs(beamtrk_z->at(iz)) < tmp_z){
+					tmp_z = abs(beamtrk_z->at(iz));
+					key_st = iz; // find the point where the beam enters the TPC (find the smallest abs(Z))
+				}
+				true_trklen_accum[iz] = 0.; // initialize true_trklen_accum
 			}
-			//cout<<"ck0/"<<endl;
-			true_trklen_accum[iz] = 0.; // initialize true_trklen_accum
-			//cout<<"ck0///"<<endl;
-		}
-		//cout<<"ck1"<<endl;
-		for (int iz=key_st+1; iz<(int)beamtrk_z->size(); iz++){
-			if (iz == key_st+1) range_true = 0;
-			range_true += sqrt( pow(beamtrk_x->at(iz)-beamtrk_x->at(iz-1), 2)+
-					pow(beamtrk_y->at(iz)-beamtrk_y->at(iz-1), 2)+	
-					pow(beamtrk_z->at(iz)-beamtrk_z->at(iz-1), 2) );						    	
-			true_trklen_accum[iz] = range_true;
 		}
 
-		//cout<<"range_true:"<<range_true<<endl;
-		//cout<<"key_st:"<<key_st<<endl;
-		//for (size_t j=0; j<beamtrk_z->size(); ++j) { //MCParticle loop
-		//cout<<"beamtrk_z["<<j<<"]:"<<beamtrk_z->at(j)<<" beamtrk_Eng["<<j<<"]:"<<beamtrk_Eng->at(j)<<" true_trklen_accum["<<j<<"]:"<<true_trklen_accum[j]<<endl;
-		//} //MCParticle loop
-		//Get reco info ----------------------------------------------------------------------------------//
+		//fix on the truth length by adding distance between 1st tpc hit to front face ------------------------------------------------------//
+		//[1] 3D projection on TPC front face
+		double zproj_beam=0; //set beam z at ff
+		double yproj_beam=0; //ini. value
+		double xproj_beam=0; //ini. value
+		int n_fit=3; //num of points used for fitting
+                if (beamtrk_z->size()) {
+
+			int key_fit_st=0;
+			int key_fit_ed=-1+(int)beamtrk_z->size();
+			if (key_reach_tpc!=-99) {
+				key_fit_st=key_reach_tpc-1;
+				key_fit_ed=key_reach_tpc+1;
+			}
+			if (key_fit_st<0) key_fit_st=0;
+			if (key_fit_ed>(-1+(int)beamtrk_z->size())) key_fit_ed=-1+(int)beamtrk_z->size();	
+
+			cout<<"beamtrk_z->size():"<<beamtrk_z->size()<<endl;
+			cout<<"key_reach_tpc:"<<key_reach_tpc<<endl;
+			std::cout<<"key_fit_st-ed:"<<key_fit_st<<"-"<<key_fit_ed<<std::endl;
+
+			//start 3D line fit
+			TGraph2D *gr=new TGraph2D();
+			//cout<<"ck0"<<endl;
+   		  	//for (int N=key_fit_st; N<key_fit_ed; N++) {
+   		  	int nsize_fit=n_fit;
+			if ((1+(key_fit_ed-key_fit_st))<n_fit) nsize_fit=1+(key_fit_ed-key_fit_st);
+			if ((int)beamtrk_z->size()<=n_fit) nsize_fit=(int)beamtrk_z->size(); //in case really short track
+   		  	for (int N=0; N<nsize_fit; N++) {
+				gr->SetPoint(N, beamtrk_x->at(N+key_fit_st), beamtrk_y->at(N+key_fit_st), beamtrk_z->at(N+key_fit_st));
+   		    	}
+			//cout<<"ck1"<<endl;
+			//Initialization of parameters
+			//int N=(int)Z_RECO.size();
+			double ini_p1=(beamtrk_x->at(key_fit_ed)-beamtrk_x->at(key_fit_st))/(beamtrk_z->at(key_fit_ed)-beamtrk_z->at(key_fit_st));
+			double ini_p0=beamtrk_x->at(key_fit_st)-ini_p1*beamtrk_z->at(key_fit_st);
+			double ini_p3=beamtrk_y->at(key_fit_ed)-beamtrk_y->at(key_fit_st);
+			double ini_p2=beamtrk_y->at(key_fit_st)-ini_p3*beamtrk_z->at(key_fit_st);
+			//cout<<"ck2"<<endl;
+
+			ROOT::Fit::Fitter  fitter;
+			// make the functor objet
+			SumDistance2 sdist(gr);
+			ROOT::Math::Functor fcn(sdist,4);
+
+			// set the function and the initial parameter values
+  			double pStart[4]={ini_p0, ini_p1, ini_p2, ini_p3};   
+			fitter.SetFCN(fcn,pStart);
+			//cout<<"ck3"<<endl;
+
+			// set step sizes different than default ones (0.3 times parameter values)
+			for (int ik = 0; ik < 4; ++ik) fitter.Config().ParSettings(ik).SetStepSize(0.01);
+			//cout<<"ck4"<<endl;
+
+			bool ok = fitter.FitFCN();
+			if (!ok) {
+				Error("line3Dfit","Line3D Fit failed");
+				//return 1;
+			}
+			//cout<<"ck5"<<endl;
+				
+			const ROOT::Fit::FitResult & result = fitter.Result();
+			std::cout << "Total final distance square " << result.MinFcnValue() << std::endl;
+			result.Print(std::cout);
+			//cout<<"ck6"<<endl;
+				
+			// get fit parameters
+			const double * parFit = result.GetParams();
+			yproj_beam=result.Parameter(2)+result.Parameter(3)*zproj_beam;
+			xproj_beam=result.Parameter(0)+result.Parameter(1)*zproj_beam;
+			//cout<<"ck7"<<endl;
+
+			delete gr;
+		}
+
+
+		//[2] Range compensation -------------------------------------------------------
+		double range_true_patch=0;
+		if (is_beam_at_ff) {
+			//calculate distance 1st hit and pojected point at TPC front face
+			range_true_patch = sqrt( pow(beamtrk_x->at(key_reach_tpc)-xproj_beam, 2)+
+					pow(beamtrk_y->at(key_reach_tpc)-yproj_beam, 2)+	
+					pow(beamtrk_z->at(key_reach_tpc)-zproj_beam, 2) );
+			//range_true_patch=0; //no fix on true len
+
+			//true_trklen_accum
+			for (int iz=key_reach_tpc+1; iz<(int)beamtrk_z->size(); iz++) {
+				if (iz == key_reach_tpc+1) range_true = range_true_patch;
+					range_true += sqrt( pow(beamtrk_x->at(iz)-beamtrk_x->at(iz-1), 2)+
+						pow(beamtrk_y->at(iz)-beamtrk_y->at(iz-1), 2)+	
+						pow(beamtrk_z->at(iz)-beamtrk_z->at(iz-1), 2) );						    	
+					true_trklen_accum[iz] = range_true;
+			}						    	
+		}
+
 
 		//Evt Classification =====================================================================//
 		//signal -----------------------------//
@@ -267,6 +431,7 @@ void ProtonEvtDisplay::Loop() {
 		//cosine_theta/cut ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 		bool IsCosine=false;
 		bool IsFlip=false;
+		bool IsMisIDP=false;
 		double cosine_beam_spec_primtrk=-99; 
 		//cosine_beam_spec_primtrk=beamDirx_spec->at(0)*primaryStartDirection[0]+beamDiry_spec->at(0)*primaryStartDirection[1]+beamDirz_spec->at(0)*primaryStartDirection[2]; //cosine between beam_spec and primary trk direction(trk before SCE corr)
 
@@ -292,6 +457,7 @@ void ProtonEvtDisplay::Loop() {
 			}
 			//if (cosine_beam_spec_primtrk>cosine_beam_primtrk_min) { IsCosine=true; }
 			if (cosine_beam_spec_primtrk>costh_min&&cosine_beam_spec_primtrk<costh_max) { IsCosine=true; }
+			if (cosine_beam_spec_primtrk<0.9) { IsMisIDP=true; }
 			//reco_cosineTheta->Fill(cosine_beam_spec_primtrk);
 			//Fill1DHist(reco_cosineTheta, cosine_beam_spec_primtrk);
 			//if (kinel) reco_cosineTheta_inel->Fill(cosine_beam_spec_primtrk);
@@ -332,7 +498,7 @@ void ProtonEvtDisplay::Loop() {
 		bool IsBQ=false;
 		if (IsCosine&&IsPos) IsBQ=true;
 
-		if (IsPos&&IsCaloSize&&IsPandoraSlice) {
+		//if (IsPos&&IsCaloSize&&IsPandoraSlice) {
 			//Fill1DHist(reco_cosineTheta_Pos, cosine_beam_spec_primtrk);
 			//if (kinel) Fill1DHist(reco_cosineTheta_Pos_inel, cosine_beam_spec_primtrk);
 			//if (kel) Fill1DHist(reco_cosineTheta_Pos_el, cosine_beam_spec_primtrk);
@@ -342,7 +508,7 @@ void ProtonEvtDisplay::Loop() {
 			//if (kMIDmu) Fill1DHist(reco_cosineTheta_Pos_midmu, cosine_beam_spec_primtrk);
 			//if (kMIDeg) Fill1DHist(reco_cosineTheta_Pos_mideg, cosine_beam_spec_primtrk);
 			//if (kMIDother) Fill1DHist(reco_cosineTheta_Pos_midother, cosine_beam_spec_primtrk);
-		}
+		//}
 
 
 		//reco calorimetry ---------------------------------------------------------------------------//
@@ -462,6 +628,7 @@ void ProtonEvtDisplay::Loop() {
 		//Reco stopping/Inel p cut ---------------------------------------------------------------------------------------------------------//
 		bool IsRecoStop=false;
 		bool IsRecoInEL=false;
+		bool IsRecoEL=false;
 		double mom_beam_spec=-99; mom_beam_spec=beamMomentum_spec->at(0);
 		//double range_reco=-99; if (!primtrk_range->empty()) range_reco=primtrk_range->at(0); //reco primary trklen
 		double csda_val_spec=csda_range_vs_mom_sm->Eval(mom_beam_spec);
@@ -479,7 +646,6 @@ void ProtonEvtDisplay::Loop() {
 		} //stopping p region
 
 
-
 		//kinetic energies -------------------------------------------------------------------//
 		//double ke_beam=1000.*p2ke(mom_beam); //ke_beam
 		double ke_beam_spec=p2ke(mom_beam_spec); //ke_beam_spec [GeV]
@@ -491,30 +657,6 @@ void ProtonEvtDisplay::Loop() {
 			ke_simide+=primtrk_true_edept->at(hk);
 		} //loop over simIDE points
 
-		//First point of MCParticle entering TPC ------------------------------------------------------------------------//
-		bool is_beam_at_ff=false; //if the beam reach tpc
-		int key_reach_tpc=-99;
-		if (beamtrk_z->size()){
-			for (size_t kk=0; kk<beamtrk_z->size(); ++kk) {  //loop over all beam hits
-				double zpos_beam=beamtrk_z->at(kk);
-				if (zpos_beam>=0) {
-					key_reach_tpc=(int)kk;
-					break;
-				}
-			} //loop over all beam hits
-
-			//for (size_t kk=0; kk<beamtrk_z->size(); ++kk) {  //loop over all beam hits
-			//cout<<"["<<kk<<"] beamtrk_z:"<<beamtrk_z->at(kk) <<" beamtrk_Eng:"<<beamtrk_Eng->at(kk)<<endl;
-			//} //loop over all beam hits
-		} 
-		if (key_reach_tpc!=-99) { is_beam_at_ff=true; }
-		//cout<<"key_reach_tpc:"<<key_reach_tpc<<endl;	
-		//cout<<"is_beam_at_ff:"<<is_beam_at_ff<<endl;
-
-		double KE_ff=0;
-		//if (is_beam_at_ff) KE_ff=1000.*beamtrk_Eng->at(key_reach_tpc); //unit:MeV
-		KE_ff=ke_ff; //use KE exactly at z=0
-		//---------------------------------------------------------------------------------------------------------------//
 
 		//Slice ID definition ---------------------------------------------------------------------------------------------------------//
 		//true slice ID
@@ -537,16 +679,33 @@ void ProtonEvtDisplay::Loop() {
 		//define true labels
 		//(MC/data) vs reco Slice ID using bkg-rich sample
 		//[1]misID:p rich sample
-		if (IsPos&&IsCaloSize&&IsPandoraSlice) { //if Pos
-			if (kinel&&reco_sliceID<=1) {
-				TString tit=Form("run%d evt:%d trackID:%d",run,event,primaryID);
+		//if (IsPos&&IsCaloSize&&IsPandoraSlice) { //if Pos
+		//if (IsBQ&&IsCaloSize&&IsPandoraSlice) { //if Pos
+		//if (!IsBQ&&IsCaloSize&&IsPandoraSlice&&range_reco<=10) { //if not BQ
+		//if (IsBQ&&IsCaloSize&&IsPandoraSlice&&range_reco<=20&&range_reco>10) { //if BQ
+		//if (beamtrk_z->size()) { //if BQ
+		//if (!beamtrk_Eng->empty()) { //if true container not empty
+		//if (!beamtrk_Eng->empty()&&IsCaloSize&&IsPandoraSlice) { //if true container not empty
+		if (!beamtrk_Eng->empty()) { //if true container not empty
+			//if (kinel&&reco_sliceID<=1) {
+			//if (reco_sliceID<=5) {
+			//if (kMIDp) {
+			//if (IsPureEL&&range_reco>=100) {
+			//if (IsPureInEL&&range_true>=26&&range_true<28) {
+			//if (IsPureInEL&&range_true>12&&range_true<13) {
+			//if (IsPureInEL&&range_true>4&&range_true<5.5) {
+			//if (IsPureInEL&&range_true>=11&&range_true<15) {
+			//if (IsMisIDP&&range_reco<=5.&&IsPos&&IsCaloSize&&IsPandoraSlice&&IsRecoInEL) {
+			if (IsPureInEL&&true_endz<4.&&range_true<1&&key_reach_tpc>=0) { //is pure inelastic
+
+				TString tit;
+				tit=Form("run%d subrun:%d evt:%d trackID:%d",run,subrun,event,primaryID); 
+
 				TString fig_out;
-				if (cosine_beam_spec_primtrk<0.9) fig_out=Form("/dune/data2/users/hyliao/evt_display/proton_cosTheta/trueinel_cosThetalt0.9/run%d_event%d_trackID%d_pdg%d_trklen%.2fcm_costheta%.2f.png",run,event,primaryID,beamtrackPdg,range_reco,cosine_beam_spec_primtrk);
-				if (cosine_beam_spec_primtrk>=0.9) fig_out=Form("/dune/data2/users/hyliao/evt_display/proton_cosTheta/trueinel_cosThetage0.9/run%d_event%d_trackID%d_pdg%d_trklen%.2fcm_costheta%.2f.png",run,event,primaryID,beamtrackPdg,range_reco,cosine_beam_spec_primtrk);
+				fig_out=Form("/dune/data2/users/hyliao/evt_display/short_trk_inel/run%d_event%d_trackID%d_pdg%d_trklen%.2fcm_costheta%.2f.png",run,event,primaryID,beamtrackPdg,range_reco,cosine_beam_spec_primtrk);
 
 				gStyle->SetOptStat(0); //no statistics box
 				gStyle->SetFrameBorderSize(3);
-
 
 				TCanvas *c1 = new TCanvas(Form("c1"),tit.Data(),1600,800);
 				//cnt_canvas++;
@@ -556,20 +715,27 @@ void ProtonEvtDisplay::Loop() {
 
 				//draw track in y-z view
 				//after entering TPC
-				TGraph *gr_trk_yz=new TGraph(primtrk_hitz->size(), &primtrk_hitz->at(0), &primtrk_hity->at(0));
-				TGraph *gr_trk_xz=new TGraph(primtrk_hitz->size(), &primtrk_hitz->at(0), &primtrk_hitx->at(0));
-				gr_trk_yz->SetMarkerStyle(20);
-				gr_trk_xz->SetMarkerStyle(20);
-				gr_trk_yz->SetMarkerColor(2);
-				gr_trk_xz->SetMarkerColor(2);
+				TGraph *gr_trk_yz;
+				TGraph *gr_trk_xz;
+				TGraph *gr_trkend_yz;
+				TGraph *gr_trkend_xz;
 
-				//after entering TPC, trkend
-				TGraph *gr_trkend_yz=new TGraph(1, &primtrk_hitz->at(-1+primtrk_hitz->size()), &primtrk_hity->at(-1+primtrk_hitz->size()));
-				TGraph *gr_trkend_xz=new TGraph(1, &primtrk_hitz->at(-1+primtrk_hitz->size()), &primtrk_hitx->at(-1+primtrk_hitz->size()));
-				gr_trkend_yz->SetMarkerStyle(20);
-				gr_trkend_xz->SetMarkerStyle(20);
-				gr_trkend_yz->SetMarkerColor(3);
-				gr_trkend_xz->SetMarkerColor(3);
+				if (primtrk_hitz->size()) { //if reco container not empty
+					gr_trk_yz=new TGraph(primtrk_hitz->size(), &primtrk_hitz->at(0), &primtrk_hity->at(0));
+					gr_trk_xz=new TGraph(primtrk_hitz->size(), &primtrk_hitz->at(0), &primtrk_hitx->at(0));
+					gr_trk_yz->SetMarkerStyle(20);
+					gr_trk_xz->SetMarkerStyle(20);
+					gr_trk_yz->SetMarkerColor(2);
+					gr_trk_xz->SetMarkerColor(2);
+
+					//after entering TPC, trkend
+					gr_trkend_yz=new TGraph(1, &primtrk_hitz->at(-1+primtrk_hitz->size()), &primtrk_hity->at(-1+primtrk_hitz->size()));
+					gr_trkend_xz=new TGraph(1, &primtrk_hitz->at(-1+primtrk_hitz->size()), &primtrk_hitx->at(-1+primtrk_hitz->size()));
+					gr_trkend_yz->SetMarkerStyle(20);
+					gr_trkend_xz->SetMarkerStyle(20);
+					gr_trkend_yz->SetMarkerColor(3);
+					gr_trkend_xz->SetMarkerColor(3);
+				} //if reco container not empty
 
 
 				//before tpc
@@ -582,65 +748,117 @@ void ProtonEvtDisplay::Loop() {
 				gr_btrk_yz->SetMarkerColor(4);
 				gr_btrk_xz->SetMarkerColor(4);
 
-				TH2D *h2d_yz=new TH2D("h2d_yz","",190,-150,40,120,440-30,440+30); //bkg
+				//TH2D *h2d_yz=new TH2D("h2d_yz","",170,-50,120,120,350,450); //bkg
+				TH2D *h2d_yz=new TH2D("h2d_yz","",25, -5, 20, 120, 350, 450); //bkg
 				c1->cd(1);
 				h2d_yz->GetXaxis()->SetTitle("Z [cm]");
 				h2d_yz->GetYaxis()->SetTitle("Y [cm]");
 				h2d_yz->SetTitle(tit.Data());
 				h2d_yz->Draw();
-				gr_trk_yz->Draw("p same");
-				gr_btrk_yz->Draw("p same");
-				gr_trkend_yz->Draw("p same");
+				if (primtrk_hitz->size()) { //if reco container not empty
+					gr_trk_yz->Draw("p same");
+				  	gr_btrk_yz->Draw("p same");
+				 	//gr_trkend_yz->Draw("p same");
+				} //if reco container not empty
 
-				TH2D *h2d_xz=new TH2D("h2d_xz","",190,-150,40,120,-30-30,-30+30);
+				//true vertex
+				//if (interactionProcesslist->size()){
+				TGraph **mgr_vtx_yz=new TGraph*[interactionProcesslist->size()]; 
+				for (size_t k=0; k<interactionProcesslist->size(); ++k) {
+				  try {
+					mgr_vtx_yz[k]=new TGraph(1, &interactionZ->at(k), &interactionY->at(k));
+					mgr_vtx_yz[k]->SetMarkerSize(2);
+					if(interactionProcesslist->at(k)=="hadElastic") {
+						mgr_vtx_yz[k]->SetMarkerStyle(4);
+						mgr_vtx_yz[k]->SetMarkerColor(6);
+					}
+					if(interactionProcesslist->at(k)=="protonInelastic") {
+						mgr_vtx_yz[k]->SetMarkerStyle(5);
+						mgr_vtx_yz[k]->SetMarkerColor(6);
+					}
+					c1->cd(1); 
+					mgr_vtx_yz[k]->Draw("p same");
+				  }
+				  catch (const std::out_of_range & ex) {
+			   	    std::cout << "out_of_range Exception Caught :: interactionProcesslist" << ex.what() << std::endl;
+			   	  }
+				}
+
+				cout<<"ck2"<<""<<endl;
+
+				//TH2D *h2d_xz=new TH2D("h2d_xz","",170,-50,120,120,-120,-10);
+				TH2D *h2d_xz=new TH2D("h2d_xz","",25, -5, 20,120,-120,-10);
 				c1->cd(2);
 				h2d_xz->GetXaxis()->SetTitle("Z [cm]");
 				h2d_xz->GetYaxis()->SetTitle("X [cm]");
 				TString str_right;
-				if (IsFlip==false) str_right=Form("reco_trklen:%.1f cm | true_trklen:%.1f cm | SliceID:%d | cos#theta:%.2f", range_reco, range_true, reco_sliceID, cosine_beam_spec_primtrk);
-				if (IsFlip==true) str_right=Form("reco_trklen:%.1f cm | true_trklen:%.1f cm | SliceID:%d | cos#theta:-%.2f", range_reco, range_true, reco_sliceID, cosine_beam_spec_primtrk);
+				//if (IsFlip==false) { 
+					//str_right=Form("reco_len:%.1f cm|true_len:%.1f cm|SID:%d|cos#Theta:%.2f|#chi^{2}:%.2f|ntrklen:%.2f", range_reco, range_true, reco_sliceID, cosine_beam_spec_primtrk,pid,range_reco/csda_val_spec);
+					//str_right=Form("true_len:%.1f cm|true_endz:%.1f|reco_len:%.1f cm|cos#Theta:%.2f|#chi^{2}:%.2f|ntrklen:%.2f", range_true, true_endz, range_reco, cosine_beam_spec_primtrk,pid,range_reco/csda_val_spec);
+					//str_right=Form("true_len:%.1f cm|true_endz:%.1f|reco_len:%.1f cm| KE_ff:%.1f MeV| cos#Theta:%.2f", range_true, true_endz, range_reco, KE_ff, cosine_beam_spec_primtrk);
+					if (key_reach_tpc>=0) str_right=Form("true_len:%.1f cm|true_endz:%.1f| KE_ff:%.1f MeV| Z_st:%.1f cm| range_patch:%.2f cm", range_true, true_endz, KE_ff, beamtrk_z->at(key_reach_tpc),range_true_patch);
+					else str_right=Form("true_len:%.1f cm|true_endz:%.1f| KE_ff:%.1f MeV| beam NOT reach TPC", range_true, true_endz, KE_ff);
 
+				//}
+				//if (IsFlip==true) { 
+					//str_right=Form("reco_len:%.1f cm | true_trklen:%.1f cm | SliceID:%d | cos#theta:-%.2f", range_reco, range_true, reco_sliceID, cosine_beam_spec_primtrk);
+				//}
 				h2d_xz->SetTitle(str_right.Data());
 				h2d_xz->Draw();
 				gr_trk_xz->Draw("p same");
 				gr_btrk_xz->Draw("p same");
-				gr_trkend_xz->Draw("p same");
+				//gr_trkend_xz->Draw("p same");
 
+				cout<<"ck3"<<"\n"<<endl;
+
+				TGraph **mgr_vtx_xz=new TGraph*[interactionProcesslist->size()]; 
+				for (size_t k=0; k<interactionProcesslist->size(); ++k) {
+				  try {
+					mgr_vtx_xz[k]=new TGraph(1, &interactionZ->at(k), &interactionX->at(k));
+					mgr_vtx_xz[k]->SetMarkerSize(2);
+					if(interactionProcesslist->at(k)=="hadElastic") {
+						mgr_vtx_xz[k]->SetMarkerStyle(4);
+						mgr_vtx_xz[k]->SetMarkerColor(6);
+					}
+					if(interactionProcesslist->at(k)=="protonInelastic") {
+						mgr_vtx_xz[k]->SetMarkerStyle(5);
+						mgr_vtx_xz[k]->SetMarkerColor(6);
+					} 
+					c1->cd(2);
+					mgr_vtx_xz[k]->Draw("p same");
+				  }
+				  catch (const std::out_of_range & ex) {
+			   	    std::cout << "out_of_range Exception Caught :: interactionProcesslist" << ex.what() << std::endl;
+			   	  }
+				}
 
 				c1->Modified(); c1->Update();
 				c1->Print(fig_out.Data());
 
+
+				//for (size_t k=0; k<interactionProcesslist->size(); ++k) {
+					//delete mgr_vtx_yz[k];
+					//delete mgr_vtx_xz[k];
+				//}
+
+				delete c1;
+				delete gr_trk_yz;
+				delete gr_trk_xz;
+				//delete gr_trkend_yz;
+				//delete gr_trkend_xz;
+				delete gr_btrk_yz;
+				delete gr_btrk_xz;
+
+				delete h2d_yz;
+				delete h2d_xz;
+
 			}
+
+
+
 		} //if Pos
 
 		//some ke calc. -------------------------------------------------------------------------------------//
-/*
-		if (IsBQ&&IsCaloSize&&IsPandoraSlice) { //if calo size not empty
-			if (IsRecoStop) { //reco_stop 
-				for (size_t h=0; h<primtrk_dedx->size(); ++h) { //loop over reco hits of a track
-					double hitx_reco=primtrk_hitx->at(h);
-					double hity_reco=primtrk_hity->at(h);
-					double hitz_reco=primtrk_hitz->at(h);
-					double resrange_reco=primtrk_resrange->at(h);
-
-					double dqdx=primtrk_dqdx->at(h);
-					double pitch=primtrk_pitch->at(h);
-
-					int wid_reco=primtrk_wid->at(-1+primtrk_wid->size()-h);
-					double pt_reco=primtrk_pt->at(-1+primtrk_wid->size()-h);
-
-					//if (wid_reco==-9999) continue; //outside TPC
-					if (wid_reco>wid_reco_max) { 
-						wid_reco_max=wid_reco;
-						index_reco_endz=(int)-1+primtrk_wid->size()-h;
-					}
-
-					double cali_dedx=0.;
-					cali_dedx=dedx_function_35ms(dqdx, hitx_reco, hity_reco, hitz_reco);
-				} //loop over reco hits of a track
-			} //reco_stop
-		} //if calo size not empty
-*/
 
 
 

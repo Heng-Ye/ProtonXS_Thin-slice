@@ -151,6 +151,16 @@ TH1D *dKE_rrange2_ff_recostop;
 TH2D *KE_range_ff_recostop;
 TH2D *KE_range_calo_recostop;
 
+
+//KE Truth info
+TH1D *KEtrue_Beam_inel;
+TH1D *KEtrue_ff_inel;
+TH2D *KEtrue_z_inel;
+TH2D *KEtrue_range_inel;
+TH2D *true_z_range_inel;
+TH3D *true_z_range_KEtrue_inel;
+
+
 //Track length histograms -----------------------------------------------------------------//
 //true range
 //no cut
@@ -326,6 +336,13 @@ TH2D *trklen_ke_true_el;
 TH1D *h_true_incidents;
 TH1D *h_true_interactions;
 
+//Reco E-dept [Inel]
+TH2D *reco_dedx_trklen_inel;
+TH2D *reco_de_trklen_inel;
+TH2D *reco_dx_trklen_inel;
+
+
+
 void BookHistograms() { //BookHistograms
 	outputFile = TFile::Open(fOutputFileName.c_str(), "recreate"); //open output file
 
@@ -481,9 +498,9 @@ void BookHistograms() { //BookHistograms
 	rangereco_dedxreco_TrueEL=new TH2D("rangereco_dedxreco_TrueEL","",200,0,100,100,0,50);
 
 	//KE calc using reco stopping protons ----------------------------------------------------//
-	int n_ke=140;
+	int n_ke=500;
 	float ke_min=0;
-	float ke_max=700;
+	float ke_max=1000;
 	KE_ff_recostop=new TH1D("KE_ff_recostop","", n_ke, ke_min, ke_max); KE_ff_recostop->Sumw2();
 	KE_calo_recostop=new TH1D("KE_calo_recostop","",n_ke, ke_min, ke_max); KE_calo_recostop->Sumw2();
 	KE_rrange_recostop=new TH1D("KE_rrange_recostop", "", n_ke, ke_min, ke_max); KE_rrange_recostop->Sumw2();
@@ -500,6 +517,18 @@ void BookHistograms() { //BookHistograms
 	KE_range_calo_recostop=new TH2D("KE_range_calo_recostop","",n_ke, ke_min, ke_max, n_ke, ke_min, ke_max); 
 	KE_range_calo_recostop->GetXaxis()->SetTitle("KE_{range} [MeV]"); KE_range_calo_recostop->GetYaxis()->SetTitle("KE_{calo} [MeV]"); 
 	KE_range_calo_recostop->Sumw2();
+
+
+	//KEtruth
+	KEtrue_Beam_inel=new TH1D("KEtrue_Beam_inel","",n_ke, ke_min, ke_max); KEtrue_Beam_inel->Sumw2();
+	KEtrue_ff_inel=new TH1D("KEtrue_ff_inel", "", n_ke, ke_min, ke_max); KEtrue_ff_inel->Sumw2();
+	KEtrue_z_inel=new TH2D("KEtrue_z_inel","",300,0,150, 500,0,1000);
+	KEtrue_range_inel=new TH2D("KEtrue_range_inel","",300,0,150, 500,0,1000);
+	true_z_range_inel=new TH2D("true_z_range_inel","",300,0,150, 300,0,150);
+	true_z_range_KEtrue_inel=new TH3D("true_z_range_KEtrue_inel","",300,0,150, 300,0,150, 500,0,1000);
+	true_z_range_KEtrue_inel->GetXaxis()->SetTitle("z [cm]");
+	true_z_range_KEtrue_inel->GetYaxis()->SetTitle("range [cm]");
+	true_z_range_KEtrue_inel->GetZaxis()->SetTitle("KE [MeV]");
 
 	//trklen -----------------------------------------------------------------------------------------------------//
         int n_trklen=34;
@@ -690,6 +719,16 @@ void BookHistograms() { //BookHistograms
 	h_true_interactions=new TH1D("h_true_interactions","true_interactions", nthinslices, 0, nthinslices-1);
 	h_true_incidents->Sumw2();
 	h_true_interactions->Sumw2();
+
+
+	//reco E-dept
+	reco_dedx_trklen_inel=new TH2D("reco_dedx_trklen_inel","reco_dedx_trklen_inel",150,0,150, 100,0,100);
+	reco_de_trklen_inel=new TH2D("reco_de_trklen_inel","reco_de_trklen_inel",150,0,150, 100,0,100);
+	reco_dx_trklen_inel=new TH2D("reco_dx_trklen_inel","reco_dx_trklen_inel",150,0,150,100,0,10);
+	reco_dedx_trklen_inel->Sumw2();
+	reco_de_trklen_inel->Sumw2();
+	reco_dx_trklen_inel->Sumw2();
+
 	
 
 } //BookHistograms

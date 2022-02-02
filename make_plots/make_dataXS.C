@@ -952,12 +952,26 @@ void make_dataXS() {
 		htmp->SetFillColor(0);
 		htmp->SetFillStyle(3353);
 
+		TH1D *htmp2=(TH1D* )f_mc->Get(Form("reco_incE_%d",i));
+		htmp2->SetLineColor(2);
+		htmp2->SetLineWidth(2);
+		htmp2->Scale((float)htmp->Integral()/(float)htmp2->Integral());
+
 		htmp->Draw("hist");
+		htmp2->Draw("hist same");
 
         	TLegend *leg_slc = new TLegend(0.6,0.6,0.9,0.85);
         	leg_slc->SetFillStyle(0);
-        	leg_slc->AddEntry((TObject*)0, Form("<KE>:%.2f MeV",htmp->GetMean()), "");
-        	leg_slc->AddEntry((TObject*)0, Form("RMS KE:%.2f MeV",htmp->GetRMS()), "");
+
+		TLegendEntry* text_ke[10];		
+		text_ke[0]=leg_slc->AddEntry(htmp, Form("True KE"), "l");
+        	text_ke[1]=leg_slc->AddEntry((TObject*)0, Form("True <KE>:%.2f MeV",htmp->GetMean()), ""); 
+        	text_ke[2]=leg_slc->AddEntry((TObject*)0, Form("True RMS KE:%.2f MeV",htmp->GetRMS()), ""); 
+
+		text_ke[3]=leg_slc->AddEntry(htmp2, Form("Reco KE"), "l"); text_ke[3]->SetTextColor(2);
+        	text_ke[4]=leg_slc->AddEntry((TObject*)0, Form("Reco <KE>:%.2f MeV",htmp2->GetMean()), ""); text_ke[4]->SetTextColor(2);
+        	text_ke[5]=leg_slc->AddEntry((TObject*)0, Form("Reco RMS KE:%.2f MeV",htmp2->GetRMS()), ""); text_ke[5]->SetTextColor(2);
+
 		leg_slc->Draw();
 
 		c_slc->Print(str_slcslc.Data());
