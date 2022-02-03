@@ -161,6 +161,17 @@ TH2D *true_z_range_inel;
 TH3D *true_z_range_KEtrue_inel;
 
 
+//KE reco info
+TH2D *KEreco_z_inel;
+TH2D *KEreco_range_inel;
+TH2D *reco_z_range_inel;
+
+TH2D *dEdx_range_inel;
+TH2D *dx_range_inel;
+TH2D *dE_range_inel;
+
+
+
 //Track length histograms -----------------------------------------------------------------//
 //true range
 //no cut
@@ -348,8 +359,8 @@ void BookHistograms() { //BookHistograms
 
 	//XS histograms -------------------------------------------------------------------------------------------------------------------------------------------------------//
 	for (int i = 0; i<nthinslices; ++i){
-		reco_incE[i] = new TH1D(Form("reco_incE_%d",i),Form("Reco incident energy, %.1f < z < %.1f (cm)",i*thinslicewidth, (i+1)*thinslicewidth), nbinse, 0, 1200.);
-		true_incE[i] = new TH1D(Form("true_incE_%d",i),Form("True incident energy, %.1f < z < %.1f (cm)",i*thinslicewidth, (i+1)*thinslicewidth), nbinse, 0, 1200.);
+		reco_incE[i] = new TH1D(Form("reco_incE_%d",i),Form("Reco incident energy, %.1f < length < %.1f (cm)",i*thinslicewidth, (i+1)*thinslicewidth), nbinse, 0, 1200.);
+		true_incE[i] = new TH1D(Form("true_incE_%d",i),Form("True incident energy, %.1f < length < %.1f (cm)",i*thinslicewidth, (i+1)*thinslicewidth), nbinse, 0, 1200.);
 		reco_incE[i]->Sumw2();
 		true_incE[i]->Sumw2();
 	}
@@ -519,16 +530,29 @@ void BookHistograms() { //BookHistograms
 	KE_range_calo_recostop->Sumw2();
 
 
-	//KEtruth
+	//KEtruth info
+	int n_range=300;
+	float range_min=0;
+	float range_max=150;
 	KEtrue_Beam_inel=new TH1D("KEtrue_Beam_inel","",n_ke, ke_min, ke_max); KEtrue_Beam_inel->Sumw2();
 	KEtrue_ff_inel=new TH1D("KEtrue_ff_inel", "", n_ke, ke_min, ke_max); KEtrue_ff_inel->Sumw2();
-	KEtrue_z_inel=new TH2D("KEtrue_z_inel","",300,0,150, 500,0,1000);
-	KEtrue_range_inel=new TH2D("KEtrue_range_inel","",300,0,150, 500,0,1000);
-	true_z_range_inel=new TH2D("true_z_range_inel","",300,0,150, 300,0,150);
-	true_z_range_KEtrue_inel=new TH3D("true_z_range_KEtrue_inel","",300,0,150, 300,0,150, 500,0,1000);
+	KEtrue_z_inel=new TH2D("KEtrue_z_inel","", n_range, range_min, range_max, n_ke,ke_min,ke_max);
+	KEtrue_range_inel=new TH2D("KEtrue_range_inel","", n_range, range_min, range_max, n_ke,ke_min,ke_max);
+	true_z_range_inel=new TH2D("true_z_range_inel","", n_range, range_min, range_max,  n_range, range_min, range_max);
+	true_z_range_KEtrue_inel=new TH3D("true_z_range_KEtrue_inel","", n_range, range_min, range_max, n_range, range_min, range_max, n_ke,ke_min,ke_max);
 	true_z_range_KEtrue_inel->GetXaxis()->SetTitle("z [cm]");
 	true_z_range_KEtrue_inel->GetYaxis()->SetTitle("range [cm]");
 	true_z_range_KEtrue_inel->GetZaxis()->SetTitle("KE [MeV]");
+
+	//KEreco info
+	KEreco_z_inel=new TH2D("KEreco_z_inel","", n_range, range_min, range_max, n_ke,ke_min,ke_max);
+	KEreco_range_inel=new TH2D("KEreco_range_inel","", n_range, range_min, range_max, n_ke,ke_min,ke_max);
+	reco_z_range_inel=new TH2D("reco_z_range_inel","", n_range, range_min, range_max,  n_range, range_min, range_max);
+
+	dEdx_range_inel=new TH2D("dEdx_range_inel","", n_range, range_min, range_max,1000,0,100);
+	dx_range_inel=new TH2D("dx_range_inel","", n_range, range_min, range_max, 10000, 0, 100);
+	dE_range_inel=new TH2D("dE_range_inel","", n_range, range_min, range_max, 5000, 0, 500);
+
 
 	//trklen -----------------------------------------------------------------------------------------------------//
         int n_trklen=34;
