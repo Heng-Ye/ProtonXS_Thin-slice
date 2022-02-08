@@ -19,6 +19,10 @@ TString conv_path="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysi
 TFile *fke_dedx=new TFile(Form("%sproton_dedx_ke_MeV.root", conv_path.Data()));
 TGraph *dedx_vs_ke_sm=(TGraph *)fke_dedx->Get("dedx_vs_ke_sm");
 
+TFile *fKE_dEdx=new TFile(Form("%sproton_ydedx_xke.root", conv_path.Data()));
+TGraph *dEdx_vs_KE_sm=(TGraph *)fKE_dEdx->Get("dEdx_vs_KE_sm"); //x:KE in MeV; y:dE/dx in MeV/cm
+
+
 //Read file of csda range versus momentum --------------------------------------//
 TFile *fmom_csda=new TFile(Form("%sproton_mom_csda_converter.root", conv_path.Data()));
 TGraph *csda_range_vs_mom_sm=(TGraph *)fmom_csda->Get("csda_range_vs_mom_sm");
@@ -150,7 +154,7 @@ TF1* VFit(TH1D* h, Int_t col) {
         g->SetLineStyle(2);
         g->SetLineWidth(2);
 
-       h->Fit("g","rem+");
+       h->Fit("g","remn");
        return g;
 }
 
