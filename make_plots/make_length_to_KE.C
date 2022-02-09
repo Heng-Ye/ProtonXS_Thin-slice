@@ -4,7 +4,8 @@
 
 double mass_proton = 938.272046; //proton [unit: MeV/c^2]
 double P_in_proton = 1000.; //MeV
-double KE_in_proton=sqrt(pow(P_in_proton,2) + pow(mass_proton,2) ) - mass_proton;
+//double KE_in_proton=sqrt(pow(P_in_proton,2) + pow(mass_proton,2) ) - mass_proton;
+double KE_in_proton=700;
 
 void hist_bethe_mean_distance(double E_init, double mass_particle, TH1D* h_bethe ){
 
@@ -19,7 +20,6 @@ void hist_bethe_mean_distance(double E_init, double mass_particle, TH1D* h_bethe
 
 
 void hist_NIST(double E_init, TH1D* h_bethe){
-
 	for(int i=1; i <= h_bethe->GetNbinsX(); i++){
 		h_bethe->SetBinContent( i, dEdx_vs_KE_sm->Eval(E_init));
 		h_bethe->SetBinError(i, 0.001 );
@@ -28,6 +28,62 @@ void hist_NIST(double E_init, TH1D* h_bethe){
 
 	};
 };
+
+
+double Len2KE(double len, double ke_ini) {
+
+	float len_min=0;
+	float len_max=300;
+	int n_len=300;
+
+	//create the map to convert trklen to Edept
+	TH1D* dEdx = new TH1D("dEdx", "", n_len, len_min, len_max);
+	hist_NIST(ke_ini, dEdx); //loading in dE/dx map based on KE_int
+	TH1* cumulative = dEdx->GetCumulative();
+
+	int bin_cen=0;
+	int bin_b=0;
+	int bin_a=0;
+	//int n_len=cumulative->GetNbinsX();
+	
+	std::cout<<"\n\nlen="<<len<<std::endl;
+	std::cout<<"n_len="<<n_len<<std::endl;
+
+	//get Edept
+	bin_cen=cumulative->GetXaxis()->FindBin(len);
+	bin_b=bin_cen-1;
+	bin_a=bin_cen+1;
+	if (bin_a>n_len) bin_a=n_len;
+	if (bin_b<0) bin_b=0;
+
+	bin_cen=cumulative->GetXaxis()->FindBin(len);
+	bin_b=bin_cen-1;
+	bin_a=bin_cen+1;
+	if (bin_a>n_len) bin_a=n_len;
+	if (bin_b<0) bin_b=0;
+
+        double dept_cen=cumulative->GetBinContent(bin_cen);
+	double dept_b=cumulative->GetBinContent(bin_b);
+	double dept_a=cumulative->GetBinContent(bin_a);
+	
+	double m_dept=(dept_a-dept_b)/(cumulative->GetBinCenter(bin_a)-cumulative->GetBinCenter(bin_b));
+	double b_dept=dept_a-m_dept*cumulative->GetBinCenter(bin_a);
+	double ke_len=b_dept+m_dept*len; 
+
+	if (ke_len>ke_ini) {
+	  std::cout<<"NOT Possible conversion!"<<std::endl;
+	  ke_len=ke_ini;
+	}
+
+	cout<<"\n\nTest!:: dept_cen="<<dept_cen<<" MeV"<<""<<endl;
+	cout<<"            ke_len="<<ke_len<<" MeV"<<""<<endl;
+	cout<<"            dept_b="<<dept_b<<" MeV"<<""<<endl;
+	cout<<"            dept_a="<<dept_a<<" MeV"<<"\n\n"<<endl;
+
+	return ke_len;
+
+}
+
 
 void make_length_to_KE() {
 
@@ -40,8 +96,8 @@ void make_length_to_KE() {
 	gStyle->SetOptStat(0);
 
 	float len_min=0;
-	float len_max=90;
-	int n_len=90;
+	float len_max=300;
+	int n_len=300;
 
 	TH1D* dEdx = new TH1D("dEdx", "", n_len, len_min, len_max);
 	hist_bethe_mean_distance( KE_in_proton, mass_proton, dEdx);
@@ -61,7 +117,11 @@ void make_length_to_KE() {
 	int bin_b=0;
 	int bin_a=0;
 
-	double len=50.9; //cm
+	double len=150.1; //cm
+	double trueKE_len=Len2KE(len, KE_in_proton);
+	cout<<"trueKE_len:"<<trueKE_len<<std::endl;
+
+/*
 	bin_cen=cumulative2->GetXaxis()->FindBin(len);
 	bin_b=bin_cen-1;
 	bin_a=bin_cen+1;
@@ -74,11 +134,7 @@ void make_length_to_KE() {
 	double m_dept=(dept_a-dept_b)/(cumulative2->GetBinCenter(bin_a)-cumulative2->GetBinCenter(bin_b));
 	double b_dept=dept_a-m_dept*cumulative2->GetBinCenter(bin_a);
 	double ke_len=b_dept+m_dept*len; 
-
-	cout<<"\n\nTest!:: Length=50.6 cm; Edept="<<cumulative2->GetBinContent(cumulative2->GetXaxis()->FindBin(50.6))<<" MeV"<<""<<endl;
-	cout<<"            Length=50.6 cm; Edept2="<<ke_len<<" MeV"<<""<<endl;
-	cout<<"            Length=50.6 cm; Edept_b="<<cumulative2->GetBinContent(bin_b)<<" MeV"<<""<<endl;
-	cout<<"            Length=50.6 cm; Edept_a="<<cumulative2->GetBinContent(bin_a)<<" MeV"<<"\n\n"<<endl;
+*/
 
 
 	//cumulative2->GetXaxis()->SetTitle("True Track Length [cm]"); cumulative->GetYaxis()->SetTitle("True Deposited Energy [MeV]");   
