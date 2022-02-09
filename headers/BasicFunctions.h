@@ -33,6 +33,85 @@ TFile *fke_csda=new TFile(Form("%sproton_ke_csda_converter_reduction.root", conv
 TGraph *csda_range_vs_ke_sm=(TGraph *)fke_csda->Get("csda_range_vs_ke_sm");
 TGraph *ke_vs_csda_range_sm=(TGraph *)fke_csda->Get("ke_vs_csda_range_sm_rd");
 
+//Function to convert trklen to Edept -----------------------------------------------//
+void hist_bethe_mean_distance(double E_init, double mass_particle, TH1D* h_bethe ) { 
+
+	for(int i=1; i <= h_bethe->GetNbinsX(); i++){
+		h_bethe->SetBinContent( i, betheBloch(E_init, mass_particle));
+		h_bethe->SetBinError(i, 0.001 );
+		E_init = E_init - betheBloch(E_init, mass_particle);
+		if(E_init <= 0) return;
+
+	};
+};
+
+void hist_NIST(double E_init, TH1D* h_bethe){
+	for(int i=1; i <= h_bethe->GetNbinsX(); i++){
+		h_bethe->SetBinContent( i, dEdx_vs_KE_sm->Eval(E_init));
+		h_bethe->SetBinError(i, 0.001 );
+		E_init = E_init - dEdx_vs_KE_sm->Eval(E_init);
+		if(E_init <= 0) return;
+
+	};
+};
+
+double Len2KE(double len, double ke_ini) {
+
+	float len_min=0;
+	float len_max=300;
+	int n_len=300;
+
+	//create the map to convert trklen to Edept
+	TH1D* dEdx = new TH1D("dEdx", "", n_len, len_min, len_max);
+	hist_NIST(ke_ini, dEdx); //loading in dE/dx map based on KE_int
+	TH1* cumulative = dEdx->GetCumulative();
+
+	int bin_cen=0;
+	int bin_b=0;
+	int bin_a=0;
+	
+	//std::cout<<"\n\nlen="<<len<<std::endl;
+	//std::cout<<"n_len="<<n_len<<std::endl;
+
+	//get Edept
+	bin_cen=cumulative->GetXaxis()->FindBin(len);
+	bin_b=bin_cen-1;
+	bin_a=bin_cen+1;
+	if (bin_a>n_len) bin_a=n_len;
+	if (bin_b<0) bin_b=0;
+
+	bin_cen=cumulative->GetXaxis()->FindBin(len);
+	bin_b=bin_cen-1;
+	bin_a=bin_cen+1;
+	if (bin_a>n_len) bin_a=n_len;
+	if (bin_b<0) bin_b=0;
+
+        double dept_cen=cumulative->GetBinContent(bin_cen);
+	double dept_b=cumulative->GetBinContent(bin_b);
+	double dept_a=cumulative->GetBinContent(bin_a);
+	
+	double m_dept=(dept_a-dept_b)/(cumulative->GetBinCenter(bin_a)-cumulative->GetBinCenter(bin_b));
+	double b_dept=dept_a-m_dept*cumulative->GetBinCenter(bin_a);
+	double ke_len=b_dept+m_dept*len; 
+
+	if (ke_len>ke_ini) {
+	  std::cout<<"NOT Possible conversion!"<<std::endl;
+	  ke_len=ke_ini;
+	}
+
+	//cout<<"\n\nTest!:: dept_cen="<<dept_cen<<" MeV"<<""<<endl;
+	//cout<<"            ke_len="<<ke_len<<" MeV"<<""<<endl;
+	//cout<<"            dept_b="<<dept_b<<" MeV"<<""<<endl;
+	//cout<<"            dept_a="<<dept_a<<" MeV"<<"\n\n"<<endl;
+
+	return ke_len;
+
+}
+//Function to convert trklen to Edept -----------------------------------------------//
+
+
+
+
 Double_t fitg(Double_t* x,Double_t *par) {
 	double m=par[0];
 	double s=par[1];
