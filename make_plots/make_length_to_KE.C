@@ -1,12 +1,13 @@
-#include "../headers/betheBloch.h"
+//#include "../headers/betheBloch.h"
 #include "../headers/BasicParameters.h"
 #include "../headers/BasicFunctions.h"
 
 double mass_proton = 938.272046; //proton [unit: MeV/c^2]
 double P_in_proton = 1000.; //MeV
-//double KE_in_proton=sqrt(pow(P_in_proton,2) + pow(mass_proton,2) ) - mass_proton;
-double KE_in_proton=700;
+double KE_in_proton=sqrt(pow(P_in_proton,2) + pow(mass_proton,2) ) - mass_proton;
+//double KE_in_proton=700;
 
+/*
 void hist_bethe_mean_distance(double E_init, double mass_particle, TH1D* h_bethe ){
 
 	for(int i=1; i <= h_bethe->GetNbinsX(); i++){
@@ -28,6 +29,7 @@ void hist_NIST(double E_init, TH1D* h_bethe){
 
 	};
 };
+*/
 
 
 double Len2KE(double len, double ke_ini) {
@@ -117,9 +119,17 @@ void make_length_to_KE() {
 	int bin_b=0;
 	int bin_a=0;
 
-	double len=150.1; //cm
+	double len=50.1; //cm
 	double trueKE_len=Len2KE(len, KE_in_proton);
-	cout<<"trueKE_len:"<<trueKE_len<<std::endl;
+	cout<<"trueKE_len1:"<<trueKE_len<<std::endl;
+
+	LEN2KE Len2KE_;
+        Len2KE_.setmap(KE_in_proton);
+        double trueKE_len2=Len2KE_.KE(len);
+	cout<<"trueKE_len2:"<<trueKE_len2<<std::endl;
+	cout<<"len3=20.; trueKE_len3:"<<Len2KE_.KE(20.)<<std::endl;
+     
+
 
 /*
 	bin_cen=cumulative2->GetXaxis()->FindBin(len);
