@@ -1,4 +1,5 @@
 #include "TMath.h"
+#include "betheBloch.h"
 
 double p2ke(double p) {
 	double ke=m_proton*(-1.+sqrt(1.+(p*p)/(m_proton*m_proton)));
@@ -14,7 +15,7 @@ bool myComparison(const pair<double,int> &a,const pair<double,int> &b) {
 	return a.first<b.first;
 }
 
-//Read file of dedx versus kinetic energy -----------------------//
+//Read file of dedx versus kinetic energy -----------------------------------------------------//
 TString conv_path="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/conversion/";
 TFile *fke_dedx=new TFile(Form("%sproton_dedx_ke_MeV.root", conv_path.Data()));
 TGraph *dedx_vs_ke_sm=(TGraph *)fke_dedx->Get("dedx_vs_ke_sm");
@@ -33,47 +34,57 @@ TFile *fke_csda=new TFile(Form("%sproton_ke_csda_converter_reduction.root", conv
 TGraph *csda_range_vs_ke_sm=(TGraph *)fke_csda->Get("csda_range_vs_ke_sm");
 TGraph *ke_vs_csda_range_sm=(TGraph *)fke_csda->Get("ke_vs_csda_range_sm_rd");
 
-//Function to convert trklen to Edept -----------------------------------------------//
-void hist_bethe_mean_distance(double E_init, double mass_particle, TH1D* h_bethe ) { 
-
-	for(int i=1; i <= h_bethe->GetNbinsX(); i++){
-		h_bethe->SetBinContent( i, betheBloch(E_init, mass_particle));
-		h_bethe->SetBinError(i, 0.001 );
-		E_init = E_init - betheBloch(E_init, mass_particle);
-		if(E_init <= 0) return;
-
-	};
-};
-
+//Function to convert trklen to Edept -----------------------------------------------------//
 void hist_NIST(double E_init, TH1D* h_bethe){
 	for(int i=1; i <= h_bethe->GetNbinsX(); i++){
 		h_bethe->SetBinContent( i, dEdx_vs_KE_sm->Eval(E_init));
 		h_bethe->SetBinError(i, 0.001 );
 		E_init = E_init - dEdx_vs_KE_sm->Eval(E_init);
 		if(E_init <= 0) return;
-
 	};
 };
 
-double Len2KE(double len, double ke_ini) {
+void hist_bethe_mean_distance(double E_init, double mass_particle, TH1D* h_bethe ) { 
+	for(int i=1; i <= h_bethe->GetNbinsX(); i++){
+		h_bethe->SetBinContent( i, betheBloch(E_init, mass_particle));
+		h_bethe->SetBinError(i, 0.001 );
+		E_init = E_init - betheBloch(E_init, mass_particle);
+		if(E_init <= 0) return;
+	};
+};
 
-	float len_min=0;
-	float len_max=300;
-	int n_len=300;
+class LEN2KE {
+public:
+  void setmap(double); //input:E_ini [in MeV]
+  double KE(double); //input: length [in cm]
+
+private:
+  double E_init; //E_ini
+  
+  //map size [convert trklen to Edept]
+  int n_len=300;
+  double len_min=0;  
+  double len_max=300;
+
+  TH1* cumulative;
+};
+
+void LEN2KE::setmap(double E0) {
+	E_init=E0;
 
 	//create the map to convert trklen to Edept
 	TH1D* dEdx = new TH1D("dEdx", "", n_len, len_min, len_max);
-	hist_NIST(ke_ini, dEdx); //loading in dE/dx map based on KE_int
-	TH1* cumulative = dEdx->GetCumulative();
+	hist_NIST(E_init, dEdx); //loading in dE/dx map based on KE_int
+	cumulative = dEdx->GetCumulative();
+}
 
+double LEN2KE::KE(double len) {
 	int bin_cen=0;
 	int bin_b=0;
 	int bin_a=0;
 	
-	//std::cout<<"\n\nlen="<<len<<std::endl;
-	//std::cout<<"n_len="<<n_len<<std::endl;
-
 	//get Edept
+	//int n_len=cumulative->GetNbinsX();
 	bin_cen=cumulative->GetXaxis()->FindBin(len);
 	bin_b=bin_cen-1;
 	bin_a=bin_cen+1;
@@ -94,19 +105,15 @@ double Len2KE(double len, double ke_ini) {
 	double b_dept=dept_a-m_dept*cumulative->GetBinCenter(bin_a);
 	double ke_len=b_dept+m_dept*len; 
 
-	if (ke_len>ke_ini) {
+	if (ke_len>E_init) {
 	  std::cout<<"NOT Possible conversion!"<<std::endl;
-	  ke_len=ke_ini;
+	  ke_len=E_init;
 	}
 
-	//cout<<"\n\nTest!:: dept_cen="<<dept_cen<<" MeV"<<""<<endl;
-	//cout<<"            ke_len="<<ke_len<<" MeV"<<""<<endl;
-	//cout<<"            dept_b="<<dept_b<<" MeV"<<""<<endl;
-	//cout<<"            dept_a="<<dept_a<<" MeV"<<"\n\n"<<endl;
-
 	return ke_len;
-
 }
+
+
 //Function to convert trklen to Edept -----------------------------------------------//
 
 
