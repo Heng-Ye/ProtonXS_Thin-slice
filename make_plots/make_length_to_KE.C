@@ -101,13 +101,13 @@ void make_length_to_KE() {
 	float len_max=300;
 	int n_len=300;
 
-	TH1D* dEdx = new TH1D("dEdx", "", n_len, len_min, len_max);
-	hist_bethe_mean_distance( KE_in_proton, mass_proton, dEdx);
+	TH1D* dEdx3 = new TH1D("dEdx3", "", n_len, len_min, len_max);
+	hist_bethe_mean_distance( KE_in_proton, mass_proton, dEdx3);
 
 	TH1D* dEdx2 = new TH1D("dEdx2", "", n_len, len_min, len_max);
 	hist_NIST(KE_in_proton, dEdx2); //loading in dE/dx map based on KE_int
 
-	TH1* cumulative = dEdx->GetCumulative();
+	TH1* cumulative = dEdx3->GetCumulative();
 	cumulative->SetLineColor(3);
 	cumulative->SetLineStyle(2);
 
@@ -128,6 +128,8 @@ void make_length_to_KE() {
         double trueKE_len2=Len2KE_.KE(len);
 	cout<<"trueKE_len2:"<<trueKE_len2<<std::endl;
 	cout<<"len3=20.; trueKE_len3:"<<Len2KE_.KE(20.)<<std::endl;
+	cout<<"len4=10.; trueKE_len4:"<<Len2KE_.KE(10.)<<std::endl;
+	cout<<"len5=100.; trueKE_len5:"<<Len2KE_.KE(100.)<<std::endl;
      
 
 
@@ -160,7 +162,7 @@ void make_length_to_KE() {
 	c->Update();
 
 	//scale to pad coordinates
-	Float_t rightmax = 1.1*dEdx->GetMaximum();
+	Float_t rightmax = 1.1*dEdx2->GetMaximum();
 	Float_t scale = gPad->GetUymax()/rightmax;
 	dEdx2->SetLineColor(kRed);
 	dEdx2->SetMarkerColor(kRed);
