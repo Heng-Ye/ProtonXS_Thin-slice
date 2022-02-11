@@ -35,7 +35,6 @@ TGraph *csda_range_vs_ke_sm=(TGraph *)fke_csda->Get("csda_range_vs_ke_sm");
 TGraph *ke_vs_csda_range_sm=(TGraph *)fke_csda->Get("ke_vs_csda_range_sm_rd");
 
 //Function to convert trklen to Edept -----------------------------------------------------//
-/*
 void hist_NIST(double E_init, TH1D* h_bethe){
 	for(int i=1; i <= h_bethe->GetNbinsX(); i++){
 		h_bethe->SetBinContent( i, dEdx_vs_KE_sm->Eval(E_init));
@@ -126,7 +125,6 @@ double LEN2KE::KE(double len) {
 
 LEN2KE::LEN2KE(void) {}
 LEN2KE::~LEN2KE(void) {}
-*/
 //Function to convert trklen to Edept -----------------------------------------------//
 
 
