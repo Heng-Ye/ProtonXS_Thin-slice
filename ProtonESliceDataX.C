@@ -45,7 +45,7 @@
 #include "./cali/dedx_function_35ms.h"
 #include "./headers/BasicParameters.h"
 #include "./headers/BasicFunctions.h"
-#include "./headers/SliceParams.h"
+#include "./headers/ESliceParams.h"
 #include "./headers/util.h"
 #include "./headers/ThinSlice.h"
 
@@ -179,11 +179,11 @@ void ProtonESliceData::Loop() {
 		//if (isTestSample) continue; //only validate sample
 		//if (!isTestSample) continue; //only test sample
 
-		true_sliceID = -1;
-		reco_sliceID = -1;
+		true_sliceID = -1; //in E-slice, sliceID:=KE 
+		reco_sliceID = -1; //SLiceID:=KE
 
-		LEN2KE Len2KE;
-		Len2KE.setmap(ke_ff); //initialize the map to convert trklen to Edept 
+		LEN2E *Len2E=new LEN2E;
+		Len2E->setmap(ke_ff); //initialize the map to convert trklen to Edept 
 
 		//only select protons	
 		//if (primary_truth_Pdg!=pdg) continue; //only interested in protons
@@ -1134,10 +1134,11 @@ void ProtonESliceData::Loop() {
 		//true slice ID
 		//true_sliceID = int(true_endz/thinslicewidth);
 		//true_sliceID = int(range_true/thinslicewidth); //HY:Make sure size of true_trk_len vector is !0, otherwise lost truth info
-		true_sliceID = int(Len2KE.KE(range_true)/thinslicewidth); //E-dept/dE 
+		double KE_true=ke_ff-Len2E->E(range_true); //KE=KEff-Edept
+		true_sliceID = int((Emax-KE_true)/thinslicewidth); 
 		if (true_sliceID < 0) true_sliceID = -1;
-		if (true_endz < 0) true_sliceID = -1; //hy added
 		if (true_sliceID >= nthinslices) true_sliceID = nthinslices;
+		if (true_endz < 0) true_sliceID = -1; //hy added
 		//cout<<"true_endz:"<<true_endz<<"  true_sliceID:"<<true_sliceID<<endl;
 		//cout<<"primtrk_range_true->empty():"<<primtrk_range_true->empty()
 		// <<" primtrk_range->empty():"<<primtrk_range->empty()<<endl;
@@ -1150,10 +1151,12 @@ void ProtonESliceData::Loop() {
 			//reco_sliceID = int(primtrk_range->at(0)/thinslicewidth);
 			//reco_sliceID = int(reco_endz/thinslicewidth);
 			//reco_sliceID = int(range_reco/thinslicewidth);
-			reco_sliceID = int(Len2KE.KE(range_reco)/thinslicewidth); 
+			//reco_sliceID = int(Len2KE->KE(range_reco)/thinslicewidth); 
+			double KE_reco=ke_ff-Len2E->E(range_reco); //trklen 2 KE conversion
+			reco_sliceID = int((Emax-KE_reco)/thinslicewidth);
 			if (reco_sliceID < 0) reco_sliceID = -1;
-			if (reco_endz<0) reco_sliceID = -1;
 			if (reco_sliceID >= nthinslices) reco_sliceID = nthinslices;
+			if (reco_endz<0) reco_sliceID = -1;
 			cout<<"reco_endz:"<<reco_endz<<"  reco_sliceID:"<<reco_sliceID<<endl;
 
 			if (IsBQ&&IsRecoInEL) {
@@ -1288,12 +1291,17 @@ void ProtonESliceData::Loop() {
 					//double this_dE=zreco_de[ih].second;
 					double thisZ=primtrk_hitz->at(ih);
 					double thisLen=reco_trklen_accum[ih];
-					
 					//int this_sliceID = int(thisLen/thinslicewidth);
-					int this_sliceID = int(Len2KE.KE(thisLen)/thinslicewidth); 
+					double thisKE=ke_ff-Len2E->E(thisLen); //len2ke conversion
+					int this_sliceID=-1;
+					this_sliceID=int((Emax-thisKE)/thinslicewidth);
+					if (this_sliceID < 0) this_sliceID = -1;
+					if (this_sliceID >= nthinslices) this_sliceID = nthinslices;
+					if (thisLen < 0) true_sliceID = -1; //up-stram INT, set trklen_accum to -1 by default
+
 					//ke_reco-=this_dE;
 					ke_reco-=EDept.at(ih);
-
+					
 					if (this_sliceID>=nthinslices) continue;
 					if (this_sliceID<0) continue;
 
@@ -1339,8 +1347,14 @@ void ProtonESliceData::Loop() {
 					double this_incE = 1000.*beamtrk_Eng->at(hk); //MeV
 					//int this_sliceID = int(thisZ/thinslicewidth);
 					//int this_sliceID = int(thisLen/thinslicewidth);
+					//int this_sliceID = int(Len2E->KE(thisLen)/thinslicewidth); 
 					double thisLen=true_trklen_accum[hk];
-					int this_sliceID = int(Len2KE.KE(thisLen)/thinslicewidth); 
+					double thisKE=ke_ff-Len2E->E(thisLen); //len2ke conversion
+					int this_sliceID=-1;
+					this_sliceID=int((Emax-thisKE)/thinslicewidth);
+					if (this_sliceID < 0) this_sliceID = -1;
+					if (this_sliceID >= nthinslices) this_sliceID = nthinslices;
+					if (thisLen < 0) true_sliceID = -1; //up-stram INT, set trklen_accum to -1 by default
 
 					if (this_sliceID>=nthinslices) continue;
 					if (this_sliceID<0) continue;
@@ -1383,7 +1397,7 @@ void ProtonESliceData::Loop() {
 			} //if true container not empty
 		} //if pure inelastic
 
-
+		delete Len2E;
 	} //main entry loop
 
 		//save true inc & int arrays to histograms -------------------------------------//
