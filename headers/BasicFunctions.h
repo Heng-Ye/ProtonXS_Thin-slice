@@ -20,8 +20,9 @@ TString conv_path="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysi
 TFile *fke_dedx=new TFile(Form("%sproton_dedx_ke_MeV.root", conv_path.Data()));
 TGraph *dedx_vs_ke_sm=(TGraph *)fke_dedx->Get("dedx_vs_ke_sm");
 
-TFile *fKE_dEdx=new TFile(Form("%sproton_ydedx_xke.root", conv_path.Data()));
-TGraph *dEdx_vs_KE_sm=(TGraph *)fKE_dEdx->Get("dEdx_vs_KE_sm"); //x:KE in MeV; y:dE/dx in MeV/cm
+//Load dE/dx vs KE from NIST data base
+//TFile *fKE_dEdx=new TFile(Form("%sproton_ydedx_xke.root", conv_path.Data()));
+//TGraph *dEdx_vs_KE_sm=(TGraph *)fKE_dEdx->Get("dEdx_vs_KE_sm"); //x:KE in MeV; y:dE/dx in MeV/cm
 
 
 //Read file of csda range versus momentum --------------------------------------//
@@ -35,6 +36,7 @@ TGraph *csda_range_vs_ke_sm=(TGraph *)fke_csda->Get("csda_range_vs_ke_sm");
 TGraph *ke_vs_csda_range_sm=(TGraph *)fke_csda->Get("ke_vs_csda_range_sm_rd");
 
 //Function to convert trklen to Edept -----------------------------------------------------//
+/*
 void hist_NIST(double E_init, TH1D* h_bethe){
 	for(int i=1; i <= h_bethe->GetNbinsX(); i++){
 		h_bethe->SetBinContent( i, dEdx_vs_KE_sm->Eval(E_init));
@@ -43,6 +45,7 @@ void hist_NIST(double E_init, TH1D* h_bethe){
 		if(E_init <= 0) return;
 	};
 };
+*/
 
 void hist_bethe_mean_distance(double E_init, double mass_particle, TH1D* h_bethe ) { 
 	for(int i=1; i <= h_bethe->GetNbinsX(); i++){
@@ -53,12 +56,12 @@ void hist_bethe_mean_distance(double E_init, double mass_particle, TH1D* h_bethe
 	};
 };
 
-class LEN2KE {
+class LEN2E {
 public:
   void setmap(double); //input:E_ini [in MeV]
-  double KE(double); //input: length [in cm]
-  LEN2KE();
-  ~LEN2KE();
+  double E(double); //input: length [in cm]
+  LEN2E();
+  ~LEN2E();
 
 private:
   double E_init; //E_ini
@@ -71,19 +74,22 @@ private:
   TH1* cumulative;
 };
 
-void LEN2KE::setmap(double E0) {
+void LEN2E::setmap(double E0) {
 	E_init=E0;
 
 	//create the map to convert trklen to Edept
   	TH1D* dEdx;
 	dEdx = new TH1D("dEdx", "", n_len, len_min, len_max);
-	hist_NIST(E_init, dEdx); //loading in dE/dx map based on KE_int
+	//hist_NIST(E_init, dEdx); //loading in dE/dx map based on E_int
+	hist_bethe_mean_distance(E_init, mass_particle, dEdx); //loading in dE/dx map based on E_int
 	cumulative = dEdx->GetCumulative();
 
 	delete dEdx;
 }
 
-double LEN2KE::KE(double len) {
+double LEN2E::E(double len) {
+	double Edept_len=-9999;
+
 	int bin_cen=0;
 	int bin_b=0;
 	int bin_a=0;
@@ -108,23 +114,28 @@ double LEN2KE::KE(double len) {
 	
 	double m_dept=(dept_a-dept_b)/(cumulative->GetBinCenter(bin_a)-cumulative->GetBinCenter(bin_b));
 	double b_dept=dept_a-m_dept*cumulative->GetBinCenter(bin_a);
-	double ke_len=b_dept+m_dept*len; 
+	double E_len=b_dept+m_dept*len; 
 
-	if (ke_len>E_init) {
-	  std::cout<<"NOT Possible conversion!"<<std::endl;
-	  std::cout<<"WARNING!! KE_len>E_init! :: kE_len="<<ke_len<<" MeV;  E_init="<<E_init<<" MeV"<<endl;
-	  //ke_len=E_init;
-	}
-	if (E_init<=0) { 
-	  	std::cout<<"WARNING!! E_init="<<E_init<<" MeV !!! (Weird!)"<<endl;
-		ke_len=-999;
-	}
 
-	//return ke_len;
+	if (E_init>0) { //E_init>0
+		if (len==0) Edept_len=0;
+		if (len<0) Edept_len=-9999;
+		if (len>0) Edept_len=E_len;
+	
+		if (Edept_len>E_init) {
+	  		std::cout<<"\n\nWARNING!! E_len>E_init! :: kE_len="<<Edept_len<<" MeV;  E_init="<<E_init<<" MeV\n\n"<<endl;
+	  		//Edept_len=E_init;
+		}
+	} //E_init>0
+	else { //E_init<=0
+		Edept_len=9999;
+	} //E_init<=0
+
+	return Edept_len;
 }
 
-LEN2KE::LEN2KE(void) {}
-LEN2KE::~LEN2KE(void) {}
+LEN2E::LEN2E(void) {}
+LEN2E::~LEN2E(void) {}
 //Function to convert trklen to Edept -----------------------------------------------//
 
 

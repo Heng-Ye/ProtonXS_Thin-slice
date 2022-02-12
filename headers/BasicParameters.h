@@ -3,6 +3,7 @@
 //const int pdg=211; //pi+
 const int pdg=2212; //proton
 const double m_proton=0.938272046; //proton_mass, unit:GeV/c2
+const double mass_particle=1000.*m_proton; //input for Bethe-Bloch formula [MeV]
 
 //TPC boundary
 double minX =  -360.0;
