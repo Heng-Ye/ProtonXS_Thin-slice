@@ -10,6 +10,8 @@
 #include "TFile.h"
 #include "./Unfold.h"
 
+//#include "BetheBloch.h"
+
 //Basic config. -----------------------------------------------------//
 std::string fOutputFileName;
 TFile *outputFile;
@@ -155,10 +157,18 @@ TH2D *KE_range_calo_recostop;
 //KE Truth info
 TH1D *KEtrue_Beam_inel;
 TH1D *KEtrue_ff_inel;
-TH2D *KEtrue_z_inel;
-TH2D *KEtrue_range_inel;
-TH2D *true_z_range_inel;
-TH3D *true_z_range_KEtrue_inel;
+//TH2D *KEtrue_z_inel;
+//TH2D *KEtrue_range_inel;
+//TH2D *true_z_range_inel;
+//TH3D *true_z_range_KEtrue_inel;
+
+TH2D *KEbb_truetrklen_all;
+TH2D *KEbb_truetrklen_inel;
+TH2D *KEbb_recotrklen_all;
+TH2D *KEbb_recotrklen_inel;
+
+//True Trklen Patch Dist.
+TH1D *true_trklen_patch_all;
 
 
 //KE reco info
@@ -536,13 +546,13 @@ void BookHistograms() { //BookHistograms
 	float range_max=150;
 	KEtrue_Beam_inel=new TH1D("KEtrue_Beam_inel","",n_ke, ke_min, ke_max); KEtrue_Beam_inel->Sumw2();
 	KEtrue_ff_inel=new TH1D("KEtrue_ff_inel", "", n_ke, ke_min, ke_max); KEtrue_ff_inel->Sumw2();
-	KEtrue_z_inel=new TH2D("KEtrue_z_inel","", n_range, range_min, range_max, n_ke,ke_min,ke_max);
-	KEtrue_range_inel=new TH2D("KEtrue_range_inel","", n_range, range_min, range_max, n_ke,ke_min,ke_max);
-	true_z_range_inel=new TH2D("true_z_range_inel","", n_range, range_min, range_max,  n_range, range_min, range_max);
-	true_z_range_KEtrue_inel=new TH3D("true_z_range_KEtrue_inel","", n_range, range_min, range_max, n_range, range_min, range_max, n_ke,ke_min,ke_max);
-	true_z_range_KEtrue_inel->GetXaxis()->SetTitle("z [cm]");
-	true_z_range_KEtrue_inel->GetYaxis()->SetTitle("range [cm]");
-	true_z_range_KEtrue_inel->GetZaxis()->SetTitle("KE [MeV]");
+	//KEtrue_z_inel=new TH2D("KEtrue_z_inel","", n_range, range_min, range_max, n_ke,ke_min,ke_max);
+	//KEtrue_range_inel=new TH2D("KEtrue_range_inel","", n_range, range_min, range_max, n_ke,ke_min,ke_max);
+	//true_z_range_inel=new TH2D("true_z_range_inel","", n_range, range_min, range_max,  n_range, range_min, range_max);
+	//true_z_range_KEtrue_inel=new TH3D("true_z_range_KEtrue_inel","", n_range, range_min, range_max, n_range, range_min, range_max, n_ke,ke_min,ke_max);
+	//true_z_range_KEtrue_inel->GetXaxis()->SetTitle("z [cm]");
+	//true_z_range_KEtrue_inel->GetYaxis()->SetTitle("range [cm]");
+	//true_z_range_KEtrue_inel->GetZaxis()->SetTitle("KE [MeV]");
 
 	//KEreco info
 	KEreco_z_inel=new TH2D("KEreco_z_inel","", n_range, range_min, range_max, n_ke,ke_min,ke_max);
@@ -753,7 +763,19 @@ void BookHistograms() { //BookHistograms
 	reco_de_trklen_inel->Sumw2();
 	reco_dx_trklen_inel->Sumw2();
 
-	
+	//KE(Bethe-Bloch) vs trklen ------------------------------------------------------//
+	KEbb_truetrklen_all=new TH2D("KEbb_truetrklen_all","", 1210,-1,120,6000,0,600);
+	KEbb_truetrklen_inel=new TH2D("KEbb_truetrklen_inel","", 1210,-1,120,6000,0,600);
+	KEbb_recotrklen_all=new TH2D("KEbb_recotrklen_all","", 1210,-1,120,6000,0,600);
+	KEbb_recotrklen_inel=new TH2D("KEbb_recotrklen_inel","", 1210,-1,120,6000,0,600);
+	KEbb_truetrklen_all->Sumw2(); //
+	KEbb_truetrklen_inel->Sumw2(); //
+	KEbb_recotrklen_all->Sumw2(); //
+	KEbb_recotrklen_inel->Sumw2(); //
+
+
+	true_trklen_patch_all=new TH1D("true_trklen_patch_all","",500,0,5);
+	true_trklen_patch_all->Sumw2();	
 
 } //BookHistograms
 
