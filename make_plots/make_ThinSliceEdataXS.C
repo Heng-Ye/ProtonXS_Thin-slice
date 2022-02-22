@@ -75,8 +75,11 @@ void make_ThinSliceEdataXS() {
         //TString fmc="../prod4areco2_mc_Eslice_dE20MeV_25slcs_nobmrw.root";
         //TString fdata="../prod4areco2_mc_Eslice_dE20MeV_25slcs_nobmrw.root";
 
-        TString fmc="../prod4areco2_mc_Eslice_dE20MeV_25slcs_nobmrw_notruelenpatch.root";
-        TString fdata="../prod4areco2_mc_Eslice_dE20MeV_25slcs_nobmrw_notruelenpatch.root";
+        //TString fmc="../prod4areco2_mc_Eslice_dE20MeV_25slcs_nobmrw.root";
+        //TString fdata="../prod4areco2_mc_Eslice_dE20MeV_25slcs_nobmrw.root";
+
+        TString fmc="../prod4areco2_mc_Eslice_dE20MeV_30slcs_nobmrw.root";
+        TString fdata="../prod4areco2_mc_Eslice_dE20MeV_30slcs_nobmrw.root";
 
 	TString str_inc=Form("h_recosliceid_allevts_cuts");
 	TString str_int=Form("h_recosliceid_recoinelastic_cuts");
@@ -112,6 +115,7 @@ void make_ThinSliceEdataXS() {
 	//get truesliceID of int &inc
 	TH1D *mc_truesliceID_inel=(TH1D *)f_mc->Get("h_truesliceid_inelastic_all"); //IsPureInEL
 	TH1D *mc_truesliceID_all=(TH1D *)f_mc->Get("h_truesliceid_all"); //all protons
+	TH1D *mc_true_st_sliceID_all=(TH1D *)f_mc->Get("h_true_st_sliceid_all"); //all protons
 
 
 	//get mc reco slice IDs
@@ -414,17 +418,22 @@ void make_ThinSliceEdataXS() {
 		//[1a]true inc/int from truth sliceID dists.
     		true_int[i] = mc_truesliceID_inel->GetBinContent(i+2);
     		err_true_int[i] = mc_truesliceID_inel->GetBinError(i+2);
-    		for (int j = i; j<=nthinslices; ++j){
+
+    		for (int j=i; j<=nthinslices; ++j){
       			true_inc[i]+=mc_truesliceID_all->GetBinContent(j+2);
       			err_true_inc[i]+=pow(mc_truesliceID_all->GetBinError(j+2),2);
     		}
+    		for (int j=i+1; j<=nthinslices; ++j){
+      			true_inc[i]-=mc_true_st_sliceID_all->GetBinContent(j+2);
+      			err_true_inc[i]+=pow(mc_true_st_sliceID_all->GetBinError(j+2),2);
+    		}
     		err_true_inc[i] = sqrt(err_true_inc[i]);
 
-		if (true_inc[i]&&true_int[i]) {
+		//if (true_inc[i]&&true_int[i]) {
 			//note that 1/dE has been included in the xs_constant
 			true_xs[i]=xs_const*dEdx[i]*log(true_inc[i]/(true_inc[i]-true_int[i]));
 			err_true_xs[i]=xs_const*dEdx[i]*sqrt(true_int[i]+pow(true_int[i],2)/true_inc[i])/true_inc[i];
-		}
+		//}
   	}
 
 	//[2] reco xs 
@@ -626,14 +635,14 @@ void make_ThinSliceEdataXS() {
         data_inc_uf->SetMarkerStyle(21);
 	data_inc_uf->Draw("ep same");
 
-	mc_truesliceID_all->SetLineColor(2);
-	mc_truesliceID_all->Draw("hist same");
+	mc_true_incidents->SetLineColor(2);
+	mc_true_incidents->Draw("hist same");
 
 	TLegend *leg_inc3 = new TLegend(0.4,0.6,0.9,0.9);
 	leg_inc3->SetFillStyle(0);
 	leg_inc3->AddEntry(data_inc_bkgfree, "Selected+BKG Subtraction","ep");
 	leg_inc3->AddEntry(data_inc_uf, "Unfolding","ep");
-	leg_inc3->AddEntry(mc_truesliceID_all,"MC Truth","l");
+	leg_inc3->AddEntry(mc_true_incidents,"MC Truth","l");
 	leg_inc3->Draw();
 	c_inc3->Print(Form("%sdata_recosliceid_uf_inc.eps",outpath.Data()));
 
@@ -827,14 +836,14 @@ void make_ThinSliceEdataXS() {
         data_int_uf->SetMarkerStyle(21);
 	data_int_uf->Draw("ep same");
 
-	mc_truesliceID_inel->SetLineColor(2);
-	mc_truesliceID_inel->Draw("hist same");
+	mc_true_interactions->SetLineColor(2);
+	mc_true_interactions->Draw("hist same");
 
 	TLegend *leg_int3 = new TLegend(0.2,0.6,0.8,0.9);
 	leg_int3->SetFillStyle(0);
 	leg_int3->AddEntry(data_int_bkgfree, "Selected+BKG Subtraction","ep");
 	leg_int3->AddEntry(data_int_uf, "Unfolding","ep");
-	leg_int3->AddEntry(mc_truesliceID_inel,"MC Truth [Inel]","l");
+	leg_int3->AddEntry(mc_true_interactions,"MC Truth [Inel]","l");
 	//leg_int2->SetNColumns(3);
 	leg_int3->Draw();
 
@@ -1142,7 +1151,7 @@ void make_ThinSliceEdataXS() {
         gr_recoxs->SetLineColor(1);
         gr_recoxs->SetMarkerStyle(20);
         gr_recoxs->SetMarkerSize(1.5);
-        gr_recoxs->Draw("p same");
+        //gr_recoxs->Draw("p same");
 
 	double ke_ff_mean_stop=4.12972e+02;
 	double ke_ff_sigma_stop=4.08988e+01;
@@ -1164,7 +1173,7 @@ void make_ThinSliceEdataXS() {
         leg_xs->SetFillStyle(0);
         leg_xs->AddEntry(total_inel_KE, "Geant4", "l");
         leg_xs->AddEntry(gr_truexs, "MC Truth", "pe");
-        leg_xs->AddEntry(gr_recoxs, "MC Reco", "pe");
+        //leg_xs->AddEntry(gr_recoxs, "MC Reco", "pe");
         leg_xs->Draw();
 
 

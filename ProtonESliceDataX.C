@@ -143,7 +143,8 @@ void ProtonESliceData::Loop() {
 	//ThinSlice config. ---------------------------------------------------------------------------------------------------//
 	//SetOutputFileName(Form("prod4areco2_mc_Eslice_dE%dMeV_%dslcs_nobmrw.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_Eslice_dE%dMeV_%dslcs_nobmrw_notruelenpatch.root", name_thinslicewidth, nthinslices)); //output file name
-	SetOutputFileName(Form("prod4areco2_mc_Eslice_dE%dMeV_%dslcs_nobmrw.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_Eslice_dE%dMeV_%dslcs_nobmrw.root", name_thinslicewidth, nthinslices)); //output file name
+	SetOutputFileName(Form("prod4areco2_mc_Eslice_dE%dMeV_%dslcs_nobmrw_no0.5.root", name_thinslicewidth, nthinslices)); //output file name
 
 	//Basic config. -----------------------------------------------------//
 	BetheBloch BB;
@@ -159,6 +160,7 @@ void ProtonESliceData::Loop() {
 	Long64_t nbytes = 0, nb = 0;
 	bool isTestSample=true;
 	int true_sliceID = -1, reco_sliceID = -1;
+	int true_st_sliceID = -1, reco_st_sliceID = -1;
 	for (Long64_t jentry=0; jentry<nentries;jentry++) { //main entry loop
 		Long64_t ientry = LoadTree(jentry);
 		if (ientry < 0) break;
@@ -169,10 +171,11 @@ void ProtonESliceData::Loop() {
 		//if (isTestSample) continue; //only validate sample
 		//if (!isTestSample) continue; //only test sample
 
-		true_sliceID = -1; //in E-slice, sliceID:=KE 
-		reco_sliceID = -1; //SLiceID:=KE
+		true_sliceID = -1; 
+		reco_sliceID = -1;
 
-
+		true_st_sliceID = -1;
+		reco_st_sliceID = -1; 
 
 		//only select protons	
 		//if (primary_truth_Pdg!=pdg) continue; //only interested in protons
@@ -1132,6 +1135,14 @@ void ProtonESliceData::Loop() {
 		//true_sliceID = int(true_endz/thinslicewidth);
 		//true_sliceID = int(range_true/thinslicewidth); //HY:Make sure size of true_trk_len vector is !0, otherwise lost truth info
 		//double KE_true=KE_ff-Len2E->E(range_true); //KE=KEff-Edept
+
+		//true_st_sliceID=int((Emax-KE_ff)/thinslicewidth+0.5); 
+		true_st_sliceID=int((Emax-KE_ff)/thinslicewidth); 
+      		if (true_st_sliceID<0) true_st_sliceID=-1; //KE higher than Emax
+		if (true_endz < 0) true_st_sliceID = -1; 
+		if (true_st_sliceID >= nthinslices) true_st_sliceID = nthinslices;
+
+
 		double KE_true=BB.KEAtLength(KE_ff, range_true);
 		true_sliceID = int((Emax-KE_true)/thinslicewidth); 
 		if (true_sliceID < 0) true_sliceID = -1;
@@ -1175,10 +1186,11 @@ void ProtonESliceData::Loop() {
 
 		if (isTestSample) { //if test sample 
 			h_truesliceid_all->Fill(true_sliceID, mom_rw_minchi2);
+			h_true_st_sliceid_all->Fill(true_st_sliceID, mom_rw_minchi2);
 		} //if test sample
 		else { //if NOT test sample
 			uf.eff_den_Inc->Fill(true_sliceID, mom_rw_minchi2);
-			for (int ij = 0; ij<=true_sliceID; ++ij){
+			for (int ij=true_st_sliceID; ij<=true_sliceID; ++ij){
 				if (ij<nthinslices) ++true_incidents[ij];
 			}
 		} //if NOT test sample
@@ -1186,12 +1198,16 @@ void ProtonESliceData::Loop() {
 			if (isTestSample) { //if test sample
 				h_recosliceid_cuts->Fill(reco_sliceID, mom_rw_minchi2); 
 				h_truesliceid_cuts->Fill(true_sliceID, mom_rw_minchi2);
+
+				h_true_st_sliceid_cuts->Fill(true_st_sliceID, mom_rw_minchi2);
 			} //if test sample
 			else{ //if NOT test sample
 				uf.eff_num_Inc->Fill(true_sliceID, mom_rw_minchi2);
 				uf.pur_num_Inc->Fill(reco_sliceID, mom_rw_minchi2);
 				uf.response_SliceID_Inc.Fill(reco_sliceID, true_sliceID, mom_rw_minchi2);
+          			uf.response_st_SliceID_Inc.Fill(reco_st_sliceID, true_st_sliceID);
 				
+				//for 1D unfolding by shape
 				uf.res_Inc_reco->Fill(reco_sliceID, mom_rw_minchi2);
 				uf.res_Inc_truth->Fill(true_sliceID, mom_rw_minchi2);
 			} //if NOT test sample
@@ -1199,6 +1215,8 @@ void ProtonESliceData::Loop() {
 		else { //if NOT passing all cuts
 			if (!isTestSample){
 				uf.response_SliceID_Inc.Miss(true_sliceID, mom_rw_minchi2);
+          			uf.response_st_SliceID_Inc.Miss(true_st_sliceID, mom_rw_minchi2);
+
 				uf.res_Inc_truth->Fill(true_sliceID, mom_rw_minchi2);
 				//uf.response_SliceID_Inc.Miss(true_sliceID, mom_rw_minchi2);
 				//std::cout<<true_sliceID<<std::endl;
