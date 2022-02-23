@@ -144,7 +144,13 @@ void ProtonESliceData::Loop() {
 	//SetOutputFileName(Form("prod4areco2_mc_Eslice_dE%dMeV_%dslcs_nobmrw.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_Eslice_dE%dMeV_%dslcs_nobmrw_notruelenpatch.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_Eslice_dE%dMeV_%dslcs_nobmrw.root", name_thinslicewidth, nthinslices)); //output file name
-	SetOutputFileName(Form("prod4areco2_mc_Eslice_dE%dMeV_%dslcs_nobmrw_no0.5.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_Eslice_dE%dMeV_%dslcs_nobmrw.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_Eslice_dE%dMeV_%dslcs_nobmrw_KEff1stHit.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_Eslice_dE%dMeV_%dslcs_nobmrw.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_Eslice_dE%dMeV_%dslcs_nobmrw_KEff1stHit_minus0.5.root", name_thinslicewidth, nthinslices)); //output file name
+	SetOutputFileName(Form("prod4areco2_mc_Eslice_dE%dMeV_%dslcs_nobmrw_KEffatZ0_plus0.4.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_Eslice_dE%dMeV_%dslcs_nobmrw_keffatZ0.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_Eslice_dE%dMeV_%dslcs_nobmrw_no0.5.root", name_thinslicewidth, nthinslices)); //output file name
 
 	//Basic config. -----------------------------------------------------//
 	BetheBloch BB;
@@ -790,8 +796,15 @@ void ProtonESliceData::Loop() {
 
 
 		double KE_ff=0;
-		if (is_beam_at_ff) KE_ff=1000.*beamtrk_Eng->at(key_reach_tpc); //unit:MeV
-		//KE_ff=ke_ff; //use KE exactly at z=0
+		double KE_1st=0;
+		//if (is_beam_at_ff) KE_ff=1000.*beamtrk_Eng->at(key_reach_tpc); //unit:MeV
+		if (is_beam_at_ff) { 
+			KE_ff=ke_ff; //use KE exactly at z=0
+			KE_1st=1000.*beamtrk_Eng->at(key_reach_tpc);
+
+			double KE_1st_predict=BB.KEAtLength(KE_ff, range_true_patch);
+			h2d_R_kE1st->Fill(KE_1st, KE_1st_predict/KE_1st);
+		}
 		//---------------------------------------------------------------------------------------------------------------//
 
 
@@ -1136,8 +1149,11 @@ void ProtonESliceData::Loop() {
 		//true_sliceID = int(range_true/thinslicewidth); //HY:Make sure size of true_trk_len vector is !0, otherwise lost truth info
 		//double KE_true=KE_ff-Len2E->E(range_true); //KE=KEff-Edept
 
+		//double KE_st=BB.KEAtLength(KE_ff, range_true_patch);
+		//true_st_sliceID=int((Emax-KE_1st)/thinslicewidth-0.5); 
 		//true_st_sliceID=int((Emax-KE_ff)/thinslicewidth+0.5); 
-		true_st_sliceID=int((Emax-KE_ff)/thinslicewidth); 
+		//true_st_sliceID=int((Emax-KE_ff)/thinslicewidth+0.2); 
+		true_st_sliceID=int((Emax-KE_ff)/thinslicewidth+0.4);
       		if (true_st_sliceID<0) true_st_sliceID=-1; //KE higher than Emax
 		if (true_endz < 0) true_st_sliceID = -1; 
 		if (true_st_sliceID >= nthinslices) true_st_sliceID = nthinslices;
@@ -1162,6 +1178,12 @@ void ProtonESliceData::Loop() {
 			//reco_sliceID = int(range_reco/thinslicewidth);
 			//reco_sliceID = int(Len2KE->KE(range_reco)/thinslicewidth); 
 			//double KE_reco=KE_ff-Len2E->E(range_reco); //trklen 2 KE conversion
+
+			reco_st_sliceID=int((Emax-KE_ff)/thinslicewidth);
+      			if (reco_st_sliceID<0) reco_st_sliceID=-1; //KE higher than Emax
+			if (reco_endz < 0) reco_st_sliceID = -1; 
+			if (reco_st_sliceID >= nthinslices) reco_st_sliceID = nthinslices;
+
 			double KE_reco=BB.KEAtLength(KE_ff, range_reco);
 			reco_sliceID = int((Emax-KE_reco)/thinslicewidth);
 			if (reco_sliceID < 0) reco_sliceID = -1;
@@ -1199,6 +1221,7 @@ void ProtonESliceData::Loop() {
 				h_recosliceid_cuts->Fill(reco_sliceID, mom_rw_minchi2); 
 				h_truesliceid_cuts->Fill(true_sliceID, mom_rw_minchi2);
 
+				h_reco_st_sliceid_cuts->Fill(reco_st_sliceID, mom_rw_minchi2); 
 				h_true_st_sliceid_cuts->Fill(true_st_sliceID, mom_rw_minchi2);
 			} //if test sample
 			else{ //if NOT test sample
