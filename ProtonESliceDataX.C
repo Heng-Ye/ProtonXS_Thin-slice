@@ -141,21 +141,11 @@ void ProtonESliceData::Loop() {
 	Unfold uf(nthinslices+2, -1, nthinslices+1);
 
 	//ThinSlice config. ---------------------------------------------------------------------------------------------------//
-	//SetOutputFileName(Form("prod4areco2_mc_Eslice_dE%dMeV_%dslcs_nobmrw.root", name_thinslicewidth, nthinslices)); //output file name
-	//SetOutputFileName(Form("prod4areco2_mc_Eslice_dE%dMeV_%dslcs_nobmrw_notruelenpatch.root", name_thinslicewidth, nthinslices)); //output file name
-	//SetOutputFileName(Form("prod4areco2_mc_Eslice_dE%dMeV_%dslcs_nobmrw.root", name_thinslicewidth, nthinslices)); //output file name
-	//SetOutputFileName(Form("prod4areco2_mc_Eslice_dE%dMeV_%dslcs_nobmrw.root", name_thinslicewidth, nthinslices)); //output file name
-	//SetOutputFileName(Form("prod4areco2_mc_Eslice_dE%dMeV_%dslcs_nobmrw_KEff1stHit.root", name_thinslicewidth, nthinslices)); //output file name
-	//SetOutputFileName(Form("prod4areco2_mc_Eslice_dE%dMeV_%dslcs_nobmrw.root", name_thinslicewidth, nthinslices)); //output file name
-	//SetOutputFileName(Form("prod4areco2_mc_Eslice_dE%dMeV_%dslcs_nobmrw_KEff1stHit_minus0.5.root", name_thinslicewidth, nthinslices)); //output file name
-	SetOutputFileName(Form("prod4areco2_mc_Eslice_dE%dMeV_%dslcs_nobmrw_KEffatZ0_plus0.4.root", name_thinslicewidth, nthinslices)); //output file name
-	//SetOutputFileName(Form("prod4areco2_mc_Eslice_dE%dMeV_%dslcs_nobmrw_keffatZ0.root", name_thinslicewidth, nthinslices)); //output file name
-	//SetOutputFileName(Form("prod4areco2_mc_Eslice_dE%dMeV_%dslcs_nobmrw_no0.5.root", name_thinslicewidth, nthinslices)); //output file name
+	SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_nobmrw.root", name_thinslicewidth, nthinslices)); //output file name
 
-	//Basic config. -----------------------------------------------------//
+	//Basic configure ------//
 	BetheBloch BB;
 	BB.SetPdgCode(pdg);
-
 
 	//book histograms --//
 	BookHistograms();
@@ -177,21 +167,14 @@ void ProtonESliceData::Loop() {
 		//if (isTestSample) continue; //only validate sample
 		//if (!isTestSample) continue; //only test sample
 
-		true_sliceID = -1; 
+		true_sliceID = -1;
 		reco_sliceID = -1;
-
-		true_st_sliceID = -1;
-		reco_st_sliceID = -1; 
 
 		//only select protons	
 		//if (primary_truth_Pdg!=pdg) continue; //only interested in protons
 		if (beamtrackPdg!=pdg) continue; //only interested in protons
 		//std::cout<<"beamtrackPdg:"<<beamtrackPdg<<std::endl;
 		n_tot++;
-
-		//setup expected dE/dx map given KEff ------------------------------------//
-		//LEN2E *Len2E=new LEN2E;
-		//Len2E->setmap(KE_ff); //initialize the map to convert trklen to Edept 
 
 		//Event Selection Cut -- Part 1 ----------------------------------//
 		bool IsBeamMatch=false; //if recostructed the right track (recoID=truthID)
@@ -403,7 +386,7 @@ void ProtonESliceData::Loop() {
 			delete gr;
 		}
 
-		//[2] Range compensation -------------------------------------------------------
+		//[2] Range compensation ----------------------------------------------------------//
 		double range_true_patch=0;
 		if (is_beam_at_ff) { //is beam at ff
 			//calculate distance 1st hit and pojected point at TPC front face
@@ -412,7 +395,6 @@ void ProtonESliceData::Loop() {
 					pow(beamtrk_z->at(key_reach_tpc)-zproj_beam, 2) );
 			//range_true_patch=0; //no fix on true len
 		} //if entering tpc
-		if (range_true_patch>0) true_trklen_patch_all->Fill(range_true_patch);
 
 		//true_trklen_accum
 		double range_true=-9999;
@@ -426,9 +408,7 @@ void ProtonESliceData::Loop() {
 		  }
 		} //is beam at ff						    	
 
-
 		//fix on the truth length by adding distance between 1st tpc hit to front face ------------------------------------------------------//
-	
 		//cout<<"range_true:"<<range_true<<endl;
 		//cout<<"key_st:"<<key_st<<endl;
 		//for (size_t j=0; j<beamtrk_z->size(); ++j) { //MCParticle loop
@@ -548,7 +528,6 @@ void ProtonESliceData::Loop() {
 			if (kMIDeg) Fill1DHist(hdeltaXY_mideg, beam_dxy);
 			if (kMIDother) Fill1DHist(hdeltaXY_midother, beam_dxy);
 
-
 			if (beam_dx>=dx_min&&beam_dx<=dx_max) { //dx
 				if (beam_dy>=dy_min&&beam_dy<=dy_max) { //dy
 					if (beam_dz>=dz_min&&beam_dz<=dz_max) { //dz
@@ -639,16 +618,6 @@ void ProtonESliceData::Loop() {
 
 
 		//reco calorimetry ---------------------------------------------------------------------------//
-		//vector< pair<double,int > > zreco_rawindex; //z, original_index
-		//vector< pair<double,double > > zreco_rr; //z, rr
-		//vector< pair<double,double > > zreco_de; //z, wid_reco
-		//vector< pair<double,double > > zreco_dedx; //z, wid_reco
-		//vector< pair<double,double > > zreco_dx; //z, wid_reco
-		//vector< pair<double,double > > zreco_xreco; //z, wid_reco
-		//vector< pair<double,double > > zreco_yreco; //z, wid_reco
-		//vector< pair<double,int > > zreco_widreco; //z, wid_reco
-		//vector< pair<double,double > > zreco_lenreco; //z, len_reco
-
 		int index_reco_endz=0;
 		double wid_reco_max=-9999;
 		double range_reco=-999;
@@ -689,20 +658,9 @@ void ProtonESliceData::Loop() {
 				DEDX.push_back(cali_dedx);
 				DX.push_back(pitch);
 
-				//zreco_rawindex.push_back(make_pair(wid_reco, h));
-				//zreco_de.push_back(make_pair(wid_reco, cali_dedx*pitch));
-				//zreco_dedx.push_back(make_pair(wid_reco, cali_dedx));
-				//zreco_dx.push_back(make_pair(wid_reco, pitch));
-				//zreco_xreco.push_back(make_pair(wid_reco, hitx_reco));
-				//zreco_yreco.push_back(make_pair(wid_reco, hity_reco));
-				//zreco_widreco.push_back(make_pair(wid_reco, hitz_reco));
-				//zreco_rr.push_back(make_pair(wid_reco, resrange_reco));
-
 				//if (IsPureInEL) rangereco_dedxreco_TrueInEL->Fill(range_reco-resrange_reco, cali_dedx);
 				//if (IsPureEL) rangereco_dedxreco_TrueEL->Fill(range_reco-resrange_reco, cali_dedx);
 				//if (IsPureMCS) rangereco_dedxreco_TrueMCS->Fill(range_reco-resrange_reco, cali_dedx);
-
-				//zreco_ke.push_back(make_pair(wid_reco, ke_reco));
 
 				if (h==1) range_reco=0;
 				if (h>=1) {
@@ -731,31 +689,6 @@ void ProtonESliceData::Loop() {
 
 		} //if calo size not empty
 
-		//use wid for sorting
-		//sort(zreco_rawindex.begin(),zreco_rawindex.end(),myComparison); //sorting based on the first column
-		//sort(zreco_rr.begin(),zreco_rr.end(),myComparison); //sorting based on the first column
-		//sort(zreco_de.begin(),zreco_de.end(),myComparison); //sorting based on the first column
-		//sort(zreco_dedx.begin(),zreco_dedx.end(),myComparison); //sorting based on the first column
-		//sort(zreco_dx.begin(),zreco_dx.end(),myComparison); //sorting based on the first column
-		//sort(zreco_xreco.begin(),zreco_xreco.end(),myComparison); //sorting based on the first column
-		//sort(zreco_yreco.begin(),zreco_yreco.end(),myComparison); //sorting based on the first column
-		//sort(zreco_widreco.begin(),zreco_widreco.end(),myComparison); //sorting based on the first column
-		//sort(zreco_ke.begin(),zreco_ke.end(),myComparison); //sorting based on the first column
-
-		//reco trklen ---------------------------------------------------------------------------//
-		//double range_reco=-999;
-		//vector<double> reco_trklen_accum;
-		//reco_trklen_accum.reserve(primtrk_hitz->size());
-		//for (int iz=1; iz<(int)zreco_rawindex.size(); iz++) {
-		//if (iz==1) range_reco=0; 	
-		//range_reco += sqrt( pow(zreco_xreco[iz].second-zreco_xreco[iz-1].second, 2)+
-		//pow(zreco_yreco[iz].second-zreco_yreco[iz-1].second, 2)+
-		//pow(zreco_widreco[iz].second-zreco_widreco[iz-1].second, 2) );
-		//reco_trklen_accum[iz] = range_reco;
-		//zreco_lenreco.push_back(make_pair(zreco_widreco[iz].first, range_reco));
-		//}
-		cout<<"range_reco:"<<range_reco<<endl;
-
 		//Reco stopping/Inel p cut ---------------------------------------------------------------------------------------------------------//
 		bool IsRecoStop=false;
 		bool IsRecoInEL=false;
@@ -781,8 +714,6 @@ void ProtonESliceData::Loop() {
 			if (pid<=pid_2) IsRecoEL=true;
 		} //stopping p region
 
-
-
 		//kinetic energies -------------------------------------------------------------------//
 		//double ke_beam=1000.*p2ke(mom_beam); //ke_beam
 		double ke_beam_spec=p2ke(mom_beam_spec); //ke_beam_spec [GeV]
@@ -794,20 +725,16 @@ void ProtonESliceData::Loop() {
 			ke_simide+=primtrk_true_edept->at(hk);
 		} //loop over simIDE points
 
-
 		double KE_ff=0;
 		double KE_1st=0;
 		//if (is_beam_at_ff) KE_ff=1000.*beamtrk_Eng->at(key_reach_tpc); //unit:MeV
-		if (is_beam_at_ff) { 
+		if (is_beam_at_ff) { 		
 			KE_ff=ke_ff; //use KE exactly at z=0
 			KE_1st=1000.*beamtrk_Eng->at(key_reach_tpc);
-
 			double KE_1st_predict=BB.KEAtLength(KE_ff, range_true_patch);
 			h2d_R_kE1st->Fill(KE_1st, KE_1st_predict/KE_1st);
 		}
 		//---------------------------------------------------------------------------------------------------------------//
-
-
 
 		//some ke calc. -------------------------------------------------------------------------------------//
 		if (IsBQ&&IsCaloSize&&IsPandoraSlice) { //if calo size not empty
@@ -1135,9 +1062,6 @@ void ProtonESliceData::Loop() {
 				//double thisZ=beamtrk_z->at(hk);
 				double thisLen=true_trklen_accum[hk];
 				double this_incE = 1000.*beamtrk_Eng->at(hk); //MeV
-				
-				KEbb_truetrklen_all->Fill(thisLen, BB.KEAtLength(KE_ff, thisLen)); 
-				
 				if (kinel) trklen_ke_true_inel->Fill(thisLen, this_incE);
 				if (kel) trklen_ke_true_el->Fill(thisLen, this_incE);
 			} //loop over true hits
@@ -1147,26 +1071,22 @@ void ProtonESliceData::Loop() {
 		//true slice ID
 		//true_sliceID = int(true_endz/thinslicewidth);
 		//true_sliceID = int(range_true/thinslicewidth); //HY:Make sure size of true_trk_len vector is !0, otherwise lost truth info
-		//double KE_true=KE_ff-Len2E->E(range_true); //KE=KEff-Edept
-
-		//double KE_st=BB.KEAtLength(KE_ff, range_true_patch);
-		//true_st_sliceID=int((Emax-KE_1st)/thinslicewidth-0.5); 
-		//true_st_sliceID=int((Emax-KE_ff)/thinslicewidth+0.5); 
-		//true_st_sliceID=int((Emax-KE_ff)/thinslicewidth+0.2); 
-		true_st_sliceID=int((Emax-KE_ff)/thinslicewidth+0.4);
-      		if (true_st_sliceID<0) true_st_sliceID=-1; //KE higher than Emax
-		if (true_endz < 0) true_st_sliceID = -1; 
-		if (true_st_sliceID >= nthinslices) true_st_sliceID = nthinslices;
-
-
-		double KE_true=BB.KEAtLength(KE_ff, range_true);
-		true_sliceID = int((Emax-KE_true)/thinslicewidth); 
-		if (true_sliceID < 0) true_sliceID = -1;
-		if (true_endz < 0) true_sliceID = -1; //hy added
-		if (true_sliceID >= nthinslices) true_sliceID = nthinslices;
 		//cout<<"true_endz:"<<true_endz<<"  true_sliceID:"<<true_sliceID<<endl;
 		//cout<<"primtrk_range_true->empty():"<<primtrk_range_true->empty()
 		// <<" primtrk_range->empty():"<<primtrk_range->empty()<<endl;
+
+		//start slideID
+		true_st_sliceID=int((Emax-KE_1st)/thinslicewidth);
+		//true_st_sliceID=int((Emax-KE_ff)/thinslicewidth);
+      		if (true_st_sliceID<0) true_st_sliceID=-1; //KE higher than Emax
+		if (true_endz < 0) true_st_sliceID=-1; 
+		if (true_st_sliceID >= nthinslices) true_st_sliceID = nthinslices;
+
+		double KE_true=BB.KEAtLength(KE_ff, range_true);
+		true_sliceID = int((Emax-KE_true)/thinslicewidth);
+		if (true_sliceID < 0) true_sliceID = -1;
+		if (true_endz < 0) true_sliceID = -1; //hy added
+		if (true_sliceID >= nthinslices) true_sliceID = nthinslices;
 
 		//evt selection cuts
 		bool PassCuts_INT=false; //all bq cut+reco inel cut
@@ -1176,10 +1096,9 @@ void ProtonESliceData::Loop() {
 			//reco_sliceID = int(primtrk_range->at(0)/thinslicewidth);
 			//reco_sliceID = int(reco_endz/thinslicewidth);
 			//reco_sliceID = int(range_reco/thinslicewidth);
-			//reco_sliceID = int(Len2KE->KE(range_reco)/thinslicewidth); 
-			//double KE_reco=KE_ff-Len2E->E(range_reco); //trklen 2 KE conversion
+			//cout<<"reco_endz:"<<reco_endz<<"  reco_sliceID:"<<reco_sliceID<<endl;
 
-			reco_st_sliceID=int((Emax-KE_ff)/thinslicewidth);
+			reco_st_sliceID=int((Emax-KE_1st)/thinslicewidth);
       			if (reco_st_sliceID<0) reco_st_sliceID=-1; //KE higher than Emax
 			if (reco_endz < 0) reco_st_sliceID = -1; 
 			if (reco_st_sliceID >= nthinslices) reco_st_sliceID = nthinslices;
@@ -1189,7 +1108,6 @@ void ProtonESliceData::Loop() {
 			if (reco_sliceID < 0) reco_sliceID = -1;
 			if (reco_endz<0) reco_sliceID = -1;
 			if (reco_sliceID >= nthinslices) reco_sliceID = nthinslices;
-			cout<<"reco_endz:"<<reco_endz<<"  reco_sliceID:"<<reco_sliceID<<endl;
 
 			if (IsBQ&&IsRecoInEL) {
 				PassCuts_INT=true; //for INT 
@@ -1197,13 +1115,6 @@ void ProtonESliceData::Loop() {
 			if (IsBQ) {
 				PassCuts_INC=true; //for INC
 			}
-
-			for (size_t ih=0; ih<primtrk_dedx->size(); ++ih) {
-				double thisLen=reco_trklen_accum[ih];
-				double thisKE=BB.KEAtLength(KE_ff, thisLen); //len2ke conversion
-				KEbb_recotrklen_all->Fill(thisLen, BB.KEAtLength(KE_ff, thisLen)); 
-			}
-
 		}
 
 		if (isTestSample) { //if test sample 
@@ -1212,7 +1123,7 @@ void ProtonESliceData::Loop() {
 		} //if test sample
 		else { //if NOT test sample
 			uf.eff_den_Inc->Fill(true_sliceID, mom_rw_minchi2);
-			for (int ij=true_st_sliceID; ij<=true_sliceID; ++ij){
+			for (int ij=0; ij<=true_sliceID; ++ij){
 				if (ij<nthinslices) ++true_incidents[ij];
 			}
 		} //if NOT test sample
@@ -1228,9 +1139,8 @@ void ProtonESliceData::Loop() {
 				uf.eff_num_Inc->Fill(true_sliceID, mom_rw_minchi2);
 				uf.pur_num_Inc->Fill(reco_sliceID, mom_rw_minchi2);
 				uf.response_SliceID_Inc.Fill(reco_sliceID, true_sliceID, mom_rw_minchi2);
-          			uf.response_st_SliceID_Inc.Fill(reco_st_sliceID, true_st_sliceID);
+          			uf.response_st_SliceID_Inc.Fill(reco_st_sliceID, true_st_sliceID, mom_rw_minchi2);
 				
-				//for 1D unfolding by shape
 				uf.res_Inc_reco->Fill(reco_sliceID, mom_rw_minchi2);
 				uf.res_Inc_truth->Fill(true_sliceID, mom_rw_minchi2);
 			} //if NOT test sample
@@ -1239,9 +1149,7 @@ void ProtonESliceData::Loop() {
 			if (!isTestSample){
 				uf.response_SliceID_Inc.Miss(true_sliceID, mom_rw_minchi2);
           			uf.response_st_SliceID_Inc.Miss(true_st_sliceID, mom_rw_minchi2);
-
 				uf.res_Inc_truth->Fill(true_sliceID, mom_rw_minchi2);
-				//uf.response_SliceID_Inc.Miss(true_sliceID, mom_rw_minchi2);
 				//std::cout<<true_sliceID<<std::endl;
 			}
 		} //if NOT passing all cuts
@@ -1338,24 +1246,17 @@ void ProtonESliceData::Loop() {
 					//double this_dE=zreco_de[ih].second;
 					double thisZ=primtrk_hitz->at(ih);
 					double thisLen=reco_trklen_accum[ih];
-					//int this_sliceID = int(thisLen/thinslicewidth);
-					//double thisKE=KE_ff-Len2E->E(thisLen); //len2ke conversion
-					int this_sliceID=-1;
-					double thisKE=BB.KEAtLength(KE_ff, thisLen); //len2ke conversion
-					this_sliceID=int((Emax-thisKE)/thinslicewidth);
-					if (this_sliceID < 0) this_sliceID = -1;
-					if (thisLen < 0) true_sliceID = -1; //up-stram INT, set trklen_accum to -1 by default
-					if (this_sliceID >= nthinslices) this_sliceID = nthinslices;
-					KEbb_recotrklen_inel->Fill(thisLen,thisKE);
-
+					
+					int this_sliceID = int(thisLen/thinslicewidth);
 					//ke_reco-=this_dE;
 					ke_reco-=EDept.at(ih);
-					
+
 					if (this_sliceID>=nthinslices) continue;
 					if (this_sliceID<0) continue;
 
 					double this_incE = ke_reco;
 					vincE[this_sliceID].push_back(this_incE);
+
 
 					KEreco_z_inel->Fill(thisZ, this_incE);
 					KEreco_range_inel->Fill(thisLen, this_incE);
@@ -1392,20 +1293,10 @@ void ProtonESliceData::Loop() {
 				std::vector<std::vector<double>> vincE_true(nthinslices);
 				for (int hk=0; hk<(int)beamtrk_Eng->size()-1; ++hk) { //loop over true hits
 					double thisZ=beamtrk_z->at(hk);
-					double this_incE = 1000.*beamtrk_Eng->at(hk); //MeV
 					//int this_sliceID = int(thisZ/thinslicewidth);
-					//int this_sliceID = int(thisLen/thinslicewidth);
-					//int this_sliceID = int(Len2E->KE(thisLen)/thinslicewidth); 
 					double thisLen=true_trklen_accum[hk];
-					//double thisKE=KE_ff-Len2E->E(thisLen); //len2ke conversion
-					double thisKE=BB.KEAtLength(KE_ff,thisLen); //len2ke conversion
-					int this_sliceID=-1;
-					this_sliceID=int((Emax-thisKE)/thinslicewidth);
-					if (this_sliceID < 0) this_sliceID = -1;
-					if (this_sliceID >= nthinslices) this_sliceID = nthinslices;
-					if (thisLen < 0) true_sliceID = -1; //up-stram INT, set trklen_accum to -1 by default
-		
-					KEbb_truetrklen_inel->Fill(thisLen, thisKE);
+					int this_sliceID = int(thisLen/thinslicewidth);
+					double this_incE = 1000.*beamtrk_Eng->at(hk); //MeV
 
 					if (this_sliceID>=nthinslices) continue;
 					if (this_sliceID<0) continue;
@@ -1438,7 +1329,7 @@ void ProtonESliceData::Loop() {
 				}
 
 				KEtrue_Beam_inel->Fill(1000.*beamtrk_Eng->at(0));
-        			KEtrue_ff_inel->Fill(KE_ff);
+        			KEtrue_ff_inel->Fill(ke_ff);
 
 				TVector3 pt0_true(true_stx, true_sty, true_stz);
 				TVector3 pt1_true(true_endx, true_endy, true_endz);
@@ -1448,7 +1339,7 @@ void ProtonESliceData::Loop() {
 			} //if true container not empty
 		} //if pure inelastic
 
-		//delete Len2E;
+
 	} //main entry loop
 
 		//save true inc & int arrays to histograms -------------------------------------//

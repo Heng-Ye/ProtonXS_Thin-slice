@@ -48,9 +48,65 @@
 #include "./headers/util.h"
 //#include "./headers/SliceParams.h"
 //#include "./headers/ThinSlice.h"
+#include "./headers/BetheBloch.h"
 
 using namespace std;
 using namespace ROOT::Math;
+
+/////////////////////////////////
+// define the parametric line equation
+void line(double t, const double *p, double &x, double &y, double &z) {
+	// a parametric line is define from 6 parameters but 4 are independent
+	// x0,y0,z0,z1,y1,z1 which are the coordinates of two points on the line
+	// can choose z0 = 0 if line not parallel to x-y plane and z1 = 1;
+	x = p[0] + p[1]*t;
+	y = p[2] + p[3]*t;
+	z = t;
+}
+
+bool first = true;
+
+// function Object to be minimized
+struct SumDistance2 {
+	// the TGraph is a data member of the object
+	TGraph2D *fGraph;
+
+	SumDistance2(TGraph2D *g) : fGraph(g) {}
+
+	// calculate distance line-point
+	double distance2(double x,double y,double z, const double *p) {
+		// distance line point is D= | (xp-x0) cross  ux |
+		// where ux is direction of line and x0 is a point in the line (like t = 0)
+		XYZVector xp(x,y,z);
+		XYZVector x0(p[0], p[2], 0. );
+		XYZVector x1(p[0] + p[1], p[2] + p[3], 1. );
+		XYZVector u = (x1-x0).Unit();
+		double d2 = ((xp-x0).Cross(u)).Mag2();
+		return d2;
+	}
+
+	// implementation of the function to be minimized
+	double operator() (const double *par) {
+		assert(fGraph != 0);
+		double * x = fGraph->GetX();
+		double * y = fGraph->GetY();
+		double * z = fGraph->GetZ();
+		int npoints = fGraph->GetN();
+		double sum = 0;
+		for (int i  = 0; i < npoints; ++i) {
+			double d = distance2(x[i],y[i],z[i],par);
+			sum += d;
+		}
+		if (first) {
+			std::cout << "Total Initial distance square = " << sum << std::endl;
+		}
+		first = false;
+		return sum;
+	}
+
+};
+/////////////////////////////////
+
 
 void ProtonKE::Loop() {
 	if (fChain == 0) return;
@@ -76,12 +132,9 @@ void ProtonKE::Loop() {
 	double Eloss_mc=33.4266;
 	double err_Eloss_mc=0.281126;
 
-
-
-
-
-
-
+	//Basic configure ------//
+	BetheBloch BB;
+	BB.SetPdgCode(pdg);
 
 	//Kinetic energies -------------------------------------------------------------------------------------------------------//
 	int nke=160;
@@ -201,11 +254,19 @@ void ProtonKE::Loop() {
 
 
 
-
 	//upstream energy loss
 	int ndke=300;
 	double dkemin=0;
 	double dkemax=600;
+
+	TH1D *h1d_dEbb=new TH1D("h1d_dEbb","", 1000, -500,500); //edept_bb_true-edept_bb_reco
+	TH1D *h1d_dEbb_stop=new TH1D("h1d_dEbb_stop","", 1000, -500,500); //edept_bb_true-edept_bb_reco
+	TH1D *h1d_dEbb_recoinel=new TH1D("h1d_dEbb_recoinel","", 1000, -500,500); //edept_bb_true-edept_bb_reco
+	TH1D *h1d_dEbb_recoel=new TH1D("h1d_dEbb_recoel","", 1000, -500,500); //edept_bb_true-edept_bb_reco
+
+	TH1D *h1d_dKEbb=new TH1D("h1d_dKEbb","", 1000, -500,500); //KEbb_true-KEbb_reco
+	TH2D *h2d_dKEbb_KEtrue=new TH2D("h2d_dKEbb_KEtrue","", 800,0,800, 1000, -500, 500); 
+	TH2D *h2d_dKEbb_KEreco=new TH2D("h2d_dKEbb_KEreco","", 800,0,800, 1000, -500, 500); 
 
 	//reco_label
 	TH1D *h1d_dke=new TH1D("h1d_dke","", ndke, dkemin, dkemax); //ke_beam-ke_ff
@@ -219,11 +280,26 @@ void ProtonKE::Loop() {
 	TH1D *h1d_dKE_recoinel=new TH1D("h1d_dKE_recoinel","", ndke, dkemin, dkemax); //ke_beam-E_dept
 	TH1D *h1d_dKE_recoel=new TH1D("h1d_dKE_recoel","", ndke, dkemin, dkemax); //ke_beam-E_dept
 
-
 	//true_label
 	TH1D *h1d_dke_el=new TH1D("h1d_dke_el","", ndke, dkemin, dkemax); //ke_beam-ke_ff
 	TH1D *h1d_dke_inel=new TH1D("h1d_dke_inel","", ndke, dkemin, dkemax); //ke_beam-ke_ff
 	TH1D *h1d_dke_misidp=new TH1D("h1d_dke_misidp","", ndke, dkemin, dkemax); //ke_beam-ke_ff
+
+	//KEbb
+	TH1D *h1d_KEbb_reco=new TH1D("h1d_KEbb_reco","", ndke, dkemin, dkemax);
+	TH1D *h1d_KEbb_true=new TH1D("h1d_KEbb_true","", ndke, dkemin, dkemax);
+	
+	TH1D *h1d_KEbb_reco_inel=new TH1D("h1d_KEbb_reco_inel","", ndke, dkemin, dkemax);
+	TH1D *h1d_KEbb_reco_el=new TH1D("h1d_KEbb_reco_el","", ndke, dkemin, dkemax);
+	TH1D *h1d_KEbb_reco_midcosmic=new TH1D("h1d_KEbb_reco_midcosmic","", ndke, dkemin, dkemax);
+	TH1D *h1d_KEbb_reco_midpi=new TH1D("h1d_KEbb_reco_midpi","", ndke, dkemin, dkemax);
+	TH1D *h1d_KEbb_reco_midp=new TH1D("h1d_KEbb_reco_midp","", ndke, dkemin, dkemax);
+	TH1D *h1d_KEbb_reco_midmu=new TH1D("h1d_KEbb_reco_midmu","", ndke, dkemin, dkemax);
+	TH1D *h1d_KEbb_reco_mideg=new TH1D("h1d_KEbb_reco_mideg","", ndke, dkemin, dkemax);
+	TH1D *h1d_KEbb_reco_midother=new TH1D("h1d_KEbb_reco_midother","", ndke, dkemin, dkemax);
+
+
+
 	//------------------------------------------------------------------------------------------------------------------------//
 
 	//Beam momentum reweighting ----------------------------------------------------------------------------------------------//
@@ -598,13 +674,156 @@ void ProtonKE::Loop() {
 
 
 		double KE_ff_tpc=-999;
-		if (is_beam_at_ff) KE_ff_tpc=1000.*(beamtrk_Eng->at(key_reach_tpc)); //MeV
+		double KE_ff=0;
+
+		if (is_beam_at_ff) {
+			KE_ff=ke_ff; //use KE exactly at z=0 
+			KE_ff_tpc=1000.*(beamtrk_Eng->at(key_reach_tpc)); //MeV
+		}
 
 		//double p_trklen=ke2p(ke_trklen);
 		//double ke_simide=0;
 		//for (int hk=0; hk<(int)primtrk_true_edept->size(); ++hk) { //loop over simIDE points
 		//ke_simide+=primtrk_true_edept->at(hk);
 		//} //loop over simIDE points
+
+
+
+		//fix on the truth length by adding distance between 1st tpc hit to front face ------------------------------------------------------//
+		//[1] 3D projection on TPC front face
+		double zproj_beam=0; //set beam z at ff
+		double yproj_beam=0; //ini. value
+		double xproj_beam=0; //ini. value
+		int n_fit=3; //num of points used for fitting
+                if (beamtrk_z->size()) {
+
+			int key_fit_st=0;
+			int key_fit_ed=-1+(int)beamtrk_z->size();
+			if (key_reach_tpc!=-99) {
+				key_fit_st=key_reach_tpc-1;
+				key_fit_ed=key_reach_tpc+1;
+			}
+			if (key_fit_st<0) key_fit_st=0;
+			if (key_fit_ed>(-1+(int)beamtrk_z->size())) key_fit_ed=-1+(int)beamtrk_z->size();	
+
+			cout<<"beamtrk_z->size():"<<beamtrk_z->size()<<endl;
+			cout<<"key_reach_tpc:"<<key_reach_tpc<<endl;
+			std::cout<<"key_fit_st-ed:"<<key_fit_st<<"-"<<key_fit_ed<<std::endl;
+
+			//start 3D line fit
+			TGraph2D *gr=new TGraph2D();
+			//cout<<"ck0"<<endl;
+   		  	//for (int N=key_fit_st; N<key_fit_ed; N++) {
+   		  	int nsize_fit=n_fit;
+			if ((1+(key_fit_ed-key_fit_st))<n_fit) nsize_fit=1+(key_fit_ed-key_fit_st);
+			if ((int)beamtrk_z->size()<=n_fit) nsize_fit=(int)beamtrk_z->size(); //in case really short track
+   		  	for (int N=0; N<nsize_fit; N++) {
+				gr->SetPoint(N, beamtrk_x->at(N+key_fit_st), beamtrk_y->at(N+key_fit_st), beamtrk_z->at(N+key_fit_st));
+   		    	}
+			//cout<<"ck1"<<endl;
+			//Initialization of parameters
+			//int N=(int)Z_RECO.size();
+			double ini_p1=(beamtrk_x->at(key_fit_ed)-beamtrk_x->at(key_fit_st))/(beamtrk_z->at(key_fit_ed)-beamtrk_z->at(key_fit_st));
+			double ini_p0=beamtrk_x->at(key_fit_st)-ini_p1*beamtrk_z->at(key_fit_st);
+			double ini_p3=beamtrk_y->at(key_fit_ed)-beamtrk_y->at(key_fit_st);
+			double ini_p2=beamtrk_y->at(key_fit_st)-ini_p3*beamtrk_z->at(key_fit_st);
+			//cout<<"ck2"<<endl;
+
+			ROOT::Fit::Fitter  fitter;
+			// make the functor objet
+			SumDistance2 sdist(gr);
+			ROOT::Math::Functor fcn(sdist,4);
+
+			// set the function and the initial parameter values
+  			double pStart[4]={ini_p0, ini_p1, ini_p2, ini_p3};   
+			fitter.SetFCN(fcn,pStart);
+			//cout<<"ck3"<<endl;
+
+			// set step sizes different than default ones (0.3 times parameter values)
+			for (int ik = 0; ik < 4; ++ik) fitter.Config().ParSettings(ik).SetStepSize(0.01);
+			//cout<<"ck4"<<endl;
+
+			bool ok = fitter.FitFCN();
+			if (!ok) {
+				Error("line3Dfit","Line3D Fit failed");
+				//return 1;
+			}
+			//cout<<"ck5"<<endl;
+				
+			const ROOT::Fit::FitResult & result = fitter.Result();
+			std::cout << "Total final distance square " << result.MinFcnValue() << std::endl;
+			result.Print(std::cout);
+			//cout<<"ck6"<<endl;
+				
+			// get fit parameters
+			const double * parFit = result.GetParams();
+			yproj_beam=result.Parameter(2)+result.Parameter(3)*zproj_beam;
+			xproj_beam=result.Parameter(0)+result.Parameter(1)*zproj_beam;
+			//cout<<"ck7"<<endl;
+
+			delete gr;
+		}
+
+		//[2] Range compensation ----------------------------------------------------------//
+		double range_true_patch=0;
+		if (is_beam_at_ff) { //is beam at ff
+			//calculate distance 1st hit and pojected point at TPC front face
+			range_true_patch = sqrt( pow(beamtrk_x->at(key_reach_tpc)-xproj_beam, 2)+
+					pow(beamtrk_y->at(key_reach_tpc)-yproj_beam, 2)+	
+					pow(beamtrk_z->at(key_reach_tpc)-zproj_beam, 2) );
+			//range_true_patch=0; //no fix on true len
+		} //if entering tpc
+
+		//true_trklen_accum
+		double range_true=-9999;
+		if (is_beam_at_ff) { //is beam at ff
+		  for (int iz=key_reach_tpc+1; iz<(int)beamtrk_z->size(); iz++) {
+			if (iz == key_reach_tpc+1) range_true = range_true_patch;
+					range_true += sqrt( pow(beamtrk_x->at(iz)-beamtrk_x->at(iz-1), 2)+
+						pow(beamtrk_y->at(iz)-beamtrk_y->at(iz-1), 2)+	
+						pow(beamtrk_z->at(iz)-beamtrk_z->at(iz-1), 2) );						    	
+				//true_trklen_accum[iz] = range_true;
+		  }
+		} //is beam at ff						    	
+		//fix on the truth length by adding distance between 1st tpc hit to front face ------------------------------------------------------//
+
+		//KEs ---------------------------------------------------------------------------------------------------//
+		double Eloss_upstream=0; 
+		if (is_beam_at_ff) Eloss_upstream=ke_beam_spec_MeV-KE_ff;
+
+		//double ke_trklen=ke_vs_csda_range_sm->Eval(range_reco); //[unit: GeV]
+		//double ke_trklen_MeV=1000.*ke_trklen; //[unit: MeV]
+
+		double dEbb_true=0; if (range_true>=0&&is_beam_at_ff) dEbb_true=BB.KEFromRangeSpline(range_true);
+		double dEbb_reco=0; if (range_reco>=0&&is_beam_at_ff) dEbb_reco=BB.KEFromRangeSpline(range_reco);
+		double dEbb=0; dEbb=dEbb_true-dEbb_reco;
+
+		//mean and sigma of e-loss [mc]
+		//double mean_Eloss_upstream=2.04949e+01;
+		//double err_mean_Eloss_upstream=1.47946e-01;
+		//double sigma_Eloss_upstream=1.90634e+01;
+		//double err_sigma_Eloss_upstream=1.23169e-01;
+
+		//energy loss using stopping protons
+		double mean_Eloss_upstream=19.3073;
+		double err_mean_Eloss_upstream=0.187143;
+		double sigma_Eloss_upstream=18.7378;
+		double err_sigma_Eloss_upstream=0.140183;
+
+		double KEbb_true=-1; KEbb_true=BB.KEAtLength(KE_ff, range_true);
+		double KEbb_reco=-1; KEbb_reco=BB.KEAtLength((ke_beam_spec_MeV-mean_Eloss_upstream), range_reco);
+		double dKEbb=0; dKEbb=KEbb_reco-KEbb_true;
+
+
+
+
+
+
+
+
+
+
+
 
 		double ke_calo_MeV=0;
 		if (IsPandoraSlice&&IsBQ&&IsCaloSize) { //if calo size not empty
@@ -706,23 +925,60 @@ void ProtonKE::Loop() {
 			//} //xy
 
 
-			h1d_dke->Fill(ke_beam_spec_MeV-ke_ff);
+			h1d_dke->Fill(Eloss_upstream);
+			Fill1DHist(h1d_dEbb, dEbb);
+			Fill1DHist(h1d_dKEbb, dKEbb);
+			h2d_dKEbb_KEtrue->Fill(KEbb_true, dKEbb);	
+			h2d_dKEbb_KEreco->Fill(KEbb_reco, dKEbb);
+
+			Fill1DHist(h1d_KEbb_true, KEbb_true);
+			Fill1DHist(h1d_KEbb_reco, KEbb_reco);
+		
 			h1d_dKE->Fill(ke_beam_spec_MeV-ke_calo_MeV);
 			h1d_kecalo->Fill(ke_calo_MeV);
+
 			if (kinel) { //inel
-				h1d_dke_inel->Fill(ke_beam_spec_MeV-ke_ff);
+				h1d_dke_inel->Fill(Eloss_upstream);
+				Fill1DHist(h1d_KEbb_reco_inel, KEbb_reco);
 			} //inel
 
 			if (kel) { //el
-				h1d_dke_el->Fill(ke_beam_spec_MeV-ke_ff);
+				h1d_dke_el->Fill(Eloss_upstream);
+				Fill1DHist(h1d_KEbb_reco_el, KEbb_reco);
 			} //el
 
 			if (kMIDp) { //misid:p
-				h1d_dke_misidp->Fill(ke_beam_spec_MeV-ke_ff);
+				h1d_dke_misidp->Fill(Eloss_upstream);
+				Fill1DHist(h1d_KEbb_reco_midp, KEbb_reco);
 			} //misid:p
 
+			if (kMIDcosmic) { 
+				Fill1DHist(h1d_KEbb_reco_midcosmic, KEbb_reco);
+			}
+
+			if (kMIDpi) { 
+				Fill1DHist(h1d_KEbb_reco_midpi, KEbb_reco);
+			}
+
+			if (kMIDmu) { 
+				Fill1DHist(h1d_KEbb_reco_midmu, KEbb_reco);
+			}
+
+			if (kMIDeg) { 
+				Fill1DHist(h1d_KEbb_reco_mideg, KEbb_reco);
+			}
+
+			if (kMIDother) { 
+				Fill1DHist(h1d_KEbb_reco_midother, KEbb_reco);
+			}
+
+
+
+
 			if (IsRecoInEL) {
-				h1d_dke_recoinel->Fill(ke_beam_spec_MeV-ke_ff);
+				Fill1DHist(h1d_dEbb_recoinel, dEbb);
+
+				h1d_dke_recoinel->Fill(Eloss_upstream);
 				h1d_kecalo_recoinel->Fill(ke_calo_MeV);
 				h1d_keff_recoinel->Fill(ke_ff);
 				h1d_keff0_recoinel->Fill(KE_ff_tpc);
@@ -769,7 +1025,9 @@ void ProtonKE::Loop() {
 				}
 			}
 			if (IsRecoEL) {
-				h1d_dke_recoel->Fill(ke_beam_spec_MeV-ke_ff);
+				Fill1DHist(h1d_dEbb_recoel, dEbb);
+
+				h1d_dke_recoel->Fill(Eloss_upstream);
 				h1d_kecalo_recoel->Fill(ke_calo_MeV);
 				h1d_dKE_recoel->Fill(ke_beam_spec_MeV-ke_calo_MeV);
 
@@ -810,6 +1068,7 @@ void ProtonKE::Loop() {
 			}
 
 			if (IsRecoStop) { //reco stop
+				Fill1DHist(h1d_dEbb_stop, dEbb);
 				h1d_kebeam_stop->Fill(ke_beam_spec_MeV);
 				h1d_keff_stop->Fill(ke_ff);
 				h1d_keff0_stop->Fill(KE_ff_tpc);
@@ -824,7 +1083,7 @@ void ProtonKE::Loop() {
 				h1d_kecalo_stop_bmrw->Fill(ke_calo_MeV,mom_rw_minchi2);
 				h1d_kerange_stop->Fill(ke_trklen_MeV);
 				
-				h1d_dke_stop->Fill(ke_beam_spec_MeV-ke_ff);
+				h1d_dke_stop->Fill(Eloss_upstream);
 				h1d_dKE_stop->Fill(ke_beam_spec_MeV-ke_calo_MeV);
 
 				double mom_rw_minchi2=1.;
@@ -984,6 +1243,28 @@ void ProtonKE::Loop() {
 		h2d_trklen_ke_all->Write();
 		h2d_trklen_ke2_all->Write();
 		h2d_trklen_dke_all->Write();
+
+
+		h1d_dEbb->Write();
+		h1d_dEbb_stop->Write();
+		h1d_dEbb_recoinel->Write();
+		h1d_dEbb_recoel->Write();
+		h1d_dKEbb->Write();
+		h2d_dKEbb_KEtrue->Write();
+		h2d_dKEbb_KEreco->Write();
+
+
+		h1d_KEbb_true->Write();
+		h1d_KEbb_reco->Write();
+
+		h1d_KEbb_reco_inel->Write();
+		h1d_KEbb_reco_el->Write();
+		h1d_KEbb_reco_midcosmic->Write();
+		h1d_KEbb_reco_midpi->Write();
+		h1d_KEbb_reco_midp->Write();
+		h1d_KEbb_reco_midmu->Write();
+		h1d_KEbb_reco_mideg->Write();
+		h1d_KEbb_reco_midother->Write();
 
 
 
