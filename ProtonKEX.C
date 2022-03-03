@@ -825,9 +825,9 @@ void ProtonKE::Loop() {
 		double sigma_Eloss_upstream=18.7378;
 		double err_sigma_Eloss_upstream=0.140183;
 
-		//double KEbb_true=-1; KEbb_true=BB.KEAtLength(KE_ff, range_true);
+		double KEbb_true=-1; KEbb_true=BB.KEAtLength(KE_ff, range_true);
+		//double KEbb_reco=-1; KEbb_reco=BB.KEAtLength(KE_ff, range_reco);
 		double KEbb_reco=-1; KEbb_reco=BB.KEAtLength((ke_beam_spec_MeV-mean_Eloss_upstream), range_reco);
-		double KEbb_reco=-1; KEbb_reco=BB.KEAtLength(KE_ff, range_reco);
 		double dKEbb=0; dKEbb=KEbb_reco-KEbb_true;
 
 
