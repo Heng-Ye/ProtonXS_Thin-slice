@@ -35,6 +35,8 @@ TH1D *h_true_st_sliceid_cuts;
 TH1D *h_truesliceid_inelastic_all;
 //TH1D *h_truesliceid_inelastic_uf;
 TH1D *h_truesliceid_inelastic_cuts;
+
+//reco inc
 TH1D *h_recosliceid_allevts_cuts;
 TH1D *h_recosliceid_allevts_cuts_inel;
 TH1D *h_recosliceid_allevts_cuts_el;
@@ -44,6 +46,18 @@ TH1D *h_recosliceid_allevts_cuts_midp;
 TH1D *h_recosliceid_allevts_cuts_midmu;
 TH1D *h_recosliceid_allevts_cuts_mideg;
 TH1D *h_recosliceid_allevts_cuts_midother;
+
+//reco st inc
+TH1D *h_reco_st_sliceid_allevts_cuts;
+TH1D *h_reco_st_sliceid_allevts_cuts_inel;
+TH1D *h_reco_st_sliceid_allevts_cuts_el;
+TH1D *h_reco_st_sliceid_allevts_cuts_midcosmic;
+TH1D *h_reco_st_sliceid_allevts_cuts_midpi;
+TH1D *h_reco_st_sliceid_allevts_cuts_midp;
+TH1D *h_reco_st_sliceid_allevts_cuts_midmu;
+TH1D *h_reco_st_sliceid_allevts_cuts_mideg;
+TH1D *h_reco_st_sliceid_allevts_cuts_midother;
+
 
 TH1D *h_recosliceid_cuts;
 TH1D *h_reco_st_sliceid_cuts;
@@ -58,15 +72,14 @@ TH1D *h_recosliceid_recoinelastic_cuts_midmu;
 TH1D *h_recosliceid_recoinelastic_cuts_mideg;
 TH1D *h_recosliceid_recoinelastic_cuts_midother;
 
-double true_interactions[nthinslices];
-double true_incidents[nthinslices];
+double true_interactions[nthinslices+2];
+double true_incidents[nthinslices+2];
 
 //Histograms for basic parameters ---------//
 //reco x, y, z [after SCE corr]
 TH1D *reco_startX_sce; 
 TH1D *reco_startY_sce;
 TH1D *reco_startZ_sce;
-
 
 TH1D *hdeltaX;
 TH1D *hdeltaX_inel;
@@ -173,7 +186,6 @@ TH2D *KEbb_recotrklen_inel;
 //True Trklen Patch Dist.
 TH1D *true_trklen_patch_all;
 
-
 //KE reco info
 TH2D *KEreco_z_inel;
 TH2D *KEreco_range_inel;
@@ -182,8 +194,6 @@ TH2D *reco_z_range_inel;
 TH2D *dEdx_range_inel;
 TH2D *dx_range_inel;
 TH2D *dE_range_inel;
-
-
 
 //Track length histograms -----------------------------------------------------------------//
 //true range
@@ -368,8 +378,6 @@ TH2D *reco_dx_trklen_inel;
 //KEff sansity check
 TH2D *h2d_R_kE1st;
 
-
-
 void BookHistograms() { //BookHistograms
 	outputFile = TFile::Open(fOutputFileName.c_str(), "recreate"); //open output file
 
@@ -392,6 +400,7 @@ void BookHistograms() { //BookHistograms
 	h_true_st_sliceid_cuts = new TH1D("h_true_st_sliceid_cuts","h_true_st_sliceid_cuts;True Start SliceID", nthinslices + 2, -1, nthinslices + 1);
 	h_truesliceid_inelastic_all = new TH1D("h_truesliceid_inelastic_all","h_truesliceid_inelastic_all;True SliceID", nthinslices + 2, -1, nthinslices + 1);
 	h_truesliceid_inelastic_cuts = new TH1D("h_truesliceid_inelastic_cuts","h_truesliceid_inelastic_cuts;True SliceID", nthinslices + 2, -1, nthinslices + 1);
+
 	h_recosliceid_allevts_cuts = new TH1D("h_recosliceid_allevts_cuts","h_recosliceid_allevts_cuts;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
 	h_recosliceid_allevts_cuts_inel = new TH1D("h_recosliceid_allevts_cuts_inel","h_recosliceid_allevts_cuts_inel;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
 	h_recosliceid_allevts_cuts_el = new TH1D("h_recosliceid_allevts_cuts_el","h_recosliceid_allevts_cuts_el;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
@@ -401,6 +410,16 @@ void BookHistograms() { //BookHistograms
 	h_recosliceid_allevts_cuts_midmu = new TH1D("h_recosliceid_allevts_cuts_midmu","h_recosliceid_allevts_cuts_midmu;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
 	h_recosliceid_allevts_cuts_mideg = new TH1D("h_recosliceid_allevts_cuts_mideg","h_recosliceid_allevts_cuts_mideg;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
 	h_recosliceid_allevts_cuts_midother = new TH1D("h_recosliceid_allevts_cuts_midother","h_recosliceid_allevts_cuts_midother;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
+
+	h_reco_st_sliceid_allevts_cuts = new TH1D("h_reco_st_sliceid_allevts_cuts","h_reco_st_sliceid_allevts_cuts;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
+	h_reco_st_sliceid_allevts_cuts_inel = new TH1D("h_reco_st_sliceid_allevts_cuts_inel","h_reco_st_sliceid_allevts_cuts_inel;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
+	h_reco_st_sliceid_allevts_cuts_el = new TH1D("h_reco_st_sliceid_allevts_cuts_el","h_reco_st_sliceid_allevts_cuts_el;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
+	h_reco_st_sliceid_allevts_cuts_midcosmic = new TH1D("h_reco_st_sliceid_allevts_cuts_midcosmic","h_reco_st_sliceid_allevts_cuts_midcosmic;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
+	h_reco_st_sliceid_allevts_cuts_midpi = new TH1D("h_reco_st_sliceid_allevts_cuts_midpi","h_reco_st_sliceid_allevts_cuts_midpi;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
+	h_reco_st_sliceid_allevts_cuts_midp = new TH1D("h_reco_st_sliceid_allevts_cuts_midp","h_reco_st_sliceid_allevts_cuts_midp;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
+	h_reco_st_sliceid_allevts_cuts_midmu = new TH1D("h_reco_st_sliceid_allevts_cuts_midmu","h_reco_st_sliceid_allevts_cuts_midmu;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
+	h_reco_st_sliceid_allevts_cuts_mideg = new TH1D("h_reco_st_sliceid_allevts_cuts_mideg","h_reco_st_sliceid_allevts_cuts_mideg;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
+	h_reco_st_sliceid_allevts_cuts_midother = new TH1D("h_reco_st_sliceid_allevts_cuts_midother","h_reco_st_sliceid_allevts_cuts_midother;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
 
 
 	h_recosliceid_cuts = new TH1D("h_recosliceid_cuts","h_recosliceid_cuts;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
@@ -422,6 +441,7 @@ void BookHistograms() { //BookHistograms
 	h_true_st_sliceid_cuts->Sumw2();
 	h_truesliceid_inelastic_all->Sumw2();
 	h_truesliceid_inelastic_cuts->Sumw2();
+
 	h_recosliceid_allevts_cuts->Sumw2();
 	h_recosliceid_allevts_cuts_inel->Sumw2();
 	h_recosliceid_allevts_cuts_el->Sumw2();
@@ -431,6 +451,16 @@ void BookHistograms() { //BookHistograms
 	h_recosliceid_allevts_cuts_midmu->Sumw2();
 	h_recosliceid_allevts_cuts_mideg->Sumw2();
 	h_recosliceid_allevts_cuts_midother->Sumw2();
+
+	h_reco_st_sliceid_allevts_cuts->Sumw2();
+	h_reco_st_sliceid_allevts_cuts_inel->Sumw2();
+	h_reco_st_sliceid_allevts_cuts_el->Sumw2();
+	h_reco_st_sliceid_allevts_cuts_midcosmic->Sumw2();
+	h_reco_st_sliceid_allevts_cuts_midpi->Sumw2();
+	h_reco_st_sliceid_allevts_cuts_midp->Sumw2();
+	h_reco_st_sliceid_allevts_cuts_midmu->Sumw2();
+	h_reco_st_sliceid_allevts_cuts_mideg->Sumw2();
+	h_reco_st_sliceid_allevts_cuts_midother->Sumw2();
 
 
 	h_recosliceid_cuts->Sumw2();
@@ -785,13 +815,12 @@ void BookHistograms() { //BookHistograms
 	KEbb_recotrklen_all->Sumw2(); //
 	KEbb_recotrklen_inel->Sumw2(); //
 
-
 	true_trklen_patch_all=new TH1D("true_trklen_patch_all","",500,0,5);
 	true_trklen_patch_all->Sumw2();	
 
 	//R vs KE1st
-	//R:=KE_1st(prediction)/KE_1st()
-	h2d_R_kE1st=new TH2D("h2d_R_kE1st","",8000,0,800,200,0,2);
+	h2d_R_kE1st=new TH2D("h2d_R_kE1st","", 800, 0, 800, 200, 0, 2);
+	h2d_R_kE1st->Sumw2();
 
 } //BookHistograms
 
@@ -801,7 +830,6 @@ void SaveHistograms() { //SaveHistograms
 	outputFile->Write();
 	//h_truesliceid_uf->Write("h_truesliceid_uf");
 	//h_truesliceid_inelastic_uf->Write("h_truesliceid_inelastic_uf");
-
 
 } //SaveHistograms
 

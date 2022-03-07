@@ -1149,6 +1149,7 @@ void ProtonESliceData::Loop() {
 		} //if test sample
 		else { //if NOT test sample
 			uf.eff_den_Inc->Fill(true_sliceID, mom_rw_minchi2);
+			uf.eff_den_st_Inc->Fill(true_st_sliceID, mom_rw_minchi2);
 			for (int ij=true_st_sliceID; ij<=true_sliceID; ++ij){
 				//if (ij<nthinslices) ++true_incidents[ij+1];
 				++true_incidents[ij+1];
@@ -1164,19 +1165,28 @@ void ProtonESliceData::Loop() {
 			} //if test sample
 			else{ //if NOT test sample
 				uf.eff_num_Inc->Fill(true_sliceID, mom_rw_minchi2);
+				uf.eff_num_st_Inc->Fill(true_st_sliceID, mom_rw_minchi2);
+
 				uf.pur_num_Inc->Fill(reco_sliceID, mom_rw_minchi2);
+				uf.pur_num_st_Inc->Fill(reco_st_sliceID, mom_rw_minchi2);
+
 				uf.response_SliceID_Inc.Fill(reco_sliceID, true_sliceID, mom_rw_minchi2);
           			uf.response_st_SliceID_Inc.Fill(reco_st_sliceID, true_st_sliceID, mom_rw_minchi2);
 				
 				uf.res_Inc_reco->Fill(reco_sliceID, mom_rw_minchi2);
+				uf.res_st_Inc_reco->Fill(reco_st_sliceID, mom_rw_minchi2);
+
 				uf.res_Inc_truth->Fill(true_sliceID, mom_rw_minchi2);
+				uf.res_st_Inc_truth->Fill(true_st_sliceID, mom_rw_minchi2);
 			} //if NOT test sample
 		} //if passing all basic cuts
 		else { //if NOT passing all cuts
 			if (!isTestSample){
 				uf.response_SliceID_Inc.Miss(true_sliceID, mom_rw_minchi2);
           			uf.response_st_SliceID_Inc.Miss(true_st_sliceID, mom_rw_minchi2);
+
 				uf.res_Inc_truth->Fill(true_sliceID, mom_rw_minchi2);
+				uf.res_st_Inc_truth->Fill(true_st_sliceID, mom_rw_minchi2);
 				//std::cout<<true_sliceID<<std::endl;
 			}
 		} //if NOT passing all cuts
@@ -1221,18 +1231,45 @@ void ProtonESliceData::Loop() {
 		if (PassCuts_INC) { //if pass all cuts
 			if (isTestSample){ //if test sample
 				h_recosliceid_allevts_cuts->Fill(reco_sliceID, mom_rw_minchi2);
-				if (kinel) h_recosliceid_allevts_cuts_inel->Fill(reco_sliceID, mom_rw_minchi2);
-				if (kel) h_recosliceid_allevts_cuts_el->Fill(reco_sliceID, mom_rw_minchi2);
-				if (kMIDcosmic) h_recosliceid_allevts_cuts_midcosmic->Fill(reco_sliceID, mom_rw_minchi2);
-				if (kMIDpi) h_recosliceid_allevts_cuts_midpi->Fill(reco_sliceID, mom_rw_minchi2);
-				if (kMIDp) h_recosliceid_allevts_cuts_midp->Fill(reco_sliceID, mom_rw_minchi2);
-				if (kMIDmu) h_recosliceid_allevts_cuts_midmu->Fill(reco_sliceID, mom_rw_minchi2);
-				if (kMIDeg) h_recosliceid_allevts_cuts_mideg->Fill(reco_sliceID, mom_rw_minchi2);
-				if (kMIDother) h_recosliceid_allevts_cuts_midother->Fill(reco_sliceID, mom_rw_minchi2);				
+				h_reco_st_sliceid_allevts_cuts->Fill(reco_st_sliceID, mom_rw_minchi2);
+
+				if (kinel) { 
+					h_recosliceid_allevts_cuts_inel->Fill(reco_sliceID, mom_rw_minchi2);
+					h_reco_st_sliceid_allevts_cuts_inel->Fill(reco_st_sliceID, mom_rw_minchi2);
+				}
+				if (kel) { 
+					h_recosliceid_allevts_cuts_el->Fill(reco_sliceID, mom_rw_minchi2);
+					h_reco_st_sliceid_allevts_cuts_el->Fill(reco_st_sliceID, mom_rw_minchi2);
+				}
+				if (kMIDcosmic) { 
+					h_recosliceid_allevts_cuts_midcosmic->Fill(reco_sliceID, mom_rw_minchi2);
+					h_reco_st_sliceid_allevts_cuts_midcosmic->Fill(reco_st_sliceID, mom_rw_minchi2);
+				}
+				if (kMIDpi) { 
+					h_recosliceid_allevts_cuts_midpi->Fill(reco_sliceID, mom_rw_minchi2);
+					h_reco_st_sliceid_allevts_cuts_midpi->Fill(reco_st_sliceID, mom_rw_minchi2);
+				}
+				if (kMIDp) { 
+					h_recosliceid_allevts_cuts_midp->Fill(reco_sliceID, mom_rw_minchi2);
+					h_reco_st_sliceid_allevts_cuts_midp->Fill(reco_st_sliceID, mom_rw_minchi2);
+				}
+				if (kMIDmu) { 
+					h_recosliceid_allevts_cuts_midmu->Fill(reco_sliceID, mom_rw_minchi2);
+					h_reco_st_sliceid_allevts_cuts_midmu->Fill(reco_st_sliceID, mom_rw_minchi2);
+				}
+				if (kMIDeg) { 
+					h_recosliceid_allevts_cuts_mideg->Fill(reco_sliceID, mom_rw_minchi2);
+					h_reco_st_sliceid_allevts_cuts_mideg->Fill(reco_st_sliceID, mom_rw_minchi2);
+				}
+				if (kMIDother) { 
+					h_recosliceid_allevts_cuts_midother->Fill(reco_sliceID, mom_rw_minchi2);
+					h_reco_st_sliceid_allevts_cuts_midother->Fill(reco_st_sliceID, mom_rw_minchi2);
+				}
 			} //if test sample
 			else { //if NOT test sample
 				uf.pur_den->Fill(reco_sliceID, mom_rw_minchi2);
 				uf.pur_den_Inc->Fill(reco_sliceID, mom_rw_minchi2);
+				uf.pur_den_st_Inc->Fill(reco_st_sliceID, mom_rw_minchi2);
 			} //if NOT test sample
 		} //if pass all cuts
 
