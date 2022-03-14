@@ -142,6 +142,7 @@ void ProtonKE::Loop() {
 	double kemax=800;
 
 	//beam
+	TH1D *h1d_ke0=new TH1D("h1d_ke0","", nke, kemin, kemax); //ke from ke_truth0
 	TH1D *h1d_kebeam=new TH1D("h1d_kebeam","", nke, kemin, kemax); //ke from beamline inst.
 	TH1D *h1d_kebeam_bmrw=new TH1D("h1d_kebeam_bmrw","", nke, kemin, kemax); //ke from beamline inst.
 	TH1D *h1d_kebeam_stop=new TH1D("h1d_kebeam_stop","", nke, kemin, kemax); //ke from beamline inst. (stopping protons)
@@ -161,6 +162,7 @@ void ProtonKE::Loop() {
 	TH1D *h1d_keff_mideg=new TH1D("h1d_keff_mideg","", nke, kemin, kemax); 
 	TH1D *h1d_keff_midother=new TH1D("h1d_keff_midother","", nke, kemin, kemax); 
 
+	TH1D *h1d_keff_reco=new TH1D("h1d_keff_reco","", nke, kemin, kemax); //keff at z=0
 
 
 	TH1D *h1d_keff_stop=new TH1D("h1d_keff_stop","", nke, kemin, kemax); //ke at ff (stopping protons)
@@ -227,6 +229,7 @@ void ProtonKE::Loop() {
 	TH1D *h1d_dkeff_recoel=new TH1D("h1d_dkeff_recoel","", ndkeff, dkeff_min, dkeff_max); 
 	TH1D *h1d_dkeff_stop=new TH1D("h1d_dkeff_stop","", ndkeff, dkeff_min, dkeff_max); 
 	TH1D *h1d_dkeff_all=new TH1D("h1d_dkeff_all","", ndkeff, dkeff_min, dkeff_max); 
+	TH1D *h1d_dkeff2_all=new TH1D("h1d_dkeff2_all","", ndkeff, dkeff_min, dkeff_max); 
 
 	//ke vs trklen
 	int n2d_trklen=140;
@@ -268,8 +271,17 @@ void ProtonKE::Loop() {
 	TH2D *h2d_dKEbb_KEtrue=new TH2D("h2d_dKEbb_KEtrue","", 800,0,800, 1000, -500, 500); 
 	TH2D *h2d_dKEbb_KEreco=new TH2D("h2d_dKEbb_KEreco","", 800,0,800, 1000, -500, 500); 
 
+
+	TH2D *h2d_dE1_KEtrue=new TH2D("h2d_dE1_KEtrue","", 800,0,800, 1000, -500, 500); 
+	TH2D *h2d_dE1_KEreco=new TH2D("h2d_dE1_KEreco","", 800,0,800, 1000, -500, 500); 
+	TH2D *h2d_dE2_KEtrue=new TH2D("h2d_dE2_KEtrue","", 800,0,800, 1000, -500, 500); 
+	TH2D *h2d_dE2_KEreco=new TH2D("h2d_dE2_KEreco","", 800,0,800, 1000, -500, 500); 
+
+
+
 	//reco_label
 	TH1D *h1d_dke=new TH1D("h1d_dke","", ndke, dkemin, dkemax); //ke_beam-ke_ff
+	TH1D *h1d_dke0=new TH1D("h1d_dke0","", ndke, dkemin, dkemax); //ke0-ke_ff
 	TH1D *h1d_dke_stop=new TH1D("h1d_dke_stop","", ndke, dkemin, dkemax); //ke_beam-ke_ff
 	TH1D *h1d_dke_recoinel=new TH1D("h1d_dke_recoinel","", ndke, dkemin, dkemax); //ke_beam-ke_ff
 	TH1D *h1d_dke_recoel=new TH1D("h1d_dke_recoel","", ndke, dkemin, dkemax); //ke_beam-ke_ff
@@ -668,11 +680,13 @@ void ProtonKE::Loop() {
 		double ke_beam_spec_MeV=1000.*ke_beam_spec; //ke_beam_spec [MeV]
 		double ke_trklen=ke_vs_csda_range_sm->Eval(range_reco); //[unit: GeV]
 		double ke_trklen_MeV=1000.*ke_trklen; //[unit: MeV]
+		double ke0=-999;
 
 		//First point of MCParticle entering TPC ------------------------------------------------------------------//
 		bool is_beam_at_ff=false;
 		int key_reach_tpc=-99;
 		if (beamtrk_z->size()){
+			ke0=1000.*(beamtrk_Eng->at(0));
 			for (size_t kk=0; kk<beamtrk_z->size(); ++kk) {  //loop over all beam hits
 				double zpos_beam=beamtrk_z->at(kk);
 				if (zpos_beam>=0) {
@@ -803,8 +817,21 @@ void ProtonKE::Loop() {
 		//fix on the truth length by adding distance between 1st tpc hit to front face ------------------------------------------------------//
 
 		//KEs ---------------------------------------------------------------------------------------------------//
+		//energy loss using stopping protons
+		double mean_Eloss_upstream=19.3073;
+		double err_mean_Eloss_upstream=0.187143;
+		double sigma_Eloss_upstream=18.7378;
+		double err_sigma_Eloss_upstream=0.140183;
+
+
 		double Eloss_upstream=0; 
-		if (is_beam_at_ff) Eloss_upstream=ke_beam_spec_MeV-KE_ff;
+		double Eloss_upstream_reco=0;
+		double dKE_recotruth_1=0;
+		double dKE_recotruth_2=0;
+		if (is_beam_at_ff) { //if beam reach tpc
+			Eloss_upstream=ke_beam_spec_MeV-KE_ff;
+			Eloss_upstream_reco=ke_beam_spec_MeV-mean_Eloss_upstream;
+		} //if beam reach tpc
 
 		//double ke_trklen=ke_vs_csda_range_sm->Eval(range_reco); //[unit: GeV]
 		//double ke_trklen_MeV=1000.*ke_trklen; //[unit: MeV]
@@ -819,15 +846,13 @@ void ProtonKE::Loop() {
 		//double sigma_Eloss_upstream=1.90634e+01;
 		//double err_sigma_Eloss_upstream=1.23169e-01;
 
-		//energy loss using stopping protons
-		double mean_Eloss_upstream=19.3073;
-		double err_mean_Eloss_upstream=0.187143;
-		double sigma_Eloss_upstream=18.7378;
-		double err_sigma_Eloss_upstream=0.140183;
+		
+		double keff_reco=ke_beam_spec_MeV-mean_Eloss_upstream;
+		//double keff_reco=(1000.*beamtrk_Eng->at(0))-mean_Eloss_upstream;
 
 		double KEbb_true=-1; KEbb_true=BB.KEAtLength(KE_ff, range_true);
 		//double KEbb_reco=-1; KEbb_reco=BB.KEAtLength(KE_ff, range_reco);
-		double KEbb_reco=-1; KEbb_reco=BB.KEAtLength((ke_beam_spec_MeV-mean_Eloss_upstream), range_reco);
+		double KEbb_reco=-1; KEbb_reco=BB.KEAtLength((keff_reco), range_reco);
 		double dKEbb=0; dKEbb=KEbb_reco-KEbb_true;
 
 
@@ -878,10 +903,14 @@ void ProtonKE::Loop() {
 
 		if (IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
 			h1d_kebeam->Fill(ke_beam_spec_MeV);
-			h1d_keff->Fill(ke_ff);
+			h1d_ke0->Fill(ke0);
+			Fill1DHist(h1d_keff, ke_ff);
+			Fill1DHist(h1d_keff_reco, keff_reco);
+
 			h1d_keff2->Fill(ke_beam_spec_MeV-Eloss_mc);
 			h1d_keff0->Fill(KE_ff_tpc);
-			Fill1DHist(h1d_dkeff_all, ke_beam_spec_MeV-Eloss_mc-ke_ff);
+			//Fill1DHist(h1d_dkeff_all, ke_beam_spec_MeV-Eloss_mc-ke_ff);
+			Fill1DHist(h1d_dkeff_all, keff_reco-ke_ff);
 			h2d_trklen_ke_all->Fill(range_reco, (ke_ff-ke_calo_MeV));
 			h2d_trklen_ke2_all->Fill(range_reco, (ke_beam_spec_MeV-Eloss_mc-ke_calo_MeV));
 			h2d_trklen_dke_all->Fill(range_reco, (ke_beam_spec_MeV-Eloss_mc-ke_ff));
@@ -930,12 +959,23 @@ void ProtonKE::Loop() {
 				//h1d_zend_bmrw_XY->Fill(reco_endz, mom_rw_minchi2);
 			//} //xy
 
+			if (is_beam_at_ff) {
+				h1d_dke->Fill(Eloss_upstream);
+				h1d_dke0->Fill(ke0-KE_ff);
+			}
 
-			h1d_dke->Fill(Eloss_upstream);
+
 			Fill1DHist(h1d_dEbb, dEbb);
 			Fill1DHist(h1d_dKEbb, dKEbb);
 			h2d_dKEbb_KEtrue->Fill(KEbb_true, dKEbb);	
 			h2d_dKEbb_KEreco->Fill(KEbb_reco, dKEbb);
+
+			h2d_dE1_KEtrue->Fill(KEbb_true, dEbb);
+			h2d_dE1_KEreco->Fill(KEbb_reco, dEbb);
+
+			h2d_dE2_KEtrue->Fill(KEbb_true, keff_reco-KE_ff);
+			h2d_dE2_KEreco->Fill(KEbb_reco, keff_reco-KE_ff);
+
 
 			Fill1DHist(h1d_KEbb_true, KEbb_true);
 			Fill1DHist(h1d_KEbb_reco, KEbb_reco);
@@ -1151,10 +1191,12 @@ void ProtonKE::Loop() {
 
 
 	//save results...
-   	TFile *fout = new TFile("mc_ke.root","RECREATE");
+   	//TFile *fout = new TFile("mc_ke.root","RECREATE");
+   	TFile *fout = new TFile("mc_ke0truth.root","RECREATE");
    	//TFile *fout = new TFile("mc_ke_crosscheck_KEfftrue.root","RECREATE");
 		h1d_kebeam->Write();
 		h1d_kebeam_bmrw->Write();
+		h1d_ke0->Write();
 
 		h1d_kebeam_stop->Write();
 		h1d_kebeam_stop_bmrw->Write();
@@ -1162,6 +1204,9 @@ void ProtonKE::Loop() {
 		h1d_keff->Write();
 		h1d_keff2->Write();
 		h1d_keff0->Write();
+
+		h1d_keff_reco->Write();
+
 		h1d_keff_inel->Write();
 		h1d_keff_el->Write();
 		h1d_keff_midcosmic->Write();
@@ -1235,6 +1280,7 @@ void ProtonKE::Loop() {
 		h1d_kerange_stop->Write();
 		h1d_kerange_stop_bmrw->Write();
 
+		h1d_dke0->Write();
 		h1d_dke->Write();
 		h1d_dke_stop->Write();
 		h1d_dke_recoinel->Write();
@@ -1309,6 +1355,10 @@ void ProtonKE::Loop() {
 		h1d_KEbb_reco_mideg_RecoInel->Write();
 		h1d_KEbb_reco_midother_RecoInel->Write();
 
+		h2d_dE1_KEtrue->Write();
+		h2d_dE1_KEreco->Write();
+		h2d_dE2_KEtrue->Write();
+		h2d_dE2_KEreco->Write();
 
 	fout->Close();
 

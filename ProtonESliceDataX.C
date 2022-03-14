@@ -1150,9 +1150,14 @@ void ProtonESliceData::Loop() {
 		else { //if NOT test sample
 			uf.eff_den_Inc->Fill(true_sliceID, mom_rw_minchi2);
 			uf.eff_den_st_Inc->Fill(true_st_sliceID, mom_rw_minchi2);
-			for (int ij=true_st_sliceID; ij<=true_sliceID; ++ij){
+			//for (int ij=true_st_sliceID; ij<=true_sliceID; ++ij){
+			//if (true_sliceID < nthinslices && true_sliceID>=0){
+			for (int ij=0; ij<=true_sliceID+1; ++ij){
 				//if (ij<nthinslices) ++true_incidents[ij+1];
-				++true_incidents[ij+1];
+				++true_incidents[ij];
+				if (ij<=true_st_sliceID+1) {
+					++true_st_incidents[ij];
+				}
 			}
 		} //if NOT test sample
 		if (PassCuts_INC&&IsBeamMatch) { //if passing all basic cuts
@@ -1429,6 +1434,7 @@ void ProtonESliceData::Loop() {
 		//save true inc & int arrays to histograms -------------------------------------//
 		for (int iii = 0; iii<nthinslices+2; ++iii){
 			h_true_incidents->SetBinContent(iii+1, true_incidents[iii]);
+			h_true_st_incidents->SetBinContent(iii+1, true_st_incidents[iii]);
 			h_true_interactions->SetBinContent(iii+1, true_interactions[iii]);
 		}
 

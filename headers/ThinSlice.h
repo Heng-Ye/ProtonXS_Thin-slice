@@ -72,8 +72,9 @@ TH1D *h_recosliceid_recoinelastic_cuts_midmu;
 TH1D *h_recosliceid_recoinelastic_cuts_mideg;
 TH1D *h_recosliceid_recoinelastic_cuts_midother;
 
-double true_interactions[nthinslices+2];
 double true_incidents[nthinslices+2];
+double true_st_incidents[nthinslices+2];
+double true_interactions[nthinslices+2];
 
 //Histograms for basic parameters ---------//
 //reco x, y, z [after SCE corr]
@@ -368,6 +369,7 @@ TH2D *trklen_ke_true_el;
 
 //truth inc/int
 TH1D *h_true_incidents;
+TH1D *h_true_st_incidents;
 TH1D *h_true_interactions;
 
 //Reco E-dept [Inel]
@@ -476,9 +478,11 @@ void BookHistograms() { //BookHistograms
 	h_recosliceid_recoinelastic_cuts_mideg->Sumw2();
 	h_recosliceid_recoinelastic_cuts_midother->Sumw2();
 
-	for (int i = 0; i<nthinslices; ++i){
+	//for (int i = 0; i<nthinslices; ++i){
+	for (int i = 0; i<nthinslices+2; ++i){
 		true_interactions[i] = 0;
 		true_incidents[i] = 0;
+		true_st_incidents[i] = 0;
 	}
 
 	//Histograms for basic parameters ----------------------------------------------------------------------------------------------------//
@@ -791,9 +795,14 @@ void BookHistograms() { //BookHistograms
 	trklen_ke_true_el=new TH2D("trklen_ke_true_el","",n_ntrklen, st_ntrklen, ed_ntrklen, dke, ke_st, ke_end);
 
 	//truth inc/int
-	h_true_incidents=new TH1D("h_true_incidents","true_incidents", nthinslices, 0, nthinslices-1);
-	h_true_interactions=new TH1D("h_true_interactions","true_interactions", nthinslices, 0, nthinslices-1);
+	//h_true_incidents=new TH1D("h_true_incidents","true_incidents", nthinslices, 0, nthinslices-1);
+	//h_true_st_incidents=new TH1D("h_true_st_incidents","true_st_incidents", nthinslices, 0, nthinslices-1);
+	//h_true_interactions=new TH1D("h_true_interactions","true_interactions", nthinslices, 0, nthinslices-1);
+	h_true_incidents=new TH1D("h_true_incidents","true_incidents", nthinslices+2, -1, nthinslices+1);
+	h_true_st_incidents=new TH1D("h_true_st_incidents","true_st_incidents", nthinslices+2, -1, nthinslices+1);
+	h_true_interactions=new TH1D("h_true_interactions","true_interactions", nthinslices+2, -1, nthinslices+1);
 	h_true_incidents->Sumw2();
+	h_true_st_incidents->Sumw2();
 	h_true_interactions->Sumw2();
 
 
