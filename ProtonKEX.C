@@ -310,6 +310,16 @@ void ProtonKE::Loop() {
 	TH1D *h1d_KEbb_reco_mideg=new TH1D("h1d_KEbb_reco_mideg","", ndke, dkemin, dkemax);
 	TH1D *h1d_KEbb_reco_midother=new TH1D("h1d_KEbb_reco_midother","", ndke, dkemin, dkemax);
 
+	TH1D *h1d_KEbb_true_inel=new TH1D("h1d_KEbb_true_inel","", ndke, dkemin, dkemax);
+	TH1D *h1d_KEbb_true_el=new TH1D("h1d_KEbb_true_el","", ndke, dkemin, dkemax);
+	TH1D *h1d_KEbb_true_midcosmic=new TH1D("h1d_KEbb_true_midcosmic","", ndke, dkemin, dkemax);
+	TH1D *h1d_KEbb_true_midpi=new TH1D("h1d_KEbb_true_midpi","", ndke, dkemin, dkemax);
+	TH1D *h1d_KEbb_true_midp=new TH1D("h1d_KEbb_true_midp","", ndke, dkemin, dkemax);
+	TH1D *h1d_KEbb_true_midmu=new TH1D("h1d_KEbb_true_midmu","", ndke, dkemin, dkemax);
+	TH1D *h1d_KEbb_true_mideg=new TH1D("h1d_KEbb_true_mideg","", ndke, dkemin, dkemax);
+	TH1D *h1d_KEbb_true_midother=new TH1D("h1d_KEbb_true_midother","", ndke, dkemin, dkemax);
+
+
 	//KEbb [reco inel]
 	TH1D *h1d_KEbb_reco_RecoInel=new TH1D("h1d_KEbb_reco_RecoInel","", ndke, dkemin, dkemax);
 	TH1D *h1d_KEbb_true_RecoInel=new TH1D("h1d_KEbb_true_RecoInel","", ndke, dkemin, dkemax);
@@ -322,6 +332,16 @@ void ProtonKE::Loop() {
 	TH1D *h1d_KEbb_reco_midmu_RecoInel=new TH1D("h1d_KEbb_reco_midmu_RecoInel","", ndke, dkemin, dkemax);
 	TH1D *h1d_KEbb_reco_mideg_RecoInel=new TH1D("h1d_KEbb_reco_mideg_RecoInel","", ndke, dkemin, dkemax);
 	TH1D *h1d_KEbb_reco_midother_RecoInel=new TH1D("h1d_KEbb_reco_midother_RecoInel","", ndke, dkemin, dkemax);
+
+
+	TH1D *h1d_KEbb_true_inel_RecoInel=new TH1D("h1d_KEbb_true_inel_RecoInel","", ndke, dkemin, dkemax);
+	TH1D *h1d_KEbb_true_el_RecoInel=new TH1D("h1d_KEbb_true_el_RecoInel","", ndke, dkemin, dkemax);
+	TH1D *h1d_KEbb_true_midcosmic_RecoInel=new TH1D("h1d_KEbb_true_midcosmic_RecoInel","", ndke, dkemin, dkemax);
+	TH1D *h1d_KEbb_true_midpi_RecoInel=new TH1D("h1d_KEbb_true_midpi_RecoInel","", ndke, dkemin, dkemax);
+	TH1D *h1d_KEbb_true_midp_RecoInel=new TH1D("h1d_KEbb_true_midp_RecoInel","", ndke, dkemin, dkemax);
+	TH1D *h1d_KEbb_true_midmu_RecoInel=new TH1D("h1d_KEbb_true_midmu_RecoInel","", ndke, dkemin, dkemax);
+	TH1D *h1d_KEbb_true_mideg_RecoInel=new TH1D("h1d_KEbb_true_mideg_RecoInel","", ndke, dkemin, dkemax);
+	TH1D *h1d_KEbb_true_midother_RecoInel=new TH1D("h1d_KEbb_true_midother_RecoInel","", ndke, dkemin, dkemax);
 
 
 	TH2D *h2d_dKEbb_KEtrue_RecoInel=new TH2D("h2d_dKEbb_KEtrue_RecoInel","", 800,0,800, 1000, -500, 500); 
@@ -986,36 +1006,44 @@ void ProtonKE::Loop() {
 			if (kinel) { //inel
 				h1d_dke_inel->Fill(Eloss_upstream);
 				Fill1DHist(h1d_KEbb_reco_inel, KEbb_reco);
+				Fill1DHist(h1d_KEbb_true_inel, KEbb_true);
 			} //inel
 
 			if (kel) { //el
 				h1d_dke_el->Fill(Eloss_upstream);
 				Fill1DHist(h1d_KEbb_reco_el, KEbb_reco);
+				Fill1DHist(h1d_KEbb_true_el, KEbb_true);
 			} //el
 
 			if (kMIDp) { //misid:p
 				h1d_dke_misidp->Fill(Eloss_upstream);
 				Fill1DHist(h1d_KEbb_reco_midp, KEbb_reco);
+				Fill1DHist(h1d_KEbb_true_midp, KEbb_true);
 			} //misid:p
 
 			if (kMIDcosmic) { 
 				Fill1DHist(h1d_KEbb_reco_midcosmic, KEbb_reco);
+				Fill1DHist(h1d_KEbb_true_midcosmic, KEbb_true);
 			}
 
 			if (kMIDpi) { 
 				Fill1DHist(h1d_KEbb_reco_midpi, KEbb_reco);
+				Fill1DHist(h1d_KEbb_true_midpi, KEbb_true);
 			}
 
 			if (kMIDmu) { 
 				Fill1DHist(h1d_KEbb_reco_midmu, KEbb_reco);
+				Fill1DHist(h1d_KEbb_true_midmu, KEbb_true);
 			}
 
 			if (kMIDeg) { 
 				Fill1DHist(h1d_KEbb_reco_mideg, KEbb_reco);
+				Fill1DHist(h1d_KEbb_true_mideg, KEbb_true);
 			}
 
 			if (kMIDother) { 
 				Fill1DHist(h1d_KEbb_reco_midother, KEbb_reco);
+				Fill1DHist(h1d_KEbb_true_midother, KEbb_true);
 			}
 
 
@@ -1052,43 +1080,51 @@ void ProtonKE::Loop() {
 					h1d_keff_recoinel_inel->Fill(ke_ff);
 
 					Fill1DHist(h1d_KEbb_reco_inel_RecoInel, KEbb_reco);
+					Fill1DHist(h1d_KEbb_true_inel_RecoInel, KEbb_true);
 
 				}
 				if (kel) { 
 					h1d_kecalo_recoinel_bmrw_el->Fill(ke_calo_MeV, mom_rw_minchi2);
 					h1d_keff_recoinel_el->Fill(ke_ff);
 					Fill1DHist(h1d_KEbb_reco_el_RecoInel, KEbb_reco);
+					Fill1DHist(h1d_KEbb_true_el_RecoInel, KEbb_true);
 
 				}
 				if (kMIDcosmic) { 
 					h1d_kecalo_recoinel_bmrw_midcosmic->Fill(ke_calo_MeV, mom_rw_minchi2);
 					h1d_keff_recoinel_midcosmic->Fill(ke_ff);
 					Fill1DHist(h1d_KEbb_reco_midcosmic_RecoInel, KEbb_reco);
+					Fill1DHist(h1d_KEbb_true_midcosmic_RecoInel, KEbb_true);
 				}
 				if (kMIDpi) { 
 					h1d_kecalo_recoinel_bmrw_midpi->Fill(ke_calo_MeV, mom_rw_minchi2);
 					h1d_keff_recoinel_midpi->Fill(ke_ff);
 					Fill1DHist(h1d_KEbb_reco_midpi_RecoInel, KEbb_reco);
+					Fill1DHist(h1d_KEbb_true_midpi_RecoInel, KEbb_true);
 				}
 				if (kMIDp) { 
 					h1d_kecalo_recoinel_bmrw_midp->Fill(ke_calo_MeV, mom_rw_minchi2);
 					h1d_keff_recoinel_midp->Fill(ke_ff);
 					Fill1DHist(h1d_KEbb_reco_midp_RecoInel, KEbb_reco);
+					Fill1DHist(h1d_KEbb_true_midp_RecoInel, KEbb_true);
 				}
 				if (kMIDmu) { 
 					h1d_kecalo_recoinel_bmrw_midmu->Fill(ke_calo_MeV, mom_rw_minchi2);
 					h1d_keff_recoinel_midmu->Fill(ke_ff);
 					Fill1DHist(h1d_KEbb_reco_midmu_RecoInel, KEbb_reco);
+					Fill1DHist(h1d_KEbb_true_midmu_RecoInel, KEbb_true);
 				}
 				if (kMIDeg) { 
 					h1d_kecalo_recoinel_bmrw_mideg->Fill(ke_calo_MeV, mom_rw_minchi2);
 					h1d_keff_recoinel_mideg->Fill(ke_ff);
 					Fill1DHist(h1d_KEbb_reco_mideg_RecoInel, KEbb_reco);
+					Fill1DHist(h1d_KEbb_true_mideg_RecoInel, KEbb_true);
 				}
 				if (kMIDother) { 
 					h1d_kecalo_recoinel_bmrw_midother->Fill(ke_calo_MeV, mom_rw_minchi2);
 					h1d_keff_recoinel_midother->Fill(ke_ff);
 					Fill1DHist(h1d_KEbb_reco_midother_RecoInel, KEbb_reco);
+					Fill1DHist(h1d_KEbb_true_midother_RecoInel, KEbb_true);
 				}
 			}
 			if (IsRecoEL) {
@@ -1359,6 +1395,26 @@ void ProtonKE::Loop() {
 		h2d_dE1_KEreco->Write();
 		h2d_dE2_KEtrue->Write();
 		h2d_dE2_KEreco->Write();
+
+		h1d_KEbb_true_inel->Write();
+		h1d_KEbb_true_el->Write();
+		h1d_KEbb_true_midcosmic->Write();
+		h1d_KEbb_true_midpi->Write();
+		h1d_KEbb_true_midp->Write();
+		h1d_KEbb_true_midmu->Write();
+		h1d_KEbb_true_mideg->Write();
+		h1d_KEbb_true_midother->Write();
+
+		h1d_KEbb_true_inel_RecoInel->Write();
+		h1d_KEbb_true_el_RecoInel->Write();
+		h1d_KEbb_true_midcosmic_RecoInel->Write();
+		h1d_KEbb_true_midpi_RecoInel->Write();
+		h1d_KEbb_true_midp_RecoInel->Write();
+		h1d_KEbb_true_midmu_RecoInel->Write();
+		h1d_KEbb_true_mideg_RecoInel->Write();
+		h1d_KEbb_true_midother_RecoInel->Write();
+
+
 
 	fout->Close();
 
