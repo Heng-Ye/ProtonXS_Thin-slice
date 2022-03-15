@@ -246,7 +246,7 @@ double BetheBloch::KEFromRangeSpline(double range){
 }
 
 double BetheBloch::KEAtLength(double KE0, double tracklength){
-
+  double tmp_ke_at_len=0;
   int iKE = int(KE0);
 
   if (spmap.find(iKE)==spmap.end()){
@@ -255,10 +255,17 @@ double BetheBloch::KEAtLength(double KE0, double tracklength){
 
   double deltaE = spmap[iKE]->Eval(tracklength);
 
-  if (deltaE < 0) cout<<"Negative delta E: "<<deltaE<<endl;
-  if (KE0 - deltaE < 0) cout<<"Negative KE: "<<KE0 - deltaE<<endl;
+  tmp_ke_at_len=KE0 - deltaE;
+  if (deltaE < 0) { 
+	cout<<"Negative delta E: "<<deltaE<<endl; //meaning in the region of KE<500 keV
+	tmp_ke_at_len=0;
+  }	
+  if (tmp_ke_at_len < 0) { 
+        tmp_ke_at_len=0;
+	cout<<"Negative KE: "<<KE0 - deltaE<<" --> set KE to zero"<<endl;
+  }
   
-  return KE0 - deltaE;
+  return tmp_ke_at_len;
 
 }
 
