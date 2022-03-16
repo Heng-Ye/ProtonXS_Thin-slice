@@ -251,16 +251,31 @@ void ProtonKE::Loop() {
 	TH2D *h2d_trklen_ke2_all=new TH2D("h2d_trklen_ke2_all","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, nke, kemin, kemax);
 	TH2D *h2d_trklen_dke_all=new TH2D("h2d_trklen_dke_all","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, ndkeff, dkeff_min, dkeff_max);
 
+	TH2D *h2d_trklen_KEbb_reco=new TH2D("h2d_trklen_KEbb_reco","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, nke, kemin, kemax); 
+	TH2D *h2d_trklen_KEbb_reco_el=new TH2D("h2d_trklen_KEbb_reco_el","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, nke, kemin, kemax); 
+	TH2D *h2d_trklen_KEbb_reco_inel=new TH2D("h2d_trklen_KEbb_reco_inel","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, nke, kemin, kemax); 
+	TH2D *h2d_trklen_KEbb_reco_midcosmic=new TH2D("h2d_trklen_KEbb_reco_midcosmic","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, nke, kemin, kemax); 
+	TH2D *h2d_trklen_KEbb_reco_midpi=new TH2D("h2d_trklen_KEbb_reco_midpi","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, nke, kemin, kemax); 
+	TH2D *h2d_trklen_KEbb_reco_midp=new TH2D("h2d_trklen_KEbb_reco_midp","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, nke, kemin, kemax); 
+	TH2D *h2d_trklen_KEbb_reco_midmu=new TH2D("h2d_trklen_KEbb_reco_midmu","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, nke, kemin, kemax); 
+	TH2D *h2d_trklen_KEbb_reco_mideg=new TH2D("h2d_trklen_KEbb_reco_mideg","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, nke, kemin, kemax); 
+	TH2D *h2d_trklen_KEbb_reco_midother=new TH2D("h2d_trklen_KEbb_reco_midother","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, nke, kemin, kemax); 
 
 
-
-
+	TH2D *h2d_trklen_KEbb_true_el=new TH2D("h2d_trklen_KEbb_true_el","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, nke, kemin, kemax); 
+	TH2D *h2d_trklen_KEbb_true_inel=new TH2D("h2d_trklen_KEbb_true_inel","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, nke, kemin, kemax); 
+	TH2D *h2d_trklen_KEbb_true_midcosmic=new TH2D("h2d_trklen_KEbb_true_midcosmic","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, nke, kemin, kemax); 
+	TH2D *h2d_trklen_KEbb_true_midpi=new TH2D("h2d_trklen_KEbb_true_midpi","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, nke, kemin, kemax); 
+	TH2D *h2d_trklen_KEbb_true_midp=new TH2D("h2d_trklen_KEbb_true_midp","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, nke, kemin, kemax); 
+	TH2D *h2d_trklen_KEbb_true_midmu=new TH2D("h2d_trklen_KEbb_true_midmu","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, nke, kemin, kemax); 
+	TH2D *h2d_trklen_KEbb_true_mideg=new TH2D("h2d_trklen_KEbb_true_mideg","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, nke, kemin, kemax); 
+	TH2D *h2d_trklen_KEbb_true_midother=new TH2D("h2d_trklen_KEbb_true_midother","", n2d_trklen, n2d_trklen_min, n2d_trklen_max, nke, kemin, kemax); 
 
 
 	//upstream energy loss
-	int ndke=300;
+	int ndke=400;
 	double dkemin=0;
-	double dkemax=600;
+	double dkemax=800;
 
 	TH1D *h1d_dEbb=new TH1D("h1d_dEbb","", 1000, -500,500); //edept_bb_true-edept_bb_reco
 	TH1D *h1d_dEbb_stop=new TH1D("h1d_dEbb_stop","", 1000, -500,500); //edept_bb_true-edept_bb_reco
@@ -270,6 +285,15 @@ void ProtonKE::Loop() {
 	TH1D *h1d_dKEbb=new TH1D("h1d_dKEbb","", 1000, -500,500); //KEbb_true-KEbb_reco
 	TH2D *h2d_dKEbb_KEtrue=new TH2D("h2d_dKEbb_KEtrue","", 800,0,800, 1000, -500, 500); 
 	TH2D *h2d_dKEbb_KEreco=new TH2D("h2d_dKEbb_KEreco","", 800,0,800, 1000, -500, 500); 
+
+	TH2D *h2d_dKEbb_KEtrue_GoodKEff=new TH2D("h2d_dKEbb_KEtrue_GoodKEff","", 800,0,800, 1000, -500, 500); 
+	TH2D *h2d_dKEbb_KEtrue_BadKEff=new TH2D("h2d_dKEbb_KEtrue_BadKEff","", 800,0,800, 1000, -500, 500); 
+
+	TH2D *h2d_dKEbb_KEreco_GoodKEff=new TH2D("h2d_dKEbb_KEreco_GoodKEff","", 800,0,800, 1000, -500, 500); 
+	TH2D *h2d_dKEbb_KEreco_BadKEff=new TH2D("h2d_dKEbb_KEreco_BadKEff","", 800,0,800, 1000, -500, 500); 
+
+	TH2D *h2d_KEbb_recotrklen_el=new TH2D("h2d_KEbb_recotrklen_el","", 140,0,140, ndke,dkemin,dkemax); 
+	TH2D *h2d_KEbb_truetrklen_el=new TH2D("h2d_KEbb_truetrklen_el","", 140,0,140, ndke,dkemin,dkemax); 
 
 
 	TH2D *h2d_dE1_KEtrue=new TH2D("h2d_dE1_KEtrue","", 800,0,800, 1000, -500, 500); 
@@ -424,6 +448,11 @@ void ProtonKE::Loop() {
 			} //sigma loop
 	} //mu loop
 	//------------------------------------------------------------------------------------------------------------------------//
+
+	//a lazy code for debugging
+  	ofstream myfile;
+  	myfile.open ("high_KEbb_el.txt");
+	myfile<<"ke_beam_spec_MeV, KE_ff, keff_reco, is_beam_at_ff, true_endz, range_true, range_reco, KEbb_true, KEbb_reco, ke_trklen_MeV:\n";	
 
 
 	for (Long64_t jentry=0; jentry<nentries;jentry++) { //main entry loop
@@ -838,7 +867,7 @@ void ProtonKE::Loop() {
 
 		//KEs ---------------------------------------------------------------------------------------------------//
 		//energy loss using stopping protons
-		double mean_Eloss_upstream=19.3073;
+		double mean_Eloss_upstream=19.3073; //unit:MeV
 		double err_mean_Eloss_upstream=0.187143;
 		double sigma_Eloss_upstream=18.7378;
 		double err_sigma_Eloss_upstream=0.140183;
@@ -869,10 +898,11 @@ void ProtonKE::Loop() {
 		
 		double keff_reco=ke_beam_spec_MeV-mean_Eloss_upstream;
 		//double keff_reco=(1000.*beamtrk_Eng->at(0))-mean_Eloss_upstream;
+		//double keff_reco=KE_ff;
 
 		double KEbb_true=-1; KEbb_true=BB.KEAtLength(KE_ff, range_true);
 		//double KEbb_reco=-1; KEbb_reco=BB.KEAtLength(KE_ff, range_reco);
-		double KEbb_reco=-1; KEbb_reco=BB.KEAtLength((keff_reco), range_reco);
+		double KEbb_reco=-1; KEbb_reco=BB.KEAtLength(keff_reco, range_reco);
 		double dKEbb=0; dKEbb=KEbb_reco-KEbb_true;
 
 
@@ -937,6 +967,7 @@ void ProtonKE::Loop() {
 
 			if (kinel) { 
 				h1d_keff_inel->Fill(ke_ff);
+				
 			}
 			if (kel) { 
 				h1d_keff_el->Fill(ke_ff);
@@ -987,8 +1018,12 @@ void ProtonKE::Loop() {
 
 			Fill1DHist(h1d_dEbb, dEbb);
 			Fill1DHist(h1d_dKEbb, dKEbb);
-			h2d_dKEbb_KEtrue->Fill(KEbb_true, dKEbb);	
 			h2d_dKEbb_KEreco->Fill(KEbb_reco, dKEbb);
+			if (KE_ff<270) h2d_dKEbb_KEreco_BadKEff->Fill(KEbb_reco, dKEbb);
+			if (KE_ff>=270) h2d_dKEbb_KEreco_GoodKEff->Fill(KEbb_reco, dKEbb);
+			h2d_dKEbb_KEtrue->Fill(KEbb_true, dKEbb);
+			if (KE_ff<270) h2d_dKEbb_KEtrue_BadKEff->Fill(KEbb_true, dKEbb);
+			if (KE_ff>=270) h2d_dKEbb_KEtrue_GoodKEff->Fill(KEbb_true, dKEbb);	
 
 			h2d_dE1_KEtrue->Fill(KEbb_true, dEbb);
 			h2d_dE1_KEreco->Fill(KEbb_reco, dEbb);
@@ -1007,43 +1042,81 @@ void ProtonKE::Loop() {
 				h1d_dke_inel->Fill(Eloss_upstream);
 				Fill1DHist(h1d_KEbb_reco_inel, KEbb_reco);
 				Fill1DHist(h1d_KEbb_true_inel, KEbb_true);
+
+				h2d_trklen_KEbb_reco_inel->Fill(range_reco, KEbb_reco);
+				h2d_trklen_KEbb_true_inel->Fill(range_true, KEbb_true);
 			} //inel
 
 			if (kel) { //el
 				h1d_dke_el->Fill(Eloss_upstream);
 				Fill1DHist(h1d_KEbb_reco_el, KEbb_reco);
 				Fill1DHist(h1d_KEbb_true_el, KEbb_true);
+
+				h2d_trklen_KEbb_reco_el->Fill(range_reco, KEbb_reco);
+				h2d_trklen_KEbb_true_el->Fill(range_true, KEbb_true);
+
+				if (KEbb_reco>=600.) myfile<<ke_beam_spec_MeV<<" "<<KE_ff<<" "<<keff_reco<<" "<<is_beam_at_ff<<" "<<true_endz<<" "<<range_true<<" "<<range_reco<<" "<<KEbb_true<<" "<<KEbb_reco<<" "<<ke_trklen_MeV<< "\n";
+
+
+
+				for (size_t jjj=0; jjj<reco_trklen_accum.size(); ++jjj) {
+					h2d_KEbb_recotrklen_el->Fill(reco_trklen_accum.at(jjj), BB.KEAtLength(keff_reco, reco_trklen_accum.at(jjj)));
+				}
+
+				for (size_t jjj=0; jjj<true_trklen_accum.size(); ++jjj) {
+					h2d_KEbb_truetrklen_el->Fill(true_trklen_accum.at(jjj), BB.KEAtLength(KE_ff, true_trklen_accum.at(jjj)));
+				}				
+
+
 			} //el
 
 			if (kMIDp) { //misid:p
 				h1d_dke_misidp->Fill(Eloss_upstream);
 				Fill1DHist(h1d_KEbb_reco_midp, KEbb_reco);
 				Fill1DHist(h1d_KEbb_true_midp, KEbb_true);
+
+				h2d_trklen_KEbb_reco_midp->Fill(range_reco, KEbb_reco);
+				h2d_trklen_KEbb_true_midp->Fill(range_true, KEbb_true);
 			} //misid:p
 
 			if (kMIDcosmic) { 
 				Fill1DHist(h1d_KEbb_reco_midcosmic, KEbb_reco);
 				Fill1DHist(h1d_KEbb_true_midcosmic, KEbb_true);
+
+				h2d_trklen_KEbb_reco_midcosmic->Fill(range_reco, KEbb_reco);
+				h2d_trklen_KEbb_true_midcosmic->Fill(range_true, KEbb_true);
 			}
 
 			if (kMIDpi) { 
 				Fill1DHist(h1d_KEbb_reco_midpi, KEbb_reco);
 				Fill1DHist(h1d_KEbb_true_midpi, KEbb_true);
+
+				h2d_trklen_KEbb_reco_midpi->Fill(range_reco, KEbb_reco);
+				h2d_trklen_KEbb_true_midpi->Fill(range_true, KEbb_true);
 			}
 
 			if (kMIDmu) { 
 				Fill1DHist(h1d_KEbb_reco_midmu, KEbb_reco);
 				Fill1DHist(h1d_KEbb_true_midmu, KEbb_true);
+
+				h2d_trklen_KEbb_reco_midmu->Fill(range_reco, KEbb_reco);
+				h2d_trklen_KEbb_true_midmu->Fill(range_true, KEbb_true);
 			}
 
 			if (kMIDeg) { 
 				Fill1DHist(h1d_KEbb_reco_mideg, KEbb_reco);
 				Fill1DHist(h1d_KEbb_true_mideg, KEbb_true);
+
+				h2d_trklen_KEbb_reco_mideg->Fill(range_reco, KEbb_reco);
+				h2d_trklen_KEbb_true_mideg->Fill(range_true, KEbb_true);
 			}
 
 			if (kMIDother) { 
 				Fill1DHist(h1d_KEbb_reco_midother, KEbb_reco);
 				Fill1DHist(h1d_KEbb_true_midother, KEbb_true);
+
+				h2d_trklen_KEbb_reco_midother->Fill(range_reco, KEbb_reco);
+				h2d_trklen_KEbb_true_midother->Fill(range_true, KEbb_true);
 			}
 
 
@@ -1227,8 +1300,10 @@ void ProtonKE::Loop() {
 
 
 	//save results...
+   	//TFile *fout = new TFile("mc_kefftrue.root","RECREATE");
    	//TFile *fout = new TFile("mc_ke.root","RECREATE");
-   	TFile *fout = new TFile("mc_ke0truth.root","RECREATE");
+   	TFile *fout = new TFile("mc_ke_lowKEinvest.root","RECREATE");
+   	//TFile *fout = new TFile("mc_ke0truth.root","RECREATE");
    	//TFile *fout = new TFile("mc_ke_crosscheck_KEfftrue.root","RECREATE");
 		h1d_kebeam->Write();
 		h1d_kebeam_bmrw->Write();
@@ -1415,9 +1490,35 @@ void ProtonKE::Loop() {
 		h1d_KEbb_true_midother_RecoInel->Write();
 
 
+		h2d_trklen_KEbb_reco_el->Write();
+		h2d_trklen_KEbb_reco_inel->Write();
+		h2d_trklen_KEbb_reco_midcosmic->Write();
+		h2d_trklen_KEbb_reco_midpi->Write();
+		h2d_trklen_KEbb_reco_midp->Write();
+		h2d_trklen_KEbb_reco_midmu->Write();
+		h2d_trklen_KEbb_reco_mideg->Write();
+		h2d_trklen_KEbb_reco_midother->Write();
 
+
+		h2d_trklen_KEbb_true_el->Write();
+		h2d_trklen_KEbb_true_inel->Write();
+		h2d_trklen_KEbb_true_midcosmic->Write();
+		h2d_trklen_KEbb_true_midpi->Write();
+		h2d_trklen_KEbb_true_midp->Write();
+		h2d_trklen_KEbb_true_midmu->Write();
+		h2d_trklen_KEbb_true_mideg->Write();
+		h2d_trklen_KEbb_true_midother->Write();
+
+
+		h2d_dKEbb_KEtrue_GoodKEff->Write();
+		h2d_dKEbb_KEtrue_BadKEff->Write();
+		h2d_dKEbb_KEreco_GoodKEff->Write();
+		h2d_dKEbb_KEreco_BadKEff->Write();
+
+		h2d_KEbb_recotrklen_el->Write();
+		h2d_KEbb_truetrklen_el->Write();
 	fout->Close();
 
-
+	myfile.close();
 
 }
