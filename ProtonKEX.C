@@ -749,6 +749,22 @@ void ProtonKE::Loop() {
 			//} //loop over all beam hits
 		} 
 		if (key_reach_tpc!=-99) { is_beam_at_ff=true; }
+		cout<<"key_reach_tpc:"<<key_reach_tpc<<endl;	
+		cout<<"is_beam_at_ff:"<<is_beam_at_ff<<endl;
+
+		//Get true trklen ---------------------------------------------------------------------------------------//
+		int key_st = 0;
+		double tmp_z = 9999;
+		vector<double> true_trklen_accum;
+		true_trklen_accum.reserve(beamtrk_z->size()); // initialize true_trklen_accum
+		for (int iz=0; iz<(int)beamtrk_z->size(); iz++) {
+			if (abs(beamtrk_z->at(iz)) < tmp_z){
+				tmp_z = abs(beamtrk_z->at(iz));
+				key_st = iz; // find the point where the beam enters the TPC (find the smallest abs(Z))
+			}
+			if (is_beam_at_ff) true_trklen_accum[iz] = 0.; // initialize true_trklen_accum [beam at ff]
+			if (!is_beam_at_ff) true_trklen_accum[iz] = -1; // initialize true_trklen_accum [beam not at ff]
+		}
 
 
 		double KE_ff_tpc=-999;
@@ -860,7 +876,7 @@ void ProtonKE::Loop() {
 					range_true += sqrt( pow(beamtrk_x->at(iz)-beamtrk_x->at(iz-1), 2)+
 						pow(beamtrk_y->at(iz)-beamtrk_y->at(iz-1), 2)+	
 						pow(beamtrk_z->at(iz)-beamtrk_z->at(iz-1), 2) );						    	
-				//true_trklen_accum[iz] = range_true;
+				true_trklen_accum[iz] = range_true;
 		  }
 		} //is beam at ff						    	
 		//fix on the truth length by adding distance between 1st tpc hit to front face ------------------------------------------------------//
@@ -1063,9 +1079,11 @@ void ProtonKE::Loop() {
 					h2d_KEbb_recotrklen_el->Fill(reco_trklen_accum.at(jjj), BB.KEAtLength(keff_reco, reco_trklen_accum.at(jjj)));
 				}
 
-				for (size_t jjj=0; jjj<true_trklen_accum.size(); ++jjj) {
+				if (is_beam_at_ff) { //is beam at ff
+				  for (size_t jjj=key_reach_tpc; jjj<true_trklen_accum.size(); ++jjj) {
 					h2d_KEbb_truetrklen_el->Fill(true_trklen_accum.at(jjj), BB.KEAtLength(KE_ff, true_trklen_accum.at(jjj)));
-				}				
+				  }
+				} //is beam at ff				
 
 
 			} //el
