@@ -143,10 +143,12 @@ void ProtonKE::Loop() {
 
 	//beam
 	TH1D *h1d_ke0=new TH1D("h1d_ke0","", nke, kemin, kemax); //ke from ke_truth0
+	TH1D *h1d_ke0_el=new TH1D("h1d_ke0_el","", nke, kemin, kemax); //ke from ke_truth0
 	TH1D *h1d_kebeam=new TH1D("h1d_kebeam","", nke, kemin, kemax); //ke from beamline inst.
 	TH1D *h1d_kebeam_bmrw=new TH1D("h1d_kebeam_bmrw","", nke, kemin, kemax); //ke from beamline inst.
 	TH1D *h1d_kebeam_stop=new TH1D("h1d_kebeam_stop","", nke, kemin, kemax); //ke from beamline inst. (stopping protons)
 	TH1D *h1d_kebeam_stop_bmrw=new TH1D("h1d_kebeam_stop_bmrw","", nke, kemin, kemax); //ke from beamline inst. (stopping protons)
+	TH1D *h1d_kebeam_el=new TH1D("h1d_kebeam_el","", nke, kemin, kemax); //ke from beamline inst.
 
 	//ff [truth info] 
 	TH1D *h1d_keff=new TH1D("h1d_keff","", nke, kemin, kemax); //keff at z=0
@@ -163,6 +165,7 @@ void ProtonKE::Loop() {
 	TH1D *h1d_keff_midother=new TH1D("h1d_keff_midother","", nke, kemin, kemax); 
 
 	TH1D *h1d_keff_reco=new TH1D("h1d_keff_reco","", nke, kemin, kemax); //keff at z=0
+	TH1D *h1d_keff_reco_el=new TH1D("h1d_keff_reco_el","", nke, kemin, kemax); //keff at z=0
 
 
 	TH1D *h1d_keff_stop=new TH1D("h1d_keff_stop","", nke, kemin, kemax); //ke at ff (stopping protons)
@@ -357,7 +360,6 @@ void ProtonKE::Loop() {
 	TH1D *h1d_KEbb_reco_mideg_RecoInel=new TH1D("h1d_KEbb_reco_mideg_RecoInel","", ndke, dkemin, dkemax);
 	TH1D *h1d_KEbb_reco_midother_RecoInel=new TH1D("h1d_KEbb_reco_midother_RecoInel","", ndke, dkemin, dkemax);
 
-
 	TH1D *h1d_KEbb_true_inel_RecoInel=new TH1D("h1d_KEbb_true_inel_RecoInel","", ndke, dkemin, dkemax);
 	TH1D *h1d_KEbb_true_el_RecoInel=new TH1D("h1d_KEbb_true_el_RecoInel","", ndke, dkemin, dkemax);
 	TH1D *h1d_KEbb_true_midcosmic_RecoInel=new TH1D("h1d_KEbb_true_midcosmic_RecoInel","", ndke, dkemin, dkemax);
@@ -367,10 +369,12 @@ void ProtonKE::Loop() {
 	TH1D *h1d_KEbb_true_mideg_RecoInel=new TH1D("h1d_KEbb_true_mideg_RecoInel","", ndke, dkemin, dkemax);
 	TH1D *h1d_KEbb_true_midother_RecoInel=new TH1D("h1d_KEbb_true_midother_RecoInel","", ndke, dkemin, dkemax);
 
-
 	TH2D *h2d_dKEbb_KEtrue_RecoInel=new TH2D("h2d_dKEbb_KEtrue_RecoInel","", 800,0,800, 1000, -500, 500); 
 	TH2D *h2d_dKEbb_KEreco_RecoInel=new TH2D("h2d_dKEbb_KEreco_RecoInel","", 800,0,800, 1000, -500, 500); 
 
+	//Reco vs true track length
+	TProfile2D* h2d_dL_recotrklen_el=new TProfile2D("h2d_dL_recotrklen_el","",140,0,140,280,-140,140); //z in KEbb(reco)
+	TProfile2D* h2d_dL_truetrklen_el=new TProfile2D("h2d_dL_truetrklen_el","",140,0,140,280,-140,140); //z in KEbb(true)
 	//------------------------------------------------------------------------------------------------------------------------//
 
 	//Beam momentum reweighting ----------------------------------------------------------------------------------------------//
@@ -450,9 +454,9 @@ void ProtonKE::Loop() {
 	//------------------------------------------------------------------------------------------------------------------------//
 
 	//a lazy code for debugging
-  	ofstream myfile;
-  	myfile.open ("high_KEbb_el.txt");
-	myfile<<"ke_beam_spec_MeV, KE_ff, keff_reco, is_beam_at_ff, true_endz, range_true, range_reco, KEbb_true, KEbb_reco, ke_trklen_MeV:\n";	
+  	//ofstream myfile;
+  	//myfile.open ("high_KEbb_el.txt");
+	//myfile<<"ke_beam_spec_MeV, KE_ff, keff_reco, is_beam_at_ff, true_endz, range_true, range_reco, KEbb_true, KEbb_reco, ke_trklen_MeV:\n";	
 
 
 	for (Long64_t jentry=0; jentry<nentries;jentry++) { //main entry loop
@@ -968,8 +972,8 @@ void ProtonKE::Loop() {
 		} //if calo size not empty
 
 		if (IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
-			h1d_kebeam->Fill(ke_beam_spec_MeV);
-			h1d_ke0->Fill(ke0);
+			Fill1DHist(h1d_kebeam,ke_beam_spec_MeV);
+			Fill1DHist(h1d_ke0,ke0);
 			Fill1DHist(h1d_keff, ke_ff);
 			Fill1DHist(h1d_keff_reco, keff_reco);
 
@@ -986,7 +990,10 @@ void ProtonKE::Loop() {
 				
 			}
 			if (kel) { 
-				h1d_keff_el->Fill(ke_ff);
+				Fill1DHist(h1d_ke0_el,ke0);
+				Fill1DHist(h1d_keff_el,ke_ff);
+				Fill1DHist(h1d_kebeam_el, ke_beam_spec_MeV);
+				Fill1DHist(h1d_keff_reco_el, keff_reco);
 			}
 			if (kMIDcosmic) { 
 				h1d_keff_midcosmic->Fill(ke_ff);
@@ -1071,20 +1078,29 @@ void ProtonKE::Loop() {
 				h2d_trklen_KEbb_reco_el->Fill(range_reco, KEbb_reco);
 				h2d_trklen_KEbb_true_el->Fill(range_true, KEbb_true);
 
-				if (KEbb_reco>=600.) myfile<<ke_beam_spec_MeV<<" "<<KE_ff<<" "<<keff_reco<<" "<<is_beam_at_ff<<" "<<true_endz<<" "<<range_true<<" "<<range_reco<<" "<<KEbb_true<<" "<<KEbb_reco<<" "<<ke_trklen_MeV<< "\n";
+				h2d_dL_recotrklen_el->Fill(range_reco, range_reco-range_true, KEbb_reco);
+				h2d_dL_truetrklen_el->Fill(range_true, range_reco-range_true, KEbb_true);
 
 
-
+				/*
+				//cout<<"Ich bin here \n"<<endl;
 				for (size_t jjj=0; jjj<reco_trklen_accum.size(); ++jjj) {
-					h2d_KEbb_recotrklen_el->Fill(reco_trklen_accum.at(jjj), BB.KEAtLength(keff_reco, reco_trklen_accum.at(jjj)));
+					double lenn_reco=reco_trklen_accum.at(jjj);
+					double kee_reco=BB.KEAtLength(keff_reco, lenn_reco);
+					//cout<<"lenn_reco:"<<lenn_reco<<" kee_reco:"<<kee_reco<<endl;
+					h2d_KEbb_recotrklen_el->Fill(lenn_reco, kee_reco);
 				}
 
 				if (is_beam_at_ff) { //is beam at ff
 				  for (size_t jjj=key_reach_tpc; jjj<true_trklen_accum.size(); ++jjj) {
-					h2d_KEbb_truetrklen_el->Fill(true_trklen_accum.at(jjj), BB.KEAtLength(KE_ff, true_trklen_accum.at(jjj)));
+					double lenn_true=true_trklen_accum.at(jjj);
+					double kee_true=BB.KEAtLength(KE_ff, lenn_true);
+					h2d_KEbb_truetrklen_el->Fill(lenn_true, kee_true);
 				  }
-				} //is beam at ff				
+				} //is beam at ff
+				*/			
 
+				//if (KEbb_reco>=600.) myfile<<ke_beam_spec_MeV<<" "<<KE_ff<<" "<<keff_reco<<" "<<is_beam_at_ff<<" "<<true_endz<<" "<<range_true<<" "<<range_reco<<" "<<KEbb_true<<" "<<KEbb_reco<<" "<<ke_trklen_MeV<< "\n";
 
 			} //el
 
@@ -1535,8 +1551,16 @@ void ProtonKE::Loop() {
 
 		h2d_KEbb_recotrklen_el->Write();
 		h2d_KEbb_truetrklen_el->Write();
+
+		h1d_ke0_el->Write();
+		h1d_kebeam_el->Write();
+		h1d_keff_reco_el->Write();
+
+		h2d_dL_recotrklen_el->Write();
+		h2d_dL_truetrklen_el->Write();
+
 	fout->Close();
 
-	myfile.close();
+	//myfile.close();
 
 }
