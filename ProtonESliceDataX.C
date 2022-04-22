@@ -148,7 +148,18 @@ void ProtonESliceData::Loop() {
 
 	//ThinSlice config. ---------------------------------------------------------------------------------------------------//
 	//SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_nobmrw_plus0.5.root", name_thinslicewidth, nthinslices)); //output file name
-	SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_nobmrw.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_nobmrw.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_nobmrw_StIDminus1.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_nobmrw_StIDplus1.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_nobmrw_KEffZ0.root", name_thinslicewidth, nthinslices)); //output file name
+
+	//SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_nobmrw_KEffZ0_stIDplus1.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_nobmrw.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_nobmrw_KEff30.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_nobmrw_skip1stslc.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_nobmrw_stslcplus1.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_nobmrw_stslcplus0.5.root", name_thinslicewidth, nthinslices)); //output file name
+	SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_nobmrw_stslcceil.root", name_thinslicewidth, nthinslices)); //output file name
 
 	//Basic configure ------//
 	BetheBloch BB;
@@ -734,13 +745,21 @@ void ProtonESliceData::Loop() {
 
 		double KE_ff=0;
 		double KE_1st=0;
+		double KE_ff30=0;
 		//if (is_beam_at_ff) KE_ff=1000.*beamtrk_Eng->at(key_reach_tpc); //unit:MeV
 		if (is_beam_at_ff) { 		
 			KE_ff=ke_ff; //use KE exactly at z=0
 			KE_1st=1000.*beamtrk_Eng->at(key_reach_tpc);
 			double KE_1st_predict=BB.KEAtLength(KE_ff, range_true_patch);
+			KE_ff30=BB.KEAtLength(KE_ff, 30.);
+
 			h2d_R_kE1st->Fill(KE_1st, KE_1st_predict/KE_1st);
 		}
+
+		//KEff with const E-loss assumption -----------------------------------//
+		double mean_Elosscalo_stop=(4.95958e+01)/(1.00489e+00); //using fit [no bmrw]
+		double KE_ff_reco=ke_beam_spec_MeV-mean_Elosscalo_stop;
+		
 		
 		//KEs ---------------------------------------------------------------------------------------//
 		//double Eloss_upstream=0; 
@@ -1094,8 +1113,16 @@ void ProtonESliceData::Loop() {
 		// <<" primtrk_range->empty():"<<primtrk_range->empty()<<endl;
 
 		//start slideID
-		true_st_sliceID=int((Emax-KE_1st)/thinslicewidth);
+		//true_st_sliceID=int((Emax-KE_1st)/thinslicewidth+1);
 		//true_st_sliceID=int((Emax-KE_ff)/thinslicewidth+0.5);
+		//true_st_sliceID=int((Emax-KE_ff)/thinslicewidth+1);
+		//true_st_sliceID=int((Emax-KE_ff)/thinslicewidth);
+		true_st_sliceID=int((Emax-KE_ff)/thinslicewidth+0.5);
+		//--true_st_sliceID;
+		//true_st_sliceID++;
+		//true_st_sliceID++;
+		//if (range_true >= 30) true_st_sliceID=int((Emax-KE_ff30)/thinslicewidth);
+		//if (range_true < 30) true_st_sliceID=-1; 
       		if (true_st_sliceID<0) true_st_sliceID=-1; //KE higher than Emax
 		if (true_endz < 0) true_st_sliceID=-1; 
 		if (true_st_sliceID >= nthinslices) true_st_sliceID = nthinslices;
@@ -1104,6 +1131,7 @@ void ProtonESliceData::Loop() {
 		true_sliceID = int((Emax-KE_true)/thinslicewidth);
 		if (true_sliceID < 0) true_sliceID = -1;
 		if (true_endz < 0) true_sliceID = -1; //hy added
+		//if (range_true < 30) true_sliceID=-1; 
 		if (true_sliceID >= nthinslices) true_sliceID = nthinslices;
 
 		//evt selection cuts
@@ -1117,7 +1145,15 @@ void ProtonESliceData::Loop() {
 			//cout<<"reco_endz:"<<reco_endz<<"  reco_sliceID:"<<reco_sliceID<<endl;
 
 			double keff_reco=ke_beam_spec_MeV-mean_Eloss_upstream;
-			reco_st_sliceID=int((Emax-keff_reco)/thinslicewidth);
+			//double KE_reco30=BB.KEAtLength(keff_reco, 30.);
+			//reco_st_sliceID=int((Emax-keff_reco)/thinslicewidth+1);
+			//reco_st_sliceID=int((Emax-keff_reco)/thinslicewidth+1);
+			//reco_st_sliceID=int((Emax-keff_reco)/thinslicewidth);
+			reco_st_sliceID=int((Emax-keff_reco)/thinslicewidth+0.5);
+			//--reco_st_sliceID;
+			//reco_st_sliceID++;
+			//if (range_reco>=30.) reco_st_sliceID=int((Emax-KE_reco30)/thinslicewidth);
+			//if (range_reco<30) reco_st_sliceID=-1;
       			if (reco_st_sliceID<0) reco_st_sliceID=-1; //KE higher than Emax
 			if (reco_endz < 0) reco_st_sliceID = -1; 
 			if (reco_st_sliceID >= nthinslices) reco_st_sliceID = nthinslices;
@@ -1125,6 +1161,7 @@ void ProtonESliceData::Loop() {
 			double KE_reco=BB.KEAtLength(keff_reco, range_reco);
 			reco_sliceID = int((Emax-KE_reco)/thinslicewidth);
 			if (reco_sliceID < 0) reco_sliceID = -1;
+			//if (range_reco<30) reco_sliceID=-1;
 			if (reco_endz<0) reco_sliceID = -1;
 			if (reco_sliceID >= nthinslices) reco_sliceID = nthinslices;
 
@@ -1152,12 +1189,11 @@ void ProtonESliceData::Loop() {
 			uf.eff_den_st_Inc->Fill(true_st_sliceID, mom_rw_minchi2);
 			//for (int ij=true_st_sliceID; ij<=true_sliceID; ++ij){
 			//if (true_sliceID < nthinslices && true_sliceID>=0){
-			for (int ij=0; ij<=true_sliceID+1; ++ij){
+			//for (int ij=0; ij<=true_sliceID+1; ++ij){
+			for (int ij=0; ij<=nthinslices+1; ++ij) {
 				//if (ij<nthinslices) ++true_incidents[ij+1];
-				++true_incidents[ij];
-				if (ij<=true_st_sliceID+1) {
-					++true_st_incidents[ij];
-				}
+				if (ij==(true_sliceID+1)) ++true_incidents[ij];
+				if (ij==(true_st_sliceID+1)) ++true_st_incidents[ij];
 			}
 		} //if NOT test sample
 		if (PassCuts_INC&&IsBeamMatch) { //if passing all basic cuts

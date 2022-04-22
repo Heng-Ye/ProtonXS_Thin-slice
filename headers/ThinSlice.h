@@ -815,10 +815,10 @@ void BookHistograms() { //BookHistograms
 	reco_dx_trklen_inel->Sumw2();
 
 	//KE(Bethe-Bloch) vs trklen ------------------------------------------------------//
-	KEbb_truetrklen_all=new TH2D("KEbb_truetrklen_all","", 1210,-1,120,6000,0,600);
-	KEbb_truetrklen_inel=new TH2D("KEbb_truetrklen_inel","", 1210,-1,120,6000,0,600);
-	KEbb_recotrklen_all=new TH2D("KEbb_recotrklen_all","", 1210,-1,120,6000,0,600);
-	KEbb_recotrklen_inel=new TH2D("KEbb_recotrklen_inel","", 1210,-1,120,6000,0,600);
+	KEbb_truetrklen_all=new TH2D("KEbb_truetrklen_all","", 1210,-1,120,800,0,800);
+	KEbb_truetrklen_inel=new TH2D("KEbb_truetrklen_inel","", 1210,-1,120,800,0,800);
+	KEbb_recotrklen_all=new TH2D("KEbb_recotrklen_all","", 1210,-1,120,800,0,800);
+	KEbb_recotrklen_inel=new TH2D("KEbb_recotrklen_inel","", 1210,-1,120,800,0,800);
 	KEbb_truetrklen_all->Sumw2(); //
 	KEbb_truetrklen_inel->Sumw2(); //
 	KEbb_recotrklen_all->Sumw2(); //

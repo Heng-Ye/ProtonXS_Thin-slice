@@ -17,12 +17,14 @@ bool myComparison(const pair<double,int> &a,const pair<double,int> &b) {
 
 //Read file of dedx versus kinetic energy -----------------------------------------------------//
 TString conv_path="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/conversion/";
+/*
 TFile *fke_dedx=new TFile(Form("%sproton_dedx_ke_MeV.root", conv_path.Data()));
 TGraph *dedx_vs_ke_sm=(TGraph *)fke_dedx->Get("dedx_vs_ke_sm");
 
 //Load dE/dx vs KE from NIST data base
 //TFile *fKE_dEdx=new TFile(Form("%sproton_ydedx_xke.root", conv_path.Data()));
 //TGraph *dEdx_vs_KE_sm=(TGraph *)fKE_dEdx->Get("dEdx_vs_KE_sm"); //x:KE in MeV; y:dE/dx in MeV/cm
+*/
 
 
 //Read file of csda range versus momentum --------------------------------------//
@@ -47,6 +49,7 @@ void hist_NIST(double E_init, TH1D* h_bethe){
 };
 */
 
+/*
 void hist_bethe_mean_distance(double E_init, double mass_particle, TH1D* h_bethe ) { 
 	for(int i=1; i <= h_bethe->GetNbinsX(); i++){
 		h_bethe->SetBinContent( i, betheBloch(E_init, mass_particle));
@@ -91,51 +94,55 @@ double LEN2E::E(double len) {
 	double Edept_len=-9999;
 
 	int bin_cen=0;
-	int bin_b=0;
-	int bin_a=0;
+	//int bin_b=0;
+	//int bin_a=0;
 	
 	//get Edept
 	//int n_len=cumulative->GetNbinsX();
 	bin_cen=cumulative->GetXaxis()->FindBin(len);
-	bin_b=bin_cen-1;
-	bin_a=bin_cen+1;
-	if (bin_a>n_len) bin_a=n_len;
-	if (bin_b<0) bin_b=0;
+	//bin_b=bin_cen-1;
+	//bin_a=bin_cen+1;
+	if (bin_cen>n_len) bin_cen=n_len;
+	if (bin_cen<0) bin_cen=0;
 
-	bin_cen=cumulative->GetXaxis()->FindBin(len);
-	bin_b=bin_cen-1;
-	bin_a=bin_cen+1;
-	if (bin_a>n_len) bin_a=n_len;
-	if (bin_b<0) bin_b=0;
+	//bin_cen=cumulative->GetXaxis()->FindBin(len);
+	//bin_b=bin_cen-1;
+	//bin_a=bin_cen+1;
+	//if (bin_a>n_len) bin_a=n_len;
+	//if (bin_b<0) bin_b=0;
 
-        double dept_cen=cumulative->GetBinContent(bin_cen);
-	double dept_b=cumulative->GetBinContent(bin_b);
-	double dept_a=cumulative->GetBinContent(bin_a);
+        //double dept_cen=cumulative->GetBinContent(bin_cen);
+        double E_len=cumulative->GetBinContent(bin_cen);
+
+	//remove interpolation calc
+	//double dept_b=cumulative->GetBinContent(bin_b);
+	//double dept_a=cumulative->GetBinContent(bin_a);
 	
-	double m_dept=(dept_a-dept_b)/(cumulative->GetBinCenter(bin_a)-cumulative->GetBinCenter(bin_b));
-	double b_dept=dept_a-m_dept*cumulative->GetBinCenter(bin_a);
-	double E_len=b_dept+m_dept*len; 
+	//double m_dept=(dept_a-dept_b)/(cumulative->GetBinCenter(bin_a)-cumulative->GetBinCenter(bin_b));
+	//double b_dept=dept_a-m_dept*cumulative->GetBinCenter(bin_a);
+	//double E_len=b_dept+m_dept*len; 
 
 
-	if (E_init>0) { //E_init>0
+	if (E_init>0) { //E_init>0 
 		if (len==0) Edept_len=0;
-		if (len<0) Edept_len=-9999;
+		if (len<0) Edept_len=-99999; //not-possible
 		if (len>0) Edept_len=E_len;
 	
 		if (Edept_len>E_init) {
-	  		std::cout<<"\n\nWARNING!! E_len>E_init! :: kE_len="<<Edept_len<<" MeV;  E_init="<<E_init<<" MeV\n\n"<<endl;
+	  		std::cout<<"\nWARNING!! E_len>E_init! :: E_len="<<Edept_len<<" MeV;  E_init="<<E_init<<" MeV\n"<<endl;
 	  		//Edept_len=E_init;
 		}
 	} //E_init>0
-	else { //E_init<=0
-		Edept_len=9999;
-	} //E_init<=0
+	else { //E_init<=0 [up-stream INT::KE_ff:=0]
+		Edept_len=-99999;
+	} //E_init<=0 [up-stream INT::KE_ff:=0]
 
 	return Edept_len;
 }
 
 LEN2E::LEN2E(void) {}
 LEN2E::~LEN2E(void) {}
+*/
 //Function to convert trklen to Edept -----------------------------------------------//
 
 
@@ -171,6 +178,28 @@ Double_t govg(Double_t* x,Double_t *par) {
 
 	return g_ov_g;
 }
+
+Double_t agovg(Double_t* x,Double_t *par) {
+	//g1
+	double m1=par[0];
+	double s1=par[1];
+	double a1=par[2];
+	double g1=-(x[0]-m1)*(x[0]-m1)/(2*s1*s1);
+
+	//g2
+	double m2=par[3];
+	double s2=par[4];
+	double a2=par[5];	
+	double g2=-(x[0]-m2)*(x[0]-m2)/(2*s2*s2);
+
+	//g2/g1
+	double g_ov_g=0; 
+	g_ov_g=(a1/a2)*TMath::Exp(g2-g1);
+	if (m1==m2&&s1==s2&&a1==a2) g_ov_g=1;
+
+	return g_ov_g;
+}
+
 
 double cutAPA3_Z = 226.;
 bool endAPA3(double reco_beam_endZ){
