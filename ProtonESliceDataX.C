@@ -47,7 +47,7 @@
 #include "./headers/BasicFunctions.h"
 #include "./headers/ESliceParams.h"
 #include "./headers/util.h"
-#include "./headers/ThinSlice.h"
+#include "./headers/ESlice.h"
 #include "./headers/BetheBloch.h"
 
 using namespace std;
@@ -162,8 +162,8 @@ void ProtonESliceData::Loop() {
 	SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_nobmrw_stslcceil.root", name_thinslicewidth, nthinslices)); //output file name
 
 	//Basic configure ------//
-	BetheBloch BB;
-	BB.SetPdgCode(pdg);
+	//BetheBloch BB;
+	//BB.SetPdgCode(pdg);
 
 	//book histograms --//
 	BookHistograms();
@@ -641,7 +641,7 @@ void ProtonESliceData::Loop() {
 		double range_reco=-999;
 		vector<double> reco_trklen_accum;
 		reco_trklen_accum.reserve(primtrk_hitz->size());
-		double kereco_calo=0;
+		double reco_calo_MeV=0;
 		double kereco_range=0;
 		double kereco_range2=0;
 		vector<double> EDept;
@@ -688,7 +688,7 @@ void ProtonESliceData::Loop() {
 					reco_trklen_accum[h] = range_reco;
 				}
 
-				kereco_calo+=cali_dedx*pitch;
+				reco_calo_MeV+=cali_dedx*pitch;
 				kereco_range+=pitch*dedx_predict(resrange_reco);
 				kereco_range2+=pitch*(double)gr_predict_dedx_resrange->Eval(resrange_reco);
 
@@ -745,22 +745,27 @@ void ProtonESliceData::Loop() {
 
 		double KE_ff=0;
 		double KE_1st=0;
-		double KE_ff30=0;
+		//double KE_ff30=0;
 		//if (is_beam_at_ff) KE_ff=1000.*beamtrk_Eng->at(key_reach_tpc); //unit:MeV
 		if (is_beam_at_ff) { 		
 			KE_ff=ke_ff; //use KE exactly at z=0
 			KE_1st=1000.*beamtrk_Eng->at(key_reach_tpc);
-			double KE_1st_predict=BB.KEAtLength(KE_ff, range_true_patch);
-			KE_ff30=BB.KEAtLength(KE_ff, 30.);
+			//double KE_1st_predict=BB.KEAtLength(KE_ff, range_true_patch);
+			//KE_ff30=BB.KEAtLength(KE_ff, 30.);
 
-			h2d_R_kE1st->Fill(KE_1st, KE_1st_predict/KE_1st);
+			//h2d_R_kE1st->Fill(KE_1st, KE_1st_predict/KE_1st);
 		}
 
-		//KEff with const E-loss assumption -----------------------------------//
+		//KEff (reco) with const E-loss assumption -----------------------------------//
 		double mean_Elosscalo_stop=(4.95958e+01)/(1.00489e+00); //using fit [no bmrw]
 		double KE_ff_reco=ke_beam_spec_MeV-mean_Elosscalo_stop;
-		
-		
+		double KEend_reco=0;
+		KEend_reco=KE_ff_reco-reco_calo_MeV;		
+	
+		//KEend ---------------------------------------------------------------------------//
+		double KEend_true=0;
+		if (beamtrk_Eng.size()) KEend_true=1000.*(beamtrk_Eng->at(-2+beamtrk_Eng->size()));
+	
 		//KEs ---------------------------------------------------------------------------------------//
 		//double Eloss_upstream=0; 
 		//if (KE_ff>0) Eloss_upstream=
@@ -775,19 +780,19 @@ void ProtonESliceData::Loop() {
 		if (IsBQ&&IsCaloSize&&IsPandoraSlice) { //if calo size not empty
 			if (IsRecoStop) { //reco_stop 
 				Fill1DHist(KE_ff_recostop, KE_ff);
-				Fill1DHist(KE_calo_recostop, kereco_calo);
+				Fill1DHist(KE_calo_recostop, reco_calo_MeV);
 				Fill1DHist(KE_rrange_recostop, kereco_range);
 				Fill1DHist(KE_rrange2_recostop, kereco_range2);
 				Fill1DHist(KE_range_recostop, ke_trklen);
 				Fill1DHist(KE_simide_recostop, ke_simide);
 
 				Fill1DHist(dKE_range_ff_recostop, ke_trklen-KE_ff);
-				Fill1DHist(dKE_calo_ff_recostop, kereco_calo-KE_ff);
+				Fill1DHist(dKE_calo_ff_recostop, reco_calo_MeV-KE_ff);
 				Fill1DHist(dKE_rrange_ff_recostop, kereco_range-KE_ff);
 				Fill1DHist(dKE_rrange2_ff_recostop, kereco_range2-KE_ff);
 
 				KE_range_ff_recostop->Fill(kereco_range, KE_ff);
-				KE_range_calo_recostop->Fill(kereco_range, kereco_calo);
+				KE_range_calo_recostop->Fill(kereco_range, reco_calo_MeV);
 
 				for (size_t h=0; h<primtrk_dedx->size(); ++h) { //loop over reco hits of a track
 					double hitx_reco=primtrk_hitx->at(h);
@@ -824,29 +829,29 @@ void ProtonESliceData::Loop() {
 		//[0]pure inel
 		if (kinel) { //pure inel
 			n_inel++;
-			Fill1DHist(trklen_true_inel_NoCut, range_true);
-			Fill1DWHist(trklen_reco_inel_NoCut, range_reco, mom_rw_minchi2);
-			Fill1DHist(dtrklen_inel_NoCut, range_reco-range_true);
+			Fill1DHist(ke_true_inel_NoCut, KEend_true);
+			Fill1DWHist(ke_reco_inel_NoCut, KEend_reco, mom_rw_minchi2);
+			Fill1DHist(dke_inel_NoCut, KEend_reco-KEend_true);
 			if (IsPandoraSlice) { //pandora
 				n_inel_pan++;
-				Fill1DHist(trklen_true_inel_PanS, range_true);
-				Fill1DWHist(trklen_reco_inel_PanS, range_reco, mom_rw_minchi2);
-				Fill1DHist(dtrklen_inel_PanS,range_reco-range_true);
+				Fill1DHist(ke_true_inel_PanS, KEend_true);
+				Fill1DWHist(ke_reco_inel_PanS, KEend_reco, mom_rw_minchi2);
+				Fill1DHist(dke_inel_PanS,KEend_reco-KEend_true);
 				if (IsCaloSize) { //calosz
 					n_inel_calsz++;
-					Fill1DHist(trklen_true_inel_CaloSz, range_true);
-					Fill1DWHist(trklen_reco_inel_CaloSz, range_reco, mom_rw_minchi2);
-					Fill1DHist(dtrklen_inel_CaloSz, range_reco-range_true);
+					Fill1DHist(ke_true_inel_CaloSz, KEend_true);
+					Fill1DWHist(ke_reco_inel_CaloSz, KEend_reco, mom_rw_minchi2);
+					Fill1DHist(dke_inel_CaloSz, KEend_reco-KEend_true);
 					if (IsBQ) { //bq
 						n_inel_bq++;
-						Fill1DHist(trklen_true_inel_BQ, range_true);
-						Fill1DWHist(trklen_reco_inel_BQ, range_reco, mom_rw_minchi2);
-						Fill1DHist(dtrklen_inel_BQ, range_reco-range_true);
+						Fill1DHist(ke_true_inel_BQ, KEend_true);
+						Fill1DWHist(ke_reco_inel_BQ, KEend_reco, mom_rw_minchi2);
+						Fill1DHist(dke_inel_BQ, KEend_reco-KEend_true);
 						if (IsRecoInEL) { //reco inel
 							n_inel_recoinel++;
-							Fill1DHist(trklen_true_inel_RecoInel, range_true);
-							Fill1DWHist(trklen_reco_inel_RecoInel, range_reco, mom_rw_minchi2);
-							Fill1DHist(dtrklen_inel_RecoInel, range_reco-range_true);
+							Fill1DHist(ke_true_inel_RecoInel, KEend_true);
+							Fill1DWHist(ke_reco_inel_RecoInel, KEend_reco, mom_rw_minchi2);
+							Fill1DHist(dke_inel_RecoInel, KEend_reco-KEend_true);
 						} //reco inel
 					} //bq
 				} //calosz
@@ -856,29 +861,29 @@ void ProtonESliceData::Loop() {
 		//[1]pure el
 		if (kel) { //pure el
 			n_el++;
-			Fill1DHist(trklen_true_el_NoCut, range_true);
-			Fill1DWHist(trklen_reco_el_NoCut, range_reco, mom_rw_minchi2);
-			Fill1DHist(dtrklen_el_NoCut, range_reco-range_true);
+			Fill1DHist(ke_true_el_NoCut, KEend_true);
+			Fill1DWHist(ke_reco_el_NoCut, KEend_reco, mom_rw_minchi2);
+			Fill1DHist(dke_el_NoCut, KEend_reco-KEend_true);
 			if (IsPandoraSlice) { //pandora
 				n_el_pan++;
-				Fill1DHist(trklen_true_el_PanS, range_true);
-				Fill1DWHist(trklen_reco_el_PanS, range_reco, mom_rw_minchi2);
-				Fill1DHist(dtrklen_el_PanS, range_reco-range_true);
+				Fill1DHist(ke_true_el_PanS, KEend_true);
+				Fill1DWHist(ke_reco_el_PanS, KEend_reco, mom_rw_minchi2);
+				Fill1DHist(dke_el_PanS, KEend_reco-KEend_true);
 				if (IsCaloSize) { //calosz
 					n_el_calsz++;
-					Fill1DHist(trklen_true_el_CaloSz, range_true);
-					Fill1DWHist(trklen_reco_el_CaloSz, range_reco, mom_rw_minchi2);
-					Fill1DHist(dtrklen_el_CaloSz, range_reco-range_true);
+					Fill1DHist(ke_true_el_CaloSz, KEend_true);
+					Fill1DWHist(ke_reco_el_CaloSz, KEend_reco, mom_rw_minchi2);
+					Fill1DHist(dke_el_CaloSz, KEend_reco-KEend_true);
 					if (IsBQ) { //bq
 						n_el_bq++;
-						Fill1DHist(trklen_true_el_BQ, range_true);
-						Fill1DWHist(trklen_reco_el_BQ, range_reco, mom_rw_minchi2);
-						Fill1DHist(dtrklen_el_BQ, range_reco-range_true);
+						Fill1DHist(ke_true_el_BQ, KEend_true);
+						Fill1DWHist(ke_reco_el_BQ, KEend_reco, mom_rw_minchi2);
+						Fill1DHist(dke_el_BQ, KEend_reco-KEend_true);
 						if (IsRecoInEL) { //reco inel
 							n_el_recoinel++;
-							Fill1DHist(trklen_true_el_RecoInel, range_true);
-							Fill1DWHist(trklen_reco_el_RecoInel, range_reco, mom_rw_minchi2);
-							Fill1DHist(dtrklen_el_RecoInel, range_reco-range_true);
+							Fill1DHist(ke_true_el_RecoInel, KEend_true);
+							Fill1DWHist(ke_reco_el_RecoInel, KEend_reco, mom_rw_minchi2);
+							Fill1DHist(dke_el_RecoInel, KEend_reco-KEend_true);
 						} //reco inel
 					} //bq
 				} //calosz
@@ -888,29 +893,29 @@ void ProtonESliceData::Loop() {
 		//[3]MID:Cosmic
 		if (kMIDcosmic) { //mid:cosmic
 			n_midcosmic++;
-			Fill1DHist(trklen_true_midcosmic_NoCut, range_true);
-			Fill1DWHist(trklen_reco_midcosmic_NoCut, range_reco, mom_rw_minchi2);
-			Fill1DHist(dtrklen_midcosmic_NoCut, range_reco-range_true);
+			Fill1DHist(ke_true_midcosmic_NoCut, KEend_true);
+			Fill1DWHist(ke_reco_midcosmic_NoCut, KEend_reco, mom_rw_minchi2);
+			Fill1DHist(dke_midcosmic_NoCut, KEend_reco-KEend_true);
 			if (IsPandoraSlice) { //pandora
 				n_midcosmic_pan++;
-				Fill1DHist(trklen_true_midcosmic_PanS, range_true);
-				Fill1DWHist(trklen_reco_midcosmic_PanS, range_reco, mom_rw_minchi2);
-				Fill1DHist(dtrklen_midcosmic_PanS, range_reco-range_true);
+				Fill1DHist(ke_true_midcosmic_PanS, KEend_true);
+				Fill1DWHist(ke_reco_midcosmic_PanS, KEend_reco, mom_rw_minchi2);
+				Fill1DHist(dke_midcosmic_PanS, KEend_reco-KEend_true);
 				if (IsCaloSize) { //calosz
 					n_midcosmic_calsz++;
-					Fill1DHist(trklen_true_midcosmic_CaloSz, range_true);
-					Fill1DWHist(trklen_reco_midcosmic_CaloSz, range_reco, mom_rw_minchi2);
-					Fill1DHist(dtrklen_midcosmic_CaloSz, range_reco-range_true);
+					Fill1DHist(ke_true_midcosmic_CaloSz, KEend_true);
+					Fill1DWHist(ke_reco_midcosmic_CaloSz, KEend_reco, mom_rw_minchi2);
+					Fill1DHist(dke_midcosmic_CaloSz, KEend_reco-KEend_true);
 					if (IsBQ) { //bq
 						n_midcosmic_bq++;
-						Fill1DHist(trklen_true_midcosmic_BQ, range_true);
-						Fill1DWHist(trklen_reco_midcosmic_BQ, range_reco, mom_rw_minchi2);
-						Fill1DHist(dtrklen_midcosmic_BQ, range_reco-range_true);
+						Fill1DHist(ke_true_midcosmic_BQ, KEend_true);
+						Fill1DWHist(ke_reco_midcosmic_BQ, KEend_reco, mom_rw_minchi2);
+						Fill1DHist(dke_midcosmic_BQ, KEend_reco-KEend_true);
 						if (IsRecoInEL) { //reco inel
 							n_midcosmic_recoinel++;
-							Fill1DHist(trklen_true_midcosmic_RecoInel, range_true);
-							Fill1DWHist(trklen_reco_midcosmic_RecoInel, range_reco, mom_rw_minchi2);
-							Fill1DHist(dtrklen_midcosmic_RecoInel, range_reco-range_true);
+							Fill1DHist(ke_true_midcosmic_RecoInel, KEend_true);
+							Fill1DWHist(ke_reco_midcosmic_RecoInel, KEend_reco, mom_rw_minchi2);
+							Fill1DHist(dke_midcosmic_RecoInel, KEend_reco-KEend_true);
 						} //reco inel
 					} //bq
 				} //calosz
@@ -920,29 +925,29 @@ void ProtonESliceData::Loop() {
 		//[4]MID:midpi
 		if (kMIDpi) { //mid:pi
 			n_midpi++;
-			Fill1DHist(trklen_true_midpi_NoCut, range_true);
-			Fill1DWHist(trklen_reco_midpi_NoCut, range_reco, mom_rw_minchi2);
-			Fill1DHist(dtrklen_midpi_NoCut, range_reco-range_true);
+			Fill1DHist(ke_true_midpi_NoCut, KEend_true);
+			Fill1DWHist(ke_reco_midpi_NoCut, KEend_reco, mom_rw_minchi2);
+			Fill1DHist(dke_midpi_NoCut, KEend_reco-KEend_true);
 			if (IsPandoraSlice) { //pandora
 				n_midpi_pan++;
-				Fill1DHist(trklen_true_midpi_PanS, range_true);
-				Fill1DWHist(trklen_reco_midpi_PanS, range_reco, mom_rw_minchi2);
-				Fill1DHist(dtrklen_midpi_PanS, range_reco-range_true);
+				Fill1DHist(ke_true_midpi_PanS, KEend_true);
+				Fill1DWHist(ke_reco_midpi_PanS, KEend_reco, mom_rw_minchi2);
+				Fill1DHist(dke_midpi_PanS, KEend_reco-KEend_true);
 				if (IsCaloSize) { //calosz
 					n_midpi_calsz++;
-					Fill1DHist(trklen_true_midpi_CaloSz, range_true);
-					Fill1DWHist(trklen_reco_midpi_CaloSz, range_reco, mom_rw_minchi2);
-					Fill1DHist(dtrklen_midpi_CaloSz, range_reco-range_true);
+					Fill1DHist(ke_true_midpi_CaloSz, KEend_true);
+					Fill1DWHist(ke_reco_midpi_CaloSz, KEend_reco, mom_rw_minchi2);
+					Fill1DHist(dke_midpi_CaloSz, KEend_reco-KEend_true);
 					if (IsBQ) { //bq
 						n_midpi_bq++;
-						Fill1DHist(trklen_true_midpi_BQ, range_true);
-						Fill1DWHist(trklen_reco_midpi_BQ, range_reco, mom_rw_minchi2);
-						Fill1DHist(dtrklen_midpi_BQ, range_reco-range_true);
+						Fill1DHist(ke_true_midpi_BQ, KEend_true);
+						Fill1DWHist(ke_reco_midpi_BQ, KEend_reco, mom_rw_minchi2);
+						Fill1DHist(dke_midpi_BQ, KEend_reco-KEend_true);
 						if (IsRecoInEL) { //reco inel
 							n_midpi_recoinel++;
-							Fill1DHist(trklen_true_midpi_RecoInel, range_true);
-							Fill1DWHist(trklen_reco_midpi_RecoInel, range_reco, mom_rw_minchi2);
-							Fill1DHist(dtrklen_midpi_RecoInel, range_reco-range_true);
+							Fill1DHist(ke_true_midpi_RecoInel, KEend_true);
+							Fill1DWHist(ke_reco_midpi_RecoInel, KEend_reco, mom_rw_minchi2);
+							Fill1DHist(dke_midpi_RecoInel, KEend_reco-KEend_true);
 						} //reco inel
 					} //bq
 				} //calosz
@@ -952,29 +957,29 @@ void ProtonESliceData::Loop() {
 		//[5]MID:midp
 		if (kMIDp) { //mid:p
 			n_midp++;
-			Fill1DHist(trklen_true_midp_NoCut, range_true);
-			Fill1DWHist(trklen_reco_midp_NoCut, range_reco, mom_rw_minchi2);
-			Fill1DHist(dtrklen_midp_NoCut, range_reco-range_true);
+			Fill1DHist(ke_true_midp_NoCut, KEend_true);
+			Fill1DWHist(ke_reco_midp_NoCut, KEend_reco, mom_rw_minchi2);
+			Fill1DHist(dke_midp_NoCut, KEend_reco-KEend_true);
 			if (IsPandoraSlice) { //pandora
 				n_midp_pan++;
-				Fill1DHist(trklen_true_midp_PanS, range_true);
-				Fill1DWHist(trklen_reco_midp_PanS, range_reco, mom_rw_minchi2);
-				Fill1DHist(dtrklen_midp_PanS, range_reco-range_true);
+				Fill1DHist(ke_true_midp_PanS, KEend_true);
+				Fill1DWHist(ke_reco_midp_PanS, KEend_reco, mom_rw_minchi2);
+				Fill1DHist(dke_midp_PanS, KEend_reco-KEend_true);
 				if (IsCaloSize) { //calosz
 					n_midp_calsz++;
-					Fill1DHist(trklen_true_midp_CaloSz, range_true);
-					Fill1DWHist(trklen_reco_midp_CaloSz, range_reco, mom_rw_minchi2);
-					Fill1DHist(dtrklen_midp_CaloSz, range_reco-range_true);
+					Fill1DHist(ke_true_midp_CaloSz, KEend_true);
+					Fill1DWHist(ke_reco_midp_CaloSz, KEend_reco, mom_rw_minchi2);
+					Fill1DHist(dke_midp_CaloSz, KEend_reco-KEend_true);
 					if (IsBQ) { //bq
 						n_midp_bq++;
-						Fill1DHist(trklen_true_midp_BQ, range_true);
-						Fill1DWHist(trklen_reco_midp_BQ, range_reco, mom_rw_minchi2);
-						Fill1DHist(dtrklen_midp_BQ, range_reco-range_true);
+						Fill1DHist(ke_true_midp_BQ, KEend_true);
+						Fill1DWHist(ke_reco_midp_BQ, KEend_reco, mom_rw_minchi2);
+						Fill1DHist(dke_midp_BQ, KEend_reco-KEend_true);
 						if (IsRecoInEL) { //reco inel
 							n_midp_recoinel++;
-							Fill1DHist(trklen_true_midp_RecoInel, range_true);
-							Fill1DWHist(trklen_reco_midp_RecoInel, range_reco, mom_rw_minchi2);
-							Fill1DHist(dtrklen_midp_RecoInel, range_reco-range_true);
+							Fill1DHist(ke_true_midp_RecoInel, KEend_true);
+							Fill1DWHist(ke_reco_midp_RecoInel, KEend_reco, mom_rw_minchi2);
+							Fill1DHist(dke_midp_RecoInel, KEend_reco-KEend_true);
 						} //reco inel
 					} //bq
 				} //calosz
@@ -984,29 +989,29 @@ void ProtonESliceData::Loop() {
 		//[6]MID:midmu
 		if (kMIDmu) { //mid:mu
 			n_midmu++;
-			Fill1DHist(trklen_true_midmu_NoCut, range_true);
-			Fill1DWHist(trklen_reco_midmu_NoCut, range_reco, mom_rw_minchi2);
-			Fill1DHist(dtrklen_midmu_NoCut, range_reco-range_true);
+			Fill1DHist(ke_true_midmu_NoCut, KEend_true);
+			Fill1DWHist(ke_reco_midmu_NoCut, KEend_reco, mom_rw_minchi2);
+			Fill1DHist(dke_midmu_NoCut, KEend_reco-KEend_true);
 			if (IsPandoraSlice) { //pandora
 				n_midmu_pan++;
-				Fill1DHist(trklen_true_midmu_PanS, range_true);
-				Fill1DWHist(trklen_reco_midmu_PanS, range_reco, mom_rw_minchi2);
-				Fill1DHist(dtrklen_midmu_PanS, range_reco-range_true);
+				Fill1DHist(ke_true_midmu_PanS, KEend_true);
+				Fill1DWHist(ke_reco_midmu_PanS, KEend_reco, mom_rw_minchi2);
+				Fill1DHist(dke_midmu_PanS, KEend_reco-KEend_true);
 				if (IsCaloSize) { //calosz
 					n_midmu_calsz++;
-					Fill1DHist(trklen_true_midmu_CaloSz, range_true);
-					Fill1DWHist(trklen_reco_midmu_CaloSz, range_reco, mom_rw_minchi2);
-					Fill1DHist(dtrklen_midmu_CaloSz, range_reco-range_true);
+					Fill1DHist(ke_true_midmu_CaloSz, KEend_true);
+					Fill1DWHist(ke_reco_midmu_CaloSz, KEend_reco, mom_rw_minchi2);
+					Fill1DHist(dke_midmu_CaloSz, KEend_reco-KEend_true);
 					if (IsBQ) { //bq
 						n_midmu_bq++;
-						Fill1DHist(trklen_true_midmu_BQ, range_true);
-						Fill1DWHist(trklen_reco_midmu_BQ, range_reco, mom_rw_minchi2);
-						Fill1DHist(dtrklen_midmu_BQ, range_reco-range_true);
+						Fill1DHist(ke_true_midmu_BQ, KEend_true);
+						Fill1DWHist(ke_reco_midmu_BQ, KEend_reco, mom_rw_minchi2);
+						Fill1DHist(dke_midmu_BQ, KEend_reco-KEend_true);
 						if (IsRecoInEL) { //reco inel
 							n_midmu_recoinel++;
-							Fill1DHist(trklen_true_midmu_RecoInel, range_true);
-							Fill1DWHist(trklen_reco_midmu_RecoInel, range_reco, mom_rw_minchi2);
-							Fill1DHist(dtrklen_midmu_RecoInel, range_reco-range_true);
+							Fill1DHist(ke_true_midmu_RecoInel, KEend_true);
+							Fill1DWHist(ke_reco_midmu_RecoInel, KEend_reco, mom_rw_minchi2);
+							Fill1DHist(dke_midmu_RecoInel, KEend_reco-KEend_true);
 						} //reco inel
 					} //bq
 				} //calosz
@@ -1016,29 +1021,29 @@ void ProtonESliceData::Loop() {
 		//[7]MID:mideg
 		if (kMIDeg) { //mid:eg
 			n_mideg++;
-			Fill1DHist(trklen_true_mideg_NoCut, range_true);
-			Fill1DWHist(trklen_reco_mideg_NoCut, range_reco, mom_rw_minchi2);
-			Fill1DHist(dtrklen_mideg_NoCut, range_reco-range_true);
+			Fill1DHist(ke_true_mideg_NoCut, KEend_true);
+			Fill1DWHist(ke_reco_mideg_NoCut, KEend_reco, mom_rw_minchi2);
+			Fill1DHist(dke_mideg_NoCut, KEend_reco-KEend_true);
 			if (IsPandoraSlice) { //pandora
 				n_mideg_pan++;
-				Fill1DHist(trklen_true_mideg_PanS, range_true);
-				Fill1DWHist(trklen_reco_mideg_PanS, range_reco, mom_rw_minchi2);
-				Fill1DHist(dtrklen_mideg_PanS, range_reco-range_true);
+				Fill1DHist(ke_true_mideg_PanS, KEend_true);
+				Fill1DWHist(ke_reco_mideg_PanS, KEend_reco, mom_rw_minchi2);
+				Fill1DHist(dke_mideg_PanS, KEend_reco-KEend_true);
 				if (IsCaloSize) { //calosz
 					n_mideg_calsz++;
-					Fill1DHist(trklen_true_mideg_CaloSz, range_true);
-					Fill1DWHist(trklen_reco_mideg_CaloSz, range_reco, mom_rw_minchi2);
-					Fill1DHist(dtrklen_mideg_CaloSz, range_reco-range_true);
+					Fill1DHist(ke_true_mideg_CaloSz, KEend_true);
+					Fill1DWHist(ke_reco_mideg_CaloSz, KEend_reco, mom_rw_minchi2);
+					Fill1DHist(dke_mideg_CaloSz, KEend_reco-KEend_true);
 					if (IsBQ) { //bq
 						n_mideg_bq++;
-						Fill1DHist(trklen_true_mideg_BQ, range_true);
-						Fill1DWHist(trklen_reco_mideg_BQ, range_reco, mom_rw_minchi2);
-						Fill1DHist(dtrklen_mideg_BQ, range_reco-range_true);
+						Fill1DHist(ke_true_mideg_BQ, KEend_true);
+						Fill1DWHist(ke_reco_mideg_BQ, KEend_reco, mom_rw_minchi2);
+						Fill1DHist(dke_mideg_BQ, KEend_reco-KEend_true);
 						if (IsRecoInEL) { //reco inel
 							n_mideg_recoinel++;
-							Fill1DHist(trklen_true_mideg_RecoInel, range_true);
-							Fill1DWHist(trklen_reco_mideg_RecoInel, range_reco, mom_rw_minchi2);
-							Fill1DHist(dtrklen_mideg_RecoInel, range_reco-range_true);
+							Fill1DHist(ke_true_mideg_RecoInel, KEend_true);
+							Fill1DWHist(ke_reco_mideg_RecoInel, KEend_reco, mom_rw_minchi2);
+							Fill1DHist(dke_mideg_RecoInel, KEend_reco-KEend_true);
 						} //reco inel
 					} //bq
 				} //calosz
@@ -1048,29 +1053,29 @@ void ProtonESliceData::Loop() {
 		//[8]MID:midother
 		if (kMIDother) { //mid:other
 			n_midother++;
-			Fill1DHist(trklen_true_midother_NoCut, range_true);
-			Fill1DWHist(trklen_reco_midother_NoCut, range_reco, mom_rw_minchi2);
-			Fill1DHist(dtrklen_midother_NoCut, range_reco-range_true);
+			Fill1DHist(ke_true_midother_NoCut, KEend_true);
+			Fill1DWHist(ke_reco_midother_NoCut, KEend_reco, mom_rw_minchi2);
+			Fill1DHist(dke_midother_NoCut, KEend_reco-KEend_true);
 			if (IsPandoraSlice) { //pandora
 				n_midother_pan++;
-				Fill1DHist(trklen_true_midother_PanS, range_true);
-				Fill1DWHist(trklen_reco_midother_PanS, range_reco, mom_rw_minchi2);
-				Fill1DHist(dtrklen_midother_PanS, range_reco-range_true);
+				Fill1DHist(ke_true_midother_PanS, KEend_true);
+				Fill1DWHist(ke_reco_midother_PanS, KEend_reco, mom_rw_minchi2);
+				Fill1DHist(dke_midother_PanS, KEend_reco-KEend_true);
 				if (IsCaloSize) { //calosz
 					n_midother_calsz++;
-					Fill1DHist(trklen_true_midother_CaloSz, range_true);
-					Fill1DWHist(trklen_reco_midother_CaloSz, range_reco, mom_rw_minchi2);
-					Fill1DHist(dtrklen_midother_CaloSz, range_reco-range_true);
+					Fill1DHist(ke_true_midother_CaloSz, KEend_true);
+					Fill1DWHist(ke_reco_midother_CaloSz, KEend_reco, mom_rw_minchi2);
+					Fill1DHist(dke_midother_CaloSz, KEend_reco-KEend_true);
 					if (IsBQ) { //bq
 						n_midother_bq++;
-						Fill1DHist(trklen_true_midother_BQ, range_true);
-						Fill1DWHist(trklen_reco_midother_BQ, range_reco, mom_rw_minchi2);
-						Fill1DHist(dtrklen_midother_BQ, range_reco-range_true);
+						Fill1DHist(ke_true_midother_BQ, KEend_true);
+						Fill1DWHist(ke_reco_midother_BQ, KEend_reco, mom_rw_minchi2);
+						Fill1DHist(dke_midother_BQ, KEend_reco-KEend_true);
 						if (IsRecoInEL) { //reco inel
 							n_midother_recoinel++;
-							Fill1DHist(trklen_true_midother_RecoInel, range_true);
-							Fill1DWHist(trklen_reco_midother_RecoInel, range_reco, mom_rw_minchi2);
-							Fill1DHist(dtrklen_midother_RecoInel, range_reco-range_true);
+							Fill1DHist(ke_true_midother_RecoInel, KEend_true);
+							Fill1DWHist(ke_reco_midother_RecoInel, KEend_reco, mom_rw_minchi2);
+							Fill1DHist(dke_midother_RecoInel, KEend_reco-KEend_true);
 						} //reco inel
 					} //bq
 				} //calosz
@@ -1100,7 +1105,7 @@ void ProtonESliceData::Loop() {
 				if (kinel) trklen_ke_true_inel->Fill(thisLen, this_incE);
 				if (kel) trklen_ke_true_el->Fill(thisLen, this_incE);
 
-				KEbb_truetrklen_all->Fill(thisLen, BB.KEAtLength(KE_ff, thisLen)); 
+				//KEbb_truetrklen_all->Fill(thisLen, BB.KEAtLength(KE_ff, thisLen)); 
 			} //loop over true hits
 		} //if true container not empty
 
@@ -1117,7 +1122,8 @@ void ProtonESliceData::Loop() {
 		//true_st_sliceID=int((Emax-KE_ff)/thinslicewidth+0.5);
 		//true_st_sliceID=int((Emax-KE_ff)/thinslicewidth+1);
 		//true_st_sliceID=int((Emax-KE_ff)/thinslicewidth);
-		true_st_sliceID=int((Emax-KE_ff)/thinslicewidth+0.5);
+		//true_st_sliceID=int((Emax-KE_ff)/thinslicewidth+0.5);
+		true_st_sliceID=int(ceil((Emax-KE_ff)/thinslicewidth));
 		//--true_st_sliceID;
 		//true_st_sliceID++;
 		//true_st_sliceID++;
@@ -1127,7 +1133,8 @@ void ProtonESliceData::Loop() {
 		if (true_endz < 0) true_st_sliceID=-1; 
 		if (true_st_sliceID >= nthinslices) true_st_sliceID = nthinslices;
 
-		double KE_true=BB.KEAtLength(KE_ff, range_true);
+		//double KE_true=BB.KEAtLength(KE_ff, range_true);
+		double KE_true=KEend_true;
 		true_sliceID = int((Emax-KE_true)/thinslicewidth);
 		if (true_sliceID < 0) true_sliceID = -1;
 		if (true_endz < 0) true_sliceID = -1; //hy added
@@ -1144,12 +1151,14 @@ void ProtonESliceData::Loop() {
 			//reco_sliceID = int(range_reco/thinslicewidth);
 			//cout<<"reco_endz:"<<reco_endz<<"  reco_sliceID:"<<reco_sliceID<<endl;
 
-			double keff_reco=ke_beam_spec_MeV-mean_Eloss_upstream;
+			//double keff_reco=ke_beam_spec_MeV-mean_Eloss_upstream;
+			//double keff_reco=KE_ff_reco;
 			//double KE_reco30=BB.KEAtLength(keff_reco, 30.);
 			//reco_st_sliceID=int((Emax-keff_reco)/thinslicewidth+1);
 			//reco_st_sliceID=int((Emax-keff_reco)/thinslicewidth+1);
 			//reco_st_sliceID=int((Emax-keff_reco)/thinslicewidth);
-			reco_st_sliceID=int((Emax-keff_reco)/thinslicewidth+0.5);
+			//reco_st_sliceID=int((Emax-keff_reco)/thinslicewidth+0.5);
+			reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth));
 			//--reco_st_sliceID;
 			//reco_st_sliceID++;
 			//if (range_reco>=30.) reco_st_sliceID=int((Emax-KE_reco30)/thinslicewidth);
@@ -1158,8 +1167,8 @@ void ProtonESliceData::Loop() {
 			if (reco_endz < 0) reco_st_sliceID = -1; 
 			if (reco_st_sliceID >= nthinslices) reco_st_sliceID = nthinslices;
 
-			double KE_reco=BB.KEAtLength(keff_reco, range_reco);
-			reco_sliceID = int((Emax-KE_reco)/thinslicewidth);
+			//double KE_reco=BB.KEAtLength(keff_reco, range_reco);
+			reco_sliceID = int((Emax-KEend_reco)/thinslicewidth);
 			if (reco_sliceID < 0) reco_sliceID = -1;
 			//if (range_reco<30) reco_sliceID=-1;
 			if (reco_endz<0) reco_sliceID = -1;
@@ -1172,10 +1181,15 @@ void ProtonESliceData::Loop() {
 				PassCuts_INC=true; //for INC
 			}
 
+			double this_calo_MeV=0;
+			double this_KE=KE_ff_reco;
 			for (size_t ih=0; ih<primtrk_dedx->size(); ++ih) {
 				double thisLen=reco_trklen_accum[ih];
-				double thisKE=BB.KEAtLength(keff_reco, thisLen); //len2ke conversion
-				KEbb_recotrklen_all->Fill(thisLen, thisKE); 
+				//double thisKE=BB.KEAtLength(keff_reco, thisLen); //len2ke conversion
+				//KEbb_recotrklen_all->Fill(thisLen, thisKE); 
+
+				this_KE-=EDept.at(ih);	
+				KEcalo_recotrklen_all->Fill(thisLen, thisKE); 
 			}
 
 		}
@@ -1342,7 +1356,7 @@ void ProtonESliceData::Loop() {
 			//reco ke
 			if (IsCaloSize==true&&IsBeamMatch==true) { //calo & beam_match
 				std::vector<std::vector<double>> vincE(nthinslices);
-				double ke_reco=KE_ff;
+				double thisKE=KE_ff_reco;
 				//for (size_t ih=0; ih<zreco_rawindex.size(); ++ih) {
 				for (size_t ih=0; ih<primtrk_dedx->size(); ++ih) {
 					//double this_calo_z=zreco_widreco[ih].second;
@@ -1356,20 +1370,20 @@ void ProtonESliceData::Loop() {
 					//ke_reco-=this_dE;
 
 					int this_sliceID=-1;
-					double thiskeff_reco=ke_beam_spec_MeV-mean_Eloss_upstream;
-					double thisKE=BB.KEAtLength(thiskeff_reco, thisLen); //len2ke conversion
+					thisKE-=EDept.at(ih);
+					//double thiskeff_reco=ke_beam_spec_MeV-mean_Eloss_upstream;
+					//double thisKE=BB.KEAtLength(thiskeff_reco, thisLen); //len2ke conversion
 					this_sliceID=int((Emax-thisKE)/thinslicewidth);
 					if (this_sliceID < 0) this_sliceID = -1;
 					if (thisZ < 0) this_sliceID = -1; //up-stram INT, set trklen_accum to -1 by default
 					if (this_sliceID >= nthinslices) this_sliceID = nthinslices;
-					KEbb_recotrklen_inel->Fill(thisLen,thisKE);
-
-					ke_reco-=EDept.at(ih);
+					//KEbb_recotrklen_inel->Fill(thisLen,thisKE);
+					KEcalo_recotrklen_inel->Fill(thisLen, thisKE);
 
 					if (this_sliceID>=nthinslices) continue;
 					if (this_sliceID<0) continue;
 
-					double this_incE = ke_reco;
+					double this_incE = thisKE;
 					vincE[this_sliceID].push_back(this_incE);
 
 
@@ -1412,16 +1426,17 @@ void ProtonESliceData::Loop() {
 					double thisLen=true_trklen_accum[hk];
 					//int this_sliceID = int(thisLen/thinslicewidth);
 					double this_incE = 1000.*beamtrk_Eng->at(hk); //MeV
-					double thisKE=BB.KEAtLength(KE_ff,thisLen); //len2ke conversion
+					//double thisKE=BB.KEAtLength(KE_ff,thisLen); //len2ke conversion
 					int this_sliceID=-1;
-					this_sliceID=int((Emax-thisKE)/thinslicewidth);
+					this_sliceID=int((Emax-this_incE)/thinslicewidth);
 
 					if (this_sliceID < 0) this_sliceID = -1;
 					if (thisZ < 0) this_sliceID = -1; //up-stram INT, set trklen_accum to -1 by default
 					if (this_sliceID >= nthinslices) this_sliceID = nthinslices;
 					//if (thisLen < 0) true_sliceID = -1; //up-stram INT, set trklen_accum to -1 by default
 
-					KEbb_truetrklen_inel->Fill(thisLen, thisKE);
+					//KEbb_truetrklen_inel->Fill(thisLen, this_incE);
+					KEcalo_truetrklen_inel->Fill(thisLen, this_incE);
 
 					if (this_sliceID>=nthinslices) continue;
 					if (this_sliceID<0) continue;
