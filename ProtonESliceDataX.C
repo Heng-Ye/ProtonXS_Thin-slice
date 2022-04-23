@@ -137,6 +137,9 @@ void ProtonESliceData::Loop() {
 	int n_recoinel_tot=0; //recoinel cut
 	int n_el_recoinel=0, n_inel_recoinel=0, n_midcosmic_recoinel=0, n_midpi_recoinel=0, n_midp_recoinel=0, n_midmu_recoinel=0, n_mideg_recoinel=0, n_midother_recoinel=0;
 
+	int n_recoel_tot=0; //recoel cut
+	int n_el_recoel=0, n_inel_recoel=0, n_midcosmic_recoel=0, n_midpi_recoel=0, n_midp_recoel=0, n_midmu_recoel=0, n_mideg_recoel=0, n_midother_recoel=0;
+
 	//MC beam momentum -----------------------//
 	double m1=1007.1482; //MC prod4a [spec]
 	double s1=60.703307; //MC prod4a [spec]
@@ -622,6 +625,7 @@ void ProtonESliceData::Loop() {
 		bool IsBQ=false;
 		if (IsCosine&&IsPos) IsBQ=true;
 
+		bool IsMisidpRich=false;
 		if (IsPos&&IsCaloSize&&IsPandoraSlice) {
 			Fill1DHist(reco_cosineTheta_Pos, cosine_beam_spec_primtrk);
 			if (kinel) Fill1DHist(reco_cosineTheta_Pos_inel, cosine_beam_spec_primtrk);
@@ -632,6 +636,8 @@ void ProtonESliceData::Loop() {
 			if (kMIDmu) Fill1DHist(reco_cosineTheta_Pos_midmu, cosine_beam_spec_primtrk);
 			if (kMIDeg) Fill1DHist(reco_cosineTheta_Pos_mideg, cosine_beam_spec_primtrk);
 			if (kMIDother) Fill1DHist(reco_cosineTheta_Pos_midother, cosine_beam_spec_primtrk);
+
+			if (cosine_beam_spec_primtrk<=0.9) IsMisidpRich=true;
 		}
 
 
@@ -764,7 +770,7 @@ void ProtonESliceData::Loop() {
 	
 		//KEend ---------------------------------------------------------------------------//
 		double KEend_true=0;
-		if (beamtrk_Eng.size()) KEend_true=1000.*(beamtrk_Eng->at(-2+beamtrk_Eng->size()));
+		if (beamtrk_Eng->size()) KEend_true=1000.*(beamtrk_Eng->at(-2+beamtrk_Eng->size()));
 	
 		//KEs ---------------------------------------------------------------------------------------//
 		//double Eloss_upstream=0; 
@@ -825,6 +831,7 @@ void ProtonESliceData::Loop() {
 		if (IsPandoraSlice&&IsCaloSize) n_calsz_tot++;
 		if (IsPandoraSlice&&IsCaloSize&&IsBQ) n_bq_tot++;
 		if (IsPandoraSlice&&IsCaloSize&&IsBQ&&IsRecoInEL) n_recoinel_tot++;
+		if (IsPandoraSlice&&IsCaloSize&&IsBQ&&IsRecoEL) n_recoel_tot++;
 
 		//[0]pure inel
 		if (kinel) { //pure inel
@@ -853,6 +860,14 @@ void ProtonESliceData::Loop() {
 							Fill1DWHist(ke_reco_inel_RecoInel, KEend_reco, mom_rw_minchi2);
 							Fill1DHist(dke_inel_RecoInel, KEend_reco-KEend_true);
 						} //reco inel
+
+						if (IsRecoEL) { //reco el
+							n_inel_recoel++;
+							Fill1DHist(ke_true_inel_RecoEl, KEend_true);
+							Fill1DWHist(ke_reco_inel_RecoEl, KEend_reco, mom_rw_minchi2);
+							Fill1DHist(dke_inel_RecoEl, KEend_reco-KEend_true);
+						} //reco el
+
 					} //bq
 				} //calosz
 			} //pandora
@@ -885,6 +900,14 @@ void ProtonESliceData::Loop() {
 							Fill1DWHist(ke_reco_el_RecoInel, KEend_reco, mom_rw_minchi2);
 							Fill1DHist(dke_el_RecoInel, KEend_reco-KEend_true);
 						} //reco inel
+
+						if (IsRecoEL) { //reco el
+							n_el_recoel++;
+							Fill1DHist(ke_true_el_RecoEl, KEend_true);
+							Fill1DWHist(ke_reco_el_RecoEl, KEend_reco, mom_rw_minchi2);
+							Fill1DHist(dke_el_RecoEl, KEend_reco-KEend_true);
+						} //reco el
+
 					} //bq
 				} //calosz
 			} //pandora
@@ -917,6 +940,13 @@ void ProtonESliceData::Loop() {
 							Fill1DWHist(ke_reco_midcosmic_RecoInel, KEend_reco, mom_rw_minchi2);
 							Fill1DHist(dke_midcosmic_RecoInel, KEend_reco-KEend_true);
 						} //reco inel
+						if (IsRecoEL) { //reco el
+							n_midcosmic_recoel++;
+							Fill1DHist(ke_true_midcosmic_RecoEl, KEend_true);
+							Fill1DWHist(ke_reco_midcosmic_RecoEl, KEend_reco, mom_rw_minchi2);
+							Fill1DHist(dke_midcosmic_RecoEl, KEend_reco-KEend_true);
+						} //reco el
+
 					} //bq
 				} //calosz
 			} //pandora
@@ -949,6 +979,14 @@ void ProtonESliceData::Loop() {
 							Fill1DWHist(ke_reco_midpi_RecoInel, KEend_reco, mom_rw_minchi2);
 							Fill1DHist(dke_midpi_RecoInel, KEend_reco-KEend_true);
 						} //reco inel
+
+						if (IsRecoEL) { //reco el
+							n_midpi_recoel++;
+							Fill1DHist(ke_true_midpi_RecoEl, KEend_true);
+							Fill1DWHist(ke_reco_midpi_RecoEl, KEend_reco, mom_rw_minchi2);
+							Fill1DHist(dke_midpi_RecoEl, KEend_reco-KEend_true);
+						} //reco el
+
 					} //bq
 				} //calosz
 			} //pandora
@@ -981,6 +1019,14 @@ void ProtonESliceData::Loop() {
 							Fill1DWHist(ke_reco_midp_RecoInel, KEend_reco, mom_rw_minchi2);
 							Fill1DHist(dke_midp_RecoInel, KEend_reco-KEend_true);
 						} //reco inel
+
+						if (IsRecoEL) { //reco el
+							n_midp_recoel++;
+							Fill1DHist(ke_true_midp_RecoEl, KEend_true);
+							Fill1DWHist(ke_reco_midp_RecoEl, KEend_reco, mom_rw_minchi2);
+							Fill1DHist(dke_midp_RecoEl, KEend_reco-KEend_true);
+						} //reco el
+
 					} //bq
 				} //calosz
 			} //pandora
@@ -1013,6 +1059,14 @@ void ProtonESliceData::Loop() {
 							Fill1DWHist(ke_reco_midmu_RecoInel, KEend_reco, mom_rw_minchi2);
 							Fill1DHist(dke_midmu_RecoInel, KEend_reco-KEend_true);
 						} //reco inel
+
+						if (IsRecoEL) { //reco el
+							n_midmu_recoel++;
+							Fill1DHist(ke_true_midmu_RecoEl, KEend_true);
+							Fill1DWHist(ke_reco_midmu_RecoEl, KEend_reco, mom_rw_minchi2);
+							Fill1DHist(dke_midmu_RecoEl, KEend_reco-KEend_true);
+						} //reco el
+
 					} //bq
 				} //calosz
 			} //pandora
@@ -1045,6 +1099,14 @@ void ProtonESliceData::Loop() {
 							Fill1DWHist(ke_reco_mideg_RecoInel, KEend_reco, mom_rw_minchi2);
 							Fill1DHist(dke_mideg_RecoInel, KEend_reco-KEend_true);
 						} //reco inel
+
+						if (IsRecoEL) { //reco el
+							n_mideg_recoel++;
+							Fill1DHist(ke_true_mideg_RecoEl, KEend_true);
+							Fill1DWHist(ke_reco_mideg_RecoEl, KEend_reco, mom_rw_minchi2);
+							Fill1DHist(dke_mideg_RecoEl, KEend_reco-KEend_true);
+						} //reco el
+
 					} //bq
 				} //calosz
 			} //pandora
@@ -1077,6 +1139,14 @@ void ProtonESliceData::Loop() {
 							Fill1DWHist(ke_reco_midother_RecoInel, KEend_reco, mom_rw_minchi2);
 							Fill1DHist(dke_midother_RecoInel, KEend_reco-KEend_true);
 						} //reco inel
+
+						if (IsRecoEL) { //reco el
+							n_midother_recoel++;
+							Fill1DHist(ke_true_midother_RecoEl, KEend_true);
+							Fill1DWHist(ke_reco_midother_RecoEl, KEend_reco, mom_rw_minchi2);
+							Fill1DHist(dke_midother_RecoEl, KEend_reco-KEend_true);
+						} //reco el
+
 					} //bq
 				} //calosz
 			} //pandora
@@ -1094,7 +1164,25 @@ void ProtonESliceData::Loop() {
 			if (kMIDmu) Fill1DHist(ntrklen_midmu_BQ, range_reco/csda_val_spec);
 			if (kMIDeg) Fill1DHist(ntrklen_mideg_BQ, range_reco/csda_val_spec);
 			if (kMIDother) Fill1DHist(ntrklen_midother_BQ, range_reco/csda_val_spec); 
+
+			if (IsRecoInEL) Fill1DWHist(ke_reco_RecoInel, KEend_reco, mom_rw_minchi2);
+			if (IsRecoEL) Fill1DWHist(ke_reco_RecoEl, KEend_reco, mom_rw_minchi2);
 		}
+
+
+		//bkg-rich
+		if (IsMisidpRich) {
+			Fill1DWHist(ke_reco_MidP, KEend_reco, mom_rw_minchi2);
+			if (kinel) Fill1DWHist(ke_reco_inel_MidP, KEend_reco, mom_rw_minchi2);
+			if (kel) Fill1DWHist(ke_reco_el_MidP, KEend_reco, mom_rw_minchi2);
+			if (kMIDcosmic) Fill1DWHist(ke_reco_midcosmic_MidP, KEend_reco, mom_rw_minchi2);
+			if (kMIDpi) Fill1DWHist(ke_reco_midpi_MidP, KEend_reco, mom_rw_minchi2);
+			if (kMIDp) Fill1DWHist(ke_reco_midp_MidP, KEend_reco, mom_rw_minchi2);
+			if (kMIDmu) Fill1DWHist(ke_reco_midmu_MidP, KEend_reco, mom_rw_minchi2);
+			if (kMIDeg) Fill1DWHist(ke_reco_mideg_MidP, KEend_reco, mom_rw_minchi2);
+			if (kMIDother) Fill1DWHist(ke_reco_midother_MidP, KEend_reco, mom_rw_minchi2);
+		}
+
 
 		//true trklen vs ke ------------------------------------------------------------------//
 		if (!beamtrk_Eng->empty()) { //if true container not empty
@@ -1189,7 +1277,7 @@ void ProtonESliceData::Loop() {
 				//KEbb_recotrklen_all->Fill(thisLen, thisKE); 
 
 				this_KE-=EDept.at(ih);	
-				KEcalo_recotrklen_all->Fill(thisLen, thisKE); 
+				KEcalo_recotrklen_all->Fill(thisLen, this_KE); 
 			}
 
 		}
@@ -1550,6 +1638,16 @@ void ProtonESliceData::Loop() {
 		cout<<"n_midother_recoinel"<<n_midother_recoinel<<endl;
 		cout<<"n_diff_recoinel:"<<n_recoinel_tot-(n_el_recoinel+n_inel_recoinel+n_midcosmic_recoinel+n_midpi_recoinel+n_midp_recoinel+n_midmu_recoinel+n_mideg_recoinel+n_midother_recoinel)<<endl;
 
+		cout<<"\nn_recoel_tot:"<<n_recoel_tot<<endl;
+		cout<<"n_el_recoel:"<<n_el_recoel<<endl;
+		cout<<"n_inel_recoel:"<<n_inel_recoel<<endl;
+		cout<<"n_midcosmic_recoel:"<<n_midcosmic_recoel<<endl;
+		cout<<"n_midpi_recoel:"<<n_midpi_recoel<<endl;
+		cout<<"n_midp_recoel:"<<n_midp_recoel<<endl;
+		cout<<"n_midmu_recoel:"<<n_midmu_recoel<<endl;
+		cout<<"n_mideg_recoel:"<<n_mideg_recoel<<endl;
+		cout<<"n_midother_recoel"<<n_midother_recoel<<endl;
+		cout<<"n_diff_recoel:"<<n_recoel_tot-(n_el_recoel+n_inel_recoel+n_midcosmic_recoel+n_midpi_recoel+n_midp_recoel+n_midmu_recoel+n_mideg_recoel+n_midother_recoel)<<endl;
 
 		cout<<"\n\n\n n_test_recoinel:"<<n_test_recoinel<<" n_test_recoinel_sample:"<<n_test_recoinel_sample<<" n_kinel:"<<n_kinel<<" n_kinel2:"<<n_kinel2<<endl;
 
