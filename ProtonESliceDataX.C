@@ -1156,9 +1156,17 @@ void ProtonESliceData::Loop() {
 		//ntrklen --------------------------------------------------------------------//
 		if (IsPandoraSlice&&IsCaloSize&&IsBQ) {  
 			Fill1DHist(ntrklen_BQ, range_reco/csda_val_spec);
-			if (kinel) Fill1DHist(ntrklen_inel_BQ, range_reco/csda_val_spec);
-			if (kel) Fill1DHist(ntrklen_el_BQ, range_reco/csda_val_spec);
-			if (kMIDcosmic) Fill1DHist(ntrklen_midcosmic_BQ, range_reco/csda_val_spec);
+			Fill1DWHist(ke_reco_BQ, KEend_reco, mom_rw_minchi2);
+
+			if (kinel) { 
+				Fill1DHist(ntrklen_inel_BQ, range_reco/csda_val_spec);
+			}
+			if (kel) { 
+				Fill1DHist(ntrklen_el_BQ, range_reco/csda_val_spec);
+			}
+			if (kMIDcosmic) { 
+				Fill1DHist(ntrklen_midcosmic_BQ, range_reco/csda_val_spec);
+			}
 			if (kMIDpi) Fill1DHist(ntrklen_midpi_BQ, range_reco/csda_val_spec);
 			if (kMIDp) Fill1DHist(ntrklen_midp_BQ, range_reco/csda_val_spec);
 			if (kMIDmu) Fill1DHist(ntrklen_midmu_BQ, range_reco/csda_val_spec);
