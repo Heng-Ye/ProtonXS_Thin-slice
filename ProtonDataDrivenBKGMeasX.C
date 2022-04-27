@@ -114,6 +114,21 @@ double err_mean_Eloss_upstream=0.187143;
 double sigma_Eloss_upstream=18.7378;
 double err_sigma_Eloss_upstream=0.140183;
 
+double mean_Elossrange_stop=433.441-405.371; //KEstop using range, unit:MeV
+//double mean_Elosscalo_stop=433.441-379.074; //
+//double mean_Elosscalo_stop=(4.77927e+01)/(1.00480e+00); //using fit [bmrw]
+double mean_Elosscalo_stop=(4.95958e+01)/(1.00489e+00); //using fit [no bmrw]
+//fit result
+//p0           4.77927e+01   3.62629e-01   1.40469e-08   0.00000e+00
+//p1          -1.00480e+00   7.70658e-03   7.70658e-03  -4.73181e-08
+
+//p0           4.95958e+01   2.69311e-01   3.68850e-08   5.23619e-11
+//p1          -1.00489e+00   5.73159e-03   5.73159e-03   1.03334e-07
+
+
+double mean_ntrklen=9.00928e-01;
+double sigma_ntrklen=7.61209e-02;
+
 void ProtonDataDrivenBKGMeas::Loop() {
 	if (fChain == 0) return;
 
@@ -331,7 +346,7 @@ void ProtonDataDrivenBKGMeas::Loop() {
 	double m2=3.93027e+02; //data, keff with const E-loss
 	double s2=5.18623e+01; //data, keff with const E-loss
 	double a2=6.09665e+02; //data, keff with const E-loss
-		
+
 	double xmin=0.; //pmin [MeV]
 	double xmax=1000.; //pmax [MeV]
 
@@ -358,11 +373,11 @@ void ProtonDataDrivenBKGMeas::Loop() {
 	//TString str_out=Form("mc_kebkg_bmrw.root");
 	//TString str_out=Form("mc_kebkg_bmrw_new.root");
 	//TString str_out=Form("mc_kebkg_bmrw_new_flatrecoinel.root");
-	TString str_out=Form("mc_kebkg_bmrw_new_fineresol.root");
+	TString str_out=Form("mc_kebbbkg_nobmrw.root");
 
 	//Basic configure ------//
-	//BetheBloch BB;
-	//BB.SetPdgCode(pdg);
+	BetheBloch BB;
+	BB.SetPdgCode(pdg);
 
 	//book histograms --//
 	//BookHistograms();
@@ -373,7 +388,7 @@ void ProtonDataDrivenBKGMeas::Loop() {
 	Long64_t nbytes = 0, nb = 0;
 	bool isTestSample=true;
 	int true_sliceID = -1, reco_sliceID = -1;
-	int true_st_sliceID = -1, reco_st_sliceID = -1;
+	//int true_st_sliceID = -1, reco_st_sliceID = -1;
 	for (Long64_t jentry=0; jentry<nentries;jentry++) { //main entry loop
 		Long64_t ientry = LoadTree(jentry);
 		if (ientry < 0) break;
@@ -384,8 +399,8 @@ void ProtonDataDrivenBKGMeas::Loop() {
 		//if (isTestSample) continue; //only validate sample
 		//if (!isTestSample) continue; //only test sample
 
-		true_sliceID = -1;
-		reco_sliceID = -1;
+		//true_sliceID = -1;
+		//reco_sliceID = -1;
 
 		//only select protons	
 		//if (primary_truth_Pdg!=pdg) continue; //only interested in protons
@@ -489,7 +504,7 @@ void ProtonDataDrivenBKGMeas::Loop() {
 		//cout<<"trueSt z/y/x:"<<true_stz<<"/"<<true_sty<<"/"<<true_stx<<endl;
 		//cout<<"InEL EL MCS:"<<IsPureInEL<<" "<<IsPureEL<<" "<<IsPureMCS<<endl;
 		//cout<<"InEL EL:"<<IsPureInEL<<" "<<IsPureEL<<" "<<endl;
-		cout<<"IsTrueEndOutside:"<<IsTrueEndOutside<<endl;
+		//cout<<"IsTrueEndOutside:"<<IsTrueEndOutside<<endl;
 		//if (IsPureInEL==1) cout<<"Summary(TrueEnd, Endoutside, Bm, Orig, EPDG):("<<1<<", "<<IsTrueEndOutside<<", "<<IsBeamMatch<<", "<<primary_truth_byE_origin<<", "<<primary_truth_byE_PDG<<")"<<endl;	
 		//if (IsPureEL==1) cout<<"Summary(TrueEnd, Endoutside, Bm, Orig, EPDG):("<<2<<", "<<IsTrueEndOutside<<", "<<IsBeamMatch<<", "<<primary_truth_byE_origin<<", "<<primary_truth_byE_PDG<<")"<<endl;	
 		//if (IsPureMCS==1) cout<<"Summary(TrueEnd, Endoutside, Bm, Orig, EPDG):("<<3<<", "<<IsTrueEndOutside<<", "<<IsBeamMatch<<", "<<primary_truth_byE_origin<<", "<<primary_truth_byE_PDG<<")"<<endl;	
@@ -534,7 +549,7 @@ void ProtonDataDrivenBKGMeas::Loop() {
 		double yproj_beam=0; //ini. value
 		double xproj_beam=0; //ini. value
 		int n_fit=3; //num of points used for fitting
-                if (beamtrk_z->size()) {
+		if (beamtrk_z->size()) {
 
 			int key_fit_st=0;
 			int key_fit_ed=-1+(int)beamtrk_z->size();
@@ -545,20 +560,20 @@ void ProtonDataDrivenBKGMeas::Loop() {
 			if (key_fit_st<0) key_fit_st=0;
 			if (key_fit_ed>(-1+(int)beamtrk_z->size())) key_fit_ed=-1+(int)beamtrk_z->size();	
 
-			cout<<"beamtrk_z->size():"<<beamtrk_z->size()<<endl;
-			cout<<"key_reach_tpc:"<<key_reach_tpc<<endl;
-			std::cout<<"key_fit_st-ed:"<<key_fit_st<<"-"<<key_fit_ed<<std::endl;
+			//cout<<"beamtrk_z->size():"<<beamtrk_z->size()<<endl;
+			//cout<<"key_reach_tpc:"<<key_reach_tpc<<endl;
+			//std::cout<<"key_fit_st-ed:"<<key_fit_st<<"-"<<key_fit_ed<<std::endl;
 
 			//start 3D line fit
 			TGraph2D *gr=new TGraph2D();
 			//cout<<"ck0"<<endl;
-   		  	//for (int N=key_fit_st; N<key_fit_ed; N++) {
-   		  	int nsize_fit=n_fit;
+			//for (int N=key_fit_st; N<key_fit_ed; N++) {
+			int nsize_fit=n_fit;
 			if ((1+(key_fit_ed-key_fit_st))<n_fit) nsize_fit=1+(key_fit_ed-key_fit_st);
 			if ((int)beamtrk_z->size()<=n_fit) nsize_fit=(int)beamtrk_z->size(); //in case really short track
-   		  	for (int N=0; N<nsize_fit; N++) {
+			for (int N=0; N<nsize_fit; N++) {
 				gr->SetPoint(N, beamtrk_x->at(N+key_fit_st), beamtrk_y->at(N+key_fit_st), beamtrk_z->at(N+key_fit_st));
-   		    	}
+			}
 			//cout<<"ck1"<<endl;
 			//Initialization of parameters
 			//int N=(int)Z_RECO.size();
@@ -574,7 +589,7 @@ void ProtonDataDrivenBKGMeas::Loop() {
 			ROOT::Math::Functor fcn(sdist,4);
 
 			// set the function and the initial parameter values
-  			double pStart[4]={ini_p0, ini_p1, ini_p2, ini_p3};   
+			double pStart[4]={ini_p0, ini_p1, ini_p2, ini_p3};   
 			fitter.SetFCN(fcn,pStart);
 			//cout<<"ck3"<<endl;
 
@@ -588,12 +603,12 @@ void ProtonDataDrivenBKGMeas::Loop() {
 				//return 1;
 			}
 			//cout<<"ck5"<<endl;
-				
+
 			const ROOT::Fit::FitResult & result = fitter.Result();
 			std::cout << "Total final distance square " << result.MinFcnValue() << std::endl;
 			result.Print(std::cout);
 			//cout<<"ck6"<<endl;
-				
+
 			// get fit parameters
 			const double * parFit = result.GetParams();
 			yproj_beam=result.Parameter(2)+result.Parameter(3)*zproj_beam;
@@ -616,13 +631,13 @@ void ProtonDataDrivenBKGMeas::Loop() {
 		//true_trklen_accum
 		double range_true=-9999;
 		if (is_beam_at_ff) { //is beam at ff
-		  for (int iz=key_reach_tpc+1; iz<(int)beamtrk_z->size(); iz++) {
-			if (iz == key_reach_tpc+1) range_true = range_true_patch;
-					range_true += sqrt( pow(beamtrk_x->at(iz)-beamtrk_x->at(iz-1), 2)+
+			for (int iz=key_reach_tpc+1; iz<(int)beamtrk_z->size(); iz++) {
+				if (iz == key_reach_tpc+1) range_true = range_true_patch;
+				range_true += sqrt( pow(beamtrk_x->at(iz)-beamtrk_x->at(iz-1), 2)+
 						pow(beamtrk_y->at(iz)-beamtrk_y->at(iz-1), 2)+	
 						pow(beamtrk_z->at(iz)-beamtrk_z->at(iz-1), 2) );						    	
 				true_trklen_accum[iz] = range_true;
-		  }
+			}
 		} //is beam at ff						    	
 
 		//fix on the truth length by adding distance between 1st tpc hit to front face ------------------------------------------------------//
@@ -671,7 +686,7 @@ void ProtonDataDrivenBKGMeas::Loop() {
 				kMIDother=true;
 			}
 		} //!beam-match	
-		cout<<"kMIDcosmic:"<<kMIDcosmic<<endl;
+		//cout<<"kMIDcosmic:"<<kMIDcosmic<<endl;
 		//Evt Classification =====================================================================//
 
 		//reco pos info & cut -----------------------------------------------------------------//
@@ -794,8 +809,8 @@ void ProtonDataDrivenBKGMeas::Loop() {
 		vector<double> reco_trklen_accum;
 		reco_trklen_accum.reserve(primtrk_hitz->size());
 		double reco_calo_MeV=0;
-		double kereco_range=0;
-		double kereco_range2=0;
+		//double kereco_range=0;
+		//double kereco_range2=0;
 		vector<double> EDept;
 		vector<double> DEDX;
 		vector<double> DX;
@@ -841,13 +856,13 @@ void ProtonDataDrivenBKGMeas::Loop() {
 				}
 
 				reco_calo_MeV+=cali_dedx*pitch;
-				kereco_range+=pitch*dedx_predict(resrange_reco);
-				kereco_range2+=pitch*(double)gr_predict_dedx_resrange->Eval(resrange_reco);
+				//kereco_range+=pitch*dedx_predict(resrange_reco);
+				//kereco_range2+=pitch*(double)gr_predict_dedx_resrange->Eval(resrange_reco);
 
 				//if (kinel) rangereco_dedxreco_TrueInEL->Fill(range_reco, cali_dedx);
 				//if (kel) { 
-					//rangereco_dedxreco_TrueEL->Fill(range_reco, cali_dedx);
-					//rr_dedx_truestop->Fill(resrange_reco, cali_dedx);
+				//rangereco_dedxreco_TrueEL->Fill(range_reco, cali_dedx);
+				//rr_dedx_truestop->Fill(resrange_reco, cali_dedx);
 				//}
 
 				trkdedx.push_back(cali_dedx);
@@ -870,7 +885,7 @@ void ProtonDataDrivenBKGMeas::Loop() {
 
 		if ((range_reco/csda_val_spec)>=min_norm_trklen_csda&&(range_reco/csda_val_spec)<max_norm_trklen_csda) IsRecoStop=true; //old cut
 		//if ((range_reco/csda_val_spec)<min_norm_trklen_csda) IsRecoInEL=true; //old cut
-		
+
 		if ((range_reco/csda_val_spec)<min_norm_trklen_csda) { //inel region
 			if (pid>pid_1) IsRecoInEL=true; 
 			if (pid<=pid_1) IsRecoEL=true; 
@@ -908,15 +923,17 @@ void ProtonDataDrivenBKGMeas::Loop() {
 		double KE_ff_true=KE_ff;
 
 		//KEff (reco) with const E-loss assumption -----------------------------------//
-		double mean_Elosscalo_stop=(4.95958e+01)/(1.00489e+00); //using fit [no bmrw]
-		double KE_ff_reco=ke_beam_spec_MeV-mean_Elosscalo_stop;
+		//double mean_Elosscalo_stop=(4.95958e+01)/(1.00489e+00); //using fit [no bmrw]
+		//double KE_ff_reco=ke_beam_spec_MeV-mean_Elosscalo_stop;
+		double KE_ff_reco=ke_beam_spec_MeV-mean_Elossrange_stop; //kebb
 		double KEend_reco=0;
-		KEend_reco=KE_ff_reco-reco_calo_MeV;		
-	
+		//KEend_reco=KE_ff_reco-reco_calo_MeV;		
+		KEend_reco=BB.KEAtLength(KE_ff_reco, range_reco);		
+
 		//KEend ---------------------------------------------------------------------------//
 		double KEend_true=0;
 		if (beamtrk_Eng->size()) KEend_true=1000.*(beamtrk_Eng->at(-2+beamtrk_Eng->size()));
-	
+
 		//KEs ---------------------------------------------------------------------------------------//
 		//double Eloss_upstream=0; 
 		//if (KE_ff>0) Eloss_upstream=
@@ -928,8 +945,11 @@ void ProtonDataDrivenBKGMeas::Loop() {
 		//---------------------------------------------------------------------------------------------------------------//
 
 		//bmrw -------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-		double mom_rw_minchi2=1.; //weight for beam-momentum-reweight
-		if ((ke_beam_spec_MeV-mean_Elosscalo_stop)>=mu_min&&(ke_beam_spec_MeV-mean_Elosscalo_stop)<=mu_max) mom_rw_minchi2=gng->Eval(ke_beam_spec_MeV-mean_Elosscalo_stop); //bmrw
+		double mom_rw_minchi2=1; //weight for beam-momentum-reweight
+		//if ((ke_beam_spec_MeV-mean_Elosscalo_stop)>=mu_min&&(ke_beam_spec_MeV-mean_Elosscalo_stop)<=mu_max) mom_rw_minchi2=gng->Eval(ke_beam_spec_MeV-mean_Elosscalo_stop); //bmrw
+		//if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) { //beam-mom (within 3-sigma)
+			//mom_rw_minchi2=bmrw_func->Eval(mom_beam_spec*1000.); //bmrw, set weight if beam mom. within 3-sigma
+		//} //beam-mom (within 3-sigma)
 
 		//Fill histograms -------------------------------------------------------------------------------------------//
 		if (IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts
@@ -1055,40 +1075,40 @@ void ProtonDataDrivenBKGMeas::Loop() {
 
 
 		if (IsMisidpRich) { //misidp-rich
-				Fill1DWHist(ke_reco_MidP, KEend_reco, mom_rw_minchi2);
-				Fill1DWHist(ke_true_MidP, KEend_true, mom_rw_minchi2);
-				if (kinel) {
-					Fill1DWHist(ke_reco_MidP_inel, KEend_reco, mom_rw_minchi2);
-					Fill1DWHist(ke_true_MidP_inel, KEend_true, mom_rw_minchi2);
-				}
-				if (kel) { 
-					Fill1DWHist(ke_reco_MidP_el, KEend_reco, mom_rw_minchi2);
-					Fill1DWHist(ke_true_MidP_el, KEend_true, mom_rw_minchi2);
-				}
-				if (kMIDcosmic) { 
-					Fill1DWHist(ke_reco_MidP_midcosmic, KEend_reco, mom_rw_minchi2);
-					Fill1DWHist(ke_true_MidP_midcosmic, KEend_true, mom_rw_minchi2);
-				}
-				if (kMIDpi) { 
-					Fill1DWHist(ke_reco_MidP_midpi, KEend_reco, mom_rw_minchi2);
-					Fill1DWHist(ke_true_MidP_midpi, KEend_true, mom_rw_minchi2);
-				}
-				if (kMIDp) { 
-					Fill1DWHist(ke_reco_MidP_midp, KEend_reco, mom_rw_minchi2);
-					Fill1DWHist(ke_true_MidP_midp, KEend_true, mom_rw_minchi2);
-				}
-				if (kMIDmu) { 
-					Fill1DWHist(ke_reco_MidP_midmu, KEend_reco, mom_rw_minchi2);
-					Fill1DWHist(ke_true_MidP_midmu, KEend_true, mom_rw_minchi2);
-				}
-				if (kMIDeg) { 
-					Fill1DWHist(ke_reco_MidP_mideg, KEend_reco, mom_rw_minchi2);
-					Fill1DWHist(ke_true_MidP_mideg, KEend_true, mom_rw_minchi2);
-				}
-				if (kMIDother) { 
-					Fill1DWHist(ke_reco_MidP_midother, KEend_reco, mom_rw_minchi2);
-					Fill1DWHist(ke_true_MidP_midother, KEend_true, mom_rw_minchi2);
-				}
+			Fill1DWHist(ke_reco_MidP, KEend_reco, mom_rw_minchi2);
+			Fill1DWHist(ke_true_MidP, KEend_true, mom_rw_minchi2);
+			if (kinel) {
+				Fill1DWHist(ke_reco_MidP_inel, KEend_reco, mom_rw_minchi2);
+				Fill1DWHist(ke_true_MidP_inel, KEend_true, mom_rw_minchi2);
+			}
+			if (kel) { 
+				Fill1DWHist(ke_reco_MidP_el, KEend_reco, mom_rw_minchi2);
+				Fill1DWHist(ke_true_MidP_el, KEend_true, mom_rw_minchi2);
+			}
+			if (kMIDcosmic) { 
+				Fill1DWHist(ke_reco_MidP_midcosmic, KEend_reco, mom_rw_minchi2);
+				Fill1DWHist(ke_true_MidP_midcosmic, KEend_true, mom_rw_minchi2);
+			}
+			if (kMIDpi) { 
+				Fill1DWHist(ke_reco_MidP_midpi, KEend_reco, mom_rw_minchi2);
+				Fill1DWHist(ke_true_MidP_midpi, KEend_true, mom_rw_minchi2);
+			}
+			if (kMIDp) { 
+				Fill1DWHist(ke_reco_MidP_midp, KEend_reco, mom_rw_minchi2);
+				Fill1DWHist(ke_true_MidP_midp, KEend_true, mom_rw_minchi2);
+			}
+			if (kMIDmu) { 
+				Fill1DWHist(ke_reco_MidP_midmu, KEend_reco, mom_rw_minchi2);
+				Fill1DWHist(ke_true_MidP_midmu, KEend_true, mom_rw_minchi2);
+			}
+			if (kMIDeg) { 
+				Fill1DWHist(ke_reco_MidP_mideg, KEend_reco, mom_rw_minchi2);
+				Fill1DWHist(ke_true_MidP_mideg, KEend_true, mom_rw_minchi2);
+			}
+			if (kMIDother) { 
+				Fill1DWHist(ke_reco_MidP_midother, KEend_reco, mom_rw_minchi2);
+				Fill1DWHist(ke_true_MidP_midother, KEend_true, mom_rw_minchi2);
+			}
 		} //misidp-rich
 
 
@@ -1209,50 +1229,50 @@ void ProtonDataDrivenBKGMeas::Loop() {
 
 
 		if (IsMisidpRich) { //misidp-rich
-				Fill1DWHist(keff_reco_MidP, KE_ff_reco, mom_rw_minchi2);
-				Fill1DWHist(keff_true_MidP, KE_ff_true, mom_rw_minchi2);
-				if (kinel) {
-					Fill1DWHist(keff_reco_MidP_inel, KE_ff_reco, mom_rw_minchi2);
-					Fill1DWHist(keff_true_MidP_inel, KE_ff_true, mom_rw_minchi2);
-				}
-				if (kel) { 
-					Fill1DWHist(keff_reco_MidP_el, KE_ff_reco, mom_rw_minchi2);
-					Fill1DWHist(keff_true_MidP_el, KE_ff_true, mom_rw_minchi2);
-				}
-				if (kMIDcosmic) { 
-					Fill1DWHist(keff_reco_MidP_midcosmic, KE_ff_reco, mom_rw_minchi2);
-					Fill1DWHist(keff_true_MidP_midcosmic, KE_ff_true, mom_rw_minchi2);
-				}
-				if (kMIDpi) { 
-					Fill1DWHist(keff_reco_MidP_midpi, KE_ff_reco, mom_rw_minchi2);
-					Fill1DWHist(keff_true_MidP_midpi, KE_ff_true, mom_rw_minchi2);
-				}
-				if (kMIDp) { 
-					Fill1DWHist(keff_reco_MidP_midp, KE_ff_reco, mom_rw_minchi2);
-					Fill1DWHist(keff_true_MidP_midp, KE_ff_true, mom_rw_minchi2);
-				}
-				if (kMIDmu) { 
-					Fill1DWHist(keff_reco_MidP_midmu, KE_ff_reco, mom_rw_minchi2);
-					Fill1DWHist(keff_true_MidP_midmu, KE_ff_true, mom_rw_minchi2);
-				}
-				if (kMIDeg) { 
-					Fill1DWHist(keff_reco_MidP_mideg, KE_ff_reco, mom_rw_minchi2);
-					Fill1DWHist(keff_true_MidP_mideg, KE_ff_true, mom_rw_minchi2);
-				}
-				if (kMIDother) { 
-					Fill1DWHist(keff_reco_MidP_midother, KE_ff_reco, mom_rw_minchi2);
-					Fill1DWHist(keff_true_MidP_midother, KE_ff_true, mom_rw_minchi2);
-				}
+			Fill1DWHist(keff_reco_MidP, KE_ff_reco, mom_rw_minchi2);
+			Fill1DWHist(keff_true_MidP, KE_ff_true, mom_rw_minchi2);
+			if (kinel) {
+				Fill1DWHist(keff_reco_MidP_inel, KE_ff_reco, mom_rw_minchi2);
+				Fill1DWHist(keff_true_MidP_inel, KE_ff_true, mom_rw_minchi2);
+			}
+			if (kel) { 
+				Fill1DWHist(keff_reco_MidP_el, KE_ff_reco, mom_rw_minchi2);
+				Fill1DWHist(keff_true_MidP_el, KE_ff_true, mom_rw_minchi2);
+			}
+			if (kMIDcosmic) { 
+				Fill1DWHist(keff_reco_MidP_midcosmic, KE_ff_reco, mom_rw_minchi2);
+				Fill1DWHist(keff_true_MidP_midcosmic, KE_ff_true, mom_rw_minchi2);
+			}
+			if (kMIDpi) { 
+				Fill1DWHist(keff_reco_MidP_midpi, KE_ff_reco, mom_rw_minchi2);
+				Fill1DWHist(keff_true_MidP_midpi, KE_ff_true, mom_rw_minchi2);
+			}
+			if (kMIDp) { 
+				Fill1DWHist(keff_reco_MidP_midp, KE_ff_reco, mom_rw_minchi2);
+				Fill1DWHist(keff_true_MidP_midp, KE_ff_true, mom_rw_minchi2);
+			}
+			if (kMIDmu) { 
+				Fill1DWHist(keff_reco_MidP_midmu, KE_ff_reco, mom_rw_minchi2);
+				Fill1DWHist(keff_true_MidP_midmu, KE_ff_true, mom_rw_minchi2);
+			}
+			if (kMIDeg) { 
+				Fill1DWHist(keff_reco_MidP_mideg, KE_ff_reco, mom_rw_minchi2);
+				Fill1DWHist(keff_true_MidP_mideg, KE_ff_true, mom_rw_minchi2);
+			}
+			if (kMIDother) { 
+				Fill1DWHist(keff_reco_MidP_midother, KE_ff_reco, mom_rw_minchi2);
+				Fill1DWHist(keff_true_MidP_midother, KE_ff_true, mom_rw_minchi2);
+			}
 		} //misidp-rich
 
 
 
 
-	} //main entry loop
+		} //main entry loop
 
 
-	//save results -------//
-   	TFile *fout = new TFile(Form("%s",str_out.Data()),"RECREATE");
+		//save results -------//
+		TFile *fout = new TFile(Form("%s",str_out.Data()),"RECREATE");
 		trklen_ke_reco_All->Write();
 
 		ke_true_All->Write();
@@ -1421,9 +1441,9 @@ void ProtonDataDrivenBKGMeas::Loop() {
 
 		ke_kebeam_reco_RecoInEl->Write();
 		ke_kebeam_reco_RecoEl->Write();
-	fout->Close();
+		fout->Close();
 
 
 
 
-}
+		}
