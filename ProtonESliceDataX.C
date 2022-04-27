@@ -141,10 +141,24 @@ void ProtonESliceData::Loop() {
 	int n_el_recoel=0, n_inel_recoel=0, n_midcosmic_recoel=0, n_midpi_recoel=0, n_midp_recoel=0, n_midmu_recoel=0, n_mideg_recoel=0, n_midother_recoel=0;
 
 	//MC beam momentum -----------------------//
-	double m1=1007.1482; //MC prod4a [spec]
-	double s1=60.703307; //MC prod4a [spec]
+	double mm1=1007.1482; //MC prod4a [spec]
+	double ss1=60.703307; //MC prod4a [spec]
+	double mmu_min=mm1-3.*ss1;
+	double mmu_max=mm1+3.*ss1;
+
 	double mu_min=m1-3.*s1;
 	double mu_max=m1+3.*s1;
+
+	//Beam momentum reweighting -----------------------------//
+	//MC KE beam Gaussian 
+	double m1=3.89270e+02; //mc, keff with const E-loss
+	double s1=4.49638e+01; //mc, keff with const E-loss
+	double a1=7.06341e+02; //mc, keff with const E-loss
+
+	double m2=3.93027e+02; //data, keff with const E-loss
+	double s2=5.18623e+01; //data, keff with const E-loss
+	double a2=6.09665e+02; //data, keff with const E-loss
+
 
 	//unfolding config. -------------------------//
 	Unfold uf(nthinslices+2, -1, nthinslices+1);
@@ -162,7 +176,8 @@ void ProtonESliceData::Loop() {
 	//SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_nobmrw_skip1stslc.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_nobmrw_stslcplus1.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_nobmrw_stslcplus0.5.root", name_thinslicewidth, nthinslices)); //output file name
-	SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_nobmrw_stslcceil.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_nobmrw_stslcceil.root", name_thinslicewidth, nthinslices)); //output file name
+	SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_bmrw_stslcceil.root", name_thinslicewidth, nthinslices)); //output file name
 
 	//Basic configure ------//
 	//BetheBloch BB;
@@ -719,10 +734,6 @@ void ProtonESliceData::Loop() {
 		bool IsRecoEL=false;
 		double mom_beam_spec=-99; mom_beam_spec=beamMomentum_spec->at(0);
 		//double range_reco=-99; if (!primtrk_range->empty()) range_reco=primtrk_range->at(0); //reco primary trklen
-		double mom_rw_minchi2=1.; //weight for beam-momentum-reweight
-		if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) { //beam-mom (within 3-sigma)
-			//mom_rw_minchi2=bmrw_func->Eval(mom_beam_spec*1000.); //bmrw, set weight if beam mom. within 3-sigma
-		} //beam-mom (within 3-sigma)
 
 		double csda_val_spec=csda_range_vs_mom_sm->Eval(mom_beam_spec);
 
@@ -761,6 +772,15 @@ void ProtonESliceData::Loop() {
 
 			//h2d_R_kE1st->Fill(KE_1st, KE_1st_predict/KE_1st);
 		}
+
+		//bmrw --------------------------------------------------------------------------------------------------------//
+		double mom_rw_minchi2=1.; //weight for beam-momentum-reweight
+		//if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) { //beam-mom (within 3-sigma)
+			//mom_rw_minchi2=bmrw_func->Eval(mom_beam_spec*1000.); //bmrw, set weight if beam mom. within 3-sigma
+		//} //beam-mom (within 3-sigma)
+		//bmrw based on keff [const E-loss]
+		if ((ke_beam_spec_MeV-mean_Elosscalo_stop)>=mu_min&&(ke_beam_spec_MeV-mean_Elosscalo_stop)<=mu_max) mom_rw_minchi2=gng->Eval(ke_beam_spec_MeV-mean_Elosscalo_stop); //bmrw
+
 
 		//KEff (reco) with const E-loss assumption -----------------------------------//
 		double mean_Elosscalo_stop=(4.95958e+01)/(1.00489e+00); //using fit [no bmrw]
@@ -1157,24 +1177,47 @@ void ProtonESliceData::Loop() {
 		if (IsPandoraSlice&&IsCaloSize&&IsBQ) {  
 			Fill1DHist(ntrklen_BQ, range_reco/csda_val_spec);
 			Fill1DWHist(ke_reco_BQ, KEend_reco, mom_rw_minchi2);
+			Fill1DWHist(keff_reco_BQ, KE_ff_reco, mom_rw_minchi2);
 
 			if (kinel) { 
 				Fill1DHist(ntrklen_inel_BQ, range_reco/csda_val_spec);
+				Fill1DWHist(keff_reco_inel_BQ, KE_ff_reco, mom_rw_minchi2);
 			}
 			if (kel) { 
 				Fill1DHist(ntrklen_el_BQ, range_reco/csda_val_spec);
+				Fill1DWHist(keff_reco_el_BQ, KE_ff_reco, mom_rw_minchi2);
 			}
 			if (kMIDcosmic) { 
 				Fill1DHist(ntrklen_midcosmic_BQ, range_reco/csda_val_spec);
+				Fill1DWHist(keff_reco_midcosmic_BQ, KE_ff_reco, mom_rw_minchi2);
 			}
-			if (kMIDpi) Fill1DHist(ntrklen_midpi_BQ, range_reco/csda_val_spec);
-			if (kMIDp) Fill1DHist(ntrklen_midp_BQ, range_reco/csda_val_spec);
-			if (kMIDmu) Fill1DHist(ntrklen_midmu_BQ, range_reco/csda_val_spec);
-			if (kMIDeg) Fill1DHist(ntrklen_mideg_BQ, range_reco/csda_val_spec);
-			if (kMIDother) Fill1DHist(ntrklen_midother_BQ, range_reco/csda_val_spec); 
+			if (kMIDpi) { 
+				Fill1DHist(ntrklen_midpi_BQ, range_reco/csda_val_spec);
+				Fill1DWHist(keff_reco_midpi_BQ, KE_ff_reco, mom_rw_minchi2);
+			}
+			if (kMIDp) { 
+				Fill1DHist(ntrklen_midp_BQ, range_reco/csda_val_spec);
+				Fill1DWHist(keff_reco_midp_BQ, KE_ff_reco, mom_rw_minchi2);
+			}
+			if (kMIDmu) { 
+				Fill1DHist(ntrklen_midmu_BQ, range_reco/csda_val_spec);
+				Fill1DWHist(keff_reco_midmu_BQ, KE_ff_reco, mom_rw_minchi2);
+			}
+			if (kMIDeg) { 
+				Fill1DHist(ntrklen_mideg_BQ, range_reco/csda_val_spec);
+				Fill1DWHist(keff_reco_mideg_BQ, KE_ff_reco, mom_rw_minchi2);
+			}
+			if (kMIDother) { 
+				Fill1DHist(ntrklen_midother_BQ, range_reco/csda_val_spec); 
+				Fill1DWHist(keff_reco_midother_BQ, KE_ff_reco, mom_rw_minchi2);
+			}
 
-			if (IsRecoInEL) Fill1DWHist(ke_reco_RecoInel, KEend_reco, mom_rw_minchi2);
-			if (IsRecoEL) Fill1DWHist(ke_reco_RecoEl, KEend_reco, mom_rw_minchi2);
+			if (IsRecoInEL) { 
+				Fill1DWHist(ke_reco_RecoInel, KEend_reco, mom_rw_minchi2);
+			}
+			if (IsRecoEL) { 
+				Fill1DWHist(ke_reco_RecoEl, KEend_reco, mom_rw_minchi2);
+			}
 		}
 
 
