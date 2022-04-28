@@ -257,13 +257,13 @@ double BetheBloch::KEAtLength(double KE0, double tracklength){
 
   tmp_ke_at_len=KE0 - deltaE;
   if (deltaE < 0) { 
-	cout<<"Negative delta E: "<<deltaE<<endl; //meaning in the region of KE<500 keV
-	tmp_ke_at_len=0;
+	//cout<<"Negative delta E: "<<deltaE<<endl; //meaning in the region of KE<500 keV
+	tmp_ke_at_len=-700;
   }	
-  if (tmp_ke_at_len < 0) { 
-        tmp_ke_at_len=0;
-	cout<<"Negative KE: "<<KE0 - deltaE<<" --> set KE to zero"<<endl;
-  }
+  //if (tmp_ke_at_len < 0) { 
+        //tmp_ke_at_len=-10;
+	//cout<<"Negative KE: "<<KE0 - deltaE<<" --> set KE to zero"<<endl;
+  //}
   
   return tmp_ke_at_len;
 
