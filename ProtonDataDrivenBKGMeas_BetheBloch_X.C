@@ -157,6 +157,7 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 	TH1D *ke_reco_All_mideg=new TH1D("ke_reco_All_mideg","", nke, kemin, kemax);
 	TH1D *ke_reco_All_midother=new TH1D("ke_reco_All_midother","", nke, kemin, kemax);
 
+	TH1D *ke_reco_All_RecoStop=new TH1D("ke_reco_All_RecoStop","", nke, kemin, kemax);
 	TH2D *trklen_ke_reco_All=new TH2D("trklen_ke_reco_All","", 140, 0, 140, nke, kemin, kemax);
 
 
@@ -954,6 +955,8 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 			Fill1DWHist(ke_true_All, KEend_true, mom_rw_minchi2);
 			trklen_ke_reco_All->Fill(range_reco, KEend_reco, mom_rw_minchi2);
 
+			Fill1DWHist(ke_reco_All_RecoStop, ke_trklen, mom_rw_minchi2);
+
 			if (kinel) { 
 				Fill1DWHist(ke_reco_All_inel, KEend_reco, mom_rw_minchi2);
 				Fill1DWHist(ke_true_All_inel, KEend_true, mom_rw_minchi2);
@@ -1364,6 +1367,8 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 		ke_reco_All_midmu->Write();
 		ke_reco_All_mideg->Write();
 		ke_reco_All_midother->Write();
+
+		ke_reco_All_RecoStop->Write();
 
 		ke_reco_RecoInEl->Write();
 		ke_reco_RecoInEl_inel->Write();
