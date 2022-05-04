@@ -116,14 +116,15 @@ double err_sigma_Eloss_upstream=0.140183;
 
 double mean_Elossrange_stop=433.441-405.371; //KEstop using range, unit:MeV
 //double mean_Elosscalo_stop=433.441-379.074; //
-//double mean_Elosscalo_stop=(4.77927e+01)/(1.00480e+00); //using fit [bmrw]
-double mean_Elosscalo_stop=(4.95958e+01)/(1.00489e+00); //using fit [no bmrw]
-//fit result
-//p0           4.77927e+01   3.62629e-01   1.40469e-08   0.00000e+00
-//p1          -1.00480e+00   7.70658e-03   7.70658e-03  -4.73181e-08
-
+//double mean_Elosscalo_stop=(4.95958e+01)/(1.00489e+00); //using fit [no bmrw]
+//fit result [no bmrw]
 //p0           4.95958e+01   2.69311e-01   3.68850e-08   5.23619e-11
 //p1          -1.00489e+00   5.73159e-03   5.73159e-03   1.03334e-07
+
+double mean_Elosscalo_stop=(4.78153e+01)/(1.00519e+00); //using fit [bmrw from trklen]
+//fit result
+//p0           4.78153e+01   3.60929e-01   1.25514e-08  -6.08846e-11
+//p1          -1.00519e+00   7.67022e-03   7.67022e-03   1.83359e-08
 
 
 double mean_ntrklen=9.00928e-01;
@@ -335,6 +336,43 @@ void ProtonDataDrivenBKGMeas::Loop() {
 	TH1D *keff_true_MidP_mideg=new TH1D("keff_true_MidP_mideg","", nke, kemin, kemax);
 	TH1D *keff_true_MidP_midother=new TH1D("keff_true_MidP_midother","", nke, kemin, kemax);
 
+	//histograms before/after intersection
+	TH1D *trklen_All=new TH1D("trklen_All","", 140, 0, 140);
+	TH1D *trklen_All_intersection=new TH1D("trklen_All_intersection","", 140, 0, 140);
+	
+	TH1D *trklen_RecoEl=new TH1D("trklen_RecoEl","", 140, 0, 140);
+	TH1D *trklen_RecoEl_intersection=new TH1D("trklen_RecoEl_intersection","", 140, 0, 140);
+
+	TH1D *trklen_RecoInEl=new TH1D("trklen_RecoInEl","", 140, 0, 140);
+	TH1D *trklen_RecoInEl_intersection=new TH1D("trklen_RecoInEl_intersection","", 140, 0, 140);
+
+	//KEff study
+	TH1D *kefftrue_RecoEl=new TH1D("kefftrue_RecoEl","", nke, kemin, kemax);
+	TH1D *keffrange_RecoEl=new TH1D("keffrange_RecoEl","", nke, kemin, kemax);
+	TH1D *keffrangetrue_RecoEl=new TH1D("keffrangetrue_RecoEl","", nke, kemin, kemax);
+	TH1D *keendrange_RecoEl=new TH1D("keendrange_RecoEl","", nke, kemin, kemax);
+
+	TH2D *dkeff_dkeend_RecoEl=new TH2D("dkeff_dkeend_RecoEl","", 1600, -800, 800, 1600, -800, 800);
+
+
+	//up-stream E-loss study
+	float bx_min=-50;
+	float bx_max=-10;
+	int n_bx=40;
+	float by_min=405;
+	float by_max=440;
+	int n_by=35;
+	TH2D *bx_by_RecoEl=new TH2D("bx_by_RecoEl","", n_bx, bx_min, bx_max, n_by, by_min, by_max);
+	TH2D *bx_by_RecoInEl=new TH2D("bx_by_RecoInEl","", n_bx, bx_min, bx_max, n_by, by_min, by_max);
+	TH2D *bx_by_RecoAll=new TH2D("bx_by_RecoAll","", n_bx, bx_min, bx_max, n_by, by_min, by_max);
+	TH2D *bx_by_RecoMidP=new TH2D("bx_by_RecoMidP","", n_bx, bx_min, bx_max, n_by, by_min, by_max);
+
+	TH2D *bx_by_RecoEl_tail=new TH2D("bx_by_RecoEl_tail","", n_bx, bx_min, bx_max, n_by, by_min, by_max);
+	TH2D *bx_by_RecoEl_bulk=new TH2D("bx_by_RecoEl_bulk","", n_bx, bx_min, bx_max, n_by, by_min, by_max);
+
+	TH1D *keffrange_RecoEl_tail=new TH1D("keffrange_RecoEl_tail","", nke, kemin, kemax);
+	TH1D *keffrange_RecoEl_bulk=new TH1D("keffrange_RecoEl_bulk","", nke, kemin, kemax);
+	
 	//Booking histograms -------------------------------------------------------------------------------//
 
 	//Beam momentum reweighting ----------------------------------------------------------------------------------------------//
@@ -353,31 +391,104 @@ void ProtonDataDrivenBKGMeas::Loop() {
 	double mu_min=m1-3.*s1;
 	double mu_max=m1+3.*s1;
 
-	TF1 *gng=new TF1(Form("gng"),agovg,xmin,xmax,6);
-	gng->SetParameter(0,m1);
-	gng->SetParameter(1,s1);
-	gng->SetParameter(2,a1);
+	TF1 *agng=new TF1(Form("agng"),agovg,xmin,xmax,6);
+	agng->SetParameter(0,m1);
+	agng->SetParameter(1,s1);
+	agng->SetParameter(2,a1);
 
-	gng->SetParameter(3,m2);
-	gng->SetParameter(4,s2);
-	gng->SetParameter(5,a2);
+	agng->SetParameter(3,m2);
+	agng->SetParameter(4,s2);
+	agng->SetParameter(5,a2);
 	//-----------------------------------------------------------------//
 
+	//default gaussian -------------------------------------------------//
+	//MC Beam Mom Gaussian 
 
+	//int nxx=250;	
+	double xxmin=0.; //pmin [MeV/c]
+	double xxmax=2000.; //pmax [MeV/c]
+	TF1 *g1=new TF1("g1",fitg,xxmin,xxmax,2);
+	g1->SetName("g1");
+	g1->SetParameter(0,mm1);
+	g1->SetParameter(1,ss1);
 
+	//mu range
+	double dmu=0.0005;
+	double mu_st=1.01;
+	int nmu=71;
+
+	double dsigma=0.002;
+	//double sigma_st=1.5;
+	//int nsigma=250;
+	double sigma_st=1.6;
+	int nsigma=350;
+
+	//mu x sigma
+	const int n_mu_sigma=(const int)nmu*nsigma;
+	int n_1d=nmu*nsigma; 
+	TF1 **gn=new TF1*[n_mu_sigma];
+	TF1 **gng=new TF1*[n_mu_sigma];
+
+	//use trklen as an observable for reweighting
+	//TH1D *h1d_trklen_rw[n_mu_sigma];
+
+	int cnt_array=0;
+	int index_original=0;
+	int index_minchi2=13331; //index of minchi2
+	for (int imu=0; imu<nmu; ++imu){ //mu loop
+		double frac_mu=mu_st-(double)imu*dmu;
+		double mu=mm1*frac_mu;
+		for (int isigma=0; isigma<nsigma; ++isigma){ //sigma loop
+			double frac_sigma=sigma_st-(double)isigma*dsigma;
+			double sigma=ss1*frac_sigma;
+
+			//if (mu==m1&&sigma==s1) { //no rw
+			if (std::abs(mu-mm1)<0.0001&&std::abs(sigma-ss1)<0.0001) { //no rw
+				index_original=cnt_array;
+				mu=mm1;
+				sigma=ss1;
+			} //no rw
+
+			//Gaussian with changed mean and sigma
+			gn[cnt_array]=new TF1(Form("gn_%d",cnt_array),fitg,xxmin,xxmax,2);
+			gn[cnt_array]->SetParameter(0,mu);
+			gn[cnt_array]->SetParameter(1,sigma);
+
+			//weighting func. (beam mom)
+			gng[cnt_array]=new TF1(Form("gng_%d",cnt_array),govg,xxmin,xxmax,4);
+			gng[cnt_array]->SetParameter(0,mm1);
+			gng[cnt_array]->SetParameter(1,ss1);
+			gng[cnt_array]->SetParameter(2,mu);
+			gng[cnt_array]->SetParameter(3,sigma);
+
+			//prepare rw histograms
+			//h1d_trklen_rw[cnt_array]=new TH1D(Form("h1d_trklen_rw_%d",cnt_array),Form("f_{#mu}:%.2f f_{#sigma}:%.2f #oplus RecoStop Cut",frac_mu,frac_sigma),n_b,b_min,b_max);
+			//h1d_trklen_rw[cnt_array]->GetXaxis()->SetTitle("Track Length [cm]");
+
+			cnt_array++;
+			} //sigma loop
+	} //mu loop
 
 
 
 	//Name of output file ------------------------------------------------------------------------------------------------------------//
 	//TString str_out=Form("mc_kebkg_nobmrw.root");
-	//TString str_out=Form("mc_kebkg_bmrw.root");
-	//TString str_out=Form("mc_kebkg_bmrw_new.root");
 	//TString str_out=Form("mc_kebkg_bmrw_new_flatrecoinel.root");
-	TString str_out=Form("mc_kebbbkg_nobmrw.root");
+	//TString str_out=Form("mc_kebbbkg_nobmrw.root");
+	//TString str_out=Form("mc_kebbbkg_bmrw.root");
+	//TString str_out=Form("mc_kebbbkg_nobmrw.root");
+	//TString str_out=Form("mc_kebkg_nobmrw_intersection.root");
+	//TString str_out=Form("mc_kebkg_bmrw_intersection.root");
+	//TString str_out=Form("mc_kebkg_bmrw_beamxy.root");
+	//TString str_out=Form("mc_kebkg_bmrw2_beamxy.root");
+	//TString str_out=Form("mc_kebkg_bmrw3.root");
+	//TString str_out=Form("mc_kebkg_nobmrw_beamxy.root");
+	//TString str_out=Form("mc_kebkg_nobmrw.root");
+	TString str_out=Form("mc_kebkg_bmrw.root");
 
 	//Basic configure ------//
-	BetheBloch BB;
-	BB.SetPdgCode(pdg);
+	//BetheBloch BB;
+	//BB.SetPdgCode(pdg);
 
 	//book histograms --//
 	//BookHistograms();
@@ -801,7 +912,6 @@ void ProtonDataDrivenBKGMeas::Loop() {
 			if (cosine_beam_spec_primtrk<=0.9) IsMisidpRich=true;
 		}
 
-
 		//reco calorimetry ---------------------------------------------------------------------------//
 		int index_reco_endz=0;
 		double wid_reco_max=-9999;
@@ -879,6 +989,9 @@ void ProtonDataDrivenBKGMeas::Loop() {
 		bool IsRecoInEL=false;
 		bool IsRecoEL=false;
 		double mom_beam_spec=-99; mom_beam_spec=beamMomentum_spec->at(0);
+		double bx_spec=beamPosx_spec->at(0);
+		double by_spec=beamPosy_spec->at(0);
+
 		//double range_reco=-99; if (!primtrk_range->empty()) range_reco=primtrk_range->at(0); //reco primary trklen
 
 		double csda_val_spec=csda_range_vs_mom_sm->Eval(mom_beam_spec);
@@ -924,11 +1037,11 @@ void ProtonDataDrivenBKGMeas::Loop() {
 
 		//KEff (reco) with const E-loss assumption -----------------------------------//
 		//double mean_Elosscalo_stop=(4.95958e+01)/(1.00489e+00); //using fit [no bmrw]
-		//double KE_ff_reco=ke_beam_spec_MeV-mean_Elosscalo_stop;
-		double KE_ff_reco=ke_beam_spec_MeV-mean_Elossrange_stop; //kebb
+		double KE_ff_reco=ke_beam_spec_MeV-mean_Elosscalo_stop;
+		//double KE_ff_reco=ke_beam_spec_MeV-mean_Elossrange_stop; //kebb
 		double KEend_reco=0;
-		//KEend_reco=KE_ff_reco-reco_calo_MeV;		
-		KEend_reco=BB.KEAtLength(KE_ff_reco, range_reco);		
+		KEend_reco=KE_ff_reco-reco_calo_MeV;		
+		//KEend_reco=BB.KEAtLength(KE_ff_reco, range_reco);		
 
 		//KEend ---------------------------------------------------------------------------//
 		double KEend_true=0;
@@ -944,19 +1057,66 @@ void ProtonDataDrivenBKGMeas::Loop() {
 		//double KEbb_reco=-1; KEbb_reco=KE_ff-BB.KEAtLength(KE_ff, range_reco);
 		//---------------------------------------------------------------------------------------------------------------//
 
+		//Beam XY Cut to cut out up-stream interaction events [before entering TPC] -----------------------//
+		//using el for the moment (same mean and rms using  all protons)
+		double meanX_data=-31.3139;
+		double rmsX_data=3.79366;
+		double meanY_data=422.116;
+		double rmsY_data=3.48005;
+
+		double meanX_mc=-29.1637;
+		double rmsX_mc=4.50311;
+		double meanY_mc=421.76;
+		double rmsY_mc=3.83908;
+
+		bool IsBeamXY=false;
+		if ((pow(((bx_spec-meanX_mc)/(1.5*rmsX_mc)),2)+pow(((by_spec-meanY_mc)/(1.5*rmsY_mc)),2))<=1.) IsBeamXY=true;
+
+
+
 		//bmrw -------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 		double mom_rw_minchi2=1; //weight for beam-momentum-reweight
-		//if ((ke_beam_spec_MeV-mean_Elosscalo_stop)>=mu_min&&(ke_beam_spec_MeV-mean_Elosscalo_stop)<=mu_max) mom_rw_minchi2=gng->Eval(ke_beam_spec_MeV-mean_Elosscalo_stop); //bmrw
-		//if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) { //beam-mom (within 3-sigma)
-			//mom_rw_minchi2=bmrw_func->Eval(mom_beam_spec*1000.); //bmrw, set weight if beam mom. within 3-sigma
+		if ((mom_beam_spec*1000.)>=mmu_min&&(mom_beam_spec*1000.)<=mmu_max) mom_rw_minchi2=gng[index_minchi2]->Eval(mom_beam_spec*1000.); //bmrw [use me!!]
+
+		//if ((ke_beam_spec_MeV-mean_Elosscalo_stop)>=mu_min&&(ke_beam_spec_MeV-mean_Elosscalo_stop)<=mu_max) mom_rw_minchi2=agng->Eval(ke_beam_spec_MeV-mean_Elosscalo_stop); //bmrw
+		//if ((mom_beam_spec*1000.)>=mmu_min&&(mom_beam_spec*1000.)<=mmu_max) { //beam-mom (within 3-sigma)
+			//mom_rw_minchi2=bmrw_func->Eval(mom_beam_spec*1000.); //bmrw, set weight if beam mom. within 3-sigma(<-- Do NOT this reweighting function, NOT correct!!!)
 		//} //beam-mom (within 3-sigma)
 
+
 		//Fill histograms -------------------------------------------------------------------------------------------//
+
+		
+		if (IsPandoraSlice&&IsCaloSize&&IsBQ) { //basic cuts
+		//if (IsBeamXY&&IsPandoraSlice&&IsCaloSize&&IsBQ) { //basic cuts
+			Fill1DWHist(trklen_All, range_reco, mom_rw_minchi2);
+			if (IsRecoInEL) { //reco inel
+				Fill1DHist(trklen_RecoInEl, range_reco);
+			} //reco inel
+			if (IsRecoEL) { //reco el
+				Fill1DHist(trklen_RecoEl, range_reco);
+			} //reco el
+
+			if (!IsIntersection) {  //basic cuts+intersection
+				Fill1DWHist(trklen_All_intersection, range_reco, mom_rw_minchi2);
+				if (IsRecoInEL) { //reco inel
+					Fill1DHist(trklen_RecoInEl_intersection, range_reco);
+				} //reco inel
+				if (IsRecoEL) { //reco el
+					Fill1DHist(trklen_RecoEl_intersection, range_reco);
+				} //reco el			
+			} //basic cuts+intersection		
+		} //basic cuts
+
+		//if (IsBeamXY&&IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts
 		if (IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts
+		//if (!IsIntersection&&IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts+intersection
 			//inc
 			Fill1DWHist(ke_reco_All, KEend_reco, mom_rw_minchi2);
 			Fill1DWHist(ke_true_All, KEend_true, mom_rw_minchi2);
 			trklen_ke_reco_All->Fill(range_reco, KEend_reco, mom_rw_minchi2);
+			bx_by_RecoAll->Fill(bx_spec, by_spec);
+			
 
 			if (kinel) { 
 				Fill1DWHist(ke_reco_All_inel, KEend_reco, mom_rw_minchi2);
@@ -997,6 +1157,7 @@ void ProtonDataDrivenBKGMeas::Loop() {
 				Fill1DWHist(ke_reco_RecoInEl, KEend_reco, mom_rw_minchi2);
 				Fill1DWHist(ke_true_RecoInEl, KEend_true, mom_rw_minchi2);
 				ke_kebeam_reco_RecoInEl->Fill(KEend_reco, ke_beam_spec_MeV);
+				bx_by_RecoInEl->Fill(bx_spec, by_spec);
 
 				if (kinel) {
 					Fill1DWHist(ke_reco_RecoInEl_inel, KEend_reco, mom_rw_minchi2);
@@ -1037,6 +1198,27 @@ void ProtonDataDrivenBKGMeas::Loop() {
 				Fill1DWHist(ke_reco_RecoEl, KEend_reco, mom_rw_minchi2);
 				Fill1DWHist(ke_true_RecoEl, KEend_true, mom_rw_minchi2);
 				ke_kebeam_reco_RecoEl->Fill(KEend_reco, ke_beam_spec_MeV);
+
+				double tmp_keff_rangereco=1000.*ke_vs_csda_range_sm->Eval(range_reco);
+				double tmp_keff_rangetrue=1000.*ke_vs_csda_range_sm->Eval(range_true);
+				double tmp_keend=tmp_keff_rangereco-reco_calo_MeV;
+				
+				Fill1DWHist(kefftrue_RecoEl, KE_ff_true, mom_rw_minchi2);
+				Fill1DWHist(keffrange_RecoEl, tmp_keff_rangereco, mom_rw_minchi2);
+				bx_by_RecoEl->Fill(bx_spec, by_spec);
+				if (tmp_keff_rangereco<280.) {
+					Fill1DWHist(keffrange_RecoEl_tail, tmp_keff_rangereco, mom_rw_minchi2);
+					bx_by_RecoEl_tail->Fill(bx_spec, by_spec);
+				}
+				if (IsBeamXY) {
+					bx_by_RecoEl_bulk->Fill(bx_spec, by_spec);
+					Fill1DHist(keffrange_RecoEl_bulk, tmp_keff_rangereco);
+				}
+
+				Fill1DWHist(keffrangetrue_RecoEl, tmp_keff_rangetrue, mom_rw_minchi2);
+				Fill1DWHist(keendrange_RecoEl, tmp_keend, mom_rw_minchi2);
+				dkeff_dkeend_RecoEl->Fill(KEend_reco-tmp_keend, KE_ff_reco-tmp_keff_rangereco);
+
 				if (kinel) {
 					Fill1DWHist(ke_reco_RecoEl_inel, KEend_reco, mom_rw_minchi2);
 					Fill1DWHist(ke_true_RecoEl_inel, KEend_true, mom_rw_minchi2);
@@ -1074,9 +1256,12 @@ void ProtonDataDrivenBKGMeas::Loop() {
 		} //basic cuts
 
 
+		//if (IsBeamXY&&IsMisidpRich) { //misidp-rich
 		if (IsMisidpRich) { //misidp-rich
 			Fill1DWHist(ke_reco_MidP, KEend_reco, mom_rw_minchi2);
 			Fill1DWHist(ke_true_MidP, KEend_true, mom_rw_minchi2);
+			bx_by_RecoMidP->Fill(bx_spec, by_spec);
+
 			if (kinel) {
 				Fill1DWHist(ke_reco_MidP_inel, KEend_reco, mom_rw_minchi2);
 				Fill1DWHist(ke_true_MidP_inel, KEend_true, mom_rw_minchi2);
@@ -1114,6 +1299,7 @@ void ProtonDataDrivenBKGMeas::Loop() {
 
 		//ff
 		if (IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts
+		//if (IsBeamXY&&IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts
 			//inc
 			Fill1DWHist(keff_reco_All, KE_ff_reco, mom_rw_minchi2);
 			Fill1DWHist(keff_true_All, KE_ff_true, mom_rw_minchi2);
@@ -1192,6 +1378,10 @@ void ProtonDataDrivenBKGMeas::Loop() {
 			if (IsRecoEL) { //reco el
 				Fill1DWHist(keff_reco_RecoEl, KE_ff_reco, mom_rw_minchi2);
 				Fill1DWHist(keff_true_RecoEl, KE_ff_true, mom_rw_minchi2);
+
+				//Fill1DWHist(keffrange_RecoEl, 
+
+
 				if (kinel) {
 					Fill1DWHist(keff_reco_RecoEl_inel, KE_ff_reco, mom_rw_minchi2);
 					Fill1DWHist(keff_true_RecoEl_inel, KE_ff_true, mom_rw_minchi2);
@@ -1229,6 +1419,7 @@ void ProtonDataDrivenBKGMeas::Loop() {
 
 
 		if (IsMisidpRich) { //misidp-rich
+		//if (IsBeamXY&&IsMisidpRich) { //misidp-rich
 			Fill1DWHist(keff_reco_MidP, KE_ff_reco, mom_rw_minchi2);
 			Fill1DWHist(keff_true_MidP, KE_ff_true, mom_rw_minchi2);
 			if (kinel) {
@@ -1441,9 +1632,34 @@ void ProtonDataDrivenBKGMeas::Loop() {
 
 		ke_kebeam_reco_RecoInEl->Write();
 		ke_kebeam_reco_RecoEl->Write();
+
+		trklen_All->Write();
+		trklen_All_intersection->Write();
+
+		trklen_RecoEl->Write();
+		trklen_RecoEl_intersection->Write();
+
+		trklen_RecoInEl->Write();
+		trklen_RecoInEl_intersection->Write();
+
+		kefftrue_RecoEl->Write();
+		keffrange_RecoEl->Write();
+		keffrange_RecoEl_tail->Write();
+		keffrange_RecoEl_bulk->Write();
+		keffrangetrue_RecoEl->Write();
+		keendrange_RecoEl->Write();
+		dkeff_dkeend_RecoEl->Write();			
+
+		bx_by_RecoAll->Write();
+		bx_by_RecoInEl->Write();
+		bx_by_RecoEl->Write();
+		bx_by_RecoEl_tail->Write();
+		bx_by_RecoEl_bulk->Write();
+		bx_by_RecoMidP->Write();	
+
 		fout->Close();
 
-
+			
 
 
 		}
