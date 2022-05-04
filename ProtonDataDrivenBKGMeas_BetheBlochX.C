@@ -183,6 +183,8 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 	TH1D *ke_reco_RecoEl_mideg=new TH1D("ke_reco_RecoEl_mideg","", nke, kemin, kemax);
 	TH1D *ke_reco_RecoEl_midother=new TH1D("ke_reco_RecoEl_midother","", nke, kemin, kemax);
 
+	TH1D *keHD_reco_RecoEl=new TH1D("keHD_reco_RecoEl","", 20000, -100, 700);
+
 	//misidp-rich
 	TH1D *ke_reco_MidP=new TH1D("ke_reco_MidP","", nke, kemin, kemax);
 	TH1D *ke_reco_MidP_inel=new TH1D("ke_reco_MidP_inel","", nke, kemin, kemax);
@@ -354,15 +356,81 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 	double mu_min=m1-3.*s1;
 	double mu_max=m1+3.*s1;
 
-	TF1 *gng=new TF1(Form("gng"),agovg,xmin,xmax,6);
-	gng->SetParameter(0,m1);
-	gng->SetParameter(1,s1);
-	gng->SetParameter(2,a1);
+	TF1 *agng=new TF1(Form("agng"),agovg,xmin,xmax,6);
+	agng->SetParameter(0,m1);
+	agng->SetParameter(1,s1);
+	agng->SetParameter(2,a1);
 
-	gng->SetParameter(3,m2);
-	gng->SetParameter(4,s2);
-	gng->SetParameter(5,a2);
+	agng->SetParameter(3,m2);
+	agng->SetParameter(4,s2);
+	agng->SetParameter(5,a2);
 	//-----------------------------------------------------------------//
+
+	//int nxx=250;	
+	double xxmin=0.; //pmin [MeV/c]
+	double xxmax=2000.; //pmax [MeV/c]
+	TF1 *g1=new TF1("g1",fitg,xxmin,xxmax,2);
+	g1->SetName("g1");
+	g1->SetParameter(0,mm1);
+	g1->SetParameter(1,ss1);
+
+	//mu range
+	double dmu=0.0005;
+	double mu_st=1.01;
+	int nmu=71;
+
+	double dsigma=0.002;
+	//double sigma_st=1.5;
+	//int nsigma=250;
+	double sigma_st=1.6;
+	int nsigma=350;
+
+	//mu x sigma
+	const int n_mu_sigma=(const int)nmu*nsigma;
+	int n_1d=nmu*nsigma; 
+	TF1 **gn=new TF1*[n_mu_sigma];
+	TF1 **gng=new TF1*[n_mu_sigma];
+
+	//use trklen as an observable for reweighting
+	//TH1D *h1d_trklen_rw[n_mu_sigma];
+
+	int cnt_array=0;
+	int index_original=0;
+	int index_minchi2=13331; //index of minchi2
+	for (int imu=0; imu<nmu; ++imu){ //mu loop
+		double frac_mu=mu_st-(double)imu*dmu;
+		double mu=mm1*frac_mu;
+		for (int isigma=0; isigma<nsigma; ++isigma){ //sigma loop
+			double frac_sigma=sigma_st-(double)isigma*dsigma;
+			double sigma=ss1*frac_sigma;
+
+			//if (mu==m1&&sigma==s1) { //no rw
+			if (std::abs(mu-mm1)<0.0001&&std::abs(sigma-ss1)<0.0001) { //no rw
+				index_original=cnt_array;
+				mu=mm1;
+				sigma=ss1;
+			} //no rw
+
+			//Gaussian with changed mean and sigma
+			gn[cnt_array]=new TF1(Form("gn_%d",cnt_array),fitg,xxmin,xxmax,2);
+			gn[cnt_array]->SetParameter(0,mu);
+			gn[cnt_array]->SetParameter(1,sigma);
+
+			//weighting func. (beam mom)
+			gng[cnt_array]=new TF1(Form("gng_%d",cnt_array),govg,xxmin,xxmax,4);
+			gng[cnt_array]->SetParameter(0,mm1);
+			gng[cnt_array]->SetParameter(1,ss1);
+			gng[cnt_array]->SetParameter(2,mu);
+			gng[cnt_array]->SetParameter(3,sigma);
+
+			//prepare rw histograms
+			//h1d_trklen_rw[cnt_array]=new TH1D(Form("h1d_trklen_rw_%d",cnt_array),Form("f_{#mu}:%.2f f_{#sigma}:%.2f #oplus RecoStop Cut",frac_mu,frac_sigma),n_b,b_min,b_max);
+			//h1d_trklen_rw[cnt_array]->GetXaxis()->SetTitle("Track Length [cm]");
+
+			cnt_array++;
+			} //sigma loop
+	} //mu loop
+
 
 
 
@@ -371,7 +439,9 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 
 	//Name of output file ------------------------------------------------------------------------------------------------------------//
 	//TString str_out=Form("mc_kebbbkg_nobmrw.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
-	TString str_out=Form("mc_kebbbkg_bmrw.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
+	//TString str_out=Form("mc_kebbbkg_bmrw.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
+	//TString str_out=Form("mc_kebbbkg_nobmrw_HD.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
+	TString str_out=Form("mc_kebbbkg_bmrw_HD.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
 
 	//Basic configure ------//
 	BetheBloch BB;
@@ -944,10 +1014,8 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 
 		//bmrw -------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 		double mom_rw_minchi2=1; //weight for beam-momentum-reweight
-		//if ((ke_beam_spec_MeV-mean_Elosscalo_stop)>=mu_min&&(ke_beam_spec_MeV-mean_Elosscalo_stop)<=mu_max) mom_rw_minchi2=gng->Eval(ke_beam_spec_MeV-mean_Elosscalo_stop); //bmrw
-		if ((mom_beam_spec*1000.)>=mmu_min&&(mom_beam_spec*1000.)<=mmu_max) { //beam-mom (within 3-sigma)
-			mom_rw_minchi2=bmrw_func->Eval(mom_beam_spec*1000.); //bmrw, set weight if beam mom. within 3-sigma
-		} //beam-mom (within 3-sigma)
+		//if ((ke_beam_spec_MeV-mean_Elosscalo_stop)>=mu_min&&(ke_beam_spec_MeV-mean_Elosscalo_stop)<=mu_max) mom_rw_minchi2=agng->Eval(ke_beam_spec_MeV-mean_Elosscalo_stop); //bmrw
+		if ((mom_beam_spec*1000.)>=mmu_min&&(mom_beam_spec*1000.)<=mmu_max) mom_rw_minchi2=gng[index_minchi2]->Eval(mom_beam_spec*1000.); //bmrw
 
 		//Fill histograms -------------------------------------------------------------------------------------------//
 		if (IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts
@@ -1035,6 +1103,7 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 
 			if (IsRecoEL) { //reco el
 				Fill1DWHist(ke_reco_RecoEl, KEend_reco, mom_rw_minchi2);
+				Fill1DWHist(keHD_reco_RecoEl, KEend_reco, mom_rw_minchi2);
 				Fill1DWHist(ke_true_RecoEl, KEend_true, mom_rw_minchi2);
 				ke_kebeam_reco_RecoEl->Fill(KEend_reco, ke_beam_spec_MeV);
 				if (kinel) {
@@ -1381,6 +1450,7 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 		ke_reco_RecoInEl_mideg->Write();
 		ke_reco_RecoInEl_midother->Write();
 
+		keHD_reco_RecoEl->Write();
 		ke_reco_RecoEl->Write();
 		ke_reco_RecoEl_inel->Write();
 		ke_reco_RecoEl_el->Write();
