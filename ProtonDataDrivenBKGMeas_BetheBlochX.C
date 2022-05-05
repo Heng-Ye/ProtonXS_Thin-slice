@@ -441,7 +441,7 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 	//TString str_out=Form("mc_kebbbkg_nobmrw.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
 	//TString str_out=Form("mc_kebbbkg_bmrw.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
 	//TString str_out=Form("mc_kebbbkg_nobmrw_HD.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
-	TString str_out=Form("mc_kebbbkg_bmrw_HD.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
+	TString str_out=Form("mc_kebbbkg_bmrw.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
 
 	//Basic configure ------//
 	BetheBloch BB;
@@ -948,6 +948,8 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 		bool IsRecoEL=false;
 		double mom_beam_spec=-99; mom_beam_spec=beamMomentum_spec->at(0);
 		//double range_reco=-99; if (!primtrk_range->empty()) range_reco=primtrk_range->at(0); //reco primary trklen
+		double bx_spec=beamPosx_spec->at(0);
+		double by_spec=beamPosy_spec->at(0);
 
 		double csda_val_spec=csda_range_vs_mom_sm->Eval(mom_beam_spec);
 
@@ -1016,6 +1018,22 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 		double mom_rw_minchi2=1; //weight for beam-momentum-reweight
 		//if ((ke_beam_spec_MeV-mean_Elosscalo_stop)>=mu_min&&(ke_beam_spec_MeV-mean_Elosscalo_stop)<=mu_max) mom_rw_minchi2=agng->Eval(ke_beam_spec_MeV-mean_Elosscalo_stop); //bmrw
 		if ((mom_beam_spec*1000.)>=mmu_min&&(mom_beam_spec*1000.)<=mmu_max) mom_rw_minchi2=gng[index_minchi2]->Eval(mom_beam_spec*1000.); //bmrw
+
+		//Beam XY Cut to cut out up-stream interaction events [before entering TPC] -----------------------//
+		//using el for the moment (same mean and rms using  all protons)
+		double meanX_data=-31.3139;
+		double rmsX_data=3.79366;
+		double meanY_data=422.116;
+		double rmsY_data=3.48005;
+
+		double meanX_mc=-29.1637;
+		double rmsX_mc=4.50311;
+		double meanY_mc=421.76;
+		double rmsY_mc=3.83908;
+
+		bool IsBeamXY=false;
+		if ((pow(((bx_spec-meanX_mc)/(1.5*rmsX_mc)),2)+pow(((by_spec-meanY_mc)/(1.5*rmsY_mc)),2))<=1.) IsBeamXY=true;
+
 
 		//Fill histograms -------------------------------------------------------------------------------------------//
 		if (IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts
