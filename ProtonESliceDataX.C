@@ -939,7 +939,7 @@ void ProtonESliceData::Loop() {
 						Fill1DHist(ke_true_el_BQ, KEend_true);
 						Fill1DWHist(ke_reco_el_BQ, KEend_reco, mom_rw_minchi2);
 						Fill1DWHist(dke_el_BQ, KE_ff_reco-KEend_reco, mom_rw_minchi2);
-						Fill1DHist(kedept_reco_el_BQ, reco_calo_MeV, mom_rw_minchi2);
+						Fill1DWHist(kedept_reco_el_BQ, reco_calo_MeV, mom_rw_minchi2);
 						if (IsRecoInEL) { //reco inel
 							n_el_recoinel++;
 							Fill1DHist(ke_true_el_RecoInel, KEend_true);
