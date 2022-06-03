@@ -66,7 +66,12 @@ R__LOAD_LIBRARY(libRooUnfold.so) //load share lib
 void make_ThinSliceEdataXS() {
 
 	//TString outpath="./plots_XS_ThinsliceE/";
-	TString outpath="./plots_XS_ThinsliceE_StSlicdID+0.5/";
+	//TString outpath="./plots_XS_ThinsliceE_StSlicdIDCeil/";
+	//TString outpath="./plots_XS_ThinsliceE_StSlicdID+0.5/";
+	//
+	//TString outpath="./plots_DataXS_ThinsliceE_StSlicdID+0.5/";
+	TString outpath="./plots_XS_ThinsliceE_StSlicdIDp0.5_nobmrw/";
+
 	//TString outpath="./plots_XS_ThinsliceE_StSlicdID++/";
 	//TString outpath="./plots_XS_ThinsliceE_plus1/";
 	//TString outpath="./plots_XS_ThinsliceE_keff30/";
@@ -107,6 +112,22 @@ void make_ThinSliceEdataXS() {
 
         //TString fmc="../prod4areco2_mc_ThinSliceE_dE20MeV_40slcs_nobmrw_stslcplus1.root";
         //TString fdata="../prod4areco2_mc_ThinSliceE_dE20MeV_40slcs_nobmrw_stslcplus1.root";
+
+        //TString fmc="../prod4areco2_mc_ThinSliceE_dE20MeV_40slcs_nobmrw_stslcplus0.5.root";
+        //TString fdata="../prod4areco2_mc_ThinSliceE_dE20MeV_40slcs_nobmrw_stslcplus0.5.root";
+
+        //TString fmc="../prod4areco2_mc_ThinSliceE_dE20MeV_40slcs_bmrw_stslcplus0.5.root";
+        //TString fdata="../prod4areco2_mc_ThinSliceE_dE20MeV_40slcs_bmrw_stslcplus0.5.root";
+
+        //TString fmc="../prod4areco2_mc_ThinSliceE_dE20MeV_40slcs_bmrw_stslcceil.root";
+        //TString fdata="../prod4areco2_mc_ThinSliceE_dE20MeV_40slcs_bmrw_stslcceil.root";
+
+        //TString fmc="../prod4areco2_mc_ThinSliceE_dE20MeV_40slcs_nobmrw_stslcceil.root";
+        //TString fdata="../prod4areco2_mc_ThinSliceE_dE20MeV_40slcs_nobmrw_stslcceil.root";
+
+
+        //TString fmc="../prod4areco2_mc_ThinSliceE_dE20MeV_40slcs_bmrw_stslcplus0.5.root";
+        //TString fdata="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/realdata/p1gev/code_timedep_trkpos/protodune-sp_runset_5387_reco2/data_run5387_prod4a_eslice_dx20cm_40slcs_stid+0.5.root";
 
         TString fmc="../prod4areco2_mc_ThinSliceE_dE20MeV_40slcs_nobmrw_stslcplus0.5.root";
         TString fdata="../prod4areco2_mc_ThinSliceE_dE20MeV_40slcs_nobmrw_stslcplus0.5.root";
@@ -576,6 +597,8 @@ void make_ThinSliceEdataXS() {
 		//reco xs
 		reco_xs[i]=xs_const*dEdx[i]*log(reco_inc[i]/(reco_inc[i]-reco_int[i]));
 		err_reco_xs[i]=xs_const*dEdx[i]*sqrt(reco_int[i]+pow(reco_int[i],2)/reco_inc[i])/reco_inc[i];
+		cout<<"reco_xs["<<i<<"]="<<reco_xs[i]<<endl;
+		
 	}
 
 	//for (int ij = 0; ij<=true_sliceID; ++ij){
@@ -692,7 +715,8 @@ void make_ThinSliceEdataXS() {
 
 	c_inc->Divide(1,1);
 	c_inc->cd(1);
-	float ymax_evt=6000;
+	float ymax_evt=6000; //mc
+	//float ymax_evt=2500; //data, run5387
 	//TH2D *f2d_inc=new TH2D("f2d_inc",Form("%s","All Protons"),22,-1,21,80,0,ymax_evt);
 	TH2D *f2d_inc=new TH2D("f2d_inc",Form("%s","All Protons"),nthinslices+2,-1,nthinslices+1,80,0,ymax_evt);
 	f2d_inc->SetTitle("All Protons; Reco SliceID (End point); Events");
@@ -1051,6 +1075,8 @@ void make_ThinSliceEdataXS() {
 	c_int->Divide(1,1);
 	c_int->cd(1);
 	//TH2D *f2d_int=new TH2D("f2d_int",Form("%s","Proton Inelastic Scatterings"),21,0,21,80,0,ymax_evt);
+	//ymax_evt=500;
+	ymax_evt=6000;
 	TH2D *f2d_int=new TH2D("f2d_int",Form("%s","Proton Inelastic Scatterings"),nthinslices+1,0,nthinslices+1,80,0,ymax_evt);
 	f2d_int->SetTitle("Proton Inelastic Scatterings; Reco SliceID; Events");
 	f2d_int->GetYaxis()->SetTitleOffset(1.3);
@@ -1304,7 +1330,7 @@ void make_ThinSliceEdataXS() {
 	c_dke->Print("%sdKE_sliceID.eps",outpath.Data());
 	
 
-
+/*
 	//demo KE 
         gStyle->SetPadRightMargin(0.0);
  	gStyle->SetPadLeftMargin(0.16);
@@ -1407,7 +1433,7 @@ void make_ThinSliceEdataXS() {
 		delete leg_slc;
 
 	}
-
+*/
 
 
 	//xs result -------------------------------------------------------------------------------------//
@@ -1423,7 +1449,8 @@ void make_ThinSliceEdataXS() {
 	c_xs->cd(1);
 
         float ymax=1200;
-        float xmax=620;
+        float xmax=460;
+        //float xmax=620;
         float xmin=0;
 
         TH2D *f2d_xs=new TH2D("f2d_xs","",450,xmin,xmax,ymax,0,ymax);
@@ -1446,7 +1473,7 @@ void make_ThinSliceEdataXS() {
         gr_recoxs->SetLineColor(1);
         gr_recoxs->SetMarkerStyle(20);
         gr_recoxs->SetMarkerSize(1.5);
-        //gr_recoxs->Draw("p same");
+        gr_recoxs->Draw("p same");
 
 	double ke_ff_mean_stop=4.12972e+02;
 	double ke_ff_sigma_stop=4.08988e+01;
@@ -1480,13 +1507,18 @@ void make_ThinSliceEdataXS() {
 	gr_recoxs->SetName("gr_recoxs");
 	gr_truexs->SetName("gr_truexs");
 
-/*	
-	TFile *fout_xs = new TFile("./xs_rootfiles/xs_Eslice_dE20MeV_40slcs_nobmrw_stslcplus0.5.root","recreate");
+
+/*
+	//TFile *fout_xs = new TFile("./xs_rootfiles/xs_Eslice_dE20MeV_40slcs_nobmrw_stslcplus0.5.root","recreate");
+	TFile *fout_xs = new TFile("./xs_rootfiles/xs_Eslice_dE20MeV_40slcs_nobmrw_stslcplus0.5_new.root","recreate");
 	gr_recoxs->Write();
 	gr_truexs->Write();
 	fout_xs->Close();
 */
 
+
+
+/*
 
 	//ke vs length ----------------------------------------------------------//
 	TH2D *KEbb_truetrklen_all=(TH2D *)f_mc->Get("KEbb_truetrklen_all");
@@ -1573,7 +1605,7 @@ void make_ThinSliceEdataXS() {
 	c_kebb_trklen->Print(Form("%skebb_recotrklen_inel_zoom.png",outpath.Data()));
 
 
-
+*/
 	
 
 
