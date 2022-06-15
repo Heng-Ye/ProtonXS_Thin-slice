@@ -371,7 +371,8 @@ void ProtonBetheBlochKE::Loop() {
 
 	int cnt_array=0;
 	int index_original=0;
-	int index_minchi2=13331; //index of minchi2
+	//int index_minchi2=13331; //index of minchi2(this index is wrong)
+	int index_minchi2=17537; //index of minchi2
 	for (int imu=0; imu<nmu; ++imu){ //mu loop
 		double frac_mu=mu_st-(double)imu*dmu;
 		double mu=mm1*frac_mu;
