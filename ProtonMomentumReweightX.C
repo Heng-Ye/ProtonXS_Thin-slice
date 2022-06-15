@@ -426,7 +426,6 @@ void ProtonMomentumReweight::Loop() {
 
 		bool IsBeamXY=false;
 		if ((pow(((bx_spec-meanX_mc)/(1.5*rmsX_mc)),2)+pow(((by_spec-meanY_mc)/(1.5*rmsY_mc)),2))<=1.) IsBeamXY=true;
-		
 
 		//double range_reco=-99; if (!primtrk_range->empty()) range_reco=primtrk_range->at(0); //reco primary trklen
 		double csda_val_spec=csda_range_vs_mom_sm->Eval(mom_beam_spec);
