@@ -910,7 +910,10 @@ void ProtonESliceData::Loop() {
 							n_inel_recoel++;
 							Fill1DHist(ke_true_inel_RecoEl, KEend_true);
 							Fill1DWHist(ke_reco_inel_RecoEl, KEend_reco, mom_rw_minchi2);
-							Fill1DHist(dke_inel_RecoEl, KEend_reco-KEend_true);
+
+							//Fill1DHist(dke_inel_RecoEl, KEend_reco-KEend_true);
+							//Fill1DWHist(dke_inel_RecoEl, KE_ff_reco-KEend_reco, mom_rw_minchi2);
+							//Fill1DWHist(kedept_inel_RecoEl, reco_calo_MeV, mom_rw_minchi2);
 						} //reco el
 
 					} //bq
@@ -951,7 +954,12 @@ void ProtonESliceData::Loop() {
 							n_el_recoel++;
 							Fill1DHist(ke_true_el_RecoEl, KEend_true);
 							Fill1DWHist(ke_reco_el_RecoEl, KEend_reco, mom_rw_minchi2);
-							Fill1DHist(dke_el_RecoEl, KEend_reco-KEend_true);
+							//Fill1DHist(dke_el_RecoEl, KEend_reco-KEend_true);
+
+
+							//Fill1DWHist(dke_el_RecoEl, KE_ff_reco-KEend_reco, mom_rw_minchi2);
+							//Fill1DWHist(kedept_el_RecoEl, reco_calo_MeV, mom_rw_minchi2);
+
 						} //reco el
 
 					} //bq
@@ -990,7 +998,10 @@ void ProtonESliceData::Loop() {
 							n_midcosmic_recoel++;
 							Fill1DHist(ke_true_midcosmic_RecoEl, KEend_true);
 							Fill1DWHist(ke_reco_midcosmic_RecoEl, KEend_reco, mom_rw_minchi2);
-							Fill1DHist(dke_midcosmic_RecoEl, KEend_reco-KEend_true);
+							//Fill1DHist(dke_midcosmic_RecoEl, KEend_reco-KEend_true);
+
+							//Fill1DWHist(dke_midcosmic_RecoEl, KE_ff_reco-KEend_reco, mom_rw_minchi2);
+							//Fill1DWHist(kedept_midcosmic_RecoEl, reco_calo_MeV, mom_rw_minchi2);
 						} //reco el
 
 					} //bq
@@ -1030,7 +1041,10 @@ void ProtonESliceData::Loop() {
 							n_midpi_recoel++;
 							Fill1DHist(ke_true_midpi_RecoEl, KEend_true);
 							Fill1DWHist(ke_reco_midpi_RecoEl, KEend_reco, mom_rw_minchi2);
-							Fill1DHist(dke_midpi_RecoEl, KEend_reco-KEend_true);
+							//Fill1DHist(dke_midpi_RecoEl, KEend_reco-KEend_true);
+
+							//Fill1DWHist(dke_midpi_RecoEl, KE_ff_reco-KEend_reco, mom_rw_minchi2);
+							//Fill1DWHist(kedept_midpi_RecoEl, reco_calo_MeV, mom_rw_minchi2);
 						} //reco el
 
 					} //bq
@@ -1070,7 +1084,10 @@ void ProtonESliceData::Loop() {
 							n_midp_recoel++;
 							Fill1DHist(ke_true_midp_RecoEl, KEend_true);
 							Fill1DWHist(ke_reco_midp_RecoEl, KEend_reco, mom_rw_minchi2);
-							Fill1DHist(dke_midp_RecoEl, KEend_reco-KEend_true);
+							//Fill1DHist(dke_midp_RecoEl, KEend_reco-KEend_true);
+
+							//Fill1DWHist(dke_midp_RecoEl, KE_ff_reco-KEend_reco, mom_rw_minchi2);
+							//Fill1DWHist(kedept_midp_RecoEl, reco_calo_MeV, mom_rw_minchi2);
 						} //reco el
 
 					} //bq
@@ -1110,7 +1127,10 @@ void ProtonESliceData::Loop() {
 							n_midmu_recoel++;
 							Fill1DHist(ke_true_midmu_RecoEl, KEend_true);
 							Fill1DWHist(ke_reco_midmu_RecoEl, KEend_reco, mom_rw_minchi2);
-							Fill1DHist(dke_midmu_RecoEl, KEend_reco-KEend_true);
+							//Fill1DHist(dke_midmu_RecoEl, KEend_reco-KEend_true);
+
+							//Fill1DWHist(dke_midmu_RecoEl, KE_ff_reco-KEend_reco, mom_rw_minchi2);
+							//Fill1DWHist(kedept_midmu_RecoEl, reco_calo_MeV, mom_rw_minchi2);
 						} //reco el
 
 					} //bq
@@ -1150,7 +1170,10 @@ void ProtonESliceData::Loop() {
 							n_mideg_recoel++;
 							Fill1DHist(ke_true_mideg_RecoEl, KEend_true);
 							Fill1DWHist(ke_reco_mideg_RecoEl, KEend_reco, mom_rw_minchi2);
-							Fill1DHist(dke_mideg_RecoEl, KEend_reco-KEend_true);
+							//Fill1DHist(dke_mideg_RecoEl, KEend_reco-KEend_true);
+
+							//Fill1DWHist(dke_mideg_RecoEl, KE_ff_reco-KEend_reco, mom_rw_minchi2);
+							//Fill1DWHist(kedept_mideg_RecoEl, reco_calo_MeV, mom_rw_minchi2);
 						} //reco el
 
 					} //bq
@@ -1190,7 +1213,10 @@ void ProtonESliceData::Loop() {
 							n_midother_recoel++;
 							Fill1DHist(ke_true_midother_RecoEl, KEend_true);
 							Fill1DWHist(ke_reco_midother_RecoEl, KEend_reco, mom_rw_minchi2);
-							Fill1DHist(dke_midother_RecoEl, KEend_reco-KEend_true);
+							//Fill1DHist(dke_midother_RecoEl, KEend_reco-KEend_true);
+
+							//Fill1DWHist(dke_midother_RecoEl, KE_ff_reco-KEend_reco, mom_rw_minchi2);
+							//Fill1DWHist(kedept_midother_RecoEl, reco_calo_MeV, mom_rw_minchi2);
 						} //reco el
 
 					} //bq
