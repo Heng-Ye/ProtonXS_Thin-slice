@@ -424,7 +424,7 @@ void ProtonMomentumReweight::Loop() {
 		double bx_spec=beamPosx_spec->at(0);
 		double by_spec=beamPosy_spec->at(0);
 
-		bool IsBeamXY=false;
+		bool IsBeamXY=false; //beam XY cut to remove E-loss events upstream
 		if ((pow(((bx_spec-meanX_mc)/(1.5*rmsX_mc)),2)+pow(((by_spec-meanY_mc)/(1.5*rmsY_mc)),2))<=1.) IsBeamXY=true;
 
 		//double range_reco=-99; if (!primtrk_range->empty()) range_reco=primtrk_range->at(0); //reco primary trklen
