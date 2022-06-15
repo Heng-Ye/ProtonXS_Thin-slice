@@ -94,3 +94,18 @@ double max_norm_trklen_csda=mean_norm_trklen_csda+3.*sigma_norm_trklen_csda;
 double pid_1=7.5;
 double pid_2=10.;
 
+
+//beam XY parameters 
+double meanX_data=-31.3139;
+double rmsX_data=3.79366;
+double meanY_data=422.116;
+double rmsY_data=3.48005;
+
+double meanX_mc=-29.1637;
+double rmsX_mc=4.50311;
+double meanY_mc=421.76;
+double rmsY_mc=3.83908;
+
+
+
+

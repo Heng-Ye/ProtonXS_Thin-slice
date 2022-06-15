@@ -421,6 +421,13 @@ void ProtonMomentumReweight::Loop() {
 		bool IsRecoStop=false;
 		bool IsRecoInEL=false;
 		double mom_beam_spec=-99; mom_beam_spec=beamMomentum_spec->at(0);
+		double bx_spec=beamPosx_spec->at(0);
+		double by_spec=beamPosy_spec->at(0);
+
+		bool IsBeamXY=false;
+		if ((pow(((bx_spec-meanX_mc)/(1.5*rmsX_mc)),2)+pow(((by_spec-meanY_mc)/(1.5*rmsY_mc)),2))<=1.) IsBeamXY=true;
+		
+
 		//double range_reco=-99; if (!primtrk_range->empty()) range_reco=primtrk_range->at(0); //reco primary trklen
 		double csda_val_spec=csda_range_vs_mom_sm->Eval(mom_beam_spec);
 
@@ -485,7 +492,8 @@ void ProtonMomentumReweight::Loop() {
 
 		} //if calo size not empty
 
-		if (IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
+		//if (IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
+		if (IsBeamXY&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
 			h1d_kebeam->Fill(ke_beam_spec_MeV);
 			h1d_pbeam->Fill(1000.*mom_beam_spec);
 			h1d_keff->Fill(ke_ff);
@@ -565,7 +573,8 @@ void ProtonMomentumReweight::Loop() {
 
 
 	//save results...
-   	TFile *fout = new TFile("mc_proton_bmrw.root","RECREATE");
+   	TFile *fout = new TFile("mc_proton_beamxy_bmrw.root","RECREATE");
+   	//TFile *fout = new TFile("mc_proton_bmrw.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_bmrw2_usedefault_range_calc.root","RECREATE");
 		bm_nmu->Write();
 		bm_dmu->Write();
