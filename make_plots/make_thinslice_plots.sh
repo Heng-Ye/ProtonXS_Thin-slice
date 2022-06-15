@@ -1,11 +1,12 @@
 #!/bin/bash
 
 #file_in="../prod4a_thinslice_dx4cm_24slcs.root"
-file_in="../prod4a_thinslice_dx4cm_25slcs.root"
-#file_in="../prod4a_thinslice_dx4cm_25slcs_1stHitKEff.root"
+#file_in="../prod4a_thinslice_dx4cm_25slcs.root"
+file_in="../prod4a_thinslice_dx4cm_25slcs_1stHitKEff.root"
 #file_in="../prod4a_thinslice_dx5cm_20slcs_1stHitKEff.root"
 file_data_in="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/realdata/p1gev/code_timedep_trkpos/protodune-sp_runset_5387_reco2/data_run5387_prod4a_thinslice_dx4cm_25slcs.root"
-fout_path="./plots"
+#fout_path="./plots"
+fout_path="./plots_bkgstudy"
 #fout_path="./plots_KEff_1stHit"
 #file_in="../prod4a_thinslice_dx4cm_25slcs.root"
 #fout_path="./plots_25slices"
@@ -17,6 +18,10 @@ file_data_in2="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/re
 #for bkg fit study
 file_in3="../prod4a_bkgstudy_dx4cm_25slcs.root"
 file_data_in3="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/realdata/p1gev/code_timedep_trkpos/protodune-sp_runset_5387_reco2/data_run5387_prod4reco2_bkgstudy_dx4cm_25slcs.root"
+
+#for short track length study
+file_data_in4="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/realdata/p1gev/code_timedep_trkpos/protodune-sp_runset_5387_reco2/data_proton_bmrw_HD.root"
+file_in4="../mc_proton_after_bmrw_HD.root"
 
 exe0_str="root -b -q 'plotslices.C(\""$fout_path\"")'"
 exe1_str="root -b -q 'makeXS.C(\""$file_in\"", \""$fout_path\"")'"
@@ -34,6 +39,7 @@ exe11_str="root -b -q 'plot_trklentrue.C(\""$file_in\"", \""$fout_path\"", \""Re
 exe12_str="root -b -q 'plot_trklenreco.C(\""$file_in\"", \""$file_data_in\"", \""$fout_path\"", \""NoCut\"")'"
 exe13_str="root -b -q 'plot_trklenreco.C(\""$file_in\"", \""$file_data_in\"", \""$fout_path\"", \""PanS\"")'"
 exe14_str="root -b -q 'plot_trklenreco.C(\""$file_in\"", \""$file_data_in\"", ,\""$fout_path\"", \""CaloSz\"")'"
+#exe15_str="root -b -q 'plot_trklenreco.C(\""$file_in\"", \""$file_data_in\"", \""$fout_path\"", \""BQ\"")'"
 exe15_str="root -b -q 'plot_trklenreco.C(\""$file_in\"", \""$file_data_in\"", \""$fout_path\"", \""BQ\"")'"
 exe16_str="root -b -q 'plot_trklenreco.C(\""$file_in\"", \""$file_data_in\"", \""$fout_path\"", \""RecoInel\"")'"
 
@@ -69,6 +75,12 @@ exe31_str1="root -b -q 'plot_bkgfit_recosliceid.C(\""$file_in3\"", \""$file_data
 exe31_str2="root -b -q 'plot_bkgfit_recosliceid.C(\""$file_in3\"", \""$file_data_in3\"", \""$fout_path\"", \""recosliceid_misidp_rich_LE08\"", \""h_recosliceid_cosLE08\"", \""cos\#Theta\<\=0.8\"")'"
 exe31_str3="root -b -q 'plot_bkgfit_recosliceid.C(\""$file_in3\"", \""$file_data_in3\"", \""$fout_path\"", \""recosliceid_misidp_rich_LE09\"", \""h_recosliceid_cosLE09\"", \""cos\#Theta\<\=0.9\"")'"
 
+
+exe32_str1="root -b -q 'plot_trklentrue.C(\""$file_in4\"", \""$file_data_in4\"", \""$fout_path\"", \""CaloSz\"")'"
+exe32_str2="root -b -q 'plot_trklentrue.C(\""$file_in4\"", \""$file_data_in4\"", \""$fout_path\"", \""Pos\"")'"
+exe32_str3="root -b -q 'plot_trklentrue.C(\""$file_in4\"", \""$file_data_in4\"", \""$fout_path\"", \""BQ\"")'"
+
+
 #echo $exe29_str1" ......"
 #eval $exe29_str1
 
@@ -79,3 +91,18 @@ exe31_str3="root -b -q 'plot_bkgfit_recosliceid.C(\""$file_in3\"", \""$file_data
 #eval $exe30_str2
 
 eval $exe31_str3
+
+#eval $exe15_str
+#eval $exe0_str
+#eval $exe1_str
+#eval $exe2_str
+#eval $exe3_str
+
+
+#eval $exe32_str1
+#eval $exe32_str2
+#eval $exe32_str3
+
+
+
+

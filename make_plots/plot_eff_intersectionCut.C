@@ -46,78 +46,78 @@
 #include "../headers/BasicFunctions.h"
 
 
-void plot_KEend_All() {
+void plot_eff_intersectionCut() {
 
-	TString outpath="./plot_Advanced_KEff/";
-        TString fmc="../mc_ke_advancedKEff_nobmrw.root";
-	//TString str=Form("h1d_kebb_reco"); //all protons
-	//TString str=Form("h1d_kebb_recoEl"); //El
-	
-	//TString str=Form("h1d_kebb_recoInel"); //Inel
-	//TString str_truth=Form("h1d_keend_truth_inel");
-	//TString str_title=Form("Reco. Inelastic-scattering Protons; Proton Kinetic Energy[MeV]; Counts");
-	//TString str_figout=Form("%sreco_inel.eps",outpath.Data());
-
-	TString str=Form("h1d_kebb_recoEl"); //El
-	TString str_truth=Form("h1d_keend_truth_el");
-	TString str_title=Form("Reco. Elastic-scattering Protons; Proton Kinetic Energy[MeV]; Counts");
-	TString str_figout=Form("%sreco_el.eps",outpath.Data());
+        //TString fmc="../mc_kebbbkg_nobmrw_HD.root";
+        TString fmc="../mc_kebkg_nobmrw.root";
+        TString fdata="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/realdata/p1gev/code_timedep_trkpos/protodune-sp_runset_5387_reco2/data_kebkg_withintersection.root";
 
 
-	//TString str=Form("h1d_kebb_reco"); //all
-	//TString str_truth=Form("h1d_keend_truth");
-	//TString str_title=Form("Reco. Incident Protons; Proton Kinetic Energy[MeV]; Counts");
-	//TString str_figout=Form("%sreco_all.eps",outpath.Data());
+	//TString str=Form("trklen_RecoEl"); //El
+	//TString str=Form("trklen_RecoInEl"); //InEl
+	TString str=Form("trklen_All"); //All
+	TString outpath=Form("./plot_eff_intersection/%s.eps",str.Data());
+	TString outpath2=Form("./plot_eff_intersection/%s_ba.eps",str.Data());
 
 
-
-        //plot style --------------------------------------------------------------------//
+        //plot style -------------------------------------------------//
         gROOT->LoadMacro(" ~/protoDUNEStyle.C"); //load pDUNE style
         gROOT->SetStyle("protoDUNEStyle");
         gROOT->ForceStyle();
         gStyle->SetTitleX(0.5);
         gStyle->SetTitleAlign(23);
         gStyle->SetOptStat(0);
+	//-------------------------------------------------------------//
 
 	//gStyle->SetPalette(53);
 
 	//read mc [after bmrw] ------------------------------------------------------------------------------//
+	//mc
 	TFile *f_mc = TFile::Open(fmc.Data());
-	TH1D *h1d=(TH1D *)f_mc->Get(Form("%s",str.Data()));
-	TH1D *h1d_inel=(TH1D *)f_mc->Get(Form("%s_inel",str.Data()));
-	TH1D *h1d_el=(TH1D *)f_mc->Get(Form("%s_el",str.Data()));
-	TH1D *h1d_midcosmic=(TH1D *)f_mc->Get(Form("%s_midcosmic",str.Data()));
-	TH1D *h1d_midpi=(TH1D *)f_mc->Get(Form("%s_midpi",str.Data()));
-	TH1D *h1d_midp=(TH1D *)f_mc->Get(Form("%s_midp",str.Data()));
-	TH1D *h1d_midmu=(TH1D *)f_mc->Get(Form("%s_midmu",str.Data()));
-	TH1D *h1d_mideg=(TH1D *)f_mc->Get(Form("%s_mideg",str.Data()));
-	TH1D *h1d_midother=(TH1D *)f_mc->Get(Form("%s_midother",str.Data()));
+	TH1D *h1d_b=(TH1D *)f_mc->Get(Form("%s",str.Data()));
+	TH1D *h1d_a=(TH1D *)f_mc->Get(Form("%s_intersection",str.Data()));
+	TH1D *R=(TH1D *)h1d_a->Clone();
+	R->Divide(h1d_b);
 
-	TH1D *h1d_truth=(TH1D *)f_mc->Get(Form("%s",str_truth.Data()));
-	h1d_truth->SetLineColor(7);
+	//data
+	TFile *f_data = TFile::Open(fdata.Data());
+	TH1D *h1d_b_data=(TH1D *)f_data->Get(Form("%s",str.Data()));
+	TH1D *h1d_a_data=(TH1D *)f_data->Get(Form("%s_intersection",str.Data()));
+	TH1D *R_data=(TH1D *)h1d_a_data->Clone();
+	R_data->Divide(h1d_b_data);
 
-	h1d_inel->SetFillColor(2); h1d_inel->SetLineColor(2);
-	h1d_el->SetFillColor(4); h1d_el->SetLineColor(4);
-	h1d_midp->SetFillColor(3); h1d_midp->SetLineColor(3);
-	h1d_midcosmic->SetFillColor(5); h1d_midcosmic->SetLineColor(5);
-	h1d_midpi->SetFillColor(6); h1d_midpi->SetLineColor(6);
-	h1d_midmu->SetFillColor(28); h1d_midmu->SetLineColor(28);
-	h1d_mideg->SetFillColor(30); h1d_mideg->SetLineColor(30);
-	h1d_midother->SetFillColor(15); h1d_midother->SetLineColor(15);
-
-	THStack* hs=new THStack("hs","");
-	hs->Add(h1d_inel);
-	hs->Add(h1d_el);
-	hs->Add(h1d_midp);
-	hs->Add(h1d_midcosmic);
-	hs->Add(h1d_midpi);
-	hs->Add(h1d_midmu);
-	hs->Add(h1d_mideg);
-	hs->Add(h1d_midother);
 
 	TCanvas *c_ = new TCanvas("c_", "c_", 1200,800);
-	c_->cd(1)->SetLogy();
+	//c_->cd(1)->SetLogy();
+	R->SetTitle("; Reco track length [cm]; Survival Fraction");
+	R->SetLineColor(2);
+	R->SetMarkerColor(2);
+	R->Draw("ep");
+	R_data->Draw("ep same");
 
+TLegend *leg = new TLegend(0.6,0.6,0.9,0.9);
+leg->SetFillStyle(0);
+leg->AddEntry(R_data, "Data","ep");
+leg->AddEntry(R, "MC","ep");
+leg->Draw();
+
+	c_->Print(Form("%s",outpath.Data()));
+
+
+
+	TCanvas *c_2 = new TCanvas("c_2", "c_2", 1200,800);
+	//c_->cd(1)->SetLogy();
+	h1d_b->Draw();
+	h1d_a->SetLineColor(2);
+	h1d_a->Draw("same");
+	c_2->Print(Form("%s",outpath2.Data()));
+
+
+
+
+
+
+/*
 	//TH2D *f2d=new TH2D("f2d",Form("%s",""),550,-50,500,150,0,1500); 
 	//TH2D *f2d=new TH2D("f2d",Form("%s",""),100,-50,50,100,1,500000); 
 	TH2D *f2d=new TH2D("f2d",Form("%s",""),100,-50,50,100,0.5,500000); 
@@ -152,6 +152,7 @@ void plot_KEend_All() {
 
 	c_->Print(Form("%s",str_figout.Data()));
 
+*/
 
 
 }

@@ -83,9 +83,11 @@ void makeXS_Compare_Eslice_Thinslice() {
 
 	//TGraphErrors* tmp_recoxs_eslice=(TGraphErrors*)fmc_eslice->Get("gr_recoxs");
 	//TGraphErrors* tmp_truexs_eslice=(TGraphErrors*)fmc_eslice->Get("gr_truexs");
-	TGraphErrors* recoxs_eslice=egr((TGraphErrors*)fmc_eslice->Get("gr_recoxs"),1); //skip 1st point
-	TGraphErrors* truexs_eslice=egr((TGraphErrors*)fmc_eslice->Get("gr_truexs"),1); //skip 1st point
+	//TGraphErrors* recoxs_eslice=egr((TGraphErrors*)fmc_eslice->Get("gr_recoxs"),1); //skip 1st point
+	//TGraphErrors* truexs_eslice=egr((TGraphErrors*)fmc_eslice->Get("gr_truexs"),1); //skip 1st point
 
+	TGraphErrors* recoxs_eslice=egr((TGraphErrors*)fmc_eslice->Get("gr_recoxs"),0); //no skip any point
+	TGraphErrors* truexs_eslice=egr((TGraphErrors*)fmc_eslice->Get("gr_truexs"),0); //no skip any point
 
 	TGraphErrors* recoxs_sslice=(TGraphErrors*)fmc_sslice->Get("gr_recoxs");
 	TGraphErrors* truexs_sslice=(TGraphErrors*)fmc_sslice->Get("gr_truexs");

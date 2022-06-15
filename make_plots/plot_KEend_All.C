@@ -58,16 +58,16 @@ void plot_KEend_All() {
 	//TString str_title=Form("Reco. Inelastic-scattering Protons; Proton Kinetic Energy[MeV]; Counts");
 	//TString str_figout=Form("%sreco_inel.eps",outpath.Data());
 
-	//TString str=Form("h1d_kebb_recoEl"); //El
-	//TString str_truth=Form("h1d_keend_truth_el");
-	//TString str_title=Form("Reco. Elastic-scattering Protons; Proton Kinetic Energy[MeV]; Counts");
-	//TString str_figout=Form("%sreco_el.eps",outpath.Data());
+	TString str=Form("h1d_kebb_recoEl"); //El
+	TString str_truth=Form("h1d_keend_truth_el");
+	TString str_title=Form("Reco. Elastic-scattering Protons; Proton Kinetic Energy[MeV]; Counts");
+	TString str_figout=Form("%sreco_el.eps",outpath.Data());
 
 
-	TString str=Form("h1d_kebb_reco"); //all
-	TString str_truth=Form("h1d_keend_truth");
-	TString str_title=Form("Reco. Incident Protons; Proton Kinetic Energy[MeV]; Counts");
-	TString str_figout=Form("%sreco_all.eps",outpath.Data());
+	//TString str=Form("h1d_kebb_reco"); //all
+	//TString str_truth=Form("h1d_keend_truth");
+	//TString str_title=Form("Reco. Incident Protons; Proton Kinetic Energy[MeV]; Counts");
+	//TString str_figout=Form("%sreco_all.eps",outpath.Data());
 
 
 
@@ -93,8 +93,8 @@ void plot_KEend_All() {
 	TH1D *h1d_mideg=(TH1D *)f_mc->Get(Form("%s_mideg",str.Data()));
 	TH1D *h1d_midother=(TH1D *)f_mc->Get(Form("%s_midother",str.Data()));
 
-	//TH1D *h1d_truth=(TH1D *)f_mc->Get(Form("%s",str_truth.Data()));
-	//h1d_truth->SetLineColor(7);
+	TH1D *h1d_truth=(TH1D *)f_mc->Get(Form("%s",str_truth.Data()));
+	h1d_truth->SetLineColor(7);
 
 	h1d_inel->SetFillColor(2); h1d_inel->SetLineColor(2);
 	h1d_el->SetFillColor(4); h1d_el->SetLineColor(4);
@@ -120,9 +120,8 @@ void plot_KEend_All() {
 
 	//TH2D *f2d=new TH2D("f2d",Form("%s",""),550,-50,500,150,0,1500); 
 	//TH2D *f2d=new TH2D("f2d",Form("%s",""),100,-50,50,100,1,500000); 
-	//TH2D *f2d=new TH2D("f2d",Form("%s",""),100,-50,50,100,0,50000); 
-	TH2D *f2d=new TH2D("f2d",Form("%s",""),100,-50,50,100,0,200000); 
-
+	TH2D *f2d=new TH2D("f2d",Form("%s",""),100,-50,50,100,0.5,500000); 
+	//TH2D *f2d=new TH2D("f2d",Form("%s",""),100,-50,50,100,0,200000); 
 
 	f2d->SetTitle(Form("%s",str_title.Data()));
 	f2d->GetYaxis()->SetTitleOffset(1.1);
@@ -132,11 +131,11 @@ void plot_KEend_All() {
 	hs->Draw("hist same");
 	//h1d_mc->Draw("hist same");
 	h1d->Draw("same");
-	//h1d_truth->Draw("same");
+	h1d_truth->Draw("same");
 
 	TLegend *leg = new TLegend(0.2,0.6,0.8,0.9);
 	leg->SetFillStyle(0);
-	//leg->AddEntry(h1d_truth, "Truth","l");
+	leg->AddEntry(h1d_truth, "Truth","l");
 	leg->AddEntry(h1d_inel, "Inel","f");
 	leg->AddEntry(h1d_el, "El","f");
 

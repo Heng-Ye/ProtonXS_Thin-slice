@@ -680,7 +680,7 @@ void make_ThinSliceEdataXS() {
 	c_st_inc->cd(1);
 	float ymax_st_evt=20000;
 	TH2D *f2d_st_inc=new TH2D("f2d_st_inc",Form("%s","All Protons"),nthinslices+2,-1,nthinslices+1,100,0,ymax_st_evt);
-	f2d_st_inc->SetTitle("All Protons; Reco Start SliceID (End point); Events");
+	f2d_st_inc->SetTitle("All Protons; Reco Start SliceID ; Events");
 	f2d_st_inc->GetYaxis()->SetTitleOffset(1.3);
 	f2d_st_inc->Draw();
 	hs_st_inc->Draw("hist same");
@@ -791,7 +791,7 @@ void make_ThinSliceEdataXS() {
 	c_st_inc2->Divide(1,1);
 	c_st_inc2->cd(1);
 	TH2D *f2d_st_inc2=new TH2D("f2d_st_inc2",Form("%s","INC_st"),nthinslices+2,-1,nthinslices+1,80,0,ymax_st_evt);
-	f2d_st_inc2->SetTitle("All protons; Reco Start SliceID (End point); Events");
+	f2d_st_inc2->SetTitle("All protons; Reco Start SliceID ; Events");
 	f2d_st_inc2->GetYaxis()->SetTitleOffset(1.3);
 	f2d_st_inc2->Draw();
 

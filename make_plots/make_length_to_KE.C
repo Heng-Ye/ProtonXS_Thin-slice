@@ -1,11 +1,14 @@
 //#include "../headers/betheBloch.h"
 #include "../headers/BasicParameters.h"
 #include "../headers/BasicFunctions.h"
+#include "../headers/BetheBloch.h"
+#include "./len2ke.h"
 
 double mass_proton = 938.272046; //proton [unit: MeV/c^2]
 double P_in_proton = 1000.; //MeV
-double KE_in_proton=sqrt(pow(P_in_proton,2) + pow(mass_proton,2) ) - mass_proton;
-//double KE_in_proton=700;
+//double KE_in_proton=sqrt(pow(P_in_proton,2) + pow(mass_proton,2) ) - mass_proton;
+//double KE_in_proton=412.65;
+double KE_in_proton=399.365;
 
 /*
 void hist_bethe_mean_distance(double E_init, double mass_particle, TH1D* h_bethe ){
@@ -40,7 +43,8 @@ double Len2KE(double len, double ke_ini) {
 
 	//create the map to convert trklen to Edept
 	TH1D* dEdx = new TH1D("dEdx", "", n_len, len_min, len_max);
-	hist_NIST(ke_ini, dEdx); //loading in dE/dx map based on KE_int
+	//hist_NIST(ke_ini, dEdx); //loading in dE/dx map based on KE_int
+	hist_bethe_mean_distance(ke_ini, mass_proton, dEdx); //loading in dE/dx map based on KE_int
 	TH1* cumulative = dEdx->GetCumulative();
 
 	int bin_cen=0;
@@ -98,20 +102,20 @@ void make_length_to_KE() {
 	gStyle->SetOptStat(0);
 
 	float len_min=0;
-	float len_max=300;
-	int n_len=300;
+	float len_max=100;
+	int n_len=100;
 
 	TH1D* dEdx3 = new TH1D("dEdx3", "", n_len, len_min, len_max);
 	hist_bethe_mean_distance( KE_in_proton, mass_proton, dEdx3);
 
-	TH1D* dEdx2 = new TH1D("dEdx2", "", n_len, len_min, len_max);
-	hist_NIST(KE_in_proton, dEdx2); //loading in dE/dx map based on KE_int
+	//TH1D* dEdx2 = new TH1D("dEdx2", "", n_len, len_min, len_max);
+	//hist_NIST(KE_in_proton, dEdx2); //loading in dE/dx map based on KE_int
 
 	TH1* cumulative = dEdx3->GetCumulative();
 	cumulative->SetLineColor(3);
 	cumulative->SetLineStyle(2);
 
-	TH1* cumulative2 = dEdx2->GetCumulative();
+	//TH1* cumulative2 = dEdx2->GetCumulative();
 	//cumulative2->Smooth();
 
 	//Edept calc -------------------------//
@@ -123,14 +127,30 @@ void make_length_to_KE() {
 	double trueKE_len=Len2KE(len, KE_in_proton);
 	cout<<"trueKE_len1:"<<trueKE_len<<std::endl;
 
-	LEN2KE Len2KE_;
+	LEN2E Len2KE_;
         Len2KE_.setmap(KE_in_proton);
-        double trueKE_len2=Len2KE_.KE(len);
+        double trueKE_len2=Len2KE_.E(len);
 	cout<<"trueKE_len2:"<<trueKE_len2<<std::endl;
-	cout<<"len3=20.; trueKE_len3:"<<Len2KE_.KE(20.)<<std::endl;
-	cout<<"len4=10.; trueKE_len4:"<<Len2KE_.KE(10.)<<std::endl;
-	cout<<"len5=100.; trueKE_len5:"<<Len2KE_.KE(100.)<<std::endl;
-     
+	cout<<"len3=20.; trueKE_len3:"<<Len2KE_.E(20.)<<std::endl;
+	cout<<"len4=10.; trueKE_len4:"<<Len2KE_.E(10.)<<std::endl;
+	cout<<"len5=100.; trueKE_len5:"<<Len2KE_.E(100.)<<std::endl;
+	cout<<"len5=-10.; trueKE_len6:"<<Len2KE_.E(-10.)<<std::endl;
+    
+
+
+	//test TJ's class///
+	BetheBloch BB;
+	BB.SetPdgCode(2212);
+	//BB.meandEdx(KE_in_proton); //input: KE_ff
+	//BB.KEAtLength(KE_in_proton, 20.);
+	
+	double ke_len3=KE_in_proton-BB.KEAtLength(KE_in_proton, 20.);
+ 	cout<<"\n len3=20; KE="<<ke_len3<<endl;
+	cout<<"meandEdx:"<<BB.meandEdx(KE_in_proton)<<endl;
+	cout<<"RangeFromKE:"<<BB.RangeFromKE(KE_in_proton)<<endl;
+	cout<<"RangeFromKESpline:"<<BB.RangeFromKESpline(KE_in_proton)<<endl;
+	//cout<<"KEFromRangeSpline:"<<KEFromRangeSpline(
+
 
 
 /*
@@ -150,26 +170,26 @@ void make_length_to_KE() {
 
 
 	//cumulative2->GetXaxis()->SetTitle("True Track Length [cm]"); cumulative->GetYaxis()->SetTitle("True Deposited Energy [MeV]");   
-	cumulative2->SetTitle(Form("Proton Kinetic Energy:%.2f MeV ; True Track Length [cm]; True Deposited Energy [MeV]", KE_in_proton));   
-	cumulative2->GetXaxis()->CenterTitle();
-	cumulative2->SetLineColor(4);
-	cumulative2->SetLineWidth(3);
+	cumulative->SetTitle(Form("Proton Kinetic Energy:%.2f MeV ; True Track Length [cm]; True Deposited Energy [MeV]", KE_in_proton));   
+	cumulative->GetXaxis()->CenterTitle();
+	cumulative->SetLineColor(4);
+	cumulative->SetLineWidth(3);
 
 	TCanvas *c = new TCanvas("c", "", 600,400);
-	cumulative2->Draw("");
-	cumulative->Draw("same");
+	cumulative->Draw("");
+	//cumulative->Draw("same");
 
 	c->Update();
 
 	//scale to pad coordinates
-	Float_t rightmax = 1.1*dEdx2->GetMaximum();
+	Float_t rightmax = 1.1*dEdx3->GetMaximum();
 	Float_t scale = gPad->GetUymax()/rightmax;
-	dEdx2->SetLineColor(kRed);
-	dEdx2->SetMarkerColor(kRed);
-	dEdx2->SetMarkerSize(0.4);
-	dEdx2->Scale(scale);
+	dEdx3->SetLineColor(kRed);
+	dEdx3->SetMarkerColor(kRed);
+	dEdx3->SetMarkerSize(0.4);
+	dEdx3->Scale(scale);
 	//dEdx->GetYaxis()->SetRangeUser(1.5,4);
-	dEdx2->Draw("C SAME");
+	dEdx3->Draw("C SAME");
 
 
 	TGaxis *axis = new TGaxis(gPad->GetUxmax(), gPad->GetUymin(), gPad->GetUxmax(), gPad->GetUymax(), 0, rightmax, 510, "+L");
@@ -191,8 +211,9 @@ void make_length_to_KE() {
 
 
 	TLegendEntry* l1[3];
-	l1[0]=leg->AddEntry(dEdx2, "dE/dx (NIST Data Base)", "L"); l1[0]->SetTextColor(1);
-	l1[1]=leg->AddEntry(cumulative2, "Deposited energy (NIST)", "L"); l1[1]->SetTextColor(1);
+	//l1[0]=leg->AddEntry(dEdx3, "dE/dx (NIST Data Base)", "L"); l1[0]->SetTextColor(1);
+	l1[0]=leg->AddEntry(dEdx3, "dE/dx (Bethe-Bloch)", "L"); l1[0]->SetTextColor(1);
+	//l1[1]=leg->AddEntry(cumulative2, "Deposited energy (NIST)", "L"); l1[1]->SetTextColor(1);
 	l1[2]=leg->AddEntry(cumulative, "Deposited energy (Bethe-Bloch formula)", "L"); l1[2]->SetTextColor(1);
 
 

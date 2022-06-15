@@ -94,9 +94,10 @@ TF1* FitKEEnd(TH1D* h, Int_t col) {
 
 void plot_KEend_vs_Eloss() {
 
-	TString outpath="./plot_KEend_Eloss/";
+	TString outpath="./plot_KEend_Eloss_bmrw/";
 	//TString fin="../mc_kecalo_bmrw.root";
-	TString fin="../mc_kecalo_nobmrw_ElossTune.root";
+	//TString fin="../mc_kecalo_nobmrw_ElossTune.root";
+	TString fin="../mc_kecalo_bmrw_ElossTune.root";
 	
 	//setup e-loss map 
 	vector<double> Eloss;
@@ -174,7 +175,8 @@ void plot_KEend_vs_Eloss() {
 	//gr_de_mu->GetXaxis()->SetTitle("<#DeltaE> [MeV]");
 	//gr_de_mu->GetYaxis()->SetTitle("#mu of KE_{end} [MeV]");
 	TH2D* f2d_fit=new TH2D("f2d_fit","", 25, 35, 60, 25,-10,15);
-	f2d_fit->SetTitle("MC; <#DeltaE> [MeV]; #mu of KE_{end} [MeV]");	
+	//f2d_fit->SetTitle("MC; <#DeltaE> [MeV]; #mu of KE_{end} [MeV]");	
+	f2d_fit->SetTitle("MC (bmrw); <#DeltaE> [MeV]; #mu of KE_{end} [MeV]");	
 	f2d_fit->Draw();
 
 	gr_de_mu->Draw("p same");

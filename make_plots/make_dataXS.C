@@ -1093,8 +1093,16 @@ void make_dataXS() {
         leg_xs->Draw();
 	c_xs->Print(Form("%sxs_data.eps",outpath.Data()));
 
+	//output files ----------------------------------------------------------------------------------------------//
+	gr_recoxs->SetName("gr_recoxs");
+	gr_truexs->SetName("gr_truexs");
 
-
+/*	
+	TFile *fout_xs = new TFile("./xs_rootfiles/xs_thinslice_dx5cm_20slcs_nobmrw.root","recreate");
+	gr_recoxs->Write();
+	gr_truexs->Write();
+	fout_xs->Close();
+*/
 
 
 
