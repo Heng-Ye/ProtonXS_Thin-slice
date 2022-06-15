@@ -82,6 +82,8 @@ void ProtonBackgroundFit::Loop() {
 
 	//ThinSlice config. ---------------------------------------------------------------------------------------------------//
 	SetOutputFileName(Form("prod4a_bkgstudy_dx%dcm_%dslcs_largerbin.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4a_bkgstudy_dx%dcm_%dslcs_largerbin_Testsample.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4a_bkgstudy_dx%dcm_%dslcs_largerbin_Validationsample.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4a_bkgstudy_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4a_thinslice_dx%dcm_%dslcs_1stHitKEff.root", name_thinslicewidth, nthinslices)); //output file name
 
@@ -328,7 +330,7 @@ void ProtonBackgroundFit::Loop() {
 		bool IsBQ=false;
 		if (IsCosine&&IsPos) IsBQ=true;
 
-		if (IsPos&&IsCaloSize&&IsPandoraSlice) {
+		//if (IsPos&&IsCaloSize&&IsPandoraSlice) {
 			//Fill1DHist(reco_cosineTheta_Pos, cosine_beam_spec_primtrk);
 			//if (kinel) Fill1DHist(reco_cosineTheta_Pos_inel, cosine_beam_spec_primtrk);
 			//if (kel) Fill1DHist(reco_cosineTheta_Pos_el, cosine_beam_spec_primtrk);
@@ -338,7 +340,7 @@ void ProtonBackgroundFit::Loop() {
 			//if (kMIDmu) Fill1DHist(reco_cosineTheta_Pos_midmu, cosine_beam_spec_primtrk);
 			//if (kMIDeg) Fill1DHist(reco_cosineTheta_Pos_mideg, cosine_beam_spec_primtrk);
 			//if (kMIDother) Fill1DHist(reco_cosineTheta_Pos_midother, cosine_beam_spec_primtrk);
-		}
+		//}
 
 
 		//reco calorimetry ---------------------------------------------------------------------------//
@@ -534,18 +536,20 @@ void ProtonBackgroundFit::Loop() {
 		//(MC/data) vs reco Slice ID using bkg-rich sample
 		//[1]misID:p rich sample
 		if (IsPos&&IsCaloSize&&IsPandoraSlice) { //if Pos
+		//if (IsPos&&IsCaloSize&&IsPandoraSlice&&isTestSample) { //if Pos
+		//if (IsPos&&IsCaloSize&&IsPandoraSlice&&isTestSample==false) { //if Pos
 			//cosTheta
 			for (int j=0; j<nthinslices+2; ++j) { //slice loop
 				if (j==(reco_sliceID+1)) {
-					h_cosTheta_Pos[j]->Fill(cosine_beam_spec_primtrk);
-					if (kinel) h_cosTheta_Pos_inel[j]->Fill(cosine_beam_spec_primtrk);
-					if (kel) h_cosTheta_Pos_el[j]->Fill(cosine_beam_spec_primtrk);
-					if (kMIDcosmic) h_cosTheta_Pos_midcosmic[j]->Fill(cosine_beam_spec_primtrk);
-					if (kMIDpi) h_cosTheta_Pos_midpi[j]->Fill(cosine_beam_spec_primtrk);
-					if (kMIDp) h_cosTheta_Pos_midp[j]->Fill(cosine_beam_spec_primtrk);
-					if (kMIDmu) h_cosTheta_Pos_midmu[j]->Fill(cosine_beam_spec_primtrk);
-					if (kMIDeg) h_cosTheta_Pos_mideg[j]->Fill(cosine_beam_spec_primtrk);
-					if (kMIDother) h_cosTheta_Pos_midother[j]->Fill(cosine_beam_spec_primtrk);
+					Fill1DHist(h_cosTheta_Pos[j],cosine_beam_spec_primtrk);
+					if (kinel) Fill1DHist(h_cosTheta_Pos_inel[j],cosine_beam_spec_primtrk);
+					if (kel) Fill1DHist(h_cosTheta_Pos_el[j], cosine_beam_spec_primtrk);
+					if (kMIDcosmic) Fill1DHist(h_cosTheta_Pos_midcosmic[j], cosine_beam_spec_primtrk);
+					if (kMIDpi) Fill1DHist(h_cosTheta_Pos_midpi[j], cosine_beam_spec_primtrk);
+					if (kMIDp) Fill1DHist(h_cosTheta_Pos_midp[j], cosine_beam_spec_primtrk);
+					if (kMIDmu) Fill1DHist(h_cosTheta_Pos_midmu[j], cosine_beam_spec_primtrk);
+					if (kMIDeg) Fill1DHist(h_cosTheta_Pos_mideg[j], cosine_beam_spec_primtrk);
+					if (kMIDother) Fill1DHist(h_cosTheta_Pos_midother[j], cosine_beam_spec_primtrk);
 				}
 			} //slice loop
 			h_cosTheta_Pos_all->Fill(cosine_beam_spec_primtrk);
@@ -592,7 +596,8 @@ void ProtonBackgroundFit::Loop() {
 				if (kMIDother) h_truesliceid_cosLE09_midother->Fill(true_sliceID);
 
 			} //misID:p-rich sample
-			else { //cosine_theta>0.9
+			//else { //cosine_theta>0.9
+			if (cosine_beam_spec_primtrk>costh_min&&cosine_beam_spec_primtrk<costh_max) { 
 				h_recosliceid_cosGT09->Fill(reco_sliceID);
 				if (kinel) h_recosliceid_cosGT09_inel->Fill(reco_sliceID);
 				if (kel) h_recosliceid_cosGT09_el->Fill(reco_sliceID);
@@ -631,6 +636,27 @@ void ProtonBackgroundFit::Loop() {
 			} //misID:p-rich sample
 
 		} //if Pos
+
+		//[2]El rich sample
+		if (IsBQ&&IsCaloSize&&IsPandoraSlice) { //if calo size not empty
+		//if (IsBQ&&IsCaloSize&&IsPandoraSlice&&isTestSample) { //if calo size not empty
+		//if (IsBQ&&IsCaloSize&&IsPandoraSlice&&isTestSample==false) { //if calo size not empty
+			for (int j=0; j<nthinslices+2; ++j) { //slice loop
+				if (j==(reco_sliceID+1)) {
+					h_chi2_BQ[j]->Fill(pid);
+					if (kinel) Fill1DHist(h_chi2_BQ_inel[j],pid);
+					if (kel) Fill1DHist(h_chi2_BQ_el[j],pid);
+					if (kMIDcosmic) Fill1DHist(h_chi2_BQ_midcosmic[j],pid);
+					if (kMIDpi) Fill1DHist(h_chi2_BQ_midpi[j],pid);
+					if (kMIDp) Fill1DHist(h_chi2_BQ_midp[j],pid);
+					if (kMIDmu) Fill1DHist(h_chi2_BQ_midmu[j],pid);
+					if (kMIDeg) Fill1DHist(h_chi2_BQ_mideg[j],pid);
+					if (kMIDother) Fill1DHist(h_chi2_BQ_midother[j],pid);
+				}
+			} //slice loop
+		}
+
+
 
 		//some ke calc. -------------------------------------------------------------------------------------//
 /*

@@ -441,7 +441,8 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 	//TString str_out=Form("mc_kebbbkg_nobmrw.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
 	//TString str_out=Form("mc_kebbbkg_bmrw.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
 	//TString str_out=Form("mc_kebbbkg_nobmrw_HD.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
-	TString str_out=Form("mc_kebbbkg_bmrw.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
+	//TString str_out=Form("mc_kebbbkg_bmrw.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
+	TString str_out=Form("mc_kebbbkg_bmrw_beamxy.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
 
 	//Basic configure ------//
 	BetheBloch BB;
@@ -1036,7 +1037,8 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 
 
 		//Fill histograms -------------------------------------------------------------------------------------------//
-		if (IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts
+		//if (IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts
+		if (IsBeamXY&&IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts
 			//inc
 			Fill1DWHist(ke_reco_All, KEend_reco, mom_rw_minchi2);
 			Fill1DWHist(ke_true_All, KEend_true, mom_rw_minchi2);
@@ -1161,7 +1163,8 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 		} //basic cuts
 
 
-		if (IsMisidpRich) { //misidp-rich
+		//if (IsMisidpRich) { //misidp-rich
+		if (IsBeamXY&&IsMisidpRich) { //misidp-rich
 			Fill1DWHist(ke_reco_MidP, KEend_reco, mom_rw_minchi2);
 			Fill1DWHist(ke_true_MidP, KEend_true, mom_rw_minchi2);
 			if (kinel) {
@@ -1200,7 +1203,8 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 
 
 		//ff
-		if (IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts
+		if (IsBeamXY&&IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts
+		//if (IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts
 			//inc
 			Fill1DWHist(keff_reco_All, KE_ff_reco, mom_rw_minchi2);
 			Fill1DWHist(keff_true_All, KE_ff_true, mom_rw_minchi2);
@@ -1315,7 +1319,8 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 		} //basic cuts
 
 
-		if (IsMisidpRich) { //misidp-rich
+		if (IsBeamXY&&IsMisidpRich) { //misidp-rich
+		//if (IsMisidpRich) { //misidp-rich
 			Fill1DWHist(keff_reco_MidP, KE_ff_reco, mom_rw_minchi2);
 			Fill1DWHist(keff_true_MidP, KE_ff_true, mom_rw_minchi2);
 			if (kinel) {

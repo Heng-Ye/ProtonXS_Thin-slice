@@ -288,7 +288,7 @@ void BetheBloch::CreateSplineAtKE(int iKE){
     }
   }
   else{
-    cout<<"KE too low: "<<iKE<<endl;
+    //cout<<"KE too low: "<<iKE<<endl;
     np = 2;
     deltaE = new double[np];
     trklength = new double[np];

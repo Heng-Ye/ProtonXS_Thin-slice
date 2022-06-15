@@ -586,7 +586,6 @@ void ProtonMisIDP::Loop() {
 			//cout<<"ck3"<<endl;
 
 			// set step sizes different than default ones (0.3 times parameter values)
-			//for (int ik = 0; ik < 4; ++ik) fitter.Config().ParSettings(ik).SetStepSize(0.01);
 			for (int ik = 0; ik < 4; ++ik) fitter.Config().ParSettings(ik).SetStepSize(0.01);
 			//cout<<"ck4"<<endl;
 
@@ -787,17 +786,56 @@ void ProtonMisIDP::Loop() {
 			} //misidp
 		} //if Pos
 
-		if (IsBQ&&IsCaloSize&&IsPandoraSlice) { //if BQ
+		if (IsCaloSize&&IsPandoraSlice) { //if CaloSz
 			//misidp-study
 			double d_beam_tpc=sqrt(pow(primtrk_hitx->at(0)-xproj_beam,2)+pow(primtrk_hity->at(0)-yproj_beam,2));
-			if (kMIDp) { //misidp
+
+			if (IsBQ) { //if BQ
+			  if (kMIDp) { //misidp
 				h2d_dxy_cosine_BQ_misidp->Fill(d_beam_tpc,cosine_beam_spec_primtrk);
-				if (range_true<=0) h2d_dxy_cosine_BQ_misidp_lenle0->Fill(d_beam_tpc,cosine_beam_spec_primtrk);
-				if (range_true>0) h2d_dxy_cosine_BQ_misidp_lengt0->Fill(d_beam_tpc,cosine_beam_spec_primtrk);
-			} //misidp
-			if (kinel) h2d_dxy_cosine_BQ_inel->Fill(d_beam_tpc,cosine_beam_spec_primtrk);
-			if (kel) h2d_dxy_cosine_BQ_el->Fill(d_beam_tpc,cosine_beam_spec_primtrk);
-		} //if BQ	
+				Fill1DHist(h1d_dxy_BQ_misidp, d_beam_tpc);
+				if (range_true<=0) { 
+					h2d_dxy_cosine_BQ_misidp_lenle0->Fill(d_beam_tpc,cosine_beam_spec_primtrk);
+					Fill1DHist(h1d_dxy_BQ_misidp_lenle0, d_beam_tpc);
+				}
+				if (range_true>0) { 
+					h2d_dxy_cosine_BQ_misidp_lengt0->Fill(d_beam_tpc,cosine_beam_spec_primtrk);
+					Fill1DHist(h1d_dxy_BQ_misidp_lengt0, d_beam_tpc);
+				}
+			  } //misidp
+			  if (kinel) { 
+				h2d_dxy_cosine_BQ_inel->Fill(d_beam_tpc,cosine_beam_spec_primtrk);
+				Fill1DHist(h1d_dxy_BQ_inel, d_beam_tpc);
+			  }
+			  if (kel) { 
+				h2d_dxy_cosine_BQ_el->Fill(d_beam_tpc,cosine_beam_spec_primtrk);
+				Fill1DHist(h1d_dxy_BQ_el, d_beam_tpc);
+			  }
+			} //if BQ
+
+			if (IsPos) { //if Pos
+			  if (kMIDp) { //misidp
+				h2d_dxy_cosine_Pos_misidp->Fill(d_beam_tpc,cosine_beam_spec_primtrk);
+				Fill1DHist(h1d_dxy_Pos_misidp, d_beam_tpc);
+				if (range_true<=0) { 
+					h2d_dxy_cosine_Pos_misidp_lenle0->Fill(d_beam_tpc,cosine_beam_spec_primtrk);
+					Fill1DHist(h1d_dxy_Pos_misidp_lenle0, d_beam_tpc);
+				}
+				if (range_true>0) { 
+					h2d_dxy_cosine_Pos_misidp_lengt0->Fill(d_beam_tpc,cosine_beam_spec_primtrk);
+					Fill1DHist(h1d_dxy_Pos_misidp_lengt0, d_beam_tpc);
+				}
+			  } //misidp
+			  if (kinel) { 
+				h2d_dxy_cosine_Pos_inel->Fill(d_beam_tpc,cosine_beam_spec_primtrk);
+				Fill1DHist(h1d_dxy_Pos_inel, d_beam_tpc);
+			  }
+			  if (kel) { 
+				h2d_dxy_cosine_Pos_el->Fill(d_beam_tpc,cosine_beam_spec_primtrk);
+				Fill1DHist(h1d_dxy_Pos_el, d_beam_tpc);
+			  }
+			} //if Pos
+		} //if CaloSz	
 
 
 		//some ke calc. -------------------------------------------------------------------------------------//

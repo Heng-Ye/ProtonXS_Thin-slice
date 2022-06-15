@@ -484,7 +484,8 @@ void ProtonDataDrivenBKGMeas::Loop() {
 	//TString str_out=Form("mc_kebkg_bmrw3.root");
 	//TString str_out=Form("mc_kebkg_nobmrw_beamxy.root");
 	//TString str_out=Form("mc_kebkg_nobmrw.root");
-	TString str_out=Form("mc_kebkg_bmrw.root");
+	//TString str_out=Form("mc_kebkg_bmrw.root");
+	TString str_out=Form("mc_kebkg_bmrw_beamxy.root");
 
 	//Basic configure ------//
 	//BetheBloch BB;
@@ -1072,8 +1073,6 @@ void ProtonDataDrivenBKGMeas::Loop() {
 		bool IsBeamXY=false;
 		if ((pow(((bx_spec-meanX_mc)/(1.5*rmsX_mc)),2)+pow(((by_spec-meanY_mc)/(1.5*rmsY_mc)),2))<=1.) IsBeamXY=true;
 
-
-
 		//bmrw -------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 		double mom_rw_minchi2=1; //weight for beam-momentum-reweight
 		if ((mom_beam_spec*1000.)>=mmu_min&&(mom_beam_spec*1000.)<=mmu_max) mom_rw_minchi2=gng[index_minchi2]->Eval(mom_beam_spec*1000.); //bmrw [use me!!]
@@ -1085,10 +1084,8 @@ void ProtonDataDrivenBKGMeas::Loop() {
 
 
 		//Fill histograms -------------------------------------------------------------------------------------------//
-
-		
-		if (IsPandoraSlice&&IsCaloSize&&IsBQ) { //basic cuts
-		//if (IsBeamXY&&IsPandoraSlice&&IsCaloSize&&IsBQ) { //basic cuts
+		if (IsBeamXY&&IsPandoraSlice&&IsCaloSize&&IsBQ) { //basic cuts
+		//if (IsPandoraSlice&&IsCaloSize&&IsBQ) { //basic cuts
 			Fill1DWHist(trklen_All, range_reco, mom_rw_minchi2);
 			if (IsRecoInEL) { //reco inel
 				Fill1DHist(trklen_RecoInEl, range_reco);
@@ -1108,8 +1105,8 @@ void ProtonDataDrivenBKGMeas::Loop() {
 			} //basic cuts+intersection		
 		} //basic cuts
 
-		//if (IsBeamXY&&IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts
-		if (IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts
+		if (IsBeamXY&&IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts
+		//if (IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts
 		//if (!IsIntersection&&IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts+intersection
 			//inc
 			Fill1DWHist(ke_reco_All, KEend_reco, mom_rw_minchi2);
@@ -1150,8 +1147,6 @@ void ProtonDataDrivenBKGMeas::Loop() {
 				Fill1DWHist(ke_reco_All_midother, KEend_reco, mom_rw_minchi2);
 				Fill1DWHist(ke_true_All_midother, KEend_true, mom_rw_minchi2);
 			}
-
-
 
 			if (IsRecoInEL) { //reco inel
 				Fill1DWHist(ke_reco_RecoInEl, KEend_reco, mom_rw_minchi2);
@@ -1256,8 +1251,8 @@ void ProtonDataDrivenBKGMeas::Loop() {
 		} //basic cuts
 
 
-		//if (IsBeamXY&&IsMisidpRich) { //misidp-rich
-		if (IsMisidpRich) { //misidp-rich
+		if (IsBeamXY&&IsMisidpRich) { //misidp-rich
+		//if (IsMisidpRich) { //misidp-rich
 			Fill1DWHist(ke_reco_MidP, KEend_reco, mom_rw_minchi2);
 			Fill1DWHist(ke_true_MidP, KEend_true, mom_rw_minchi2);
 			bx_by_RecoMidP->Fill(bx_spec, by_spec);
@@ -1298,8 +1293,8 @@ void ProtonDataDrivenBKGMeas::Loop() {
 
 
 		//ff
-		if (IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts
-		//if (IsBeamXY&&IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts
+		if (IsBeamXY&&IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts
+		//if (IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts
 			//inc
 			Fill1DWHist(keff_reco_All, KE_ff_reco, mom_rw_minchi2);
 			Fill1DWHist(keff_true_All, KE_ff_true, mom_rw_minchi2);
@@ -1418,8 +1413,8 @@ void ProtonDataDrivenBKGMeas::Loop() {
 		} //basic cuts
 
 
-		if (IsMisidpRich) { //misidp-rich
-		//if (IsBeamXY&&IsMisidpRich) { //misidp-rich
+		if (IsBeamXY&&IsMisidpRich) { //misidp-rich
+		//if (IsMisidpRich) { //misidp-rich
 			Fill1DWHist(keff_reco_MidP, KE_ff_reco, mom_rw_minchi2);
 			Fill1DWHist(keff_true_MidP, KE_ff_true, mom_rw_minchi2);
 			if (kinel) {

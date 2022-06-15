@@ -135,7 +135,9 @@ void ProtonThinSlice::Loop() {
 
 	//ThinSlice config. ---------------------------------------------------------------------------------------------------//
 	//SetOutputFileName(Form("prod4a_thinslice_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
-	SetOutputFileName(Form("prod4a_thinslice_dx%dcm_%dslcs_test.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4a_thinslice_dx%dcm_%dslcs_nofixtruelen.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4a_thinslice_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
+	SetOutputFileName(Form("prod4a_thinslice_dx%dcm_%dslcs_new.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4a_thinslice_dx%dcm_%dslcs_1stHitKEff.root", name_thinslicewidth, nthinslices)); //output file name
 
 	//book histograms --//
@@ -396,6 +398,7 @@ void ProtonThinSlice::Loop() {
 			range_true_patch = sqrt( pow(beamtrk_x->at(key_reach_tpc)-xproj_beam, 2)+
 					pow(beamtrk_y->at(key_reach_tpc)-yproj_beam, 2)+	
 					pow(beamtrk_z->at(key_reach_tpc)-zproj_beam, 2) );
+			//range_true_patch=0; //no fix on true len
 
 			//true_trklen_accum
 			for (int iz=key_reach_tpc+1; iz<(int)beamtrk_z->size(); iz++) {
@@ -744,20 +747,21 @@ void ProtonThinSlice::Loop() {
 		//Reco stopping/Inel p cut ---------------------------------------------------------------------------------------------------------//
 		bool IsRecoStop=false;
 		bool IsRecoInEL=false;
+		bool IsRecoEL=false;
 		double mom_beam_spec=-99; mom_beam_spec=beamMomentum_spec->at(0);
 		//double range_reco=-99; if (!primtrk_range->empty()) range_reco=primtrk_range->at(0); //reco primary trklen
 		double csda_val_spec=csda_range_vs_mom_sm->Eval(mom_beam_spec);
 
-		//if ((range_reco/csda_val_spec)>=min_norm_trklen_csda&&(range_reco/csda_val_spec)<max_norm_trklen_csda) IsRecoStop=true; //old cut
+		if ((range_reco/csda_val_spec)>=min_norm_trklen_csda&&(range_reco/csda_val_spec)<max_norm_trklen_csda) IsRecoStop=true; //old cut
 		//if ((range_reco/csda_val_spec)<min_norm_trklen_csda) IsRecoInEL=true; //old cut
 		
 		if ((range_reco/csda_val_spec)<min_norm_trklen_csda) { //inel region
 			if (pid>pid_1) IsRecoInEL=true; 
-			if (pid<=pid_1) IsRecoStop=true; 
+			if (pid<=pid_1) IsRecoEL=true; 
 		} //inel region
 		if ((range_reco/csda_val_spec)>=min_norm_trklen_csda&&(range_reco/csda_val_spec)<max_norm_trklen_csda) { //stopping p region
 			if (pid>pid_2) IsRecoInEL=true; 
-			if (pid<=pid_2) IsRecoStop=true;
+			if (pid<=pid_2) IsRecoEL=true;
 		} //stopping p region
 
 

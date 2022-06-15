@@ -105,6 +105,19 @@ TH1D *h_cosTheta_Pos_all_nosliceidOne_midmu;
 TH1D *h_cosTheta_Pos_all_nosliceidOne_mideg;
 TH1D *h_cosTheta_Pos_all_nosliceidOne_midother;
 
+//chi2
+TH1D *h_chi2_BQ[nthinslices+2];
+TH1D *h_chi2_BQ_inel[nthinslices+2];
+TH1D *h_chi2_BQ_el[nthinslices+2];
+TH1D *h_chi2_BQ_midcosmic[nthinslices+2];
+TH1D *h_chi2_BQ_midpi[nthinslices+2];
+TH1D *h_chi2_BQ_midp[nthinslices+2];
+TH1D *h_chi2_BQ_midmu[nthinslices+2];
+TH1D *h_chi2_BQ_mideg[nthinslices+2];
+TH1D *h_chi2_BQ_midother[nthinslices+2];
+
+
+
 
 void BookHistograms() { //BookHistograms
 	outputFile = TFile::Open(fOutputFileName.c_str(), "recreate"); //open output file
@@ -221,11 +234,19 @@ void BookHistograms() { //BookHistograms
         double cosine_min=0;
         double cosine_max=1.0;
 
-        int nn_cosine=2; //
-	double cosbins[3];
+        //int nn_cosine=2; //
+	//double cosbins[3];
+	//cosbins[0] = 0;
+	//cosbins[1] = 0.96;
+	//cosbins[2] = 1;
+
+        int nn_cosine=3; //
+	double cosbins[4];
 	cosbins[0] = 0;
 	cosbins[1] = 0.9;
-	cosbins[2] = 1;
+	cosbins[2] = 0.96;
+	cosbins[3] = 1.;
+
 	for (int i=0; i<nthinslices+2; ++i) {
 		h_cosTheta_Pos[i]=new TH1D(Form("h_cosTheta_Pos_recosliceid_%d", i-1), Form("Pos; Reco SliceID %d",i-1), nn_cosine, cosbins);
 		h_cosTheta_Pos_inel[i]=new TH1D(Form("h_cosTheta_Pos_inel_recosliceid_%d", i-1), Form("Pos_inel; Reco SliceID %d",i-1), nn_cosine, cosbins);
@@ -245,6 +266,7 @@ void BookHistograms() { //BookHistograms
 		h_cosTheta_Pos_midmu[i]->Sumw2();
 		h_cosTheta_Pos_mideg[i]->Sumw2();
 		h_cosTheta_Pos_midother[i]->Sumw2();
+
 	}
 	h_cosTheta_Pos_all=new TH1D("h_cosTheta_Pos_all","h_cosTheta_Pos_all", n_cosine, cosine_min, cosine_max);
 	h_cosTheta_Pos_all_inel=new TH1D("h_cosTheta_Pos_all_inel","h_cosTheta_Pos_all_inel", n_cosine, cosine_min, cosine_max);
@@ -286,6 +308,35 @@ void BookHistograms() { //BookHistograms
 	h_cosTheta_Pos_all_nosliceidOne_midmu->Sumw2();
 	h_cosTheta_Pos_all_nosliceidOne_mideg->Sumw2();
 	h_cosTheta_Pos_all_nosliceidOne_midother->Sumw2();
+
+
+	//chi2 dists.
+        int nn_chi2=2; //
+	double chi2bins[3];
+	chi2bins[0] = 0;
+	chi2bins[1] = 10;
+	chi2bins[2] = 150;
+	for (int i=0; i<nthinslices+2; ++i) {
+		h_chi2_BQ[i]=new TH1D(Form("h_chi2_BQ_recosliceid_%d", i-1), Form("BQ; Reco SliceID %d",i-1), nn_chi2, chi2bins);
+		h_chi2_BQ_inel[i]=new TH1D(Form("h_chi2_BQ_inel_recosliceid_%d", i-1), Form("BQ_inel; Reco SliceID %d",i-1), nn_chi2, chi2bins);
+		h_chi2_BQ_el[i]=new TH1D(Form("h_chi2_BQ_el_recosliceid_%d", i-1), Form("BQ_el; Reco SliceID %d",i-1), nn_chi2, chi2bins);
+		h_chi2_BQ_midcosmic[i]=new TH1D(Form("h_chi2_BQ_midcosmic_recosliceid_%d", i-1), Form("BQ_midcosmic; Reco SliceID %d",i-1), nn_chi2, chi2bins);
+		h_chi2_BQ_midpi[i]=new TH1D(Form("h_chi2_BQ_midpi_recosliceid_%d", i-1), Form("BQ_midpi; Reco SliceID %d",i-1), nn_chi2, chi2bins);
+		h_chi2_BQ_midp[i]=new TH1D(Form("h_chi2_BQ_midp_recosliceid_%d", i-1), Form("BQ_midp; Reco SliceID %d",i-1), nn_chi2, chi2bins);
+		h_chi2_BQ_midmu[i]=new TH1D(Form("h_chi2_BQ_midmu_recosliceid_%d", i-1), Form("BQ_midmu; Reco SliceID %d",i-1), nn_chi2, chi2bins);
+		h_chi2_BQ_mideg[i]=new TH1D(Form("h_chi2_BQ_mideg_recosliceid_%d", i-1), Form("BQ_mideg; Reco SliceID %d",i-1), nn_chi2, chi2bins);
+		h_chi2_BQ_midother[i]=new TH1D(Form("h_chi2_BQ_midother_recosliceid_%d", i-1), Form("BQ_midother; Reco SliceID %d",i-1), nn_chi2, chi2bins);
+		h_chi2_BQ[i]->Sumw2();
+		h_chi2_BQ_inel[i]->Sumw2();
+		h_chi2_BQ_el[i]->Sumw2();
+		h_chi2_BQ_midcosmic[i]->Sumw2();
+		h_chi2_BQ_midpi[i]->Sumw2();
+		h_chi2_BQ_midp[i]->Sumw2();
+		h_chi2_BQ_midmu[i]->Sumw2();
+		h_chi2_BQ_mideg[i]->Sumw2();
+		h_chi2_BQ_midother[i]->Sumw2();
+
+	}
 
 
 } //BookHistograms

@@ -179,10 +179,15 @@ TH1D *KEtrue_ff_inel;
 //TH2D *true_z_range_inel;
 //TH3D *true_z_range_KEtrue_inel;
 
-TH2D *KEbb_truetrklen_all;
-TH2D *KEbb_truetrklen_inel;
-TH2D *KEbb_recotrklen_all;
-TH2D *KEbb_recotrklen_inel;
+//TH2D *KEbb_truetrklen_all;
+//TH2D *KEbb_truetrklen_inel;
+//TH2D *KEbb_recotrklen_all;
+//TH2D *KEbb_recotrklen_inel;
+
+TH2D *KEcalo_truetrklen_all;
+TH2D *KEcalo_truetrklen_inel;
+TH2D *KEcalo_recotrklen_all;
+TH2D *KEcalo_recotrklen_inel;
 
 //True Trklen Patch Dist.
 TH1D *true_trklen_patch_all;
@@ -378,7 +383,7 @@ TH2D *reco_de_trklen_inel;
 TH2D *reco_dx_trklen_inel;
 
 //KEff sansity check
-TH2D *h2d_R_kE1st;
+//TH2D *h2d_R_kE1st;
 
 void BookHistograms() { //BookHistograms
 	outputFile = TFile::Open(fOutputFileName.c_str(), "recreate"); //open output file
@@ -815,21 +820,34 @@ void BookHistograms() { //BookHistograms
 	reco_dx_trklen_inel->Sumw2();
 
 	//KE(Bethe-Bloch) vs trklen ------------------------------------------------------//
-	KEbb_truetrklen_all=new TH2D("KEbb_truetrklen_all","", 1210,-1,120,800,0,800);
-	KEbb_truetrklen_inel=new TH2D("KEbb_truetrklen_inel","", 1210,-1,120,800,0,800);
-	KEbb_recotrklen_all=new TH2D("KEbb_recotrklen_all","", 1210,-1,120,800,0,800);
-	KEbb_recotrklen_inel=new TH2D("KEbb_recotrklen_inel","", 1210,-1,120,800,0,800);
-	KEbb_truetrklen_all->Sumw2(); //
-	KEbb_truetrklen_inel->Sumw2(); //
-	KEbb_recotrklen_all->Sumw2(); //
-	KEbb_recotrklen_inel->Sumw2(); //
+	//KEbb_truetrklen_all=new TH2D("KEbb_truetrklen_all","", 1210,-1,120,800,0,800);
+	//KEbb_truetrklen_inel=new TH2D("KEbb_truetrklen_inel","", 1210,-1,120,800,0,800);
+	//KEbb_recotrklen_all=new TH2D("KEbb_recotrklen_all","", 1210,-1,120,800,0,800);
+	//KEbb_recotrklen_inel=new TH2D("KEbb_recotrklen_inel","", 1210,-1,120,800,0,800);
+	//KEbb_truetrklen_all->Sumw2(); //
+	//KEbb_truetrklen_inel->Sumw2(); //
+	//KEbb_recotrklen_all->Sumw2(); //
+	//KEbb_recotrklen_inel->Sumw2(); //
+
+	int nke=160;
+	double kemin=-800;
+	double kemax=800;	
+	KEcalo_truetrklen_all=new TH2D("KEcalo_truetrklen_all","", 1210,-1,120,nke,kemin,kemax);
+	KEcalo_truetrklen_inel=new TH2D("KEcalo_truetrklen_inel","", 1210,-1,120,nke,kemin,kemax);
+	KEcalo_recotrklen_all=new TH2D("KEcalo_recotrklen_all","", 1210,-1,120,nke,kemin,kemax);
+	KEcalo_recotrklen_inel=new TH2D("KEcalo_recotrklen_inel","", 1210,-1,120,nke,kemin,kemax);
+	KEcalo_truetrklen_all->Sumw2(); //
+	KEcalo_truetrklen_inel->Sumw2(); //
+	KEcalo_recotrklen_all->Sumw2(); //
+	KEcalo_recotrklen_inel->Sumw2(); //
+
 
 	true_trklen_patch_all=new TH1D("true_trklen_patch_all","",500,0,5);
 	true_trklen_patch_all->Sumw2();	
 
 	//R vs KE1st
-	h2d_R_kE1st=new TH2D("h2d_R_kE1st","", 800, 0, 800, 200, 0, 2);
-	h2d_R_kE1st->Sumw2();
+	//h2d_R_kE1st=new TH2D("h2d_R_kE1st","", 800, 0, 800, 200, 0, 2);
+	//h2d_R_kE1st->Sumw2();
 
 } //BookHistograms
 

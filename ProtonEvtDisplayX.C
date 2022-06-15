@@ -696,7 +696,26 @@ void ProtonEvtDisplay::Loop() {
 			//if (IsPureInEL&&range_true>4&&range_true<5.5) {
 			//if (IsPureInEL&&range_true>=11&&range_true<15) {
 			//if (IsMisIDP&&range_reco<=5.&&IsPos&&IsCaloSize&&IsPandoraSlice&&IsRecoInEL) {
-			if (IsPureInEL&&true_endz<4.&&range_true<1&&key_reach_tpc>=0) { //is pure inelastic
+			//hunting for a specific event ------------------------------------------------------------//
+			bool IsHunt=false;
+				for (int hk=0; hk<(int)beamtrk_Eng->size()-1; ++hk) { //loop over true hits
+					double thisZ=beamtrk_z->at(hk);
+					//int this_sliceID = int(thisZ/thinslicewidth);
+					double thisLen=true_trklen_accum[hk];
+					int this_sliceID = int(thisLen/thinslicewidth);
+					double this_incE = 1000.*beamtrk_Eng->at(hk); //MeV
+
+					//if (this_sliceID>=nthinslices) continue;
+					//if (this_sliceID<0) continue;
+					//vincE_true[this_sliceID].push_back(this_incE);
+
+					if (thisLen<2&&thisZ<3&&key_reach_tpc>=0) IsHunt=true;
+				}//loop over true hits (last point always has KE = 0)
+
+			//hunting for a specific event ------------------------------------------------------------//
+			//
+			//if (IsPureInEL&&true_endz<4.&&range_true<2&&key_reach_tpc>=0) { //is pure inelastic
+			if (IsHunt) { //is pure inelastic
 
 				TString tit;
 				tit=Form("run%d subrun:%d evt:%d trackID:%d",run,subrun,event,primaryID); 
@@ -736,6 +755,11 @@ void ProtonEvtDisplay::Loop() {
 					gr_trkend_yz->SetMarkerColor(3);
 					gr_trkend_xz->SetMarkerColor(3);
 				} //if reco container not empty
+				else {
+					float fake[1]={-999};
+					gr_trk_yz=new TGraph(1, &fake[0], &fake[0]);
+					gr_trk_xz=new TGraph(1, &fake[0], &fake[0]);
+				}
 
 
 				//before tpc
@@ -757,9 +781,9 @@ void ProtonEvtDisplay::Loop() {
 				h2d_yz->Draw();
 				if (primtrk_hitz->size()) { //if reco container not empty
 					gr_trk_yz->Draw("p same");
-				  	gr_btrk_yz->Draw("p same");
 				 	//gr_trkend_yz->Draw("p same");
 				} //if reco container not empty
+				gr_btrk_yz->Draw("p same");
 
 				//true vertex
 				//if (interactionProcesslist->size()){

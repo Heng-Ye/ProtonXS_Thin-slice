@@ -54,6 +54,477 @@
 using namespace std;
 using namespace ROOT::Math;
 
+   TSpline3 *spline_dx_fwd_neg[31][37];
+   TSpline3 *spline_dy_fwd_neg[19][37];
+   TSpline3 *spline_dz_fwd_neg[19][31];
+
+   TSpline3 *spline_dx_bkwd_neg[31][37];
+   TSpline3 *spline_dy_bkwd_neg[19][37];
+   TSpline3 *spline_dz_bkwd_neg[19][31];
+
+   TSpline3 *spline_dEx_neg[31][37];
+   TSpline3 *spline_dEy_neg[19][37];
+   TSpline3 *spline_dEz_neg[19][31];
+
+   TSpline3 *spline_dx_fwd_pos[31][37];
+   TSpline3 *spline_dy_fwd_pos[19][37];
+   TSpline3 *spline_dz_fwd_pos[19][31];
+
+   TSpline3 *spline_dx_bkwd_pos[31][37];
+   TSpline3 *spline_dy_bkwd_pos[19][37];
+   TSpline3 *spline_dz_bkwd_pos[19][31];
+
+   TSpline3 *spline_dEx_pos[31][37];
+   TSpline3 *spline_dEy_pos[19][37];
+   TSpline3 *spline_dEz_pos[19][31];
+
+TSpline3* MakeSpline(TH3F* spline_hist, int dim1, int dim2_bin, int dim3_bin, int maptype, int driftvol) {
+  TSpline3 *spline = 0;
+  
+  if(dim1 == 1)
+  {
+    double a[19];
+    double b[19];
+    for(int x = 1; x <= 19; x++)
+    {
+      a[x-1] = spline_hist->GetXaxis()->GetBinCenter(x);
+      b[x-1] = spline_hist->GetBinContent(x,dim2_bin,dim3_bin);
+    }
+
+    if(maptype == 1)
+    {
+      spline = new TSpline3(Form("spline_%d_%d_%d_%d_%d",dim1,dim2_bin,dim3_bin,maptype,driftvol),a,b,19,"b2e2",0,0);
+      spline->SetName(Form("spline_%d_%d_%d_%d_%d",dim1,dim2_bin,dim3_bin,maptype,driftvol));
+    }
+    else if(maptype == 2)
+    {
+      spline = new TSpline3(Form("spline_%d_%d_%d_%d_%d",dim1,dim2_bin,dim3_bin,maptype,driftvol),a,b,19,"b2e2",0,0);
+      spline->SetName(Form("spline_%d_%d_%d_%d_%d",dim1,dim2_bin,dim3_bin,maptype,driftvol));
+    }
+    else if(maptype == 3)
+    {
+      spline = new TSpline3(Form("spline_%d_%d_%d_%d_%d",dim1,dim2_bin,dim3_bin,maptype,driftvol),a,b,19,"b2e2",0,0);
+      spline->SetName(Form("spline_%d_%d_%d_%d_%d",dim1,dim2_bin,dim3_bin,maptype,driftvol));
+    }
+  }
+  else if(dim1 == 2)
+  {
+    double a[31];
+    double b[31];
+    for(int y = 1; y <= 31; y++)
+    {
+      a[y-1] = spline_hist->GetYaxis()->GetBinCenter(y);
+      b[y-1] = spline_hist->GetBinContent(dim2_bin,y,dim3_bin);
+    }
+
+    if(maptype == 1)
+    {
+      spline = new TSpline3(Form("spline_%d_%d_%d_%d_%d",dim1,dim2_bin,dim3_bin,maptype,driftvol),a,b,31,"b2e2",0,0);
+      spline->SetName(Form("spline_%d_%d_%d_%d_%d",dim1,dim2_bin,dim3_bin,maptype,driftvol));
+    }
+    else if(maptype == 2)
+    {
+      spline = new TSpline3(Form("spline_%d_%d_%d_%d_%d",dim1,dim2_bin,dim3_bin,maptype,driftvol),a,b,31,"b2e2",0,0);
+      spline->SetName(Form("spline_%d_%d_%d_%d_%d",dim1,dim2_bin,dim3_bin,maptype,driftvol));
+    }
+    else if(maptype == 3)
+    {
+      spline = new TSpline3(Form("spline_%d_%d_%d_%d_%d",dim1,dim2_bin,dim3_bin,maptype,driftvol),a,b,31,"b2e2",0,0);
+      spline->SetName(Form("spline_%d_%d_%d_%d_%d",dim1,dim2_bin,dim3_bin,maptype,driftvol));
+    }
+  }
+  else if(dim1 == 3)
+  {
+    double a[37];
+    double b[37];
+    for(int z = 1; z <= 37; z++)
+    {
+      a[z-1] = spline_hist->GetZaxis()->GetBinCenter(z);
+      b[z-1] = spline_hist->GetBinContent(dim2_bin,dim3_bin,z);
+    }
+
+    if(maptype == 1)
+    {
+      spline = new TSpline3(Form("spline_%d_%d_%d_%d_%d",dim1,dim2_bin,dim3_bin,maptype,driftvol),a,b,37,"b2e2",0,0);
+      spline->SetName(Form("spline_%d_%d_%d_%d_%d",dim1,dim2_bin,dim3_bin,maptype,driftvol));
+    }
+    else if(maptype == 2)
+    {
+      spline = new TSpline3(Form("spline_%d_%d_%d_%d_%d",dim1,dim2_bin,dim3_bin,maptype,driftvol),a,b,37,"b2e2",0,0);
+      spline->SetName(Form("spline_%d_%d_%d_%d_%d",dim1,dim2_bin,dim3_bin,maptype,driftvol));
+    }
+    else if(maptype == 3)
+    {
+      spline = new TSpline3(Form("spline_%d_%d_%d_%d_%d",dim1,dim2_bin,dim3_bin,maptype,driftvol),a,b,37,"b2e2",0,0);
+      spline->SetName(Form("spline_%d_%d_%d_%d_%d",dim1,dim2_bin,dim3_bin,maptype,driftvol));
+    }
+  }
+
+  return spline;
+}
+
+
+double InterpolateSplines(TH3F* interp_hist, double xVal, double yVal, double zVal, int dim, int maptype, int driftvol) {
+  int bin_x = interp_hist->GetXaxis()->FindBin(xVal);
+  int bin_y = interp_hist->GetYaxis()->FindBin(yVal);
+  int bin_z = interp_hist->GetZaxis()->FindBin(zVal);
+
+  int bincenter_x = interp_hist->GetXaxis()->GetBinCenter(bin_x);
+  int bincenter_y = interp_hist->GetYaxis()->GetBinCenter(bin_y);
+  int bincenter_z = interp_hist->GetZaxis()->GetBinCenter(bin_z);
+
+  int max_x = interp_hist->GetNbinsX();
+  int max_y = interp_hist->GetNbinsY();
+  int max_z = interp_hist->GetNbinsZ();
+  
+  int low_x;
+  int high_x;
+  if(bin_x <= 1)
+  {
+    low_x = 1;
+    high_x = 2;
+  }
+  else if(bin_x >= max_x)
+  {
+    low_x = max_x-1;
+    high_x = max_x;
+  }
+  else if(xVal > bincenter_x)
+  {
+    low_x = bin_x;
+    high_x = bin_x+1;
+  }
+  else
+  {
+    low_x = bin_x-1;
+    high_x = bin_x;
+  }
+
+  int low_y;
+  int high_y;
+  if(bin_y <= 1)
+  {
+    low_y = 1;
+    high_y = 2;
+  }
+  else if(bin_y >= max_y)
+  {
+    low_y = max_y-1;
+    high_y = max_y;
+  }
+  else if(yVal > bincenter_y)
+  {
+    low_y = bin_y;
+    high_y = bin_y+1;
+  }
+  else
+  {
+    low_y = bin_y-1;
+    high_y = bin_y;
+  }
+
+  int low_z;
+  int high_z;
+  if(bin_z <= 1)
+  {
+    low_z = 1;
+    high_z = 2;
+  }
+  else if(bin_z >= max_z)
+  {
+    low_z = max_z-1;
+    high_z = max_z;
+  }
+  else if(zVal > bincenter_z)
+  {
+    low_z = bin_z;
+    high_z = bin_z+1;
+  }
+  else
+  {
+    low_z = bin_z-1;
+    high_z = bin_z;
+  }
+
+  double interp_val = 0.0;
+  
+  if(dim == 1)
+  {
+    double a_1 = interp_hist->GetYaxis()->GetBinCenter(low_y);
+    double a_2 = interp_hist->GetYaxis()->GetBinCenter(high_y);
+
+    double b_1 = interp_hist->GetZaxis()->GetBinCenter(low_z);
+    double b_2 = interp_hist->GetZaxis()->GetBinCenter(high_z);
+
+    double f_11 = 0.0;
+    double f_12 = 0.0;
+    double f_21 = 0.0;
+    double f_22 = 0.0;
+    if(driftvol == 1)
+    {
+      if(maptype == 1)
+      {
+        f_11 = spline_dx_fwd_neg[low_y-1][low_z-1]->Eval(xVal);
+        f_12 = spline_dx_fwd_neg[low_y-1][high_z-1]->Eval(xVal);
+        f_21 = spline_dx_fwd_neg[high_y-1][low_z-1]->Eval(xVal);
+        f_22 = spline_dx_fwd_neg[high_y-1][high_z-1]->Eval(xVal);
+      }
+      else if(maptype == 2)
+      {
+        f_11 = spline_dx_bkwd_neg[low_y-1][low_z-1]->Eval(xVal);
+        f_12 = spline_dx_bkwd_neg[low_y-1][high_z-1]->Eval(xVal);
+        f_21 = spline_dx_bkwd_neg[high_y-1][low_z-1]->Eval(xVal);
+        f_22 = spline_dx_bkwd_neg[high_y-1][high_z-1]->Eval(xVal);
+      }
+      else if(maptype == 3)
+      {
+        f_11 = spline_dEx_neg[low_y-1][low_z-1]->Eval(xVal);
+        f_12 = spline_dEx_neg[low_y-1][high_z-1]->Eval(xVal);
+        f_21 = spline_dEx_neg[high_y-1][low_z-1]->Eval(xVal);
+        f_22 = spline_dEx_neg[high_y-1][high_z-1]->Eval(xVal);
+      }
+    }
+    else if(driftvol == 2)
+    {
+      if(maptype == 1)
+      {
+        f_11 = spline_dx_fwd_pos[low_y-1][low_z-1]->Eval(xVal);
+        f_12 = spline_dx_fwd_pos[low_y-1][high_z-1]->Eval(xVal);
+        f_21 = spline_dx_fwd_pos[high_y-1][low_z-1]->Eval(xVal);
+        f_22 = spline_dx_fwd_pos[high_y-1][high_z-1]->Eval(xVal);
+      }
+      else if(maptype == 2)
+      {
+        f_11 = spline_dx_bkwd_pos[low_y-1][low_z-1]->Eval(xVal);
+        f_12 = spline_dx_bkwd_pos[low_y-1][high_z-1]->Eval(xVal);
+        f_21 = spline_dx_bkwd_pos[high_y-1][low_z-1]->Eval(xVal);
+        f_22 = spline_dx_bkwd_pos[high_y-1][high_z-1]->Eval(xVal);
+      }
+      else if(maptype == 3)
+      {
+        f_11 = spline_dEx_pos[low_y-1][low_z-1]->Eval(xVal);
+        f_12 = spline_dEx_pos[low_y-1][high_z-1]->Eval(xVal);
+        f_21 = spline_dEx_pos[high_y-1][low_z-1]->Eval(xVal);
+        f_22 = spline_dEx_pos[high_y-1][high_z-1]->Eval(xVal);
+      }
+    }
+
+    interp_val = (f_11*(a_2-yVal)*(b_2-zVal) + f_21*(yVal-a_1)*(b_2-zVal) + f_12*(a_2-yVal)*(zVal-b_1) + f_22*(yVal-a_1)*(zVal-b_1))/((a_2-a_1)*(b_2-b_1));
+  }
+  else if(dim == 2)
+  {
+    double a_1 = interp_hist->GetXaxis()->GetBinCenter(low_x);
+    double a_2 = interp_hist->GetXaxis()->GetBinCenter(high_x);
+
+    double b_1 = interp_hist->GetZaxis()->GetBinCenter(low_z);
+    double b_2 = interp_hist->GetZaxis()->GetBinCenter(high_z);
+
+    double f_11 = 0.0;
+    double f_12 = 0.0;
+    double f_21 = 0.0;
+    double f_22 = 0.0;
+    if(driftvol == 1)
+    {
+      if(maptype == 1)
+      {
+        f_11 = spline_dy_fwd_neg[low_x-1][low_z-1]->Eval(yVal);
+        f_12 = spline_dy_fwd_neg[low_x-1][high_z-1]->Eval(yVal);
+        f_21 = spline_dy_fwd_neg[high_x-1][low_z-1]->Eval(yVal);
+        f_22 = spline_dy_fwd_neg[high_x-1][high_z-1]->Eval(yVal);
+      }
+      else if(maptype == 2)
+      {
+        f_11 = spline_dy_bkwd_neg[low_x-1][low_z-1]->Eval(yVal);
+        f_12 = spline_dy_bkwd_neg[low_x-1][high_z-1]->Eval(yVal);
+        f_21 = spline_dy_bkwd_neg[high_x-1][low_z-1]->Eval(yVal);
+        f_22 = spline_dy_bkwd_neg[high_x-1][high_z-1]->Eval(yVal);
+      }
+      else if(maptype == 3)
+      {
+        f_11 = spline_dEy_neg[low_x-1][low_z-1]->Eval(yVal);
+        f_12 = spline_dEy_neg[low_x-1][high_z-1]->Eval(yVal);
+        f_21 = spline_dEy_neg[high_x-1][low_z-1]->Eval(yVal);
+        f_22 = spline_dEy_neg[high_x-1][high_z-1]->Eval(yVal);
+      }
+    }
+    else if(driftvol == 2)
+    {
+      if(maptype == 1)
+      {
+        f_11 = spline_dy_fwd_pos[low_x-1][low_z-1]->Eval(yVal);
+        f_12 = spline_dy_fwd_pos[low_x-1][high_z-1]->Eval(yVal);
+        f_21 = spline_dy_fwd_pos[high_x-1][low_z-1]->Eval(yVal);
+        f_22 = spline_dy_fwd_pos[high_x-1][high_z-1]->Eval(yVal);
+      }
+      else if(maptype == 2)
+      {
+        f_11 = spline_dy_bkwd_pos[low_x-1][low_z-1]->Eval(yVal);
+        f_12 = spline_dy_bkwd_pos[low_x-1][high_z-1]->Eval(yVal);
+        f_21 = spline_dy_bkwd_pos[high_x-1][low_z-1]->Eval(yVal);
+        f_22 = spline_dy_bkwd_pos[high_x-1][high_z-1]->Eval(yVal);
+      }
+      else if(maptype == 3)
+      {
+        f_11 = spline_dEy_pos[low_x-1][low_z-1]->Eval(yVal);
+        f_12 = spline_dEy_pos[low_x-1][high_z-1]->Eval(yVal);
+        f_21 = spline_dEy_pos[high_x-1][low_z-1]->Eval(yVal);
+        f_22 = spline_dEy_pos[high_x-1][high_z-1]->Eval(yVal);
+      }
+    }
+
+    interp_val = (f_11*(a_2-xVal)*(b_2-zVal) + f_21*(xVal-a_1)*(b_2-zVal) + f_12*(a_2-xVal)*(zVal-b_1) + f_22*(xVal-a_1)*(zVal-b_1))/((a_2-a_1)*(b_2-b_1));
+  }
+  else if(dim == 3)
+  {
+    double a_1 = interp_hist->GetXaxis()->GetBinCenter(low_x);
+    double a_2 = interp_hist->GetXaxis()->GetBinCenter(high_x);
+
+    double b_1 = interp_hist->GetYaxis()->GetBinCenter(low_y);
+    double b_2 = interp_hist->GetYaxis()->GetBinCenter(high_y);
+
+    double f_11 = 0.0;
+    double f_12 = 0.0;
+    double f_21 = 0.0;
+    double f_22 = 0.0;
+    if(driftvol == 1)
+    {
+      if(maptype == 1)
+      {
+        f_11 = spline_dz_fwd_neg[low_x-1][low_y-1]->Eval(zVal);
+        f_12 = spline_dz_fwd_neg[low_x-1][high_y-1]->Eval(zVal);
+        f_21 = spline_dz_fwd_neg[high_x-1][low_y-1]->Eval(zVal);
+        f_22 = spline_dz_fwd_neg[high_x-1][high_y-1]->Eval(zVal);
+      }
+      else if(maptype == 2)
+      {
+        f_11 = spline_dz_bkwd_neg[low_x-1][low_y-1]->Eval(zVal);
+        f_12 = spline_dz_bkwd_neg[low_x-1][high_y-1]->Eval(zVal);
+        f_21 = spline_dz_bkwd_neg[high_x-1][low_y-1]->Eval(zVal);
+        f_22 = spline_dz_bkwd_neg[high_x-1][high_y-1]->Eval(zVal);
+      }
+      else if(maptype == 3)
+      {
+        f_11 = spline_dEz_neg[low_x-1][low_y-1]->Eval(zVal);
+        f_12 = spline_dEz_neg[low_x-1][high_y-1]->Eval(zVal);
+        f_21 = spline_dEz_neg[high_x-1][low_y-1]->Eval(zVal);
+        f_22 = spline_dEz_neg[high_x-1][high_y-1]->Eval(zVal);
+      }
+    }
+    else if(driftvol == 2)
+    {
+      if(maptype == 1)
+      {
+        f_11 = spline_dz_fwd_pos[low_x-1][low_y-1]->Eval(zVal);
+        f_12 = spline_dz_fwd_pos[low_x-1][high_y-1]->Eval(zVal);
+        f_21 = spline_dz_fwd_pos[high_x-1][low_y-1]->Eval(zVal);
+        f_22 = spline_dz_fwd_pos[high_x-1][high_y-1]->Eval(zVal);
+      }
+      else if(maptype == 2)
+      {
+        f_11 = spline_dz_bkwd_pos[low_x-1][low_y-1]->Eval(zVal);
+        f_12 = spline_dz_bkwd_pos[low_x-1][high_y-1]->Eval(zVal);
+        f_21 = spline_dz_bkwd_pos[high_x-1][low_y-1]->Eval(zVal);
+        f_22 = spline_dz_bkwd_pos[high_x-1][high_y-1]->Eval(zVal);
+      }
+      else if(maptype == 3)
+      {
+        f_11 = spline_dEz_pos[low_x-1][low_y-1]->Eval(zVal);
+        f_12 = spline_dEz_pos[low_x-1][high_y-1]->Eval(zVal);
+        f_21 = spline_dEz_pos[high_x-1][low_y-1]->Eval(zVal);
+        f_22 = spline_dEz_pos[high_x-1][high_y-1]->Eval(zVal);
+      }
+    }
+
+    interp_val = (f_11*(a_2-xVal)*(b_2-yVal) + f_21*(xVal-a_1)*(b_2-yVal) + f_12*(a_2-xVal)*(yVal-b_1) + f_22*(xVal-a_1)*(yVal-b_1))/((a_2-a_1)*(b_2-b_1));
+  }
+
+  return interp_val;
+}
+
+
+void LoadHist(){
+
+
+
+
+
+
+
+
+  TFile *infile = TFile::Open("/cvmfs/dune.opensciencegrid.org/products/dune/dune_pardata/v01_66_00/SpaceChargeProtoDUNE/SCE_DataDriven_180kV_v4.root");
+
+
+  //Load in files
+  TH3F* hDx_sim_pos_orig = (TH3F*)infile->Get("RecoFwd_Displacement_X_Pos");
+  TH3F* hDy_sim_pos_orig = (TH3F*)infile->Get("RecoFwd_Displacement_Y_Pos");
+  TH3F* hDz_sim_pos_orig = (TH3F*)infile->Get("RecoFwd_Displacement_Z_Pos");
+  TH3F* hEx_sim_pos_orig = (TH3F*)infile->Get("Reco_ElecField_X_Pos");
+  TH3F* hEy_sim_pos_orig = (TH3F*)infile->Get("Reco_ElecField_Y_Pos");
+  TH3F* hEz_sim_pos_orig = (TH3F*)infile->Get("Reco_ElecField_Z_Pos");
+  
+  TH3F* hDx_sim_neg_orig = (TH3F*)infile->Get("RecoFwd_Displacement_X_Neg");
+  TH3F* hDy_sim_neg_orig = (TH3F*)infile->Get("RecoFwd_Displacement_Y_Neg");
+  TH3F* hDz_sim_neg_orig = (TH3F*)infile->Get("RecoFwd_Displacement_Z_Neg");
+  TH3F* hEx_sim_neg_orig = (TH3F*)infile->Get("Reco_ElecField_X_Neg");
+  TH3F* hEy_sim_neg_orig = (TH3F*)infile->Get("Reco_ElecField_Y_Neg");
+  TH3F* hEz_sim_neg_orig = (TH3F*)infile->Get("Reco_ElecField_Z_Neg");
+  
+  TH3F* hDx_sim_pos = (TH3F*)hDx_sim_pos_orig->Clone("hDx_pos");
+  TH3F* hDy_sim_pos = (TH3F*)hDy_sim_pos_orig->Clone("hDy_pos");
+  TH3F* hDz_sim_pos = (TH3F*)hDz_sim_pos_orig->Clone("hDz_pos");
+  TH3F* hEx_sim_pos = (TH3F*)hEx_sim_pos_orig->Clone("hEx_pos");
+  TH3F* hEy_sim_pos = (TH3F*)hEy_sim_pos_orig->Clone("hEy_pos");
+  TH3F* hEz_sim_pos = (TH3F*)hEz_sim_pos_orig->Clone("hEz_pos");
+  
+  TH3F* hDx_sim_neg = (TH3F*)hDx_sim_neg_orig->Clone("hDx_neg");
+  TH3F* hDy_sim_neg = (TH3F*)hDy_sim_neg_orig->Clone("hDy_neg");
+  TH3F* hDz_sim_neg = (TH3F*)hDz_sim_neg_orig->Clone("hDz_neg");
+  TH3F* hEx_sim_neg = (TH3F*)hEx_sim_neg_orig->Clone("hEx_neg");
+  TH3F* hEy_sim_neg = (TH3F*)hEy_sim_neg_orig->Clone("hEy_neg");
+  TH3F* hEz_sim_neg = (TH3F*)hEz_sim_neg_orig->Clone("hEz_neg");
+  
+  hDx_sim_pos->SetDirectory(0);
+  hDy_sim_pos->SetDirectory(0);
+  hDz_sim_pos->SetDirectory(0);
+  hEx_sim_pos->SetDirectory(0);
+  hEy_sim_pos->SetDirectory(0);
+  hEz_sim_pos->SetDirectory(0);
+  
+  hDx_sim_neg->SetDirectory(0);
+  hDy_sim_neg->SetDirectory(0);
+  hDz_sim_neg->SetDirectory(0);
+  hEx_sim_neg->SetDirectory(0);
+  hEy_sim_neg->SetDirectory(0);
+  hEz_sim_neg->SetDirectory(0);
+
+  for(int y = 1; y <= 31; y++){
+    for(int z = 1; z <= 37; z++){
+      spline_dx_fwd_neg[y-1][z-1] = MakeSpline(hDx_sim_neg,1,y,z,1,1);
+      spline_dx_fwd_pos[y-1][z-1] = MakeSpline(hDx_sim_pos,1,y,z,1,2);
+      spline_dEx_neg[y-1][z-1] = MakeSpline(hEx_sim_neg,1,y,z,3,1);
+      spline_dEx_pos[y-1][z-1] = MakeSpline(hEx_sim_pos,1,y,z,3,2);
+    }
+  }
+  for(int x = 1; x <= 19; x++){
+    for(int z = 1; z <= 37; z++){
+      spline_dy_fwd_neg[x-1][z-1] = MakeSpline(hDy_sim_neg,2,x,z,1,1);
+      spline_dy_fwd_pos[x-1][z-1] = MakeSpline(hDy_sim_pos,2,x,z,1,2);
+      spline_dEy_neg[x-1][z-1] = MakeSpline(hEy_sim_neg,2,x,z,3,1);
+      spline_dEy_pos[x-1][z-1] = MakeSpline(hEy_sim_pos,2,x,z,3,2);
+    }
+  }
+  for(int x = 1; x <= 19; x++){
+    for(int y = 1; y <= 31; y++){
+      spline_dz_fwd_neg[x-1][y-1] = MakeSpline(hDz_sim_neg,3,x,y,1,1);
+      spline_dz_fwd_pos[x-1][y-1] = MakeSpline(hDz_sim_pos,3,x,y,1,2);
+      spline_dEz_neg[x-1][y-1] = MakeSpline(hEz_sim_neg,3,x,y,3,1);
+      spline_dEz_pos[x-1][y-1] = MakeSpline(hEz_sim_pos,3,x,y,3,2);
+    }
+  }
+}
+
+
+
 void ProtonAfterMomentumReweight::Loop() {
 	if (fChain == 0) return;
 
@@ -64,13 +535,15 @@ void ProtonAfterMomentumReweight::Loop() {
 	bool isTestSample=true;
 	//int true_sliceID = -1, reco_sliceID = -1;
 
-   	//LoadHist();
-	
+   	LoadHist();
+ 	TFile f2("/cvmfs/dune.opensciencegrid.org/products/dune/dune_pardata/v01_66_00/SpaceChargeProtoDUNE/SCE_DataDriven_180kV_v4.root");
+   	TH3F *RecoFwd_Displacement_Z_Neg = (TH3F*)f2.Get("RecoFwd_Displacement_Z_Neg");
+   	TH3F *RecoFwd_Displacement_Z_Pos = (TH3F*)f2.Get("RecoFwd_Displacement_Z_Pos");	
 
 
 	//book histograms --------------------------------------------------------------------------------------------//
-	int n_b=150;
-	//int n_b=30;
+	//int n_b=150;
+	int n_b=30;
 	double b_min=0;
 	double b_max=150;
 
@@ -156,7 +629,95 @@ void ProtonAfterMomentumReweight::Loop() {
 	TH1D *h1d_trklen_RecoInel_bmrw_mideg=new TH1D(Form("h1d_trklen_RecoInel_bmrw_mideg"), Form("mideg"), n_b, b_min, b_max);
 	TH1D *h1d_trklen_RecoInel_bmrw_midother=new TH1D(Form("h1d_trklen_RecoInel_bmrw_midother"), Form("midother"), n_b, b_min, b_max);
 
+	//MisID:P-rich
+	TH1D *h1d_trklen_MidpRich=new TH1D(Form("h1d_trklen_MidpRich"), Form("MC default"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_MidpRich_el=new TH1D(Form("h1d_trklen_MidpRich_el"), Form("el"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_MidpRich_inel=new TH1D(Form("h1d_trklen_MidpRich_inel"), Form("inel"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_MidpRich_midcosmic=new TH1D(Form("h1d_trklen_MidpRich_midcosmic"), Form("midcosmic"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_MidpRich_midpi=new TH1D(Form("h1d_trklen_MidpRich_midpi"), Form("midpi"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_MidpRich_midp=new TH1D(Form("h1d_trklen_MidpRich_midp"), Form("midp"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_MidpRich_midmu=new TH1D(Form("h1d_trklen_MidpRich_midmu"), Form("midmu"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_MidpRich_mideg=new TH1D(Form("h1d_trklen_MidpRich_mideg"), Form("mideg"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_MidpRich_midother=new TH1D(Form("h1d_trklen_MidpRich_midother"), Form("midother"), n_b, b_min, b_max);
+
+	TH1D *h1d_trklen_MidpRich_bmrw=new TH1D(Form("h1d_trklen_MidpRich_bmrw"), Form("MC weighted"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_MidpRich_bmrw_el=new TH1D(Form("h1d_trklen_MidpRich_bmrw_el"), Form("el"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_MidpRich_bmrw_inel=new TH1D(Form("h1d_trklen_MidpRich_bmrw_inel"), Form("inel"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_MidpRich_bmrw_midcosmic=new TH1D(Form("h1d_trklen_MidpRich_bmrw_midcosmic"), Form("midcosmic"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_MidpRich_bmrw_midpi=new TH1D(Form("h1d_trklen_MidpRich_bmrw_midpi"), Form("midpi"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_MidpRich_bmrw_midp=new TH1D(Form("h1d_trklen_MidpRich_bmrw_midp"), Form("midp"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_MidpRich_bmrw_midmu=new TH1D(Form("h1d_trklen_MidpRich_bmrw_midmu"), Form("midmu"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_MidpRich_bmrw_mideg=new TH1D(Form("h1d_trklen_MidpRich_bmrw_mideg"), Form("mideg"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_MidpRich_bmrw_midother=new TH1D(Form("h1d_trklen_MidpRich_bmrw_midother"), Form("midother"), n_b, b_min, b_max);
+
+	//El-rich
+	//bq
+	TH1D *h1d_trklen_ElRich=new TH1D(Form("h1d_trklen_ElRich"), Form("MC default"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_ElRich_el=new TH1D(Form("h1d_trklen_ElRich_el"), Form("el"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_ElRich_inel=new TH1D(Form("h1d_trklen_ElRich_inel"), Form("inel"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_ElRich_midcosmic=new TH1D(Form("h1d_trklen_ElRich_midcosmic"), Form("midcosmic"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_ElRich_midpi=new TH1D(Form("h1d_trklen_ElRich_midpi"), Form("midpi"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_ElRich_midp=new TH1D(Form("h1d_trklen_ElRich_midp"), Form("midp"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_ElRich_midmu=new TH1D(Form("h1d_trklen_ElRich_midmu"), Form("midmu"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_ElRich_mideg=new TH1D(Form("h1d_trklen_ElRich_mideg"), Form("mideg"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_ElRich_midother=new TH1D(Form("h1d_trklen_ElRich_midother"), Form("midother"), n_b, b_min, b_max);
+
+	TH1D *h1d_trklen_ElRich_bmrw=new TH1D(Form("h1d_trklen_ElRich_bmrw"), Form("MC weighted"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_ElRich_bmrw_el=new TH1D(Form("h1d_trklen_ElRich_bmrw_el"), Form("el"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_ElRich_bmrw_inel=new TH1D(Form("h1d_trklen_ElRich_bmrw_inel"), Form("inel"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_ElRich_bmrw_midcosmic=new TH1D(Form("h1d_trklen_ElRich_bmrw_midcosmic"), Form("midcosmic"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_ElRich_bmrw_midpi=new TH1D(Form("h1d_trklen_ElRich_bmrw_midpi"), Form("midpi"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_ElRich_bmrw_midp=new TH1D(Form("h1d_trklen_ElRich_bmrw_midp"), Form("midp"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_ElRich_bmrw_midmu=new TH1D(Form("h1d_trklen_ElRich_bmrw_midmu"), Form("midmu"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_ElRich_bmrw_mideg=new TH1D(Form("h1d_trklen_ElRich_bmrw_mideg"), Form("mideg"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_ElRich_bmrw_midother=new TH1D(Form("h1d_trklen_ElRich_bmrw_midother"), Form("midother"), n_b, b_min, b_max);
+
+	//calosz
+	TH1D *h1d_trklen_CaloSz_ElRich=new TH1D(Form("h1d_trklen_CaloSz_ElRich"), Form("MC default"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_ElRich_el=new TH1D(Form("h1d_trklen_CaloSz_ElRich_el"), Form("el"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_ElRich_inel=new TH1D(Form("h1d_trklen_CaloSz_ElRich_inel"), Form("inel"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_ElRich_midcosmic=new TH1D(Form("h1d_trklen_CaloSz_ElRich_midcosmic"), Form("midcosmic"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_ElRich_midpi=new TH1D(Form("h1d_trklen_CaloSz_ElRich_midpi"), Form("midpi"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_ElRich_midp=new TH1D(Form("h1d_trklen_CaloSz_ElRich_midp"), Form("midp"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_ElRich_midmu=new TH1D(Form("h1d_trklen_CaloSz_ElRich_midmu"), Form("midmu"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_ElRich_mideg=new TH1D(Form("h1d_trklen_CaloSz_ElRich_mideg"), Form("mideg"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_ElRich_midother=new TH1D(Form("h1d_trklen_CaloSz_ElRich_midother"), Form("midother"), n_b, b_min, b_max);
+
+	TH1D *h1d_trklen_CaloSz_ElRich_bmrw=new TH1D(Form("h1d_trklen_CaloSz_ElRich_bmrw"), Form("MC weighted"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_ElRich_bmrw_el=new TH1D(Form("h1d_trklen_CaloSz_ElRich_bmrw_el"), Form("el"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_ElRich_bmrw_inel=new TH1D(Form("h1d_trklen_CaloSz_ElRich_bmrw_inel"), Form("inel"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_ElRich_bmrw_midcosmic=new TH1D(Form("h1d_trklen_CaloSz_ElRich_bmrw_midcosmic"), Form("midcosmic"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_ElRich_bmrw_midpi=new TH1D(Form("h1d_trklen_CaloSz_ElRich_bmrw_midpi"), Form("midpi"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_ElRich_bmrw_midp=new TH1D(Form("h1d_trklen_CaloSz_ElRich_bmrw_midp"), Form("midp"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_ElRich_bmrw_midmu=new TH1D(Form("h1d_trklen_CaloSz_ElRich_bmrw_midmu"), Form("midmu"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_ElRich_bmrw_mideg=new TH1D(Form("h1d_trklen_CaloSz_ElRich_bmrw_mideg"), Form("mideg"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_CaloSz_ElRich_bmrw_midother=new TH1D(Form("h1d_trklen_CaloSz_ElRich_bmrw_midother"), Form("midother"), n_b, b_min, b_max);
+
+	//pos
+	TH1D *h1d_trklen_Pos_ElRich=new TH1D(Form("h1d_trklen_Pos_ElRich"), Form("MC default"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_ElRich_el=new TH1D(Form("h1d_trklen_Pos_ElRich_el"), Form("el"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_ElRich_inel=new TH1D(Form("h1d_trklen_Pos_ElRich_inel"), Form("inel"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_ElRich_midcosmic=new TH1D(Form("h1d_trklen_Pos_ElRich_midcosmic"), Form("midcosmic"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_ElRich_midpi=new TH1D(Form("h1d_trklen_Pos_ElRich_midpi"), Form("midpi"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_ElRich_midp=new TH1D(Form("h1d_trklen_Pos_ElRich_midp"), Form("midp"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_ElRich_midmu=new TH1D(Form("h1d_trklen_Pos_ElRich_midmu"), Form("midmu"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_ElRich_mideg=new TH1D(Form("h1d_trklen_Pos_ElRich_mideg"), Form("mideg"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_ElRich_midother=new TH1D(Form("h1d_trklen_Pos_ElRich_midother"), Form("midother"), n_b, b_min, b_max);
+
+	TH1D *h1d_trklen_Pos_ElRich_bmrw=new TH1D(Form("h1d_trklen_Pos_ElRich_bmrw"), Form("MC weighted"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_ElRich_bmrw_el=new TH1D(Form("h1d_trklen_Pos_ElRich_bmrw_el"), Form("el"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_ElRich_bmrw_inel=new TH1D(Form("h1d_trklen_Pos_ElRich_bmrw_inel"), Form("inel"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_ElRich_bmrw_midcosmic=new TH1D(Form("h1d_trklen_Pos_ElRich_bmrw_midcosmic"), Form("midcosmic"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_ElRich_bmrw_midpi=new TH1D(Form("h1d_trklen_Pos_ElRich_bmrw_midpi"), Form("midpi"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_ElRich_bmrw_midp=new TH1D(Form("h1d_trklen_Pos_ElRich_bmrw_midp"), Form("midp"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_ElRich_bmrw_midmu=new TH1D(Form("h1d_trklen_Pos_ElRich_bmrw_midmu"), Form("midmu"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_ElRich_bmrw_mideg=new TH1D(Form("h1d_trklen_Pos_ElRich_bmrw_mideg"), Form("mideg"), n_b, b_min, b_max);
+	TH1D *h1d_trklen_Pos_ElRich_bmrw_midother=new TH1D(Form("h1d_trklen_Pos_ElRich_bmrw_midother"), Form("midother"), n_b, b_min, b_max);
+
+
+
 	//endz
+/*
 	TH1D *h1d_endz_CaloSz=new TH1D(Form("h1d_endz_CaloSz"), Form("MC CaloSz"), n_b, b_min, b_max);
 	TH1D *h1d_endz_CaloSz_el=new TH1D(Form("h1d_endz_CaloSz_el"), Form("el"), n_b, b_min, b_max);
 	TH1D *h1d_endz_CaloSz_inel=new TH1D(Form("h1d_endz_CaloSz_inel"), Form("inel"), n_b, b_min, b_max);
@@ -186,6 +747,7 @@ void ProtonAfterMomentumReweight::Loop() {
 	TH1D *h1d_endz_BQ_midmu=new TH1D(Form("h1d_endz_BQ_midmu"), Form("midmu"), n_b, b_min, b_max);
 	TH1D *h1d_endz_BQ_mideg=new TH1D(Form("h1d_endz_BQ_mideg"), Form("mideg"), n_b, b_min, b_max);
 	TH1D *h1d_endz_BQ_midother=new TH1D(Form("h1d_endz_BQ_midother"), Form("midother"), n_b, b_min, b_max);
+
 
 	//trklen vs endz
 	TH2D *h2d_trklen_endz_CaloSz=new TH2D(Form("h2d_trklen_endz_CaloSz"), Form("MC CaloSz"), n_b, b_min, b_max, n_b, b_min, b_max);
@@ -217,20 +779,48 @@ void ProtonAfterMomentumReweight::Loop() {
 	TH2D *h2d_trklen_endz_BQ_midmu=new TH2D(Form("h2d_trklen_endz_BQ_midmu"), Form("midmu"), n_b, b_min, b_max, n_b, b_min, b_max);
 	TH2D *h2d_trklen_endz_BQ_mideg=new TH2D(Form("h2d_trklen_endz_BQ_mideg"), Form("mideg"), n_b, b_min, b_max, n_b, b_min, b_max);
 	TH2D *h2d_trklen_endz_BQ_midother=new TH2D(Form("h2d_trklen_endz_BQ_midother"), Form("midother"), n_b, b_min, b_max, n_b, b_min, b_max);
+*/
 
 	//true len
 	TH1D *h1d_truetrklen_CaloSz=new TH1D(Form("h1d_truetrklen_CaloSz"), Form("MC CaloSz"), n_b, b_min, b_max);
+	TH1D *h1d_truetrklen_CaloSz_el=new TH1D(Form("h1d_truetrklen_CaloSz_el"), Form("el"), n_b, b_min, b_max);
+	TH1D *h1d_truetrklen_CaloSz_inel=new TH1D(Form("h1d_truetrklen_CaloSz_inel"), Form("inel"), n_b, b_min, b_max);
+	TH1D *h1d_truetrklen_CaloSz_midcosmic=new TH1D(Form("h1d_truetrklen_CaloSz_midcosmic"), Form("midcosmic"), n_b, b_min, b_max);
+	TH1D *h1d_truetrklen_CaloSz_midpi=new TH1D(Form("h1d_truetrklen_CaloSz_midpi"), Form("midpi"), n_b, b_min, b_max);
+	TH1D *h1d_truetrklen_CaloSz_midp=new TH1D(Form("h1d_truetrklen_CaloSz_midp"), Form("midp"), n_b, b_min, b_max);
+	TH1D *h1d_truetrklen_CaloSz_midmu=new TH1D(Form("h1d_truetrklen_CaloSz_midmu"), Form("midmu"), n_b, b_min, b_max);
+	TH1D *h1d_truetrklen_CaloSz_mideg=new TH1D(Form("h1d_truetrklen_CaloSz_mideg"), Form("mideg"), n_b, b_min, b_max);
+	TH1D *h1d_truetrklen_CaloSz_midother=new TH1D(Form("h1d_truetrklen_CaloSz_midother"), Form("midother"), n_b, b_min, b_max);
+
 	TH1D *h1d_truetrklen_Pos=new TH1D(Form("h1d_truetrklen_Pos"), Form("MC Pos"), n_b, b_min, b_max);
+	TH1D *h1d_truetrklen_Pos_el=new TH1D(Form("h1d_truetrklen_Pos_el"), Form("el"), n_b, b_min, b_max);
+	TH1D *h1d_truetrklen_Pos_inel=new TH1D(Form("h1d_truetrklen_Pos_inel"), Form("inel"), n_b, b_min, b_max);
+	TH1D *h1d_truetrklen_Pos_midcosmic=new TH1D(Form("h1d_truetrklen_Pos_midcosmic"), Form("midcosmic"), n_b, b_min, b_max);
+	TH1D *h1d_truetrklen_Pos_midpi=new TH1D(Form("h1d_truetrklen_Pos_midpi"), Form("midpi"), n_b, b_min, b_max);
+	TH1D *h1d_truetrklen_Pos_midp=new TH1D(Form("h1d_truetrklen_Pos_midp"), Form("midp"), n_b, b_min, b_max);
+	TH1D *h1d_truetrklen_Pos_midmu=new TH1D(Form("h1d_truetrklen_Pos_midmu"), Form("midmu"), n_b, b_min, b_max);
+	TH1D *h1d_truetrklen_Pos_mideg=new TH1D(Form("h1d_truetrklen_Pos_mideg"), Form("mideg"), n_b, b_min, b_max);
+	TH1D *h1d_truetrklen_Pos_midother=new TH1D(Form("h1d_truetrklen_Pos_midother"), Form("midother"), n_b, b_min, b_max);
+
 	TH1D *h1d_truetrklen_BQ=new TH1D(Form("h1d_truetrklen_BQ"), Form("MC BQ"), n_b, b_min, b_max);
+	TH1D *h1d_truetrklen_BQ_el=new TH1D(Form("h1d_truetrklen_BQ_el"), Form("el"), n_b, b_min, b_max);
+	TH1D *h1d_truetrklen_BQ_inel=new TH1D(Form("h1d_truetrklen_BQ_inel"), Form("inel"), n_b, b_min, b_max);
+	TH1D *h1d_truetrklen_BQ_midcosmic=new TH1D(Form("h1d_truetrklen_BQ_midcosmic"), Form("midcosmic"), n_b, b_min, b_max);
+	TH1D *h1d_truetrklen_BQ_midpi=new TH1D(Form("h1d_truetrklen_BQ_midpi"), Form("midpi"), n_b, b_min, b_max);
+	TH1D *h1d_truetrklen_BQ_midp=new TH1D(Form("h1d_truetrklen_BQ_midp"), Form("midp"), n_b, b_min, b_max);
+	TH1D *h1d_truetrklen_BQ_midmu=new TH1D(Form("h1d_truetrklen_BQ_midmu"), Form("midmu"), n_b, b_min, b_max);
+	TH1D *h1d_truetrklen_BQ_mideg=new TH1D(Form("h1d_truetrklen_BQ_mideg"), Form("mideg"), n_b, b_min, b_max);
+	TH1D *h1d_truetrklen_BQ_midother=new TH1D(Form("h1d_truetrklen_BQ_midother"), Form("midother"), n_b, b_min, b_max);
+
 
 	//true endz
-	TH1D *h1d_trueendz_CaloSz=new TH1D(Form("h1d_trueendz_CaloSz"), Form("MC CaloSz"), n_b, b_min, b_max);
-	TH1D *h1d_trueendz_Pos=new TH1D(Form("h1d_trueendz_Pos"), Form("MC Pos"), n_b, b_min, b_max);
-	TH1D *h1d_trueendz_BQ=new TH1D(Form("h1d_trueendz_BQ"), Form("MC BQ"), n_b, b_min, b_max);
+	//TH1D *h1d_trueendz_CaloSz=new TH1D(Form("h1d_trueendz_CaloSz"), Form("MC CaloSz"), n_b, b_min, b_max);
+	//TH1D *h1d_trueendz_Pos=new TH1D(Form("h1d_trueendz_Pos"), Form("MC Pos"), n_b, b_min, b_max);
+	//TH1D *h1d_trueendz_BQ=new TH1D(Form("h1d_trueendz_BQ"), Form("MC BQ"), n_b, b_min, b_max);
 
-	TH1D *h1d_trueendzSCE_CaloSz=new TH1D(Form("h1d_trueendzSCE_CaloSz"), Form("MC CaloSz"), n_b, b_min, b_max);
-	TH1D *h1d_trueendzSCE_Pos=new TH1D(Form("h1d_trueendzSCE_Pos"), Form("MC Pos"), n_b, b_min, b_max);
-	TH1D *h1d_trueendzSCE_BQ=new TH1D(Form("h1d_trueendzSCE_BQ"), Form("MC BQ"), n_b, b_min, b_max);
+	//TH1D *h1d_trueendzSCE_CaloSz=new TH1D(Form("h1d_trueendzSCE_CaloSz"), Form("MC CaloSz"), n_b, b_min, b_max);
+	//TH1D *h1d_trueendzSCE_Pos=new TH1D(Form("h1d_trueendzSCE_Pos"), Form("MC Pos"), n_b, b_min, b_max);
+	//TH1D *h1d_trueendzSCE_BQ=new TH1D(Form("h1d_trueendzSCE_BQ"), Form("MC BQ"), n_b, b_min, b_max);
 
 	//------------------------------------------------------------------------------------------------------------//
 
@@ -284,8 +874,11 @@ void ProtonAfterMomentumReweight::Loop() {
 		double true_stx=primary_truth_StartPosition_MC[0];
 
 		double offset_z = 0;
+/*
 		double true_endz_sce=true_endz;
-		/*TVector3 true_Endpoint(true_endx, true_endy, true_endz);
+
+
+		TVector3 true_Endpoint(true_endx, true_endy, true_endz);
      		if (true_Endpoint.X()>0){
        			//true_endz += RecoFwd_Displacement_Z_Pos->GetBinContent(RecoFwd_Displacement_Z_Pos->FindBin(true_beam_endX, true_beam_endY, true_beam_endZ));
        			offset_z = InterpolateSplines(RecoFwd_Displacement_Z_Pos, true_Endpoint.X(), true_Endpoint.Y(), true_Endpoint.Z(), 3, 1, 2);
@@ -295,7 +888,8 @@ void ProtonAfterMomentumReweight::Loop() {
        			offset_z = InterpolateSplines(RecoFwd_Displacement_Z_Neg, true_Endpoint.X(), true_Endpoint.Y(), true_Endpoint.Z(), 3, 1, 1);
      		}
      		//std::cout<<true_beam_endX<<" "<<true_beam_endY<<" "<<true_beam_endZ<<" "<<offset_z<<std::endl;
-     		true_endz_sce += offset_z;*/
+     		true_endz_sce += offset_z;
+*/
 
 		bool IsTrueEndOutside=false;
 		if (true_endz<0.) IsTrueEndOutside=true;
@@ -542,8 +1136,8 @@ void ProtonAfterMomentumReweight::Loop() {
 			//before bmrw
 			Fill1DHist(h1d_trklen_CaloSz, range_reco);
 			Fill1DHist(h1d_truetrklen_CaloSz, range_true);
-			Fill1DHist(h1d_trueendz_CaloSz, true_endz);
-			Fill1DHist(h1d_trueendzSCE_CaloSz, true_endz_sce);
+			//Fill1DHist(h1d_trueendz_CaloSz, true_endz);
+			//Fill1DHist(h1d_trueendzSCE_CaloSz, true_endz_sce);
 
 			if (kinel) Fill1DHist(h1d_trklen_CaloSz_inel, range_reco); 
 			if (kel) Fill1DHist(h1d_trklen_CaloSz_el, range_reco); 
@@ -554,17 +1148,27 @@ void ProtonAfterMomentumReweight::Loop() {
 			if (kMIDeg) Fill1DHist(h1d_trklen_CaloSz_mideg, range_reco);
 			if (kMIDother) Fill1DHist(h1d_trklen_CaloSz_midother, range_reco);
 
-			//before bmrw
-			Fill1DHist(h1d_endz_CaloSz, reco_endz);
+			if (kinel) Fill1DHist(h1d_truetrklen_CaloSz_inel, range_true); 
+			if (kel) Fill1DHist(h1d_truetrklen_CaloSz_el, range_true); 
+			if (kMIDcosmic) Fill1DHist(h1d_truetrklen_CaloSz_midcosmic, range_true); 
+			if (kMIDpi) Fill1DHist(h1d_truetrklen_CaloSz_midpi, range_true);
+			if (kMIDp) Fill1DHist(h1d_truetrklen_CaloSz_midp, range_true);
+			if (kMIDmu) Fill1DHist(h1d_truetrklen_CaloSz_midmu, range_true);
+			if (kMIDeg) Fill1DHist(h1d_truetrklen_CaloSz_mideg, range_true);
+			if (kMIDother) Fill1DHist(h1d_truetrklen_CaloSz_midother, range_true);
 
-			if (kinel) Fill1DHist(h1d_endz_CaloSz_inel, reco_endz); 
-			if (kel) Fill1DHist(h1d_endz_CaloSz_el, reco_endz); 
-			if (kMIDcosmic) Fill1DHist(h1d_endz_CaloSz_midcosmic, reco_endz); 
-			if (kMIDpi) Fill1DHist(h1d_endz_CaloSz_midpi, reco_endz);
-			if (kMIDp) Fill1DHist(h1d_endz_CaloSz_midp, reco_endz);
-			if (kMIDmu) Fill1DHist(h1d_endz_CaloSz_midmu, reco_endz);
-			if (kMIDeg) Fill1DHist(h1d_endz_CaloSz_mideg, reco_endz);
-			if (kMIDother) Fill1DHist(h1d_endz_CaloSz_midother, reco_endz);
+/*
+			//before bmrw
+			//Fill1DHist(h1d_endz_CaloSz, reco_endz);
+
+			//if (kinel) Fill1DHist(h1d_endz_CaloSz_inel, reco_endz); 
+			//if (kel) Fill1DHist(h1d_endz_CaloSz_el, reco_endz); 
+			//if (kMIDcosmic) Fill1DHist(h1d_endz_CaloSz_midcosmic, reco_endz); 
+			//if (kMIDpi) Fill1DHist(h1d_endz_CaloSz_midpi, reco_endz);
+			//if (kMIDp) Fill1DHist(h1d_endz_CaloSz_midp, reco_endz);
+			//if (kMIDmu) Fill1DHist(h1d_endz_CaloSz_midmu, reco_endz);
+			//if (kMIDeg) Fill1DHist(h1d_endz_CaloSz_mideg, reco_endz);
+			//if (kMIDother) Fill1DHist(h1d_endz_CaloSz_midother, reco_endz);
 
 
 			//before bmrw
@@ -578,6 +1182,7 @@ void ProtonAfterMomentumReweight::Loop() {
 			if (kMIDmu) h2d_trklen_endz_CaloSz_midmu->Fill(range_reco, reco_endz);
 			if (kMIDeg) h2d_trklen_endz_CaloSz_mideg->Fill(range_reco, reco_endz);
 			if (kMIDother) h2d_trklen_endz_CaloSz_midother->Fill(range_reco, reco_endz);
+*/
 
 			double mom_rw_minchi2=1.;
 			if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) { //beam-mom cut (within 3-sigma)
@@ -613,8 +1218,8 @@ void ProtonAfterMomentumReweight::Loop() {
 			//before bmrw
 			Fill1DHist(h1d_trklen_Pos, range_reco);
 			Fill1DHist(h1d_truetrklen_Pos, range_true);
-			Fill1DHist(h1d_trueendz_Pos, true_endz);
-			Fill1DHist(h1d_trueendzSCE_Pos, true_endz_sce);
+			//Fill1DHist(h1d_trueendz_Pos, true_endz);
+			//Fill1DHist(h1d_trueendzSCE_Pos, true_endz_sce);
 
 			if (kinel) Fill1DHist(h1d_trklen_Pos_inel, range_reco); 
 			if (kel) Fill1DHist(h1d_trklen_Pos_el, range_reco); 
@@ -625,6 +1230,16 @@ void ProtonAfterMomentumReweight::Loop() {
 			if (kMIDeg) Fill1DHist(h1d_trklen_Pos_mideg, range_reco);
 			if (kMIDother) Fill1DHist(h1d_trklen_Pos_midother, range_reco);
 
+			if (kinel) Fill1DHist(h1d_truetrklen_Pos_inel, range_true); 
+			if (kel) Fill1DHist(h1d_truetrklen_Pos_el, range_true); 
+			if (kMIDcosmic) Fill1DHist(h1d_truetrklen_Pos_midcosmic, range_true); 
+			if (kMIDpi) Fill1DHist(h1d_truetrklen_Pos_midpi, range_true);
+			if (kMIDp) Fill1DHist(h1d_truetrklen_Pos_midp, range_true);
+			if (kMIDmu) Fill1DHist(h1d_truetrklen_Pos_midmu, range_true);
+			if (kMIDeg) Fill1DHist(h1d_truetrklen_Pos_mideg, range_true);
+			if (kMIDother) Fill1DHist(h1d_truetrklen_Pos_midother, range_true);
+
+/*
 			//before bmrw
 			Fill1DHist(h1d_endz_Pos, reco_endz);
 
@@ -649,6 +1264,7 @@ void ProtonAfterMomentumReweight::Loop() {
 			if (kMIDmu) h2d_trklen_endz_Pos_midmu->Fill(range_reco, reco_endz);
 			if (kMIDeg) h2d_trklen_endz_Pos_mideg->Fill(range_reco, reco_endz);
 			if (kMIDother) h2d_trklen_endz_Pos_midother->Fill(range_reco, reco_endz);
+*/
 
 			double mom_rw_minchi2=1.;
 			if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) { //beam-mom cut (within 3-sigma)
@@ -687,8 +1303,8 @@ void ProtonAfterMomentumReweight::Loop() {
 			//before bmrw
 			Fill1DHist(h1d_trklen_BQ, range_reco);
 			Fill1DHist(h1d_truetrklen_BQ, range_true);
-			Fill1DHist(h1d_trueendz_BQ, true_endz);
-			Fill1DHist(h1d_trueendzSCE_BQ, true_endz_sce);
+			//Fill1DHist(h1d_trueendz_BQ, true_endz);
+			//Fill1DHist(h1d_trueendzSCE_BQ, true_endz_sce);
 
 			if (kinel) Fill1DHist(h1d_trklen_BQ_inel, range_reco); 
 			if (kel) Fill1DHist(h1d_trklen_BQ_el, range_reco); 
@@ -699,6 +1315,17 @@ void ProtonAfterMomentumReweight::Loop() {
 			if (kMIDeg) Fill1DHist(h1d_trklen_BQ_mideg, range_reco);
 			if (kMIDother) Fill1DHist(h1d_trklen_BQ_midother, range_reco);
 
+			if (kinel) Fill1DHist(h1d_truetrklen_BQ_inel, range_true); 
+			if (kel) Fill1DHist(h1d_truetrklen_BQ_el, range_true); 
+			if (kMIDcosmic) Fill1DHist(h1d_truetrklen_BQ_midcosmic, range_true); 
+			if (kMIDpi) Fill1DHist(h1d_truetrklen_BQ_midpi, range_true);
+			if (kMIDp) Fill1DHist(h1d_truetrklen_BQ_midp, range_true);
+			if (kMIDmu) Fill1DHist(h1d_truetrklen_BQ_midmu, range_true);
+			if (kMIDeg) Fill1DHist(h1d_truetrklen_BQ_mideg, range_true);
+			if (kMIDother) Fill1DHist(h1d_truetrklen_BQ_midother, range_true);
+
+
+/*
 			//before bmrw
 			Fill1DHist(h1d_endz_BQ, reco_endz);
 
@@ -722,6 +1349,7 @@ void ProtonAfterMomentumReweight::Loop() {
 			if (kMIDmu) h2d_trklen_endz_BQ_midmu->Fill(range_reco, reco_endz);
 			if (kMIDeg) h2d_trklen_endz_BQ_mideg->Fill(range_reco, reco_endz);
 			if (kMIDother) h2d_trklen_endz_BQ_midother->Fill(range_reco, reco_endz);
+*/
 
 			double mom_rw_minchi2=1.;
 			if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) { //beam-mom cut (within 3-sigma)
@@ -800,6 +1428,183 @@ void ProtonAfterMomentumReweight::Loop() {
 			} //tail of beam			
 		} //basic cuts+RecoInel
 
+		//misid:p-rich
+		if (cosine_beam_spec_primtrk<=0.9&&IsPos&&IsRecoInEL&&IsPandoraSlice&&IsCaloSize) { //cos<=0.9+pos+RecoInel
+			//before bmrw
+			Fill1DHist(h1d_trklen_MidpRich, range_reco);
+
+			if (kinel) Fill1DHist(h1d_trklen_MidpRich_inel, range_reco); 
+			if (kel) Fill1DHist(h1d_trklen_MidpRich_el, range_reco); 
+			if (kMIDcosmic) Fill1DHist(h1d_trklen_MidpRich_midcosmic, range_reco); 
+			if (kMIDpi) Fill1DHist(h1d_trklen_MidpRich_midpi, range_reco);
+			if (kMIDp) Fill1DHist(h1d_trklen_MidpRich_midp, range_reco);
+			if (kMIDmu) Fill1DHist(h1d_trklen_MidpRich_midmu, range_reco);
+			if (kMIDeg) Fill1DHist(h1d_trklen_MidpRich_mideg, range_reco);
+			if (kMIDother) Fill1DHist(h1d_trklen_MidpRich_midother, range_reco);
+
+			double mom_rw_minchi2=1.;
+			if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) { //beam-mom cut (within 3-sigma)
+				mom_rw_minchi2=bmrw_func->Eval(mom_beam_spec*1000.); //bmrw
+				Fill1DWHist(h1d_trklen_MidpRich_bmrw, range_reco, mom_rw_minchi2);
+
+				if (kinel) Fill1DWHist(h1d_trklen_MidpRich_bmrw_inel, range_reco, mom_rw_minchi2); 
+				if (kel) Fill1DWHist(h1d_trklen_MidpRich_bmrw_el, range_reco, mom_rw_minchi2); 
+				if (kMIDcosmic) Fill1DWHist(h1d_trklen_MidpRich_bmrw_midcosmic, range_reco, mom_rw_minchi2); 
+				if (kMIDpi) Fill1DWHist(h1d_trklen_MidpRich_bmrw_midpi, range_reco, mom_rw_minchi2);
+				if (kMIDp) Fill1DWHist(h1d_trklen_MidpRich_bmrw_midp, range_reco, mom_rw_minchi2);
+				if (kMIDmu) Fill1DWHist(h1d_trklen_MidpRich_bmrw_midmu, range_reco, mom_rw_minchi2);
+				if (kMIDeg) Fill1DWHist(h1d_trklen_MidpRich_bmrw_mideg, range_reco, mom_rw_minchi2);
+				if (kMIDother) Fill1DWHist(h1d_trklen_MidpRich_bmrw_midother, range_reco, mom_rw_minchi2);
+
+			} //beam-mom cut (within 3-sigma)
+			else { //tail of beam
+				Fill1DWHist(h1d_trklen_MidpRich_bmrw, range_reco, 1); //set weight to one
+
+				if (kinel) Fill1DWHist(h1d_trklen_MidpRich_bmrw_inel, range_reco, 1); 
+				if (kel) Fill1DWHist(h1d_trklen_MidpRich_bmrw_el, range_reco, 1); 
+				if (kMIDcosmic) Fill1DWHist(h1d_trklen_MidpRich_bmrw_midcosmic, range_reco, 1); 
+				if (kMIDpi) Fill1DWHist(h1d_trklen_MidpRich_bmrw_midpi, range_reco, 1);
+				if (kMIDp) Fill1DWHist(h1d_trklen_MidpRich_bmrw_midp, range_reco, 1);
+				if (kMIDmu) Fill1DWHist(h1d_trklen_MidpRich_bmrw_midmu, range_reco, 1);
+				if (kMIDeg) Fill1DWHist(h1d_trklen_MidpRich_bmrw_mideg, range_reco, 1);
+				if (kMIDother) Fill1DWHist(h1d_trklen_MidpRich_bmrw_midother, range_reco, 1);
+
+			} //tail of beam			
+		} //cos<=0.9+pos+RecoInel
+
+
+		//El-rich
+		//bq
+		if (IsRecoStop&&IsBQ&&IsPandoraSlice&&IsCaloSize) { //BQ+El-rich
+			//before bmrw
+			Fill1DHist(h1d_trklen_ElRich, range_reco);
+
+			if (kinel) Fill1DHist(h1d_trklen_ElRich_inel, range_reco); 
+			if (kel) Fill1DHist(h1d_trklen_ElRich_el, range_reco); 
+			if (kMIDcosmic) Fill1DHist(h1d_trklen_ElRich_midcosmic, range_reco); 
+			if (kMIDpi) Fill1DHist(h1d_trklen_ElRich_midpi, range_reco);
+			if (kMIDp) Fill1DHist(h1d_trklen_ElRich_midp, range_reco);
+			if (kMIDmu) Fill1DHist(h1d_trklen_ElRich_midmu, range_reco);
+			if (kMIDeg) Fill1DHist(h1d_trklen_ElRich_mideg, range_reco);
+			if (kMIDother) Fill1DHist(h1d_trklen_ElRich_midother, range_reco);
+
+			double mom_rw_minchi2=1.;
+			if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) { //beam-mom cut (within 3-sigma)
+				mom_rw_minchi2=bmrw_func->Eval(mom_beam_spec*1000.); //bmrw
+				Fill1DWHist(h1d_trklen_ElRich_bmrw, range_reco, mom_rw_minchi2);
+
+				if (kinel) Fill1DWHist(h1d_trklen_ElRich_bmrw_inel, range_reco, mom_rw_minchi2); 
+				if (kel) Fill1DWHist(h1d_trklen_ElRich_bmrw_el, range_reco, mom_rw_minchi2); 
+				if (kMIDcosmic) Fill1DWHist(h1d_trklen_ElRich_bmrw_midcosmic, range_reco, mom_rw_minchi2); 
+				if (kMIDpi) Fill1DWHist(h1d_trklen_ElRich_bmrw_midpi, range_reco, mom_rw_minchi2);
+				if (kMIDp) Fill1DWHist(h1d_trklen_ElRich_bmrw_midp, range_reco, mom_rw_minchi2);
+				if (kMIDmu) Fill1DWHist(h1d_trklen_ElRich_bmrw_midmu, range_reco, mom_rw_minchi2);
+				if (kMIDeg) Fill1DWHist(h1d_trklen_ElRich_bmrw_mideg, range_reco, mom_rw_minchi2);
+				if (kMIDother) Fill1DWHist(h1d_trklen_ElRich_bmrw_midother, range_reco, mom_rw_minchi2);
+
+			} //beam-mom cut (within 3-sigma)
+			else { //tail of beam
+				Fill1DWHist(h1d_trklen_ElRich_bmrw, range_reco, 1); //set weight to one
+
+				if (kinel) Fill1DWHist(h1d_trklen_ElRich_bmrw_inel, range_reco, 1); 
+				if (kel) Fill1DWHist(h1d_trklen_ElRich_bmrw_el, range_reco, 1); 
+				if (kMIDcosmic) Fill1DWHist(h1d_trklen_ElRich_bmrw_midcosmic, range_reco, 1); 
+				if (kMIDpi) Fill1DWHist(h1d_trklen_ElRich_bmrw_midpi, range_reco, 1);
+				if (kMIDp) Fill1DWHist(h1d_trklen_ElRich_bmrw_midp, range_reco, 1);
+				if (kMIDmu) Fill1DWHist(h1d_trklen_ElRich_bmrw_midmu, range_reco, 1);
+				if (kMIDeg) Fill1DWHist(h1d_trklen_ElRich_bmrw_mideg, range_reco, 1);
+				if (kMIDother) Fill1DWHist(h1d_trklen_ElRich_bmrw_midother, range_reco, 1);
+
+			} //tail of beam			
+		} //BQ+El-rich
+
+		//calosz
+		if (IsRecoStop&&IsPandoraSlice&&IsCaloSize) { //calosz+El-rich
+			//before bmrw
+			Fill1DHist(h1d_trklen_CaloSz_ElRich, range_reco);
+
+			if (kinel) Fill1DHist(h1d_trklen_CaloSz_ElRich_inel, range_reco); 
+			if (kel) Fill1DHist(h1d_trklen_CaloSz_ElRich_el, range_reco); 
+			if (kMIDcosmic) Fill1DHist(h1d_trklen_CaloSz_ElRich_midcosmic, range_reco); 
+			if (kMIDpi) Fill1DHist(h1d_trklen_CaloSz_ElRich_midpi, range_reco);
+			if (kMIDp) Fill1DHist(h1d_trklen_CaloSz_ElRich_midp, range_reco);
+			if (kMIDmu) Fill1DHist(h1d_trklen_CaloSz_ElRich_midmu, range_reco);
+			if (kMIDeg) Fill1DHist(h1d_trklen_CaloSz_ElRich_mideg, range_reco);
+			if (kMIDother) Fill1DHist(h1d_trklen_CaloSz_ElRich_midother, range_reco);
+
+			double mom_rw_minchi2=1.;
+			if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) { //beam-mom cut (within 3-sigma)
+				mom_rw_minchi2=bmrw_func->Eval(mom_beam_spec*1000.); //bmrw
+				Fill1DWHist(h1d_trklen_CaloSz_ElRich_bmrw, range_reco, mom_rw_minchi2);
+
+				if (kinel) Fill1DWHist(h1d_trklen_CaloSz_ElRich_bmrw_inel, range_reco, mom_rw_minchi2); 
+				if (kel) Fill1DWHist(h1d_trklen_CaloSz_ElRich_bmrw_el, range_reco, mom_rw_minchi2); 
+				if (kMIDcosmic) Fill1DWHist(h1d_trklen_CaloSz_ElRich_bmrw_midcosmic, range_reco, mom_rw_minchi2); 
+				if (kMIDpi) Fill1DWHist(h1d_trklen_CaloSz_ElRich_bmrw_midpi, range_reco, mom_rw_minchi2);
+				if (kMIDp) Fill1DWHist(h1d_trklen_CaloSz_ElRich_bmrw_midp, range_reco, mom_rw_minchi2);
+				if (kMIDmu) Fill1DWHist(h1d_trklen_CaloSz_ElRich_bmrw_midmu, range_reco, mom_rw_minchi2);
+				if (kMIDeg) Fill1DWHist(h1d_trklen_CaloSz_ElRich_bmrw_mideg, range_reco, mom_rw_minchi2);
+				if (kMIDother) Fill1DWHist(h1d_trklen_CaloSz_ElRich_bmrw_midother, range_reco, mom_rw_minchi2);
+
+			} //beam-mom cut (within 3-sigma)
+			else { //tail of beam
+				Fill1DWHist(h1d_trklen_CaloSz_ElRich_bmrw, range_reco, 1); //set weight to one
+
+				if (kinel) Fill1DWHist(h1d_trklen_CaloSz_ElRich_bmrw_inel, range_reco, 1); 
+				if (kel) Fill1DWHist(h1d_trklen_CaloSz_ElRich_bmrw_el, range_reco, 1); 
+				if (kMIDcosmic) Fill1DWHist(h1d_trklen_CaloSz_ElRich_bmrw_midcosmic, range_reco, 1); 
+				if (kMIDpi) Fill1DWHist(h1d_trklen_CaloSz_ElRich_bmrw_midpi, range_reco, 1);
+				if (kMIDp) Fill1DWHist(h1d_trklen_CaloSz_ElRich_bmrw_midp, range_reco, 1);
+				if (kMIDmu) Fill1DWHist(h1d_trklen_CaloSz_ElRich_bmrw_midmu, range_reco, 1);
+				if (kMIDeg) Fill1DWHist(h1d_trklen_CaloSz_ElRich_bmrw_mideg, range_reco, 1);
+				if (kMIDother) Fill1DWHist(h1d_trklen_CaloSz_ElRich_bmrw_midother, range_reco, 1);
+
+			} //tail of beam			
+		} //calosz+El-rich
+
+		//pos
+		if (IsRecoStop&&IsPos&&IsPandoraSlice&&IsCaloSize) { //pos+El-rich
+			//before bmrw
+			Fill1DHist(h1d_trklen_Pos_ElRich, range_reco);
+
+			if (kinel) Fill1DHist(h1d_trklen_Pos_ElRich_inel, range_reco); 
+			if (kel) Fill1DHist(h1d_trklen_Pos_ElRich_el, range_reco); 
+			if (kMIDcosmic) Fill1DHist(h1d_trklen_Pos_ElRich_midcosmic, range_reco); 
+			if (kMIDpi) Fill1DHist(h1d_trklen_Pos_ElRich_midpi, range_reco);
+			if (kMIDp) Fill1DHist(h1d_trklen_Pos_ElRich_midp, range_reco);
+			if (kMIDmu) Fill1DHist(h1d_trklen_Pos_ElRich_midmu, range_reco);
+			if (kMIDeg) Fill1DHist(h1d_trklen_Pos_ElRich_mideg, range_reco);
+			if (kMIDother) Fill1DHist(h1d_trklen_Pos_ElRich_midother, range_reco);
+
+			double mom_rw_minchi2=1.;
+			if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) { //beam-mom cut (within 3-sigma)
+				mom_rw_minchi2=bmrw_func->Eval(mom_beam_spec*1000.); //bmrw
+				Fill1DWHist(h1d_trklen_Pos_ElRich_bmrw, range_reco, mom_rw_minchi2);
+
+				if (kinel) Fill1DWHist(h1d_trklen_Pos_ElRich_bmrw_inel, range_reco, mom_rw_minchi2); 
+				if (kel) Fill1DWHist(h1d_trklen_Pos_ElRich_bmrw_el, range_reco, mom_rw_minchi2); 
+				if (kMIDcosmic) Fill1DWHist(h1d_trklen_Pos_ElRich_bmrw_midcosmic, range_reco, mom_rw_minchi2); 
+				if (kMIDpi) Fill1DWHist(h1d_trklen_Pos_ElRich_bmrw_midpi, range_reco, mom_rw_minchi2);
+				if (kMIDp) Fill1DWHist(h1d_trklen_Pos_ElRich_bmrw_midp, range_reco, mom_rw_minchi2);
+				if (kMIDmu) Fill1DWHist(h1d_trklen_Pos_ElRich_bmrw_midmu, range_reco, mom_rw_minchi2);
+				if (kMIDeg) Fill1DWHist(h1d_trklen_Pos_ElRich_bmrw_mideg, range_reco, mom_rw_minchi2);
+				if (kMIDother) Fill1DWHist(h1d_trklen_Pos_ElRich_bmrw_midother, range_reco, mom_rw_minchi2);
+
+			} //beam-mom cut (within 3-sigma)
+			else { //tail of beam
+				Fill1DWHist(h1d_trklen_Pos_ElRich_bmrw, range_reco, 1); //set weight to one
+
+				if (kinel) Fill1DWHist(h1d_trklen_Pos_ElRich_bmrw_inel, range_reco, 1); 
+				if (kel) Fill1DWHist(h1d_trklen_Pos_ElRich_bmrw_el, range_reco, 1); 
+				if (kMIDcosmic) Fill1DWHist(h1d_trklen_Pos_ElRich_bmrw_midcosmic, range_reco, 1); 
+				if (kMIDpi) Fill1DWHist(h1d_trklen_Pos_ElRich_bmrw_midpi, range_reco, 1);
+				if (kMIDp) Fill1DWHist(h1d_trklen_Pos_ElRich_bmrw_midp, range_reco, 1);
+				if (kMIDmu) Fill1DWHist(h1d_trklen_Pos_ElRich_bmrw_midmu, range_reco, 1);
+				if (kMIDeg) Fill1DWHist(h1d_trklen_Pos_ElRich_bmrw_mideg, range_reco, 1);
+				if (kMIDother) Fill1DWHist(h1d_trklen_Pos_ElRich_bmrw_midother, range_reco, 1);
+
+			} //tail of beam			
+		} //pos+El-rich
 
 
 	} //main entry loop
@@ -807,7 +1612,8 @@ void ProtonAfterMomentumReweight::Loop() {
 	//save results ---------------------------------------------------------//
    	//TFile *fout = new TFile("mc_proton_after_bmrw.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_tightxy_after_bmrw.root","RECREATE");
-   	TFile *fout = new TFile("mc_proton_after_bmrw_HD.root","RECREATE");
+   	//TFile *fout = new TFile("mc_proton_after_bmrw_HD.root","RECREATE");
+   	TFile *fout = new TFile("mc_proton_after_bmrw.root","RECREATE");
 
 		h1d_trklen_CaloSz->Write();
 		h1d_trklen_CaloSz_inel->Write();
@@ -894,7 +1700,94 @@ void ProtonAfterMomentumReweight::Loop() {
 		h1d_trklen_RecoInel_bmrw_mideg->Write();
 		h1d_trklen_RecoInel_bmrw_midother->Write();
 
+		h1d_trklen_MidpRich->Write();
+		h1d_trklen_MidpRich_inel->Write();
+		h1d_trklen_MidpRich_el->Write();
+		h1d_trklen_MidpRich_midcosmic->Write();
+		h1d_trklen_MidpRich_midpi->Write();
+		h1d_trklen_MidpRich_midp->Write();
+		h1d_trklen_MidpRich_midmu->Write();
+		h1d_trklen_MidpRich_mideg->Write();
+		h1d_trklen_MidpRich_midother->Write();
 
+		h1d_trklen_MidpRich_bmrw->Write();
+		h1d_trklen_MidpRich_bmrw_inel->Write();
+		h1d_trklen_MidpRich_bmrw_el->Write();
+		h1d_trklen_MidpRich_bmrw_midcosmic->Write();
+		h1d_trklen_MidpRich_bmrw_midpi->Write();
+		h1d_trklen_MidpRich_bmrw_midp->Write();
+		h1d_trklen_MidpRich_bmrw_midmu->Write();
+		h1d_trklen_MidpRich_bmrw_mideg->Write();
+		h1d_trklen_MidpRich_bmrw_midother->Write();
+
+
+
+		h1d_trklen_ElRich->Write();
+		h1d_trklen_ElRich_inel->Write();
+		h1d_trklen_ElRich_el->Write();
+		h1d_trklen_ElRich_midcosmic->Write();
+		h1d_trklen_ElRich_midpi->Write();
+		h1d_trklen_ElRich_midp->Write();
+		h1d_trklen_ElRich_midmu->Write();
+		h1d_trklen_ElRich_mideg->Write();
+		h1d_trklen_ElRich_midother->Write();
+
+		h1d_trklen_ElRich_bmrw->Write();
+		h1d_trklen_ElRich_bmrw_inel->Write();
+		h1d_trklen_ElRich_bmrw_el->Write();
+		h1d_trklen_ElRich_bmrw_midcosmic->Write();
+		h1d_trklen_ElRich_bmrw_midpi->Write();
+		h1d_trklen_ElRich_bmrw_midp->Write();
+		h1d_trklen_ElRich_bmrw_midmu->Write();
+		h1d_trklen_ElRich_bmrw_mideg->Write();
+		h1d_trklen_ElRich_bmrw_midother->Write();
+
+
+
+		h1d_trklen_CaloSz_ElRich->Write();
+		h1d_trklen_CaloSz_ElRich_inel->Write();
+		h1d_trklen_CaloSz_ElRich_el->Write();
+		h1d_trklen_CaloSz_ElRich_midcosmic->Write();
+		h1d_trklen_CaloSz_ElRich_midpi->Write();
+		h1d_trklen_CaloSz_ElRich_midp->Write();
+		h1d_trklen_CaloSz_ElRich_midmu->Write();
+		h1d_trklen_CaloSz_ElRich_mideg->Write();
+		h1d_trklen_CaloSz_ElRich_midother->Write();
+
+		h1d_trklen_CaloSz_ElRich_bmrw->Write();
+		h1d_trklen_CaloSz_ElRich_bmrw_inel->Write();
+		h1d_trklen_CaloSz_ElRich_bmrw_el->Write();
+		h1d_trklen_CaloSz_ElRich_bmrw_midcosmic->Write();
+		h1d_trklen_CaloSz_ElRich_bmrw_midpi->Write();
+		h1d_trklen_CaloSz_ElRich_bmrw_midp->Write();
+		h1d_trklen_CaloSz_ElRich_bmrw_midmu->Write();
+		h1d_trklen_CaloSz_ElRich_bmrw_mideg->Write();
+		h1d_trklen_CaloSz_ElRich_bmrw_midother->Write();
+
+
+
+
+		h1d_trklen_Pos_ElRich->Write();
+		h1d_trklen_Pos_ElRich_inel->Write();
+		h1d_trklen_Pos_ElRich_el->Write();
+		h1d_trklen_Pos_ElRich_midcosmic->Write();
+		h1d_trklen_Pos_ElRich_midpi->Write();
+		h1d_trklen_Pos_ElRich_midp->Write();
+		h1d_trklen_Pos_ElRich_midmu->Write();
+		h1d_trklen_Pos_ElRich_mideg->Write();
+		h1d_trklen_Pos_ElRich_midother->Write();
+
+		h1d_trklen_Pos_ElRich_bmrw->Write();
+		h1d_trklen_Pos_ElRich_bmrw_inel->Write();
+		h1d_trklen_Pos_ElRich_bmrw_el->Write();
+		h1d_trklen_Pos_ElRich_bmrw_midcosmic->Write();
+		h1d_trklen_Pos_ElRich_bmrw_midpi->Write();
+		h1d_trklen_Pos_ElRich_bmrw_midp->Write();
+		h1d_trklen_Pos_ElRich_bmrw_midmu->Write();
+		h1d_trklen_Pos_ElRich_bmrw_mideg->Write();
+		h1d_trklen_Pos_ElRich_bmrw_midother->Write();
+
+/*
 		h1d_endz_CaloSz->Write();
 		h1d_endz_CaloSz_inel->Write();
 		h1d_endz_CaloSz_el->Write();
@@ -954,11 +1847,40 @@ void ProtonAfterMomentumReweight::Loop() {
 		h2d_trklen_endz_BQ_midmu->Write();
 		h2d_trklen_endz_BQ_mideg->Write();
 		h2d_trklen_endz_BQ_midother->Write();
+*/
 
 		h1d_truetrklen_CaloSz->Write();
-		h1d_truetrklen_Pos->Write();
-		h1d_truetrklen_BQ->Write();
+		h1d_truetrklen_CaloSz_inel->Write();
+		h1d_truetrklen_CaloSz_el->Write();
+		h1d_truetrklen_CaloSz_midcosmic->Write();
+		h1d_truetrklen_CaloSz_midpi->Write();
+		h1d_truetrklen_CaloSz_midp->Write();
+		h1d_truetrklen_CaloSz_midmu->Write();
+		h1d_truetrklen_CaloSz_mideg->Write();
+		h1d_truetrklen_CaloSz_midother->Write();
 
+		h1d_truetrklen_Pos->Write();
+		h1d_truetrklen_Pos_inel->Write();
+		h1d_truetrklen_Pos_el->Write();
+		h1d_truetrklen_Pos_midcosmic->Write();
+		h1d_truetrklen_Pos_midpi->Write();
+		h1d_truetrklen_Pos_midp->Write();
+		h1d_truetrklen_Pos_midmu->Write();
+		h1d_truetrklen_Pos_mideg->Write();
+		h1d_truetrklen_Pos_midother->Write();
+
+		h1d_truetrklen_BQ->Write();
+		h1d_truetrklen_BQ_inel->Write();
+		h1d_truetrklen_BQ_el->Write();
+		h1d_truetrklen_BQ_midcosmic->Write();
+		h1d_truetrklen_BQ_midpi->Write();
+		h1d_truetrklen_BQ_midp->Write();
+		h1d_truetrklen_BQ_midmu->Write();
+		h1d_truetrklen_BQ_mideg->Write();
+		h1d_truetrklen_BQ_midother->Write();
+
+
+/*
 		h1d_trueendz_CaloSz->Write();
 		h1d_trueendz_Pos->Write();
 		h1d_trueendz_BQ->Write();
@@ -966,6 +1888,8 @@ void ProtonAfterMomentumReweight::Loop() {
 		h1d_trueendzSCE_CaloSz->Write();
 		h1d_trueendzSCE_Pos->Write();
 		h1d_trueendzSCE_BQ->Write();
+*/
+
 
 	fout->Close();
 

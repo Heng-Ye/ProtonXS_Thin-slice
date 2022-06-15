@@ -151,7 +151,8 @@ void ProtonThinSliceData::Loop() {
 	//SetOutputFileName(Form("prod4areco2_mc_thinslice_dx%dcm_%dslcs_nobmrw_highresolKE_nopatchontrue.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_thinslice_dx%dcm_%dslcs_nobmrw_highresolKE_BeamCut.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_thinslice_dx%dcm_%dslcs_nobmrw_highresolKE_noBeamCut.root", name_thinslicewidth, nthinslices)); //output file name
-	SetOutputFileName(Form("prod4areco2_mc_thinslice_dx%dcm_%dslcs_bmrw.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_thinslice_dx%dcm_%dslcs_bmrw.root", name_thinslicewidth, nthinslices)); //output file name
+	SetOutputFileName(Form("prod4areco2_mc_thinslice_dx%dcm_%dslcs_nobmrw.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_validate_thinslice_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_test_thinslice_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_all_thinslice_dx%dcm_%dslcs.root", name_thinslicewidth, nthinslices)); //output file name
@@ -650,6 +651,8 @@ void ProtonThinSliceData::Loop() {
 		double kereco_range=0;
 		double kereco_range2=0;
 		vector<double> EDept;
+		vector<double> DEDX;
+		vector<double> DX;
 		double pid=-99; 
 		if (IsCaloSize) { //if calo size not empty
 			vector<double> trkdedx;
@@ -676,6 +679,8 @@ void ProtonThinSliceData::Loop() {
 				cali_dedx=dedx_function_35ms(dqdx, hitx_reco, hity_reco, hitz_reco);
 
 				EDept.push_back(cali_dedx*pitch);
+				DEDX.push_back(cali_dedx);
+				DX.push_back(pitch);
 
 				//zreco_rawindex.push_back(make_pair(wid_reco, h));
 				//zreco_de.push_back(make_pair(wid_reco, cali_dedx*pitch));
@@ -752,7 +757,7 @@ void ProtonThinSliceData::Loop() {
 		//double range_reco=-99; if (!primtrk_range->empty()) range_reco=primtrk_range->at(0); //reco primary trklen
 		double mom_rw_minchi2=1.; //weight for beam-momentum-reweight
 		if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) { //beam-mom (within 3-sigma)
-			mom_rw_minchi2=bmrw_func->Eval(mom_beam_spec*1000.); //bmrw, set weight if beam mom. within 3-sigma
+			//mom_rw_minchi2=bmrw_func->Eval(mom_beam_spec*1000.); //bmrw, set weight if beam mom. within 3-sigma
 		} //beam-mom (within 3-sigma)
 
 		double csda_val_spec=csda_range_vs_mom_sm->Eval(mom_beam_spec);
@@ -1275,7 +1280,10 @@ void ProtonThinSliceData::Loop() {
 					//int this_sliceID = int(this_calo_z/thinslicewidth);
 					//double this_calo_len=zreco_lenreco[ih].second;
 					//double this_dE=zreco_de[ih].second;
-					int this_sliceID = int(reco_trklen_accum[ih]/thinslicewidth);
+					double thisZ=primtrk_hitz->at(ih);
+					double thisLen=reco_trklen_accum[ih];
+					
+					int this_sliceID = int(thisLen/thinslicewidth);
 					//ke_reco-=this_dE;
 					ke_reco-=EDept.at(ih);
 
@@ -1284,6 +1292,16 @@ void ProtonThinSliceData::Loop() {
 
 					double this_incE = ke_reco;
 					vincE[this_sliceID].push_back(this_incE);
+
+
+					KEreco_z_inel->Fill(thisZ, this_incE);
+					KEreco_range_inel->Fill(thisLen, this_incE);
+					reco_z_range_inel->Fill(thisZ, thisLen);
+
+					dEdx_range_inel->Fill(thisLen, DEDX.at(ih));
+					dx_range_inel->Fill(thisLen, DX.at(ih));
+					dE_range_inel->Fill(thisLen, EDept.at(ih));
+
 				}
 
 				for (size_t i = 0; i<vincE.size(); ++i){
@@ -1323,12 +1341,12 @@ void ProtonThinSliceData::Loop() {
 
 
 					//test
-					double fX1=20.4585; //X of 1st point
-					double fY1=591.912; //Y of 1st point
-					double fX2=106.418; //X of 2nd point
-					double fY2=250.525; //Y of 2nd point
-					double m=(fY2-fY1)/(fX2-fX1);
-					double b=fY1-m*fX1;
+					//double fX1=20.4585; //X of 1st point
+					//double fY1=591.912; //Y of 1st point
+					//double fX2=106.418; //X of 2nd point
+					//double fY2=250.525; //Y of 2nd point
+					//double m=(fY2-fY1)/(fX2-fX1);
+					//double b=fY1-m*fX1;
 
 					//if (this_incE>(b+m*thisLen)) {
 						KEtrue_z_inel->Fill(thisZ, this_incE);

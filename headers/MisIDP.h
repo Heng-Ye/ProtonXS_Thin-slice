@@ -96,6 +96,25 @@ TH2D *h2d_dxy_cosine_BQ_misidp_lengt0;
 TH2D *h2d_dxy_cosine_BQ_inel;
 TH2D *h2d_dxy_cosine_BQ_el;
 
+TH1D *h1d_dxy_BQ_misidp;
+TH1D *h1d_dxy_BQ_misidp_lenle0;
+TH1D *h1d_dxy_BQ_misidp_lengt0;
+TH1D *h1d_dxy_BQ_inel;
+TH1D *h1d_dxy_BQ_el;
+
+
+TH2D *h2d_dxy_cosine_Pos_misidp;
+TH2D *h2d_dxy_cosine_Pos_misidp_lenle0;
+TH2D *h2d_dxy_cosine_Pos_misidp_lengt0;
+TH2D *h2d_dxy_cosine_Pos_inel;
+TH2D *h2d_dxy_cosine_Pos_el;
+
+TH1D *h1d_dxy_Pos_misidp;
+TH1D *h1d_dxy_Pos_misidp_lenle0;
+TH1D *h1d_dxy_Pos_misidp_lengt0;
+TH1D *h1d_dxy_Pos_inel;
+TH1D *h1d_dxy_Pos_el;
+
 void BookHistograms() { //BookHistograms
 	outputFile = TFile::Open(fOutputFileName.c_str(), "recreate"); //open output file
 
@@ -275,8 +294,8 @@ void BookHistograms() { //BookHistograms
 	int n_dxy=500;
 	double dxy_min=0;
 	double dxy_max=50;
-	int n_cos1=40;
-	double cos1_min=0.96;
+	int n_cos1=100;
+	double cos1_min=0.;
 	double cos1_max=1;
 	h2d_dxy_cosine_BQ_misidp=new TH2D("h2d_dxy_cosine_BQ_misidp","",n_dxy,dxy_min,dxy_max,n_cos1,cos1_min,cos1_max);
 	h2d_dxy_cosine_BQ_misidp_lenle0=new TH2D("h2d_dxy_cosine_BQ_misidp_lenle0","",n_dxy,dxy_min,dxy_max,n_cos1,cos1_min,cos1_max);
@@ -289,6 +308,47 @@ void BookHistograms() { //BookHistograms
 	h2d_dxy_cosine_BQ_misidp_lengt0->Sumw2();
 	h2d_dxy_cosine_BQ_inel->Sumw2();
 	h2d_dxy_cosine_BQ_el->Sumw2();	
+
+
+	h1d_dxy_BQ_misidp=new TH1D("h1d_dxy_BQ_misidp","",n_dxy,dxy_min,dxy_max);
+	h1d_dxy_BQ_misidp_lenle0=new TH1D("h1d_dxy_BQ_misidp_lenle0","",n_dxy,dxy_min,dxy_max);
+	h1d_dxy_BQ_misidp_lengt0=new TH1D("h1d_dxy_BQ_misidp_lengt0","",n_dxy,dxy_min,dxy_max);
+	h1d_dxy_BQ_inel=new TH1D("h1d_dxy_BQ_inel","",n_dxy,dxy_min,dxy_max);
+	h1d_dxy_BQ_el=new TH1D("h1d_dxy_BQ_el","",n_dxy,dxy_min,dxy_max);
+
+	h1d_dxy_BQ_misidp->Sumw2();
+	h1d_dxy_BQ_misidp_lenle0->Sumw2();
+	h1d_dxy_BQ_misidp_lengt0->Sumw2();
+	h1d_dxy_BQ_inel->Sumw2();
+	h1d_dxy_BQ_el->Sumw2();	
+
+	//
+
+	h2d_dxy_cosine_Pos_misidp=new TH2D("h2d_dxy_cosine_Pos_misidp","",n_dxy,dxy_min,dxy_max,n_cos1,cos1_min,cos1_max);
+	h2d_dxy_cosine_Pos_misidp_lenle0=new TH2D("h2d_dxy_cosine_Pos_misidp_lenle0","",n_dxy,dxy_min,dxy_max,n_cos1,cos1_min,cos1_max);
+	h2d_dxy_cosine_Pos_misidp_lengt0=new TH2D("h2d_dxy_cosine_Pos_misidp_lengt0","",n_dxy,dxy_min,dxy_max,n_cos1,cos1_min,cos1_max);
+	h2d_dxy_cosine_Pos_inel=new TH2D("h2d_dxy_cosine_Pos_inel","",n_dxy,dxy_min,dxy_max,n_cos1,cos1_min,cos1_max);
+	h2d_dxy_cosine_Pos_el=new TH2D("h2d_dxy_cosine_Pos_el","",n_dxy,dxy_min,dxy_max,n_cos1,cos1_min,cos1_max);
+
+	h2d_dxy_cosine_Pos_misidp->Sumw2();
+	h2d_dxy_cosine_Pos_misidp_lenle0->Sumw2();
+	h2d_dxy_cosine_Pos_misidp_lengt0->Sumw2();
+	h2d_dxy_cosine_Pos_inel->Sumw2();
+	h2d_dxy_cosine_Pos_el->Sumw2();	
+
+
+	h1d_dxy_Pos_misidp=new TH1D("h1d_dxy_Pos_misidp","",n_dxy,dxy_min,dxy_max);
+	h1d_dxy_Pos_misidp_lenle0=new TH1D("h1d_dxy_Pos_misidp_lenle0","",n_dxy,dxy_min,dxy_max);
+	h1d_dxy_Pos_misidp_lengt0=new TH1D("h1d_dxy_Pos_misidp_lengt0","",n_dxy,dxy_min,dxy_max);
+	h1d_dxy_Pos_inel=new TH1D("h1d_dxy_Pos_inel","",n_dxy,dxy_min,dxy_max);
+	h1d_dxy_Pos_el=new TH1D("h1d_dxy_Pos_el","",n_dxy,dxy_min,dxy_max);
+
+	h1d_dxy_Pos_misidp->Sumw2();
+	h1d_dxy_Pos_misidp_lenle0->Sumw2();
+	h1d_dxy_Pos_misidp_lengt0->Sumw2();
+	h1d_dxy_Pos_inel->Sumw2();
+	h1d_dxy_Pos_el->Sumw2();	
+
 
 } //BookHistograms
 
