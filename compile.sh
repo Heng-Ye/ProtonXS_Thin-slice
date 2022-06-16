@@ -11,13 +11,19 @@
 #class_name="ProtonCarloKE"
 #class_name="ProtonKEReweight"
 #class_name="ProtonESliceData"
-#class_name="ProtonBetheBlochKE"
 
 #class_name="ProtonDataDrivenBKGMeas"
 #class_name="ProtonDataDrivenBKGMeas_BetheBloch"
 
 #class_name="ProtonThinSliceEData"
-class_name="ProtonMomentumReweight"
+
+#class_name="ProtonMomentumReweight"
+#class_name="ProtonBetheBlochKE"
+
+#code for KEcalo and KEbb
+class_name="ProtonDataDrivenBKGMeas_BetheBloch"
+
+
 #class_name="ProtonAfterMomentumReweight"
 #class_name="ProtonEfficiencyStudy"
 #class_name="ProtonTrueLen"
