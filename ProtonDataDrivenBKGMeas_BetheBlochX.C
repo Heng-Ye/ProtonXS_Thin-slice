@@ -116,8 +116,11 @@ double err_sigma_Eloss_upstream=0.140183;
 
 double mean_Elossrange_stop=433.441-405.371; //KEstop using range, unit:MeV
 //double mean_Elosscalo_stop=433.441-379.074; //
-//double mean_Elosscalo_stop=(4.77927e+01)/(1.00480e+00); //using fit [bmrw]
-double mean_Elosscalo_stop=(4.95958e+01)/(1.00489e+00); //using fit [no bmrw]
+//double mean_Elosscalo_stop=(4.77927e+01)/(1.00480e+00); //using fit [bmrw, old version]
+//double mean_Elosscalo_stop=(4.72978e+01)/(1.00410e+00); //using fit [bmrw, new version]
+double mean_Elosscalo_stop=(4.70058e+01)/(1.00097e+00); //using fit [bmrw+beamxy with index_minchi2=11623]
+
+//double mean_Elosscalo_stop=(4.95958e+01)/(1.00489e+00); //using fit [no bmrw]
 //fit result
 //p0           4.77927e+01   3.62629e-01   1.40469e-08   0.00000e+00
 //p1          -1.00480e+00   7.70658e-03   7.70658e-03  -4.73181e-08
@@ -396,7 +399,10 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 
 	int cnt_array=0;
 	int index_original=0;
-	int index_minchi2=13331; //index of minchi2
+	//int index_minchi2=13331; //index of minchi2(this index is wrong)
+        //int index_minchi2=17537; //index of minchi2(new index, no beamXY cut)
+        int index_minchi2=11623; //index of minchi2(with beamXY cut)
+
 	for (int imu=0; imu<nmu; ++imu){ //mu loop
 		double frac_mu=mu_st-(double)imu*dmu;
 		double mu=mm1*frac_mu;
@@ -442,11 +448,14 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 	//TString str_out=Form("mc_kebbbkg_bmrw.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
 	//TString str_out=Form("mc_kebbbkg_nobmrw_HD.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
 	//TString str_out=Form("mc_kebbbkg_bmrw.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
-	TString str_out=Form("mc_kebbbkg_bmrw_beamxy.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
+	//TString str_out=Form("mc_kebbbkg_bmrw_beamxy.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
+	//TString str_out=Form("mc_kebbbkg_bmrw_new.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
+	//TString str_out=Form("mc_kecalobkg_bmrw_new.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
+	TString str_out=Form("mc_kecalobkg_bmrw_beamxy_new.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
 
 	//Basic configure ------//
-	BetheBloch BB;
-	BB.SetPdgCode(pdg);
+	//BetheBloch BB;
+	//BB.SetPdgCode(pdg);
 
 	//book histograms --//
 	//BookHistograms();
@@ -995,11 +1004,11 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 
 		//KEff (reco) with const E-loss assumption -----------------------------------//
 		//double mean_Elosscalo_stop=(4.95958e+01)/(1.00489e+00); //using fit [no bmrw]
-		//double KE_ff_reco=ke_beam_spec_MeV-mean_Elosscalo_stop;
-		double KE_ff_reco=ke_beam_spec_MeV-mean_Elossrange_stop; //kebb
+		double KE_ff_reco=ke_beam_spec_MeV-mean_Elosscalo_stop;
+		//double KE_ff_reco=ke_beam_spec_MeV-mean_Elossrange_stop; //kebb
 		double KEend_reco=0;
-		//KEend_reco=KE_ff_reco-reco_calo_MeV;		
-		KEend_reco=BB.KEAtLength(KE_ff_reco, range_reco);		
+		KEend_reco=KE_ff_reco-reco_calo_MeV;		
+		//KEend_reco=BB.KEAtLength(KE_ff_reco, range_reco);		
 
 		//KEend ---------------------------------------------------------------------------//
 		double KEend_true=0;
@@ -1022,19 +1031,18 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 
 		//Beam XY Cut to cut out up-stream interaction events [before entering TPC] -----------------------//
 		//using el for the moment (same mean and rms using  all protons)
-		double meanX_data=-31.3139;
-		double rmsX_data=3.79366;
-		double meanY_data=422.116;
-		double rmsY_data=3.48005;
+		//double meanX_data=-31.3139;
+		//double rmsX_data=3.79366;
+		//double meanY_data=422.116;
+		//double rmsY_data=3.48005;
 
-		double meanX_mc=-29.1637;
-		double rmsX_mc=4.50311;
-		double meanY_mc=421.76;
-		double rmsY_mc=3.83908;
+		//double meanX_mc=-29.1637;
+		//double rmsX_mc=4.50311;
+		//double meanY_mc=421.76;
+		//double rmsY_mc=3.83908;
 
 		bool IsBeamXY=false;
 		if ((pow(((bx_spec-meanX_mc)/(1.5*rmsX_mc)),2)+pow(((by_spec-meanY_mc)/(1.5*rmsY_mc)),2))<=1.) IsBeamXY=true;
-
 
 		//Fill histograms -------------------------------------------------------------------------------------------//
 		//if (IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts
