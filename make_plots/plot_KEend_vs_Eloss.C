@@ -94,10 +94,14 @@ TF1* FitKEEnd(TH1D* h, Int_t col) {
 
 void plot_KEend_vs_Eloss() {
 
-	TString outpath="./plot_KEend_Eloss_bmrw/";
 	//TString fin="../mc_kecalo_bmrw.root";
 	//TString fin="../mc_kecalo_nobmrw_ElossTune.root";
-	TString fin="../mc_kecalo_bmrw_ElossTune.root";
+	//
+	//TString outpath="./plot_KEend_Eloss_bmrw/";
+	//TString fin="../mc_kecalo_bmrw_ElossTune.root";
+	
+	TString outpath="./plot_KEend_Eloss_bmrw_beamxy/";
+	TString fin="../mc_kecalo_bmrw_beamxy_ElossTune.root";
 	
 	//setup e-loss map 
 	vector<double> Eloss;

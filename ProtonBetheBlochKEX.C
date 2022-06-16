@@ -372,7 +372,8 @@ void ProtonBetheBlochKE::Loop() {
 	int cnt_array=0;
 	int index_original=0;
 	//int index_minchi2=13331; //index of minchi2(this index is wrong)
-	int index_minchi2=17537; //index of minchi2
+	//int index_minchi2=17537; //index of minchi2
+	int index_minchi2=11623; //index of minchi2(with beamXY cut)
 	for (int imu=0; imu<nmu; ++imu){ //mu loop
 		double frac_mu=mu_st-(double)imu*dmu;
 		double mu=mm1*frac_mu;
@@ -628,6 +629,9 @@ void ProtonBetheBlochKE::Loop() {
 		bool IsRecoInEL=false;
 		bool IsRecoEL=false;
 		double mom_beam_spec=-99; mom_beam_spec=beamMomentum_spec->at(0);
+		double bx_spec=beamPosx_spec->at(0);
+		double by_spec=beamPosy_spec->at(0);
+
 		//double range_reco=-99; if (!primtrk_range->empty()) range_reco=primtrk_range->at(0); //reco primary trklen
 		double csda_val_spec=csda_range_vs_mom_sm->Eval(mom_beam_spec);
 		double ntrklen_reco=range_reco/csda_val_spec;
@@ -1326,7 +1330,8 @@ void ProtonBetheBlochKE::Loop() {
    	//TFile *fout = new TFile("mc_kebb_nobmrw.root","RECREATE");
    	//TFile *fout = new TFile("mc_kebb_bmrw.root","RECREATE");
    	//TFile *fout = new TFile("mc_kebb_nobmrw.root","RECREATE");
-   	TFile *fout = new TFile("mc_kecalo_bmrw_ElossTune.root","RECREATE");
+   	//TFile *fout = new TFile("mc_kecalo_bmrw_ElossTune.root","RECREATE");
+   	TFile *fout = new TFile("mc_kecalo_bmrw_beamxy_ElossTune.root","RECREATE");
 
 /*
 		h1d_kebb_truth_el->Write();
