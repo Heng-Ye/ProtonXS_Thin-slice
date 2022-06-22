@@ -18,6 +18,7 @@
 #include <TH3F.h>
 #include <TString.h>
 #include <TProfile2D.h>
+#include <TProfile.h>
 #include <THStack.h>
 #include "TGraph.h" 
 #include "TGraphSmooth.h" 
@@ -341,6 +342,15 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 	TH1D *keff_true_MidP_mideg=new TH1D("keff_true_MidP_mideg","", nke, kemin, kemax);
 	TH1D *keff_true_MidP_midother=new TH1D("keff_true_MidP_midother","", nke, kemin, kemax);
 
+
+	//Evaluation of KEff assumption
+	TH2D* tf_keff_R_RecoEl=new TH2D("tf_keff_R_RecoEl","",nke, kemin, kemax, 200,-10,10);
+	TH2D* tf_keff_R_RecoInEl=new TH2D("tf_keff_R_RecoInEl","",nke, kemin, kemax, 200,-10,10);
+	TH2D* tf_keff_R0_RecoEl=new TH2D("tf_keff_R0_RecoEl","",nke, kemin, kemax, 200,-10,10);
+	TH2D* tf_keff_R0_RecoInEl=new TH2D("tf_keff_R0_RecoInEl","",nke, kemin, kemax, 200,-10,10);
+	TH1D *edept_RecoEl=new TH1D("edept_RecoEl","", nke, kemin, kemax);
+	TH1D *edept_RecoInEl=new TH1D("edept_RecoInEl","", nke, kemin, kemax);
+
 	//Booking histograms -------------------------------------------------------------------------------//
 
 	//Beam momentum reweighting ----------------------------------------------------------------------------------------------//
@@ -451,11 +461,13 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 	//TString str_out=Form("mc_kebbbkg_bmrw_beamxy.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
 	//TString str_out=Form("mc_kebbbkg_bmrw_new.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
 	//TString str_out=Form("mc_kecalobkg_bmrw_new.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
-	TString str_out=Form("mc_kecalobkg_bmrw_beamxy_new.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
+	//TString str_out=Form("mc_kecalobkg_bmrw_beamxy_new.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
+	//TString str_out=Form("mc_kecalobkg_bmrw_beamxy_new2.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
+	TString str_out=Form("mc_kecalobkg_bmrw_beamxy_new3.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
 
 	//Basic configure ------//
-	//BetheBloch BB;
-	//BB.SetPdgCode(pdg);
+	BetheBloch BB;
+	BB.SetPdgCode(pdg);
 
 	//book histograms --//
 	//BookHistograms();
@@ -1250,9 +1262,17 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 				Fill1DWHist(keff_true_All_midother, KE_ff_true, mom_rw_minchi2);
 			}
 
+			double l1=-99; l1=BB.RangeFromKE(KE_ff_reco);	
+			double r=-1;   r=l1/range_reco;
 			if (IsRecoInEL) { //reco inel
 				Fill1DWHist(keff_reco_RecoInEl, KE_ff_reco, mom_rw_minchi2);
 				Fill1DWHist(keff_true_RecoInEl, KE_ff_true, mom_rw_minchi2);
+
+				//for KEff study 
+				tf_keff_R_RecoInEl->Fill(KE_ff_reco, r, mom_rw_minchi2);
+				tf_keff_R0_RecoInEl->Fill(KE_ff_reco, r);
+				Fill1DWHist(edept_RecoInEl, reco_calo_MeV, mom_rw_minchi2);	
+
 				if (kinel) {
 					Fill1DWHist(keff_reco_RecoInEl_inel, KE_ff_reco, mom_rw_minchi2);
 					Fill1DWHist(keff_true_RecoInEl_inel, KE_ff_true, mom_rw_minchi2);
@@ -1291,6 +1311,13 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 			if (IsRecoEL) { //reco el
 				Fill1DWHist(keff_reco_RecoEl, KE_ff_reco, mom_rw_minchi2);
 				Fill1DWHist(keff_true_RecoEl, KE_ff_true, mom_rw_minchi2);
+
+				//for KEff study 
+				double r=-1;   r=l1/range_reco;
+				tf_keff_R_RecoEl->Fill(KE_ff_reco, r, mom_rw_minchi2);
+				tf_keff_R0_RecoEl->Fill(KE_ff_reco, r);
+				Fill1DWHist(edept_RecoEl, reco_calo_MeV, mom_rw_minchi2);	
+
 				if (kinel) {
 					Fill1DWHist(keff_reco_RecoEl_inel, KE_ff_reco, mom_rw_minchi2);
 					Fill1DWHist(keff_true_RecoEl_inel, KE_ff_true, mom_rw_minchi2);
@@ -1544,6 +1571,17 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 
 		ke_kebeam_reco_RecoInEl->Write();
 		ke_kebeam_reco_RecoEl->Write();
+
+		tf_keff_R_RecoEl->Write();
+		tf_keff_R_RecoInEl->Write();
+		tf_keff_R0_RecoEl->Write();
+		tf_keff_R0_RecoInEl->Write();
+		edept_RecoEl->Write();
+		edept_RecoInEl->Write();
+
+
+
+
 		fout->Close();
 
 
