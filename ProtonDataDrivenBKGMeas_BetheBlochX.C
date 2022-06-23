@@ -351,6 +351,12 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 	TH1D *edept_RecoEl=new TH1D("edept_RecoEl","", nke, kemin, kemax);
 	TH1D *edept_RecoInEl=new TH1D("edept_RecoInEl","", nke, kemin, kemax);
 
+	tf_keff_R_RecoEl->Sumw2();
+	tf_keff_R_RecoInEl->Sumw2();
+	tf_keff_R0_RecoEl->Sumw2();
+	tf_keff_R0_RecoInEl->Sumw2();
+	edept_RecoEl->Sumw2();
+	edept_RecoInEl->Sumw2();
 	//Booking histograms -------------------------------------------------------------------------------//
 
 	//Beam momentum reweighting ----------------------------------------------------------------------------------------------//
