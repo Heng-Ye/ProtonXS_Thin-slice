@@ -469,7 +469,8 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 	//TString str_out=Form("mc_kecalobkg_bmrw_new.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
 	//TString str_out=Form("mc_kecalobkg_bmrw_beamxy_new.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
 	//TString str_out=Form("mc_kecalobkg_bmrw_beamxy_new2.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
-	TString str_out=Form("mc_kecalobkg_bmrw_beamxy_new3.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
+	//TString str_out=Form("mc_kecalobkg_bmrw_beamxy_new3.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
+	TString str_out=Form("mc_kecalobkg_bmrw_beamxy_new4.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
 
 	//Basic configure ------//
 	BetheBloch BB;
@@ -1045,8 +1046,11 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 		//bmrw -------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 		double mom_rw_minchi2=1; //weight for beam-momentum-reweight
 		//if ((ke_beam_spec_MeV-mean_Elosscalo_stop)>=mu_min&&(ke_beam_spec_MeV-mean_Elosscalo_stop)<=mu_max) mom_rw_minchi2=agng->Eval(ke_beam_spec_MeV-mean_Elosscalo_stop); //bmrw
-		if ((mom_beam_spec*1000.)>=mmu_min&&(mom_beam_spec*1000.)<=mmu_max) mom_rw_minchi2=gng[index_minchi2]->Eval(mom_beam_spec*1000.); //bmrw
-
+		bool IsBeamMom=false; //apply 3-sigma cut
+		if ((mom_beam_spec*1000.)>=mmu_min&&(mom_beam_spec*1000.)<=mmu_max) { 
+			mom_rw_minchi2=gng[index_minchi2]->Eval(mom_beam_spec*1000.); //bmrw
+			IsBeamMom=true;
+		}
 		//Beam XY Cut to cut out up-stream interaction events [before entering TPC] -----------------------//
 		//using el for the moment (same mean and rms using  all protons)
 		//double meanX_data=-31.3139;
@@ -1064,7 +1068,8 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 
 		//Fill histograms -------------------------------------------------------------------------------------------//
 		//if (IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts
-		if (IsBeamXY&&IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts
+		//if (IsBeamXY&&IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts
+		if (IsBeamMom&&IsBeamXY&&IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts
 			//inc
 			Fill1DWHist(ke_reco_All, KEend_reco, mom_rw_minchi2);
 			Fill1DWHist(ke_true_All, KEend_true, mom_rw_minchi2);
@@ -1190,7 +1195,8 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 
 
 		//if (IsMisidpRich) { //misidp-rich
-		if (IsBeamXY&&IsMisidpRich) { //misidp-rich
+		//if (IsBeamXY&&IsMisidpRich) { //misidp-rich
+		if (IsBeamMom&&IsBeamXY&&IsMisidpRich) { //misidp-rich
 			Fill1DWHist(ke_reco_MidP, KEend_reco, mom_rw_minchi2);
 			Fill1DWHist(ke_true_MidP, KEend_true, mom_rw_minchi2);
 			if (kinel) {
@@ -1229,7 +1235,8 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 
 
 		//ff
-		if (IsBeamXY&&IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts
+		if (IsBeamMom&&IsBeamXY&&IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts
+		//if (IsBeamXY&&IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts
 		//if (IsPandoraSlice&&IsCaloSize&&IsBQ) {  //basic cuts
 			//inc
 			Fill1DWHist(keff_reco_All, KE_ff_reco, mom_rw_minchi2);
@@ -1360,7 +1367,8 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 		} //basic cuts
 
 
-		if (IsBeamXY&&IsMisidpRich) { //misidp-rich
+		if (IsBeamMom&&IsBeamXY&&IsMisidpRich) { //misidp-rich
+		//if (IsBeamXY&&IsMisidpRich) { //misidp-rich
 		//if (IsMisidpRich) { //misidp-rich
 			Fill1DWHist(keff_reco_MidP, KE_ff_reco, mom_rw_minchi2);
 			Fill1DWHist(keff_true_MidP, KE_ff_true, mom_rw_minchi2);
