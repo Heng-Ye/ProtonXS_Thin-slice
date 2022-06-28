@@ -357,6 +357,22 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 	tf_keff_R0_RecoInEl->Sumw2();
 	edept_RecoEl->Sumw2();
 	edept_RecoInEl->Sumw2();
+
+
+	double r_min=-10;
+	double r_max=10;
+	int n_r=20;
+	TH1D *Rf_RecoEl=new TH1D("Rf_RecoEl","", n_r, r_min, r_max);
+	TH1D *Re_RecoEl=new TH1D("Re_RecoEl","", n_r, r_min, r_max);
+	TH2D *Rf_Re_RecoEl=new TH2D("Rf_Re_RecoEl","", n_r, r_min, r_max, n_r, r_min, r_max);
+	Rf_RecoEl->Sumw2();
+	Re_RecoEl->Sumw2();
+
+	TH1D *Rf_RecoInEl=new TH1D("Rf_RecoInEl","", n_r, r_min, r_max);
+	TH1D *Re_RecoInEl=new TH1D("Re_RecoInEl","", n_r, r_min, r_max);
+	TH2D *Rf_Re_RecoInEl=new TH2D("Rf_Re_RecoInEl","", n_r, r_min, r_max, n_r, r_min, r_max);
+	Rf_RecoInEl->Sumw2();
+	Re_RecoInEl->Sumw2();
 	//Booking histograms -------------------------------------------------------------------------------//
 
 	//Beam momentum reweighting ----------------------------------------------------------------------------------------------//
@@ -470,11 +486,12 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 	//TString str_out=Form("mc_kecalobkg_bmrw_beamxy_new.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
 	//TString str_out=Form("mc_kecalobkg_bmrw_beamxy_new2.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
 	//TString str_out=Form("mc_kecalobkg_bmrw_beamxy_new3.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
-	TString str_out=Form("mc_kecalobkg_bmrw_beamxy_new4.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
+	//TString str_out=Form("mc_kecalobkg_bmrw_beamxy_new4.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
+	TString str_out=Form("mc_kecalobkg_bmrw_beamxy_new5.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
 
 	//Basic configure ------//
-	BetheBloch BB;
-	BB.SetPdgCode(pdg);
+	//BetheBloch BB;
+	//BB.SetPdgCode(pdg);
 
 	//book histograms --//
 	//BookHistograms();
@@ -1275,15 +1292,24 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 				Fill1DWHist(keff_true_All_midother, KE_ff_true, mom_rw_minchi2);
 			}
 
-			double l1=-99; l1=BB.RangeFromKE(KE_ff_reco);	
-			double r=-1;   r=l1/range_reco;
+			//Bethe-Bloch Transformation ------------------------//
+			BetheBloch BB;
+			BB.SetPdgCode(pdg);
+			double l_ff=-99; l_ff=BB.RangeFromKE(KE_ff_reco);	
+			double l_end=-99; l_end=BB.RangeFromKE(ke_calo_MeV);	
+			double rf=-1;   rf=l_ff/range_reco;
+			double re=-1; re=l_end/range_reco;
+
+
+			//double l1=-99; l1=BB.RangeFromKE(KE_ff_reco);	
+			//double r=-1;   r=l1/range_reco;
 			if (IsRecoInEL) { //reco inel
 				Fill1DWHist(keff_reco_RecoInEl, KE_ff_reco, mom_rw_minchi2);
 				Fill1DWHist(keff_true_RecoInEl, KE_ff_true, mom_rw_minchi2);
 
 				//for KEff study 
-				tf_keff_R_RecoInEl->Fill(KE_ff_reco, r, mom_rw_minchi2);
-				tf_keff_R0_RecoInEl->Fill(KE_ff_reco, r);
+				//tf_keff_R_RecoInEl->Fill(KE_ff_reco, r, mom_rw_minchi2);
+				//tf_keff_R0_RecoInEl->Fill(KE_ff_reco, r);
 				Fill1DWHist(edept_RecoInEl, reco_calo_MeV, mom_rw_minchi2);	
 
 				if (kinel) {
@@ -1319,6 +1345,11 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 					Fill1DWHist(keff_true_RecoInEl_midother, KE_ff_true, mom_rw_minchi2);
 				}
 
+				Fill1DHist(Rf_RecoInEl, rf);
+				Fill1DHist(Re_RecoInEl, re);
+				Rf_Re_RecoInEl->Fill(rf, re);
+		
+
 			} //reco inel
 
 			if (IsRecoEL) { //reco el
@@ -1326,10 +1357,15 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 				Fill1DWHist(keff_true_RecoEl, KE_ff_true, mom_rw_minchi2);
 
 				//for KEff study 
-				double r=-1;   r=l1/range_reco;
-				tf_keff_R_RecoEl->Fill(KE_ff_reco, r, mom_rw_minchi2);
-				tf_keff_R0_RecoEl->Fill(KE_ff_reco, r);
+				//double r=-1;   r=l1/range_reco;
+				//tf_keff_R_RecoEl->Fill(KE_ff_reco, r, mom_rw_minchi2);
+				//tf_keff_R0_RecoEl->Fill(KE_ff_reco, r);
 				Fill1DWHist(edept_RecoEl, reco_calo_MeV, mom_rw_minchi2);	
+
+				Fill1DHist(Rf_RecoEl, rf);
+				Fill1DHist(Re_RecoEl, re);
+				Rf_Re_RecoEl->Fill(rf, re);
+
 
 				if (kinel) {
 					Fill1DWHist(keff_reco_RecoEl_inel, KE_ff_reco, mom_rw_minchi2);
@@ -1586,13 +1622,20 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 		ke_kebeam_reco_RecoInEl->Write();
 		ke_kebeam_reco_RecoEl->Write();
 
-		tf_keff_R_RecoEl->Write();
-		tf_keff_R_RecoInEl->Write();
-		tf_keff_R0_RecoEl->Write();
-		tf_keff_R0_RecoInEl->Write();
+		//tf_keff_R_RecoEl->Write();
+		//tf_keff_R_RecoInEl->Write();
+		//tf_keff_R0_RecoEl->Write();
+		//tf_keff_R0_RecoInEl->Write();
 		edept_RecoEl->Write();
 		edept_RecoInEl->Write();
 
+		Rf_RecoEl->Write();
+		Re_RecoEl->Write();
+		Rf_Re_RecoEl->Write();
+
+		Rf_RecoInEl->Write();
+		Re_RecoInEl->Write();
+		Rf_Re_RecoInEl->Write();
 
 
 
