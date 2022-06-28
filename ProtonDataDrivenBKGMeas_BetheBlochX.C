@@ -1296,7 +1296,7 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 			BetheBloch BB;
 			BB.SetPdgCode(pdg);
 			double l_ff=-99; l_ff=BB.RangeFromKE(KE_ff_reco);	
-			double l_end=-99; l_end=BB.RangeFromKE(ke_calo_MeV);	
+			double l_end=-99; l_end=BB.RangeFromKE(reco_calo_MeV);	
 			double rf=-1;   rf=l_ff/range_reco;
 			double re=-1; re=l_end/range_reco;
 
