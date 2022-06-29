@@ -361,7 +361,7 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 
 	double r_min=-10;
 	double r_max=10;
-	int n_r=20;
+	int n_r=200;
 	TH1D *Rf_RecoEl=new TH1D("Rf_RecoEl","", n_r, r_min, r_max);
 	TH1D *Re_RecoEl=new TH1D("Re_RecoEl","", n_r, r_min, r_max);
 	TH2D *Rf_Re_RecoEl=new TH2D("Rf_Re_RecoEl","", n_r, r_min, r_max, n_r, r_min, r_max);
@@ -487,11 +487,12 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 	//TString str_out=Form("mc_kecalobkg_bmrw_beamxy_new2.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
 	//TString str_out=Form("mc_kecalobkg_bmrw_beamxy_new3.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
 	//TString str_out=Form("mc_kecalobkg_bmrw_beamxy_new4.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
-	TString str_out=Form("mc_kecalobkg_bmrw_beamxy_new5.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
+	//TString str_out=Form("mc_kecalobkg_bmrw_beamxy_new5.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
+	TString str_out=Form("mc_kecalobkg_bmrw_beamxy_new6.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
 
 	//Basic configure ------//
-	//BetheBloch BB;
-	//BB.SetPdgCode(pdg);
+	BetheBloch BB;
+	BB.SetPdgCode(pdg);
 
 	//book histograms --//
 	//BookHistograms();
@@ -512,6 +513,8 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 		if (ientry%2 == 0) isTestSample = false; //Divide MC sample by 2 parts: test+ufold
 		//if (isTestSample) continue; //only validate sample
 		//if (!isTestSample) continue; //only test sample
+
+                if (jentry%1000==0) std::cout<<jentry<<"/"<<nentries<<std::endl;
 
 		//true_sliceID = -1;
 		//reco_sliceID = -1;
@@ -1293,8 +1296,6 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 			}
 
 			//Bethe-Bloch Transformation ------------------------//
-			BetheBloch BB;
-			BB.SetPdgCode(pdg);
 			double l_ff=-99; l_ff=BB.RangeFromKE(KE_ff_reco);	
 			double l_end=-99; l_end=BB.RangeFromKE(reco_calo_MeV);	
 			double rf=-1;   rf=l_ff/range_reco;
