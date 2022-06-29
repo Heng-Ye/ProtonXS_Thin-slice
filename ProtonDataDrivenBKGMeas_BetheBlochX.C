@@ -299,6 +299,8 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 
 	//start//--
 	//inc_end
+	TH1D *keff_true_All_nobmrw=new TH1D("keff_true_All_nobmrw","", nke, kemin, kemax);
+	TH1D *keff_true_RecoStop_nobmrw=new TH1D("keff_true_RecoStop_nobmrw","", nke, kemin, kemax);
 	TH1D *keff_true_All=new TH1D("keff_true_All","", nke, kemin, kemax);
 	TH1D *keff_true_All_inel=new TH1D("keff_true_All_inel","", nke, kemin, kemax);
 	TH1D *keff_true_All_el=new TH1D("keff_true_All_el","", nke, kemin, kemax);
@@ -308,6 +310,12 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 	TH1D *keff_true_All_midmu=new TH1D("keff_true_All_midmu","", nke, kemin, kemax);
 	TH1D *keff_true_All_mideg=new TH1D("keff_true_All_mideg","", nke, kemin, kemax);
 	TH1D *keff_true_All_midother=new TH1D("keff_true_All_midother","", nke, kemin, kemax);
+
+	//spec
+	TH1D *kebeam_spec_All_nobmrw=new TH1D("kebeam_spec_All_nobmrw","", nke, kemin, kemax);
+	TH1D *kebeam_spec_RecoStop_nobmrw=new TH1D("kebeam_spec_RecoStop_nobmrw","", nke, kemin, kemax);
+	TH1D *kebeam_spec_All=new TH1D("kebeam_spec_All","", nke, kemin, kemax);
+	TH1D *kebeam_spec_RecoStop=new TH1D("kebeam_spec_RecoStop","", nke, kemin, kemax);
 
 	//reco_inel
 	TH1D *keff_true_RecoInEl=new TH1D("keff_true_RecoInEl","", nke, kemin, kemax);
@@ -488,7 +496,8 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 	//TString str_out=Form("mc_kecalobkg_bmrw_beamxy_new3.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
 	//TString str_out=Form("mc_kecalobkg_bmrw_beamxy_new4.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
 	//TString str_out=Form("mc_kecalobkg_bmrw_beamxy_new5.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
-	TString str_out=Form("mc_kecalobkg_bmrw_beamxy_new6.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
+	//TString str_out=Form("mc_kecalobkg_bmrw_beamxy_new6.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
+	TString str_out=Form("mc_kecalobkg_bmrw_beamxy_new8.root"); //allow ke<0 and set ke=-700 if under-estimation of keff
 
 	//Basic configure ------//
 	BetheBloch BB;
@@ -1261,6 +1270,18 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 			//inc
 			Fill1DWHist(keff_reco_All, KE_ff_reco, mom_rw_minchi2);
 			Fill1DWHist(keff_true_All, KE_ff_true, mom_rw_minchi2);
+			Fill1DWHist(keff_true_All_nobmrw, KE_ff_true, 1);
+
+			Fill1DWHist(kebeam_spec_All, ke_beam_spec_MeV, mom_rw_minchi2);
+			Fill1DWHist(kebeam_spec_All_nobmrw, ke_beam_spec_MeV, 1);
+
+
+			if (IsRecoStop) { 
+				Fill1DWHist(keff_true_RecoStop_nobmrw, KE_ff_true, 1);
+
+				Fill1DWHist(kebeam_spec_RecoStop_nobmrw, ke_beam_spec_MeV, 1);
+				Fill1DWHist(kebeam_spec_RecoStop, ke_beam_spec_MeV, mom_rw_minchi2);
+			}
 
 			if (kinel) { 
 				Fill1DWHist(keff_reco_All_inel, KE_ff_reco, mom_rw_minchi2);
@@ -1493,6 +1514,9 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 		ke_true_MidP_mideg->Write();
 		ke_true_MidP_midother->Write();
 
+		keff_true_RecoStop_nobmrw->Write();
+		keff_true_All_nobmrw->Write();
+
 		keff_true_All->Write();
 		keff_true_All_inel->Write();
 		keff_true_All_el->Write();
@@ -1622,6 +1646,14 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 
 		ke_kebeam_reco_RecoInEl->Write();
 		ke_kebeam_reco_RecoEl->Write();
+
+		kebeam_spec_All->Write();
+		kebeam_spec_RecoStop->Write();
+
+		kebeam_spec_All_nobmrw->Write();
+		kebeam_spec_RecoStop_nobmrw->Write();
+		
+
 
 		//tf_keff_R_RecoEl->Write();
 		//tf_keff_R_RecoInEl->Write();
