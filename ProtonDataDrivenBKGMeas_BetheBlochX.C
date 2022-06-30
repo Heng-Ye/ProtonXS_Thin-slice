@@ -1341,8 +1341,8 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 				Fill1DWHist(keff_true_RecoInEl, KE_ff_true, mom_rw_minchi2);
 
 				//for KEff study 
-				tf_keff_R_RecoInEl->Fill(KE_ff_reco, r, mom_rw_minchi2);
-				tf_keff_R0_RecoInEl->Fill(KE_ff_reco, r);
+				tf_keff_R_RecoInEl->Fill(KE_ff_reco, rf, mom_rw_minchi2);
+				tf_keff_R0_RecoInEl->Fill(KE_ff_reco, rf);
 				Fill1DWHist(edept_RecoInEl, reco_calo_MeV, mom_rw_minchi2);	
 
 				if (kinel) {
@@ -1394,8 +1394,8 @@ void ProtonDataDrivenBKGMeas_BetheBloch::Loop() {
 
 				//for KEff study 
 				//double r=-1;   r=l1/range_reco;
-				tf_keff_R_RecoEl->Fill(KE_ff_reco, r, mom_rw_minchi2);
-				tf_keff_R0_RecoEl->Fill(KE_ff_reco, r);
+				tf_keff_R_RecoEl->Fill(KE_ff_reco, rf, mom_rw_minchi2);
+				tf_keff_R0_RecoEl->Fill(KE_ff_reco, rf);
 				Fill1DWHist(edept_RecoEl, reco_calo_MeV, mom_rw_minchi2);	
 
 				Fill1DHist(Rf_RecoEl, rf);
