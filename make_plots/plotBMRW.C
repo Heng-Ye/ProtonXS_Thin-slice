@@ -1,5 +1,5 @@
 #include "../headers/BasicParameters.h"
-#include "../headers/BasicAnaFunc.h"
+#include "../headers/BasicFunctions.h"
 
 void plotBMRW(TString fdata, TString fmc, TString outpath) {
 	TString rep="trklen";
@@ -77,6 +77,11 @@ void plotBMRW(TString fdata, TString fmc, TString outpath) {
 	Double_t sigma_st=bm_sigma_st->GetVal();
 	cout<<"sigma:"<<nsigma<<" "<<dsigma<<" "<<sigma_st<<endl;
 
+
+
+
+
+/*
 	//Proton Momentum --------------------------------------------------------------//
 	TCanvas *c0=new TCanvas("c0","");
 	c0->Divide(1,1);
@@ -95,7 +100,7 @@ void plotBMRW(TString fdata, TString fmc, TString outpath) {
 	leg0->Draw();
 
 	c0->Print(Form("%s/pbeam_data_mc.eps",outpath.Data()));
-
+*/
 
 	//read rw histograms -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 	Int_t n_1d=nmu*nsigma;
@@ -109,8 +114,11 @@ void plotBMRW(TString fdata, TString fmc, TString outpath) {
 	int cnt_array=0;
 	//double m1=pbeam_fit_mc->GetParameter(0); //MC prod p4a [spec]
 	//double s1=pbeam_fit_mc->GetParameter(1); //MC prod p4a [spec]
-        double m1=1007.1482; //MC prod4a [spec]
-        double s1=60.703307; //MC prod4a [spec]
+        //double m1=1007.1482; //MC prod4a [spec]
+        //double s1=60.703307; //MC prod4a [spec]
+        double m1=997.969; //MC prod4a [truth]
+        double s1=54.4602; //MC prod4a [truth]
+
 	cout<<"m1:"<<m1<<"|  s1:"<<s1<<endl;
 	//cout<<"amp:"<<pbeam_fit_data->GetParameter(2)<<endl;
 
@@ -1061,7 +1069,6 @@ void plotBMRW(TString fdata, TString fmc, TString outpath) {
 
 
 
-*/
 
 
 
