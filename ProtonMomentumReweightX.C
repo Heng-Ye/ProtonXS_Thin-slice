@@ -83,8 +83,10 @@ void ProtonMomentumReweight::Loop() {
 	TH1D *h1d_pcalo_stop=new TH1D("h1d_pcalo_stop","",nx,xmin,xmax);
 
 	//MC Beam Mom Gaussian 
-	double m1=1007.1482; //MC prod4a [spec]
-	double s1=60.703307; //MC prod4a [spec]
+	//double m1=1007.1482; //MC prod4a [spec]
+	//double s1=60.703307; //MC prod4a [spec]
+	double m1=997.969; //MC prod4a [truth]
+	double s1=54.4602; //MC prod4a [truth]
 
 	//momentum cut range	
 	double mu_min=m1-3.*s1;
