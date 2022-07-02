@@ -18,11 +18,14 @@
 #class_name="ProtonThinSliceEData"
 
 #class_name="ProtonMomentumReweight"
+class_name="ProtonApplyMomentumReweight"
+
+#for e-loss calculation
 #class_name="ProtonBetheBlochKE"
 
 #code for KEcalo and KEbb
-class_name="ProtonDataDrivenBKGMeas_BetheBloch"
-
+#class_name="ProtonDataDrivenBKGMeas_BetheBloch"
+#class_name="ProtonDataDrivenBKGMeas_BetheBlochLight"
 
 #class_name="ProtonAfterMomentumReweight"
 #class_name="ProtonEfficiencyStudy"
