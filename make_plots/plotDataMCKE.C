@@ -220,25 +220,6 @@ void plotDataMCKE(TString fdata, TString fmc, TString outpath) {
 
 
 
-	//TH1D *pff_stop_mc=(TH1D*)f_mc->Get("h1d_pff_stop");
-	//TF1 *pff_stop_fit_mc=(TF1*)f_mc->Get("pff_stop_fit");
-
-
-
-
-	//TF1 *pbeam_fit_data=(TF1*)f_data->Get("pbeam_fit");
-	//TH1D* h1d=(TH1D*)f_data->Get(Form("h1d_%s_stop",rep.Data()));
-
-	//TF1 *pbeam_stop_fit_data=(TF1*)f_data->Get("pbeam_stop_fit");
-	//int n_data=pbeam_data->Integral(); 
-	//int n_stop_data=pbeam_stop_data->Integral(); 
-	//cout<<"n_data:"<<n_data<<endl;
-	//cout<<"n_stop_data:"<<n_stop_data<<endl;
-
-	//pbeam_data->SetLineColor(1); 	      pbeam_data->SetMarkerColor(1);
-	//pbeam_fit_data->SetLineColor(1);      pbeam_fit_data->SetMarkerColor(1);
-	//pbeam_stop_data->SetLineColor(1);     pbeam_stop_data->SetMarkerColor(1);
-	//pbeam_stop_fit_data->SetLineColor(1); pbeam_stop_fit_data->SetMarkerColor(1);
 
 
 
