@@ -8,7 +8,7 @@ fout_path="./plots_beamxy_bmrw"
 #exe1_str="root -b -q 'plotDataMCKE.C(\""$file_bmrw_data\"", \""$file_bmrw_mc\"", \""$fout_path\"")'"
 
 
-#draw mean and sigma for data and MC 
+#draw mean and sigma for data and MC(before bmrw) 
 exe1_str="root -l 'plotDataMCKE.C(\""$file_bmrw_data\"", \""$file_bmrw_mc\"", \""$fout_path\"")'"
 
 #calculate bmrw
@@ -17,5 +17,5 @@ exe2_str="root -b -q 'plotBMRW.C(\""$file_bmrw_data\"", \""$file_bmrw_mc\"", \""
 
 
 
-#eval $exe1_str
-eval $exe2_str
+eval $exe1_str
+#eval $exe2_str

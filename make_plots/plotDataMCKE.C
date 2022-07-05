@@ -90,6 +90,7 @@ void plotDataMCKE(TString fdata, TString fmc, TString outpath) {
 	leg0->AddEntry(pbeam_stop_mc, "MC(spec.)", "l");
 	leg0->AddEntry(p0_stop_mc, "MC(truth)", "l");
 	leg0->Draw();
+	c0->Print(Form("%s/mom_ini.eps",outpath.Data()));
 
 	//Fit Gaussians on momenta ...
 	//[1]
@@ -144,8 +145,8 @@ void plotDataMCKE(TString fdata, TString fmc, TString outpath) {
 	f2d_px->Draw();
 	prange_stop_mc->Draw("hist same");
 	prange_stop_data->Draw("ep same");
-	pcalo_stop_data->Draw("ep same");
-	pcalo_stop_mc->Draw("hist same");
+	//pcalo_stop_data->Draw("ep same");
+	//pcalo_stop_mc->Draw("hist same");
 	pff_stop_mc->Draw("hist same");
 
 	//p0_stop_mc->SetLineColor(3);
@@ -155,12 +156,29 @@ void plotDataMCKE(TString fdata, TString fmc, TString outpath) {
 
 	TLegend *leg0x = new TLegend(0.64,0.65,.8,0.85);
 	leg0x->SetFillStyle(0);
-	leg0x->AddEntry(prange_stop_data, "Data(range)", "ep");
-	leg0x->AddEntry(pcalo_stop_data, "Data(calo)", "ep");
-	leg0x->AddEntry(pbeam_stop_mc, "MC(range)", "l");
-	leg0x->AddEntry(pcalo_stop_data, "MC(calo)", "l");
-	leg0x->AddEntry(pff_stop_mc, "MC(FF-truth)", "l");
+	leg0x->AddEntry(prange_stop_data, "Data (range)", "ep");
+	//leg0x->AddEntry(pcalo_stop_data, "Data(calo)", "ep");
+	leg0x->AddEntry(pbeam_stop_mc, "MC (range)", "l");
+	//leg0x->AddEntry(pcalo_stop_data, "MC(calo)", "l");
+	leg0x->AddEntry(pff_stop_mc, "MC (FF-truth)", "l");
 	leg0x->Draw();
+
+	c1x->Print(Form("%s/mom_range.eps",outpath.Data()));
+	c1x->Draw();
+	f2d_px->Draw();
+	pcalo_stop_data->Draw("ep same");
+	pcalo_stop_mc->Draw("hist same");
+	pff_stop_mc->Draw("hist same");
+	TLegend *leg0xy = new TLegend(0.64,0.65,.8,0.85);
+	leg0xy->SetFillStyle(0);
+	leg0xy->AddEntry(pcalo_stop_data, "Data(calo)", "ep");
+	leg0xy->AddEntry(pcalo_stop_data, "MC(calo)", "l");
+	leg0xy->AddEntry(pff_stop_mc, "MC (FF-truth)", "l");
+	leg0xy->Draw();
+	c1x->Print(Form("%s/mom_calo.eps",outpath.Data()));
+
+
+
 
 	//Fit Gaussians on momenta ...
 	//[1]
@@ -187,7 +205,7 @@ void plotDataMCKE(TString fdata, TString fmc, TString outpath) {
 	TF1* fit_pcalo_stop_data; fit_pcalo_stop_data=VFit(pcalo_stop_data, 4);
 	fit_pcalo_stop_data->SetName("fit_pcalo_stop_data");
 	fit_pcalo_stop_data->SetLineStyle(2);
-	fit_pcalo_stop_data->Draw("same");
+	//fit_pcalo_stop_data->Draw("same");
 	double m_calo_stop_data=fit_pcalo_stop_data->GetParameter(0); //
 	double err_m_calo_stop_data=fit_pcalo_stop_data->GetParError(0);
 	double s_calo_stop_data=fit_pcalo_stop_data->GetParameter(1); //
@@ -197,7 +215,7 @@ void plotDataMCKE(TString fdata, TString fmc, TString outpath) {
 	TF1* fit_pcalo_stop_mc; fit_pcalo_stop_mc=VFit(pcalo_stop_mc, 3);
 	fit_pcalo_stop_mc->SetName("fit_pcalo_stop_mc");
 	fit_pcalo_stop_mc->SetLineStyle(2);
-	fit_pcalo_stop_mc->Draw("same");
+	//fit_pcalo_stop_mc->Draw("same");
 	double m_calo_stop_mc=fit_pcalo_stop_mc->GetParameter(0); //
 	double err_m_calo_stop_mc=fit_pcalo_stop_mc->GetParError(0);
 	double s_calo_stop_mc=fit_pcalo_stop_mc->GetParameter(1); //
@@ -236,7 +254,10 @@ void plotDataMCKE(TString fdata, TString fmc, TString outpath) {
 	vector<double> err_m_data;
 	vector<double> s_data;
 	vector<double> err_s_data;
-	m_data.push_back(m_stop_data); err_m_data.push_back(err_m_stop_data); s_data.push_back(s_stop_data); err_s_data.push_back(err_s_stop_data);
+	double err_m_sys_stop_data=sqrt(0.01*0.01+0.007*0.007); //1% for B-field & 0.7% for fiber-position
+	double err_m_all_stop_data=sqrt(pow(err_m_sys_stop_data,2)+pow(err_m_stop_data,2));
+
+	m_data.push_back(m_stop_data); err_m_data.push_back(err_m_all_stop_data); s_data.push_back(s_stop_data); err_s_data.push_back(err_s_stop_data);
 	m_data.push_back(m_range_stop_data); err_m_data.push_back(err_m_range_stop_data); s_data.push_back(s_range_stop_data); err_s_data.push_back(err_s_range_stop_data);
 	//m_data.push_back(m_calo_stop_data); err_m_data.push_back(err_m_calo_stop_data); s_data.push_back(s_calo_stop_data); err_s_data.push_back(err_s_calo_stop_data);
 
@@ -290,13 +311,13 @@ void plotDataMCKE(TString fdata, TString fmc, TString outpath) {
 
         //pDUNE Logo
         TLatex **txt_pdune1=new TLatex*[1];
-        txt_pdune1[0]=new TLatex(900.002, 90.6, Form("#bf{DUNE:ProtoDUNE-SP}"));
+        txt_pdune1[0]=new TLatex(emin+.002, 90.6, Form("#bf{DUNE:ProtoDUNE-SP}"));
         txt_pdune1[0]->SetTextColor(1);
         txt_pdune1[0]->Draw();
         //
         //Beam Logo
         TLatex **txt_p1=new TLatex*[1];
-        txt_p1[0]=new TLatex(992,90.6, Form("Protons (1 GeV/c)"));
+        txt_p1[0]=new TLatex(emax-200,90.6, Form("Protons (1 GeV/c)"));
         txt_p1[0]->SetTextColor(1);
         txt_p1[0]->SetTextSize(0.05);
         txt_p1[0]->Draw();
