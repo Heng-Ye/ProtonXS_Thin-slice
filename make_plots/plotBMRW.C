@@ -2,8 +2,11 @@
 #include "/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/realdata/p1gev/code_timedep_trkpos/protodune-sp_runset_5387_reco2/headers/BasicAnaFunc.h"
 
 void plotBMRW(TString fdata, TString fmc, TString outpath) {
-	TString rep="trklen";
-	TString x_axis_label="Proton Track Length [cm]";
+	//TString rep="trklen";
+	//TString x_axis_label="Proton Track Length [cm]";
+
+	TString rep="pcalo";
+	TString x_axis_label="Proton Momentum [MeV/c]";
 
 	//plot style --------------------------------------------------------------------//
 	gROOT->LoadMacro(" ~/protoDUNEStyle.C"); //load pDUNE style
@@ -172,7 +175,8 @@ void plotBMRW(TString fdata, TString fmc, TString outpath) {
 	TCanvas *c_1=new TCanvas("c_1",""); c_1->SetName("c_1");
 	c_1->Divide(1,1);
 	c_1->cd(1);
-	TH2D* frame2dx=new TH2D("frame2dx"," ", 150, 0, 150, 800, 0, 800); //for z2, trklen
+	//TH2D* frame2dx=new TH2D("frame2dx"," ", 150, 0, 150, 800, 0, 800); //for z2, trklen
+	TH2D* frame2dx=new TH2D("frame2dx"," ", 800, 600, 1400, 800, 0, 100+h1d->GetBinContent(h1d->GetMaximumBin())); //for momentum
 	frame2dx->GetXaxis()->SetTitle(x_axis_label.Data());
 	frame2dx->GetYaxis()->SetTitle(Form("Counts"));
 	frame2dx->GetXaxis()->CenterTitle();
@@ -1050,7 +1054,9 @@ void plotBMRW(TString fdata, TString fmc, TString outpath) {
 	c_g->Print(Form("%s/gaus_beforeafter_bmrw.eps",outpath.Data()));
 
 
-	TFile *f_out = TFile::Open("bmrw_bestfit.root","recreate");
+	//TFile *f_out = TFile::Open("bmrw_bestfit.root","recreate");
+	//TFile *f_out = TFile::Open("bmrw_bestfit_calo.root","recreate");
+	TFile *f_out = TFile::Open("bmrw_bestfit_calo_rmtrack.root","recreate");
 		key_minchi2->Write();
 
 		bm_nmu->Write();
