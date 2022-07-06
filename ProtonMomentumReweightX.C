@@ -528,7 +528,8 @@ void ProtonMomentumReweight::Loop() {
 
 		//if (IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
 		//if (IsBeamXY&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
-		if (IsBeamMom&&IsBeamXY&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
+		//if (IsBeamMom&&IsBeamXY&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
+		if (IsIntersection==false&&IsBeamMom&&IsBeamXY&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
 			h1d_ke0->Fill(ke_beam_MeV);
 			h1d_p0->Fill(mom_beam_MeV);
 			h1d_kebeam->Fill(ke_beam_spec_MeV);
@@ -541,7 +542,7 @@ void ProtonMomentumReweight::Loop() {
 			h1d_zend->Fill(reco_endz);
 
 			double mom_rw_minchi2=1.;
-			if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=gng[index_minchi2]->Eval(mom_beam_spec*1000.); //bmrw
+			//if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=gng[index_minchi2]->Eval(mom_beam_spec*1000.); //bmrw
 
 			h1d_trklen_bmrw->Fill(range_reco, mom_rw_minchi2); 
 			h1d_zend_bmrw->Fill(reco_endz, mom_rw_minchi2);	
@@ -623,7 +624,8 @@ void ProtonMomentumReweight::Loop() {
 
 	//save results...
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw.root","RECREATE");
-   	TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_calo.root","RECREATE");
+   	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_calo.root","RECREATE");
+   	TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_rmxtrack_calo.root","RECREATE");
 		bm_nmu->Write();
 		bm_dmu->Write();
 		bm_mu_st->Write();
