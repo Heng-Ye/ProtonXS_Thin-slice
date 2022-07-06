@@ -400,12 +400,14 @@ void plotDataMCKE_BMRW(TString fdata, TString fmc, TString fmc_bmrw, TString out
 	vector<double> err_m_data;
 	vector<double> s_data;
 	vector<double> err_s_data;
-	double err_m_sys_stop_data=sqrt(0.01*0.01+0.007*0.007); //1% for B-field & 0.7% for fiber-position
+	double err_m_sys_stop_data=sqrt(0.01*0.01+0.008*0.008); //1% for B-field & 0.8% for fiber-position
 	double err_m_all_stop_data=sqrt(pow(err_m_sys_stop_data,2)+pow(err_m_stop_data,2));
+	double err_m_all_range_stop_data=sqrt(pow(err_m_sys_stop_data,2)+pow(err_m_range_stop_data,2));
+	double err_m_all_calo_stop_data=sqrt(pow(err_m_sys_stop_data,2)+pow(err_m_calo_stop_data,2));
 
 	m_data.push_back(m_stop_data); err_m_data.push_back(err_m_all_stop_data); s_data.push_back(s_stop_data); err_s_data.push_back(err_s_stop_data);
-	m_data.push_back(m_range_stop_data); err_m_data.push_back(err_m_range_stop_data); s_data.push_back(s_range_stop_data); err_s_data.push_back(err_s_range_stop_data);
-	m_data.push_back(m_calo_stop_data); err_m_data.push_back(err_m_calo_stop_data); s_data.push_back(s_calo_stop_data); err_s_data.push_back(err_s_calo_stop_data);
+	m_data.push_back(m_range_stop_data); err_m_data.push_back(err_m_all_range_stop_data); s_data.push_back(s_range_stop_data); err_s_data.push_back(err_s_range_stop_data);
+	m_data.push_back(m_calo_stop_data); err_m_data.push_back(err_m_all_calo_stop_data); s_data.push_back(s_calo_stop_data); err_s_data.push_back(err_s_calo_stop_data);
 
 
 	//mc
@@ -414,7 +416,7 @@ void plotDataMCKE_BMRW(TString fdata, TString fmc, TString fmc_bmrw, TString out
 	vector<double> s_mc;
 	vector<double> err_s_mc;
 	m_mc.push_back(m0_stop_mc); err_m_mc.push_back(err_m0_stop_mc); s_mc.push_back(s0_stop_mc); err_s_mc.push_back(err_s0_stop_mc);
-	//m_mc.push_back(m_stop_mc); err_m_mc.push_back(err_m_stop_mc); s_mc.push_back(s_stop_mc); err_s_mc.push_back(err_s_stop_mc);
+	m_mc.push_back(m_stop_mc); err_m_mc.push_back(err_m_stop_mc); s_mc.push_back(s_stop_mc); err_s_mc.push_back(err_s_stop_mc);
 	
 	m_mc.push_back(m_ff_stop_mc); err_m_mc.push_back(err_m_ff_stop_mc); s_mc.push_back(s_ff_stop_mc); err_s_mc.push_back(err_s_ff_stop_mc);
 	m_mc.push_back(m_range_stop_mc); err_m_mc.push_back(err_m_range_stop_mc); s_mc.push_back(s_range_stop_mc); err_s_mc.push_back(err_s_range_stop_mc);
@@ -432,7 +434,7 @@ void plotDataMCKE_BMRW(TString fdata, TString fmc, TString fmc_bmrw, TString out
 	vector<double> s_mc_bmrw;
 	vector<double> err_s_mc_bmrw;
 	m_mc_bmrw.push_back(m0_stop_mc_bmrw); err_m_mc_bmrw.push_back(err_m0_stop_mc_bmrw); s_mc_bmrw.push_back(s0_stop_mc_bmrw); err_s_mc_bmrw.push_back(err_s0_stop_mc_bmrw);
-	//m_mc_bmrw.push_back(m_stop_mc_bmrw); err_m_mc_bmrw.push_back(err_m_stop_mc_bmrw); s_mc_bmrw.push_back(s_stop_mc_bmrw); err_s_mc_bmrw.push_back(err_s_stop_mc_bmrw);
+	m_mc_bmrw.push_back(m_stop_mc_bmrw); err_m_mc_bmrw.push_back(err_m_stop_mc_bmrw); s_mc_bmrw.push_back(s_stop_mc_bmrw); err_s_mc_bmrw.push_back(err_s_stop_mc_bmrw);
 	
 	m_mc_bmrw.push_back(m_ff_stop_mc_bmrw); err_m_mc_bmrw.push_back(err_m_ff_stop_mc_bmrw); s_mc_bmrw.push_back(s_ff_stop_mc_bmrw); err_s_mc_bmrw.push_back(err_s_ff_stop_mc_bmrw);
 	m_mc_bmrw.push_back(m_range_stop_mc_bmrw); err_m_mc_bmrw.push_back(err_m_range_stop_mc_bmrw); s_mc_bmrw.push_back(s_range_stop_mc_bmrw); err_s_mc_bmrw.push_back(err_s_range_stop_mc_bmrw);
@@ -441,15 +443,17 @@ void plotDataMCKE_BMRW(TString fdata, TString fmc, TString fmc_bmrw, TString out
 	TGraphErrors *ms_mc_bmrw=new TGraphErrors(m_mc_bmrw.size(), &m_mc_bmrw.at(0), &s_mc_bmrw.at(0), &err_m_mc_bmrw.at(0), &err_s_mc_bmrw.at(0));
 	ms_mc->SetMarkerColor(2);
 	ms_mc->SetLineColor(2);
-	ms_mc_bmrw->SetMarkerColor(4);
-	ms_mc_bmrw->SetLineColor(4);
+	ms_mc_bmrw->SetMarkerColor(3);
+	ms_mc_bmrw->SetLineColor(3);
 
 	TCanvas *cms=new TCanvas("cms","");
 	cms->Divide(1,1);
 	cms->cd(1);
 	float emin=910.;
 	float emax=1030.;
-	TH2D* frame2d2=new TH2D("frame2d2","", 200, emin, emax, 42, 48, 90);
+	float smin=40;
+	float smax=120;
+	TH2D* frame2d2=new TH2D("frame2d2","", 200, emin, emax, 42, smin, smax);
 	frame2d2->SetTitle(";#mu [MeV/c];#sigma [MeV/c]");
 	frame2d2->GetXaxis()->CenterTitle();
 	frame2d2->Draw();
@@ -471,28 +475,28 @@ void plotDataMCKE_BMRW(TString fdata, TString fmc, TString fmc_bmrw, TString out
         fit_mc->Draw("same");
 
         TF1 *fit_mc_bmrw = new TF1("fit_mc_bmrw", "[0]+[1]*x", emin, emax);
-        fit_mc_bmrw->SetLineColor(4);
-        fit_mc_bmrw->SetLineStyle(4);
+        fit_mc_bmrw->SetLineColor(3);
+        fit_mc_bmrw->SetLineStyle(3);
         ms_mc_bmrw->Fit(fit_mc_bmrw,"remn");
         fit_mc_bmrw->Draw("same");
 
 
-	TLegend *leg1 = new TLegend(0.14,0.65,.6,0.85);
+	TLegend *leg1 = new TLegend(0.54,0.65,.85,0.85);
 	leg1->SetFillStyle(0);
 	leg1->AddEntry(ms_data, Form("Data: #sigma=%.2f%.2f*#mu",fit_data->GetParameter(0),fit_data->GetParameter(1)), "ep");
 	leg1->AddEntry(ms_mc, Form("MC: #sigma=%.2f%.2f*#mu",fit_mc->GetParameter(0),fit_mc->GetParameter(1)), "ep");
-	leg1->AddEntry(ms_mc_bmrw, Form("MC: #sigma=%.2f%.2f*#mu",fit_mc_bmrw->GetParameter(0),fit_mc_bmrw->GetParameter(1)), "ep");
+	leg1->AddEntry(ms_mc_bmrw, Form("MC(bmrw): #sigma=%.2f%.2f*#mu",fit_mc_bmrw->GetParameter(0),fit_mc_bmrw->GetParameter(1)), "ep");
 	leg1->Draw();
 
         //pDUNE Logo
         TLatex **txt_pdune1=new TLatex*[1];
-        txt_pdune1[0]=new TLatex(emin+.002, 90.6, Form("#bf{DUNE:ProtoDUNE-SP}"));
+        txt_pdune1[0]=new TLatex(emin+.002, emax+0.6, Form("#bf{DUNE:ProtoDUNE-SP}"));
         txt_pdune1[0]->SetTextColor(1);
         txt_pdune1[0]->Draw();
         //
         //Beam Logo
         TLatex **txt_p1=new TLatex*[1];
-        txt_p1[0]=new TLatex(emax-200,90.6, Form("Protons (1 GeV/c)"));
+        txt_p1[0]=new TLatex(emax-200,emax+0.6, Form("Protons (1 GeV/c)"));
         txt_p1[0]->SetTextColor(1);
         txt_p1[0]->SetTextSize(0.05);
         txt_p1[0]->Draw();
