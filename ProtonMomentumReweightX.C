@@ -119,6 +119,7 @@ void ProtonMomentumReweight::Loop() {
 
 	//use trklen as an observable for reweighting
 	TH1D *h1d_trklen_rw[n_mu_sigma];
+	TH1D *h1d_calo_rw[n_mu_sigma];
 
 	int cnt_array=0;
 	int index_original=0;
@@ -152,6 +153,10 @@ void ProtonMomentumReweight::Loop() {
 			//prepare rw histograms
 			h1d_trklen_rw[cnt_array]=new TH1D(Form("h1d_trklen_rw_%d",cnt_array),Form("f_{#mu}:%.2f f_{#sigma}:%.2f #oplus RecoStop Cut",frac_mu,frac_sigma),n_b,b_min,b_max);
 			h1d_trklen_rw[cnt_array]->GetXaxis()->SetTitle("Track Length [cm]");
+
+			//prepare rw histograms(calo)
+			h1d_calo_rw[cnt_array]=new TH1D(Form("h1d_calo_rw_%d",cnt_array),Form("f_{#mu}:%.2f f_{#sigma}:%.2f #oplus RecoStop Cut",frac_mu,frac_sigma),nx,xmin,xmax);
+			h1d_calo_rw[cnt_array]->GetXaxis()->SetTitle("Calo Energy [MeV]");
 
 			cnt_array++;
 			} //sigma loop
@@ -519,6 +524,7 @@ void ProtonMomentumReweight::Loop() {
 			if (kinel) chi2pid_trueinel->Fill(chi2pid(trkdedx,trkres)); 
 
 		} //if calo size not empty
+		double p_calo_MeV=1000.*ke2p(ke_calo_MeV/1000.);
 
 		//if (IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
 		//if (IsBeamXY&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
@@ -555,7 +561,7 @@ void ProtonMomentumReweight::Loop() {
 
 				h1d_trklen_stop->Fill(range_reco);
 				h1d_kerange_stop->Fill(ke_trklen_MeV);     h1d_prange_stop->Fill(1000.*ke2p(ke_trklen));
-				h1d_kecalo_stop->Fill(ke_calo_MeV);	   h1d_pcalo_stop->Fill(1000.*ke2p(ke_calo_MeV/1000.));	
+				h1d_kecalo_stop->Fill(ke_calo_MeV);	   h1d_pcalo_stop->Fill(p_calo_MeV);	
 
 				//if (IsXY) { //xy-cut
 					//h1d_trklen_stop_XY->Fill(range_reco);
@@ -564,12 +570,14 @@ void ProtonMomentumReweight::Loop() {
 						for (int ig = 0; ig < n_1d; ++ig) { //rw loop
 							mom_rw=gng[ig]->Eval(mom_beam_spec*1000.);
 							h1d_trklen_rw[ig]->Fill(range_reco,mom_rw); //beam-mom rw using stopping protons
+							h1d_calo_rw[ig]->Fill(p_calo_MeV,mom_rw); //beam-mom rw using stopping protons
 						} //rw loop
 					} //beam-mom cut (within 3-sigma)
 					else { //tail of beam
 					//if ((mom_beam_spec*1000.)<mu_min||(mom_beam_spec*1000.)>mu_max) { //tail of the beam
 						for (int ig = 0; ig < n_1d; ++ig) { //rw loop
 							h1d_trklen_rw[ig]->Fill(range_reco); //beam-mom rw 
+							h1d_calo_rw[ig]->Fill(p_calo_MeV); //beam-mom rw 
 						} //rw loop
 					} //tail of the beam	
 				//} //xy-cut
@@ -614,7 +622,8 @@ void ProtonMomentumReweight::Loop() {
 
 
 	//save results...
-   	TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw.root","RECREATE");
+   	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw.root","RECREATE");
+   	TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_calo.root","RECREATE");
 		bm_nmu->Write();
 		bm_dmu->Write();
 		bm_mu_st->Write();
@@ -669,6 +678,7 @@ void ProtonMomentumReweight::Loop() {
 
 		for (int ig = 0; ig < n_1d; ++ig) { //rw loop
 			h1d_trklen_rw[ig]->Write();
+			h1d_calo_rw[ig]->Write();
 		} //rw loop
 
 
