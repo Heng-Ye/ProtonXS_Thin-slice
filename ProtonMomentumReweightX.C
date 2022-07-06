@@ -119,7 +119,7 @@ void ProtonMomentumReweight::Loop() {
 
 	//use trklen as an observable for reweighting
 	TH1D *h1d_trklen_rw[n_mu_sigma];
-	TH1D *h1d_calo_rw[n_mu_sigma];
+	TH1D *h1d_pcalo_rw[n_mu_sigma];
 
 	int cnt_array=0;
 	int index_original=0;
@@ -155,8 +155,8 @@ void ProtonMomentumReweight::Loop() {
 			h1d_trklen_rw[cnt_array]->GetXaxis()->SetTitle("Track Length [cm]");
 
 			//prepare rw histograms(calo)
-			h1d_calo_rw[cnt_array]=new TH1D(Form("h1d_calo_rw_%d",cnt_array),Form("f_{#mu}:%.2f f_{#sigma}:%.2f #oplus RecoStop Cut",frac_mu,frac_sigma),nx,xmin,xmax);
-			h1d_calo_rw[cnt_array]->GetXaxis()->SetTitle("Calo Energy [MeV]");
+			h1d_pcalo_rw[cnt_array]=new TH1D(Form("h1d_pcalo_rw_%d",cnt_array),Form("f_{#mu}:%.2f f_{#sigma}:%.2f #oplus RecoStop Cut",frac_mu,frac_sigma),nx,xmin,xmax);
+			h1d_pcalo_rw[cnt_array]->GetXaxis()->SetTitle("Calo Energy [MeV]");
 
 			cnt_array++;
 			} //sigma loop
@@ -570,14 +570,14 @@ void ProtonMomentumReweight::Loop() {
 						for (int ig = 0; ig < n_1d; ++ig) { //rw loop
 							mom_rw=gng[ig]->Eval(mom_beam_spec*1000.);
 							h1d_trklen_rw[ig]->Fill(range_reco,mom_rw); //beam-mom rw using stopping protons
-							h1d_calo_rw[ig]->Fill(p_calo_MeV,mom_rw); //beam-mom rw using stopping protons
+							h1d_pcalo_rw[ig]->Fill(p_calo_MeV,mom_rw); //beam-mom rw using stopping protons
 						} //rw loop
 					} //beam-mom cut (within 3-sigma)
 					else { //tail of beam
 					//if ((mom_beam_spec*1000.)<mu_min||(mom_beam_spec*1000.)>mu_max) { //tail of the beam
 						for (int ig = 0; ig < n_1d; ++ig) { //rw loop
 							h1d_trklen_rw[ig]->Fill(range_reco); //beam-mom rw 
-							h1d_calo_rw[ig]->Fill(p_calo_MeV); //beam-mom rw 
+							h1d_pcalo_rw[ig]->Fill(p_calo_MeV); //beam-mom rw 
 						} //rw loop
 					} //tail of the beam	
 				//} //xy-cut
@@ -678,7 +678,7 @@ void ProtonMomentumReweight::Loop() {
 
 		for (int ig = 0; ig < n_1d; ++ig) { //rw loop
 			h1d_trklen_rw[ig]->Write();
-			h1d_calo_rw[ig]->Write();
+			h1d_pcalo_rw[ig]->Write();
 		} //rw loop
 
 
