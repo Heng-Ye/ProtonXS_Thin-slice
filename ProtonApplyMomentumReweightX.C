@@ -83,10 +83,10 @@ void ProtonApplyMomentumReweight::Loop() {
 	TH1D *h1d_pcalo_stop=new TH1D("h1d_pcalo_stop","",nx,xmin,xmax);
 
 	//MC Beam Mom Gaussian 
-	double m1=1007.1482; //MC prod4a [spec]
-	double s1=60.703307; //MC prod4a [spec]
-	//double m1=997.969; //MC prod4a [truth]
-	//double s1=54.4602; //MC prod4a [truth]
+	//double m1=1007.1482; //MC prod4a [spec]
+	//double s1=60.703307; //MC prod4a [spec]
+	double m1=997.969; //MC prod4a [truth]
+	double s1=54.4602; //MC prod4a [truth]
 
 	//momentum cut range	
 	double mu_min=m1-3.*s1;
@@ -122,9 +122,11 @@ void ProtonApplyMomentumReweight::Loop() {
 
 	int cnt_array=0;
 	int index_original=0;
-	int index_minchi2=13331; //index of minchi2(use spec)
+	//int index_minchi2=13331; //index of minchi2(use spec)
 	//int index_minchi2=15494; //index of minchi2 (use MC truth)
 	//int index_minchi2=3407; //index of minchi2 (use calo)
+	int index_minchi2=1270; //index of minchi2 (use calo+rm track)
+	
 	for (int imu=0; imu<nmu; ++imu){ //mu loop
 		double frac_mu=mu_st-(double)imu*dmu;
 		double mu=m1*frac_mu;
@@ -618,8 +620,9 @@ void ProtonApplyMomentumReweight::Loop() {
 
 	//save results...
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_afterbmrw.root","RECREATE");
-   	TFile *fout = new TFile("mc_proton_beamxy_beammom_afterbmrw_usespecasinput.root","RECREATE");
+   	//TFile *fout = new TFile("mc_proton_beamxy_beammom_afterbmrw_usespecasinput.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_calo_afterbmrw.root","RECREATE");
+   	TFile *fout = new TFile("mc_proton_beamxy_beammom_calo_rmxtrack_afterbmrw.root","RECREATE");
 		bm_nmu->Write();
 		bm_dmu->Write();
 		bm_mu_st->Write();

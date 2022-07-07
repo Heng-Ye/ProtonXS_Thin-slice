@@ -104,58 +104,24 @@ void plotDataMCKE_BMRW(TString fdata, TString fmc, TString fmc_bmrw, TString out
 
 
 	//Proton Momentum --------------------------------------------------------------//
-	TCanvas *c0=new TCanvas("c0","",1200,900);
-	c0->Divide(1,1);
-	c0->cd(1);
-	TH2D* f2d_p=new TH2D("f2d_p","", 700, 600, 1300, 600, 0, pbeam_stop_data->GetBinContent(pbeam_stop_data->GetMaximumBin())+100); //
-	f2d_p->SetTitle(";Initial Proton Momentum [MeV/c];");
-	f2d_p->GetXaxis()->CenterTitle();
-	f2d_p->Draw();
-	pbeam_stop_data->SetLineColor(1);
 	pbeam_stop_mc->Scale(n_pbeam_stop_data/n_pbeam_stop_mc);
-	pbeam_stop_mc->SetLineColor(2);
-	pbeam_stop_mc->Draw("hist same");
-
 	pbeam_stop_mc_bmrw->Scale(n_pbeam_stop_data/n_pbeam_stop_mc_bmrw);
-	pbeam_stop_mc_bmrw->SetLineColor(4);
-	pbeam_stop_mc_bmrw->Draw("hist same");
-
 	p0_stop_mc->Scale(n_pbeam_stop_data/n_p0_stop_mc);
-	p0_stop_mc->SetLineColor(3);
-	p0_stop_mc->Draw("hist same");
-
 	p0_stop_mc_bmrw->Scale(n_pbeam_stop_data/n_p0_stop_mc_bmrw);
-	p0_stop_mc_bmrw->SetLineColor(7);
-	p0_stop_mc_bmrw->Draw("hist same");
-	pbeam_stop_data->Draw("ep same");
-
-	TLegend *leg0 = new TLegend(0.14,0.65,.6,0.85);
-	leg0->SetFillStyle(0);
-	leg0->AddEntry(pbeam_stop_data, "Data", "ep");
-        leg0->AddEntry((TObject*)0, "", "");     
-	leg0->AddEntry(pbeam_stop_mc, "MC (spec)", "l");
-	leg0->AddEntry(pbeam_stop_mc_bmrw, "MC (spec)+bmrw", "l");
-	leg0->AddEntry(p0_stop_mc, "MC (truth)", "l");
-	leg0->AddEntry(p0_stop_mc_bmrw, "MC (truth)+bmrw", "l");
-        leg0->SetNColumns(2);
-	leg0->Draw();
-
 	//Fit Gaussians on momenta ...
 	//[1]
 	TF1* fit_pbeam_stop_data; fit_pbeam_stop_data=VFit(pbeam_stop_data, 1);
 	fit_pbeam_stop_data->SetName("fit_pbeam_stop_data");
 	fit_pbeam_stop_data->SetLineStyle(2);
-	fit_pbeam_stop_data->Draw("same");
 	double m_stop_data=fit_pbeam_stop_data->GetParameter(0); //Data prod4 reco2
 	double err_m_stop_data=fit_pbeam_stop_data->GetParError(0);
 	double s_stop_data=fit_pbeam_stop_data->GetParameter(1); //Data prod4 reco2
 	double err_s_stop_data=fit_pbeam_stop_data->GetParError(1);
 
-	//[2]
+	//[2]spec
 	TF1* fit_pbeam_stop_mc; fit_pbeam_stop_mc=VFit(pbeam_stop_mc, 2);
 	fit_pbeam_stop_mc->SetName("fit_pbeam_stop_mc");
 	fit_pbeam_stop_mc->SetLineStyle(2);
-	fit_pbeam_stop_mc->Draw("same");
 	double m_stop_mc=fit_pbeam_stop_mc->GetParameter(0); //
 	double err_m_stop_mc=fit_pbeam_stop_mc->GetParError(0);
 	double s_stop_mc=fit_pbeam_stop_mc->GetParameter(1); //
@@ -165,18 +131,15 @@ void plotDataMCKE_BMRW(TString fdata, TString fmc, TString fmc_bmrw, TString out
 	TF1* fit_p0_stop_mc; fit_p0_stop_mc=VFit(p0_stop_mc, 3);
 	fit_p0_stop_mc->SetName("fit_p0_stop_mc");
 	fit_p0_stop_mc->SetLineStyle(2);
-	fit_p0_stop_mc->Draw("same");
 	double m0_stop_mc=fit_p0_stop_mc->GetParameter(0); //
 	double err_m0_stop_mc=fit_p0_stop_mc->GetParError(0);
 	double s0_stop_mc=fit_p0_stop_mc->GetParameter(1); //
 	double err_s0_stop_mc=fit_p0_stop_mc->GetParError(1);
 
-
 	//[2_bmrw]
 	TF1* fit_pbeam_stop_mc_bmrw; fit_pbeam_stop_mc_bmrw=VFit(pbeam_stop_mc_bmrw, 4);
 	fit_pbeam_stop_mc_bmrw->SetName("fit_pbeam_stop_mc_bmrw");
 	fit_pbeam_stop_mc_bmrw->SetLineStyle(2);
-	fit_pbeam_stop_mc_bmrw->Draw("same");
 	double m_stop_mc_bmrw=fit_pbeam_stop_mc_bmrw->GetParameter(0); //
 	double err_m_stop_mc_bmrw=fit_pbeam_stop_mc_bmrw->GetParError(0);
 	double s_stop_mc_bmrw=fit_pbeam_stop_mc_bmrw->GetParameter(1); //
@@ -186,12 +149,47 @@ void plotDataMCKE_BMRW(TString fdata, TString fmc, TString fmc_bmrw, TString out
 	TF1* fit_p0_stop_mc_bmrw; fit_p0_stop_mc_bmrw=VFit(p0_stop_mc_bmrw, 7);
 	fit_p0_stop_mc_bmrw->SetName("fit_p0_stop_mc_bmrw");
 	fit_p0_stop_mc_bmrw->SetLineStyle(2);
-	fit_p0_stop_mc_bmrw->Draw("same");
 	double m0_stop_mc_bmrw=fit_p0_stop_mc_bmrw->GetParameter(0); //
 	double err_m0_stop_mc_bmrw=fit_p0_stop_mc_bmrw->GetParError(0);
 	double s0_stop_mc_bmrw=fit_p0_stop_mc_bmrw->GetParameter(1); //
 	double err_s0_stop_mc_bmrw=fit_p0_stop_mc_bmrw->GetParError(1);
 
+
+	TCanvas *c0=new TCanvas("c0","",1200,900);
+	c0->Divide(1,1);
+	c0->cd(1);
+	TH2D* f2d_p=new TH2D("f2d_p","", 700, 600, 1300, 600, 0, pbeam_stop_data->GetBinContent(pbeam_stop_data->GetMaximumBin())+150); //
+	f2d_p->SetTitle(";Initial Proton Momentum [MeV/c];");
+	f2d_p->GetXaxis()->CenterTitle();
+	f2d_p->Draw();
+	pbeam_stop_data->SetLineColor(1);
+	pbeam_stop_mc->SetLineColor(2);
+	pbeam_stop_mc_bmrw->SetLineColor(4);
+	p0_stop_mc->SetLineColor(3);
+	p0_stop_mc_bmrw->SetLineColor(7);
+
+	fit_pbeam_stop_data->Draw("same");
+	fit_pbeam_stop_mc->Draw("same");
+	fit_p0_stop_mc->Draw("same");
+	fit_pbeam_stop_mc_bmrw->Draw("same");
+	fit_p0_stop_mc_bmrw->Draw("same");
+
+	pbeam_stop_mc->Draw("hist same");
+	pbeam_stop_mc_bmrw->Draw("hist same");
+	p0_stop_mc->Draw("hist same");
+	p0_stop_mc_bmrw->Draw("hist same");
+	pbeam_stop_data->Draw("ep same");
+
+	TLegend *leg0 = new TLegend(0.14,0.65,.9,0.9);
+	leg0->SetFillStyle(0);
+        //leg0->AddEntry((TObject*)0, "", "");     
+	leg0->AddEntry(pbeam_stop_data, Form("Data: #mu=%.1f#pm%.1f MeV/c, #sigma=%.1f#pm%.1f MeV/c",m_stop_data, err_m_stop_data, s_stop_data, err_s_stop_data), "ep");
+	leg0->AddEntry(p0_stop_mc, Form("MC(truth): #mu=%.1f#pm%.1f MeV/c, #sigma=%.1f#pm%.1f MeV/c",m0_stop_mc,err_m0_stop_mc,s0_stop_mc,err_s0_stop_mc), "l");
+	leg0->AddEntry(pbeam_stop_mc, Form("MC(spec): #mu=%.1f#pm%.1f MeV/c, #sigma=%.1f#pm%.1f MeV/c",m_stop_mc,err_m_stop_mc,s_stop_mc,err_s_stop_mc), "l");
+	leg0->AddEntry(p0_stop_mc_bmrw, Form("MC(truth)+bmrw: #mu=%.1f#pm%.1f MeV/c, #sigma=%.1f#pm%.1f MeV/c",m0_stop_mc_bmrw,err_m0_stop_mc_bmrw,s0_stop_mc_bmrw,err_s0_stop_mc_bmrw), "l");
+	leg0->AddEntry(pbeam_stop_mc_bmrw, Form("MC(spec)+bmrw: #mu=%.1f#pm%.1f MeV/c, #sigma=%.1f#pm%.1f MeV/c",m_stop_mc_bmrw,err_m_stop_mc_bmrw,s_stop_mc_bmrw,err_s_stop_mc_bmrw), "l");
+        //leg0->SetNColumns(2);
+	leg0->Draw();
 	c0->Print(Form("%s/mom_ini_bmrw.eps",outpath.Data()));
 
 
@@ -203,10 +201,6 @@ void plotDataMCKE_BMRW(TString fdata, TString fmc, TString fmc_bmrw, TString out
 	prange_stop_mc_bmrw->Scale(n_prange_stop_data/n_prange_stop_mc_bmrw);
 	pcalo_stop_mc_bmrw->Scale(n_pcalo_stop_data/n_pcalo_stop_mc_bmrw);
 	pff_stop_mc_bmrw->Scale(n_prange_stop_data/n_pff_stop_mc_bmrw);
-
-
-
-
 
 	//Fit Gaussians on momenta ...
 	//[1]
@@ -228,7 +222,7 @@ void plotDataMCKE_BMRW(TString fdata, TString fmc, TString fmc_bmrw, TString out
 	double err_s_range_stop_mc=fit_prange_stop_mc->GetParError(1);
 
 	//[2_bmrw]
-	TF1* fit_prange_stop_mc_bmrw; fit_prange_stop_mc_bmrw=VFit(prange_stop_mc_bmrw, 2);
+	TF1* fit_prange_stop_mc_bmrw; fit_prange_stop_mc_bmrw=VFit(prange_stop_mc_bmrw, 4);
 	fit_prange_stop_mc_bmrw->SetName("fit_prange_stop_mc_bmrw");
 	fit_prange_stop_mc_bmrw->SetLineStyle(2);
 	double m_range_stop_mc_bmrw=fit_prange_stop_mc_bmrw->GetParameter(0); //
@@ -274,7 +268,7 @@ void plotDataMCKE_BMRW(TString fdata, TString fmc, TString fmc_bmrw, TString out
 	double err_s_ff_stop_mc=fit_pff_stop_mc->GetParError(1);
 
 	//[5_bmrw]
-	TF1* fit_pff_stop_mc_bmrw; fit_pff_stop_mc_bmrw=VFit(pff_stop_mc_bmrw, 7);
+	TF1* fit_pff_stop_mc_bmrw; fit_pff_stop_mc_bmrw=VFit(pff_stop_mc_bmrw, 3);
 	fit_pff_stop_mc_bmrw->SetName("fit_pff_stop_mc_bmrw");
 	fit_pff_stop_mc_bmrw->SetLineStyle(2);
 	double m_ff_stop_mc_bmrw=fit_pff_stop_mc_bmrw->GetParameter(0); //
@@ -283,11 +277,10 @@ void plotDataMCKE_BMRW(TString fdata, TString fmc, TString fmc_bmrw, TString out
 	double err_s_ff_stop_mc_bmrw=fit_pff_stop_mc_bmrw->GetParError(1);
 
 
-
-	TCanvas *c1x=new TCanvas("c1x","");
+	TCanvas *c1x=new TCanvas("c1x","",1200,900);
 	c1x->Divide(1,1);
 	c1x->cd(1);
-	TH2D* f2d_px=new TH2D("f2d_px","", 100, 600, 1300, 600, 0, prange_stop_mc_bmrw->GetBinContent(prange_stop_mc_bmrw->GetMaximumBin())+50); //
+	TH2D* f2d_px=new TH2D("f2d_px","", 100, 600, 1300, 600, 0, prange_stop_mc_bmrw->GetBinContent(prange_stop_mc_bmrw->GetMaximumBin())+150); //
 	f2d_px->SetTitle("Stopping Protons; Proton Momentum [MeV/c];");
 	f2d_px->GetXaxis()->CenterTitle();
 	prange_stop_data->SetLineColor(1);
@@ -297,11 +290,9 @@ void plotDataMCKE_BMRW(TString fdata, TString fmc, TString fmc_bmrw, TString out
 	pcalo_stop_mc_bmrw->SetLineColor(4);
 	pff_stop_mc->SetLineColor(7);
 	pff_stop_mc_bmrw->SetLineColor(3);
-
 	prange_stop_mc->SetLineColor(2);
 	prange_stop_mc_bmrw->SetLineColor(4);
 	
-
 	f2d_px->Draw();
 	prange_stop_mc->Draw("hist same");
 	//pcalo_stop_data->Draw("ep same");
@@ -309,28 +300,27 @@ void plotDataMCKE_BMRW(TString fdata, TString fmc, TString fmc_bmrw, TString out
 	pff_stop_mc->Draw("hist same");
 	prange_stop_mc_bmrw->Draw("hist same");
 	pff_stop_mc_bmrw->Draw("hist same");
-	prange_stop_data->Draw("ep same");
 
 	fit_prange_stop_data->Draw("same");
 	fit_prange_stop_mc->Draw("same");
 	fit_prange_stop_mc_bmrw->Draw("same");
 	fit_pff_stop_mc->Draw("same");
 	fit_pff_stop_mc_bmrw->Draw("same");
+	prange_stop_data->Draw("ep same");
 
 	//p0_stop_mc->SetLineColor(3);
 	//p0_stop_mc->Scale(n_pbeam_stop_data/n_p0_stop_mc);
 	//p0_stop_mc->Draw("hist same");
 
-	TLegend *leg0x = new TLegend(0.64,0.65,.8,0.85);
+	TLegend *leg0x = new TLegend(0.14,0.65,.9,0.9);
 	leg0x->SetFillStyle(0);
-	leg0x->AddEntry(prange_stop_data, "Data (range)", "ep");
-	//leg0x->AddEntry(pcalo_stop_data, "Data(calo)", "ep");
-	leg0x->AddEntry(pbeam_stop_mc, "MC (range)", "l");
-	leg0x->AddEntry(pbeam_stop_mc_bmrw, "MC (range)+bmrw", "l");
+	leg0x->AddEntry(prange_stop_data, Form("Data(range): #mu=%.1f#pm%.1f MeV/c, #sigma=%.1f#pm%.1f MeV/c",m_range_stop_data,err_m_range_stop_data,s_range_stop_data,err_s_range_stop_data), "ep");
+	leg0x->AddEntry(pff_stop_mc, Form("MC(FF-truth): #mu=%.1f#pm%.1f MeV/c, #sigma=%.1f#pm%.1f MeV/c",m_ff_stop_mc,err_m_ff_stop_mc,s_ff_stop_mc,err_s_ff_stop_mc), "l");
+	leg0x->AddEntry(pbeam_stop_mc, Form("MC(range): #mu=%.1f#pm%.1f MeV/c, #sigma=%.1f#pm%.1f MeV/c",m_range_stop_mc,err_m_range_stop_mc,s_range_stop_mc,err_s_range_stop_mc), "l");
+	leg0x->AddEntry(pff_stop_mc_bmrw, Form("MC(FF-truth)+bmrw: #mu=%.1f#pm%.1f MeV/c, #sigma=%.1f#pm%.1f MeV/c",m_ff_stop_mc_bmrw,err_m_ff_stop_mc_bmrw,s_ff_stop_mc_bmrw,err_s_ff_stop_mc_bmrw), "l");
+	leg0x->AddEntry(pbeam_stop_mc_bmrw, Form("MC(range)+bmrw: #mu=%.1f#pm%.1f MeV/c, #sigma=%.1f#pm%.1f MeV/c",m_range_stop_mc_bmrw,err_m_range_stop_mc_bmrw,s_range_stop_mc_bmrw,err_s_range_stop_mc_bmrw), "l");
 
 	//leg0x->AddEntry(pcalo_stop_data, "MC(calo)", "l");
-	leg0x->AddEntry(pff_stop_mc, "MC (FF-truth)", "l");
-	leg0x->AddEntry(pff_stop_mc_bmrw, "MC (FF-truth)+bmrw", "l");
 	leg0x->Draw();
 
 	c1x->Print(Form("%s/mom_range_bmrw.eps",outpath.Data()));
@@ -349,27 +339,15 @@ void plotDataMCKE_BMRW(TString fdata, TString fmc, TString fmc_bmrw, TString out
 	//fit_pff_stop_mc->Draw("same");
 	//fit_pff_stop_mc_bmrw->Draw("same");
 
-	TLegend *leg0xy = new TLegend(0.64,0.65,.8,0.85);
+	TLegend *leg0xy = new TLegend(0.14,0.65,.8,0.85);
 	leg0xy->SetFillStyle(0);
-	leg0xy->AddEntry(pcalo_stop_data, "Data(calo)", "ep");
+	leg0xy->AddEntry(pcalo_stop_data, Form("Data(calo): #mu=%.1f#pm%.1f MeV/c, #sigma=%.1f#pm%.1f MeV/c",m_calo_stop_data,err_m_calo_stop_data,s_calo_stop_data,err_s_calo_stop_data), "ep");
 	//leg0xy->AddEntry(pff_stop_mc, "MC (FF-truth)", "l");
 	//leg0x->AddEntry(pff_stop_mc_bmrw, "MC (FF-truth)+bmrw", "l");
-	leg0xy->AddEntry(pcalo_stop_mc, "MC(calo)", "l");
-	leg0xy->AddEntry(pcalo_stop_mc_bmrw, "MC(calo)+bmrw", "l");
+	leg0xy->AddEntry(pcalo_stop_mc, Form("MC(calo): #mu=%.1f#pm%.1f MeV/c, #sigma=%.1f#pm%.1f MeV/c",m_calo_stop_mc,err_m_calo_stop_mc,s_calo_stop_mc,err_s_calo_stop_mc), "l");
+	leg0xy->AddEntry(pcalo_stop_mc_bmrw, Form("MC(calo)+bmrw: #mu=%.1f#pm%.1f MeV/c, #sigma=%.1f#pm%.1f MeV/c",m_calo_stop_mc_bmrw,err_m_calo_stop_mc_bmrw,s_calo_stop_mc_bmrw,err_s_calo_stop_mc_bmrw), "l");
 	leg0xy->Draw();
 	c1x->Print(Form("%s/mom_calo_bmrw.eps",outpath.Data()));
-	//c1x->Print(Form("%s/mom_calo_bmrw.png",outpath.Data()));
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -446,7 +424,7 @@ void plotDataMCKE_BMRW(TString fdata, TString fmc, TString fmc_bmrw, TString out
 	ms_mc_bmrw->SetMarkerColor(3);
 	ms_mc_bmrw->SetLineColor(3);
 
-	TCanvas *cms=new TCanvas("cms","");
+	TCanvas *cms=new TCanvas("cms","",1200,900);
 	cms->Divide(1,1);
 	cms->cd(1);
 	float emin=910.;
@@ -481,8 +459,8 @@ void plotDataMCKE_BMRW(TString fdata, TString fmc, TString fmc_bmrw, TString out
         fit_mc_bmrw->Draw("same");
 
 
-	TLegend *leg1 = new TLegend(0.54,0.65,.85,0.85);
-	leg1->SetFillStyle(0);
+	TLegend *leg1 = new TLegend(0.14,0.65,.6,0.85);
+	//leg1->SetFillStyle(0);
 	leg1->AddEntry(ms_data, Form("Data: #sigma=%.2f%.2f*#mu",fit_data->GetParameter(0),fit_data->GetParameter(1)), "ep");
 	leg1->AddEntry(ms_mc, Form("MC: #sigma=%.2f%.2f*#mu",fit_mc->GetParameter(0),fit_mc->GetParameter(1)), "ep");
 	leg1->AddEntry(ms_mc_bmrw, Form("MC(bmrw): #sigma=%.2f%.2f*#mu",fit_mc_bmrw->GetParameter(0),fit_mc_bmrw->GetParameter(1)), "ep");
@@ -501,7 +479,7 @@ void plotDataMCKE_BMRW(TString fdata, TString fmc, TString fmc_bmrw, TString out
         txt_p1[0]->SetTextSize(0.05);
         txt_p1[0]->Draw();
 
-	//c0->Print(Form("%s/pbeam_data_mc.eps",outpath.Data()));
+	cms->Print(Form("%s/mu_sigma_data_mc.eps",outpath.Data()));
 
 
 
