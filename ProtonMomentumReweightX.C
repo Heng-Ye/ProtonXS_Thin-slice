@@ -80,6 +80,9 @@ void ProtonMomentumReweight::Loop() {
 	TH1D *h1d_pff=new TH1D("h1d_pff","",nx,xmin,xmax);
 	TH1D *h1d_pff_stop=new TH1D("h1d_pff_stop","",nx,xmin,xmax);
 
+	TH1D *h1d_phy=new TH1D("h1d_phy","",nx,xmin,xmax);
+	TH1D *h1d_phy_stop=new TH1D("h1d_phy_stop","",nx,xmin,xmax);
+
 	TH1D *h1d_prange_stop=new TH1D("h1d_prange_stop","",nx,xmin,xmax);
 	TH1D *h1d_pcalo_stop=new TH1D("h1d_pcalo_stop","",nx,xmin,xmax);
 
@@ -164,9 +167,10 @@ void ProtonMomentumReweight::Loop() {
 	} //mu loop
 
 
-	//trklen
+	//trklen -------------------------------------------------------------------------------------------------------
 	TH1D *h1d_trklen_stop=new TH1D(Form("h1d_trklen_stop"),Form("reco stop"),n_b,b_min,b_max);
 	TH1D *h1d_trklen_stop_XY=new TH1D(Form("h1d_trklen_stop_XY"),Form("reco stop with xy cut"),n_b,b_min,b_max);
+	TH1D *h1d_hytrklen_stop=new TH1D(Form("h1d_hytrklen_stop"),Form("reco stop"),n_b,b_min,b_max);
 	
 	TH1D *h1d_trklen=new TH1D(Form("h1d_trklen"),Form("reco+BQ"),n_b,b_min,b_max);
 	TH1D *h1d_trklen_XY=new TH1D(Form("h1d_trklen_XY"),Form("reco+BQ+XY"),n_b,b_min,b_max);
@@ -199,6 +203,8 @@ void ProtonMomentumReweight::Loop() {
 	TH1D *h1d_kebeam=new TH1D("h1d_kebeam","",ny_edept,ymin_edept,ymax_edept);
 	TH1D *h1d_kebeam_stop=new TH1D("h1d_kebeam_stop","",ny_edept,ymin_edept,ymax_edept);
 
+	TH1D *h1d_kehy=new TH1D("h1d_kehy","",ny_edept,ymin_edept,ymax_edept);
+	TH1D *h1d_kehy_stop=new TH1D("h1d_kehy_stop","",ny_edept,ymin_edept,ymax_edept);
 	TH1D *h1d_keff=new TH1D("h1d_keff","",ny_edept,ymin_edept,ymax_edept);
 	TH1D *h1d_keff_stop=new TH1D("h1d_keff_stop","",ny_edept,ymin_edept,ymax_edept);
 
@@ -547,26 +553,29 @@ void ProtonMomentumReweight::Loop() {
 		double fitted_KE=-1; 
 		if (fitted_length>0) fitted_KE=BB.KEFromRangeSpline(fitted_length);
 
-		if (IsRecoInEL) {
-		cout<<"\n\nrange_reco:"<<range_reco<<endl;
-		cout<<"fitted_length:"<<fitted_length<<endl;
-		cout<<"fitted_KE:"<<fitted_KE<<endl;
-		cout<<"ke_ff:"<<ke_ff<<endl;
-		}
+		//if (IsRecoInEL) {
+			//cout<<"\n\nrange_reco:"<<range_reco<<endl;
+			//cout<<"fitted_length:"<<fitted_length<<endl;
+			//cout<<"fitted_KE:"<<fitted_KE<<endl;
+			//cout<<"ke_ff:"<<ke_ff<<endl;
+		//}
 
 		//if (IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
 		//if (IsBeamXY&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
-		//if (IsBeamMom&&IsBeamXY&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
-		if (IsIntersection==false&&IsBeamMom&&IsBeamXY&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
+		if (IsBeamMom&&IsBeamXY&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
+		//if (IsIntersection==false&&IsBeamMom&&IsBeamXY&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
 			h1d_ke0->Fill(ke_beam_MeV);
 			h1d_p0->Fill(mom_beam_MeV);
 			h1d_kebeam->Fill(ke_beam_spec_MeV);
 			h1d_pbeam->Fill(1000.*mom_beam_spec);
 
 			h1d_keff->Fill(ke_ff);
+			h1d_kehy->Fill(fitted_KE);
 			h1d_pff->Fill(1000.*ke2p(ke_ff/1000.));
+			h1d_phy->Fill(1000.*ke2p(fitted_KE/1000.));
 
 			h1d_trklen->Fill(range_reco);	
+			h1d_hytrklen->Fill(fitted_length);	
 			h1d_zend->Fill(reco_endz);
 
 			double mom_rw_minchi2=1.;
@@ -587,8 +596,10 @@ void ProtonMomentumReweight::Loop() {
 				h1d_ke0_stop->Fill(ke_beam_MeV);           h1d_p0_stop->Fill(mom_beam_MeV);
 				h1d_kebeam_stop->Fill(ke_beam_spec_MeV);   h1d_pbeam_stop->Fill(1000.*mom_beam_spec);
 				h1d_keff_stop->Fill(ke_ff);      	   h1d_pff_stop->Fill(1000.*ke2p(ke_ff/1000.));
+				h1d_kehy_stop->Fill(fitted_KE);      	   h1d_phy_stop->Fill(1000.*ke2p(fitted_KE/1000.));
 
 				h1d_trklen_stop->Fill(range_reco);
+				h1d_hytrklen_stop->Fill(fitted_length);	
 				h1d_kerange_stop->Fill(ke_trklen_MeV);     h1d_prange_stop->Fill(1000.*ke2p(ke_trklen));
 				h1d_kecalo_stop->Fill(ke_calo_MeV);	   h1d_pcalo_stop->Fill(p_calo_MeV);	
 
@@ -654,7 +665,7 @@ void ProtonMomentumReweight::Loop() {
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_calo.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_rmxtrack_calo.root","RECREATE");
-   	TFile *fout = new TFile("mc_proton_test.root","RECREATE");
+   	TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_rmxtrack_hyper.root","RECREATE");
 		bm_nmu->Write();
 		bm_dmu->Write();
 		bm_mu_st->Write();
@@ -674,10 +685,17 @@ void ProtonMomentumReweight::Loop() {
 		h1d_pbeam->Write();
 		h1d_pbeam_stop->Write();
 
+		h1d_kehy->Write();
+		h1d_kehy_stop->Write();
+
 		h1d_keff->Write();
 		h1d_keff_stop->Write();
 		h1d_pff->Write();
 		h1d_pff_stop->Write();
+
+		h1d_phy->Write();
+		h1d_phy_stop->Write();
+
 
 		h1d_prange_stop->Write();
 		h1d_pcalo_stop->Write();
@@ -705,6 +723,7 @@ void ProtonMomentumReweight::Loop() {
 		chi2pid_trueinel->Write();
 
 		h1d_trklen_stop->Write();
+		h1d_hytrklen_stop->Write();
 		//h1d_trklen_stop_XY->Write();
 
 		for (int ig = 0; ig < n_1d; ++ig) { //rw loop
@@ -713,6 +732,7 @@ void ProtonMomentumReweight::Loop() {
 		} //rw loop
 
 
+		h1d_hytrklen->Write();
 		h1d_trklen->Write();
 		h1d_trklen_bmrw->Write();
 		//h1d_trklen_XY->Write();
