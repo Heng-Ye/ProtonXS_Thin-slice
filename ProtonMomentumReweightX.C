@@ -46,6 +46,7 @@
 #include "./cali/dedx_function_35ms.h"
 #include "./headers/BasicParameters.h"
 #include "./headers/BasicFunctions.h"
+#include "./headers/BetheBloch.h"
 //#include "./headers/SliceParams.h"
 //#include "./headers/ThinSlice.h"
 
@@ -221,6 +222,17 @@ void ProtonMomentumReweight::Loop() {
 	//z-st
 	TH1D *h1d_zst_noSCE=new TH1D("h1d_zst_noSCE","",110,-10,100);
 	TH1D *h1d_zst_SCE=new TH1D("h1d_zst_SCE","",110,-10,100);
+
+
+	//Basic configure ------//
+	BetheBloch BB;
+	BB.SetPdgCode(pdg);
+	
+
+
+
+
+
 
 	for (Long64_t jentry=0; jentry<nentries;jentry++) { //main entry loop
 		Long64_t ientry = LoadTree(jentry);
@@ -474,6 +486,9 @@ void ProtonMomentumReweight::Loop() {
 		double ke_trklen=ke_vs_csda_range_sm->Eval(range_reco); //[unit: GeV]
 		double ke_trklen_MeV=1000.*ke_trklen; //[unit: MeV]
 
+
+
+
 		//double p_trklen=ke2p(ke_trklen);
 		//double ke_simide=0;
 		//for (int hk=0; hk<(int)primtrk_true_edept->size(); ++hk) { //loop over simIDE points
@@ -481,7 +496,10 @@ void ProtonMomentumReweight::Loop() {
 		//} //loop over simIDE points
 
 		double ke_calo_MeV=0;
-		if (IsPandoraSlice&&IsBQ&&IsCaloSize) { //if calo size not empty
+		//if (IsPandoraSlice&&IsBQ&&IsCaloSize) { //if calo size not empty
+		vector<double> trkdedx; 
+		vector<double> trkres;
+		if (IsCaloSize) { //if calo size not empty
 			//no-sce
 			h2d_xy_noSCE->Fill(reco_stx_noSCE, reco_sty_noSCE);
 			h1d_zst_noSCE->Fill(reco_stz_noSCE);
@@ -490,8 +508,6 @@ void ProtonMomentumReweight::Loop() {
 			h1d_zst_SCE->Fill(reco_stz);
 			
 			//calo
-			vector<double> trkdedx; 
-			vector<double> trkres;
 			for (size_t h=0; h<primtrk_hitz->size(); ++h) { //loop over reco hits of a given track
 				double hitx_reco=primtrk_hitx->at(h);
 				double hity_reco=primtrk_hity->at(h);
@@ -525,6 +541,18 @@ void ProtonMomentumReweight::Loop() {
 
 		} //if calo size not empty
 		double p_calo_MeV=1000.*ke2p(ke_calo_MeV/1000.);
+
+		//hypothetical length
+		double fitted_length = BB.Fit_dEdx_Residual_Length(trkdedx, trkres, pdg, false);
+		double fitted_KE=-1; 
+		if (fitted_length>0) fitted_KE=BB.KEFromRangeSpline(fitted_length);
+
+		if (IsRecoInEL) {
+		cout<<"\n\nrange_reco:"<<range_reco<<endl;
+		cout<<"fitted_length:"<<fitted_length<<endl;
+		cout<<"fitted_KE:"<<fitted_KE<<endl;
+		cout<<"ke_ff:"<<ke_ff<<endl;
+		}
 
 		//if (IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
 		//if (IsBeamXY&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
@@ -625,7 +653,8 @@ void ProtonMomentumReweight::Loop() {
 	//save results...
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_calo.root","RECREATE");
-   	TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_rmxtrack_calo.root","RECREATE");
+   	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_rmxtrack_calo.root","RECREATE");
+   	TFile *fout = new TFile("mc_proton_test.root","RECREATE");
 		bm_nmu->Write();
 		bm_dmu->Write();
 		bm_mu_st->Write();

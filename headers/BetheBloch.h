@@ -420,7 +420,7 @@ double BetheBloch::Fit_dEdx_Residual_Length(const vector<double> dEdx, const vec
   //double best_KE = map_BB[abs_PID]->KEFromRangeSpline(best_total_res_length);
   double best_KE = KEFromRangeSpline(best_total_res_length);
   //double best_mom = map_BB[abs_PID]->KEtoMomentum(best_KE);
-  double best_mom = KEtoMomentum(best_KE);
+  //double best_mom = KEtoMomentum(best_KE);
 
   // == Define fitting failed cases
   if(i_bestfit == res_length_trial - 1){
