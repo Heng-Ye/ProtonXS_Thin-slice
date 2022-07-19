@@ -674,14 +674,6 @@ void ProtonMomentumReweight::Loop() {
 		if ((range_reco/csda_val_spec)>=min_norm_trklen_csda&&(range_reco/csda_val_spec)<max_norm_trklen_csda) IsRecoStop=true;
 		//if ((range_reco/csda_val_spec)<min_norm_trklen_csda) IsRecoInEL=true;
 
-                if ((range_reco/csda_val_spec)<min_norm_trklen_csda) { //inel region
-                        if (pid>pid_1) IsRecoInEL=true;
-                        if (pid<=pid_1) IsRecoEL=true;
-                } //inel region
-                if ((range_reco/csda_val_spec)>=min_norm_trklen_csda&&(range_reco/csda_val_spec)<max_norm_trklen_csda) { //stopping p region
-                        if (pid>pid_2) IsRecoInEL=true;
-                        if (pid<=pid_2) IsRecoEL=true;
-		}
 
 		//kinetic energies
 		double ke_beam_MeV=1000.*p2ke(mom_beam); //ke_beam [MeV]
@@ -703,6 +695,7 @@ void ProtonMomentumReweight::Loop() {
 		//if (IsPandoraSlice&&IsBQ&&IsCaloSize) { //if calo size not empty
 		vector<double> trkdedx; 
 		vector<double> trkres;
+		double pid=-99;
 		if (IsCaloSize) { //if calo size not empty
 			//no-sce
 			h2d_xy_noSCE->Fill(reco_stx_noSCE, reco_sty_noSCE);
@@ -736,15 +729,28 @@ void ProtonMomentumReweight::Loop() {
 				}
 
 			} //loop over reco hits of a given track
+			pid=chi2pid(trkdedx,trkres); //pid using stopping proton hypothesis
 
-			if (IsRecoStop) chi2pid_recostop->Fill(chi2pid(trkdedx,trkres));
-			if (IsRecoInEL) chi2pid_recoinel->Fill(chi2pid(trkdedx,trkres));
+			if (IsRecoStop) chi2pid_recostop->Fill(pid);
+			if (IsRecoInEL) chi2pid_recoinel->Fill(pid);
 			//if (IsPureMCS) chi2pid_truestop->Fill(chi2pid(trkdedx,trkres));
-			if (kel) chi2pid_trueel->Fill(chi2pid(trkdedx,trkres));
-			if (kinel) chi2pid_trueinel->Fill(chi2pid(trkdedx,trkres)); 
+			if (kel) chi2pid_trueel->Fill(pid);
+			if (kinel) chi2pid_trueinel->Fill(pid); 
 
 		} //if calo size not empty
 		double p_calo_MeV=1000.*ke2p(ke_calo_MeV/1000.);
+                if ((range_reco/csda_val_spec)<min_norm_trklen_csda) { //inel region
+                        if (pid>pid_1) IsRecoInEL=true;
+                        if (pid<=pid_1) IsRecoEL=true;
+                } //inel region
+                if ((range_reco/csda_val_spec)>=min_norm_trklen_csda&&(range_reco/csda_val_spec)<max_norm_trklen_csda) { //stopping p region
+                        if (pid>pid_2) IsRecoInEL=true;
+                        if (pid<=pid_2) IsRecoEL=true;
+		}
+
+
+
+
 
 		//hypothetical length ------------------------------------------------------------------------//
 		double fitted_length = BB.Fit_dEdx_Residual_Length(trkdedx, trkres, pdg, false);
