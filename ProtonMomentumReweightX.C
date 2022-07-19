@@ -53,6 +53,60 @@
 using namespace std;
 using namespace ROOT::Math;
 
+/////////////////////////////////
+// define the parametric line equation
+void line(double t, const double *p, double &x, double &y, double &z) {
+	// a parametric line is define from 6 parameters but 4 are independent
+	// x0,y0,z0,z1,y1,z1 which are the coordinates of two points on the line
+	// can choose z0 = 0 if line not parallel to x-y plane and z1 = 1;
+	x = p[0] + p[1]*t;
+	y = p[2] + p[3]*t;
+	z = t;
+}
+
+bool first = true;
+
+// function Object to be minimized
+struct SumDistance2 {
+	// the TGraph is a data member of the object
+	TGraph2D *fGraph;
+
+	SumDistance2(TGraph2D *g) : fGraph(g) {}
+
+	// calculate distance line-point
+	double distance2(double x,double y,double z, const double *p) {
+		// distance line point is D= | (xp-x0) cross  ux |
+		// where ux is direction of line and x0 is a point in the line (like t = 0)
+		XYZVector xp(x,y,z);
+		XYZVector x0(p[0], p[2], 0. );
+		XYZVector x1(p[0] + p[1], p[2] + p[3], 1. );
+		XYZVector u = (x1-x0).Unit();
+		double d2 = ((xp-x0).Cross(u)).Mag2();
+		return d2;
+	}
+
+	// implementation of the function to be minimized
+	double operator() (const double *par) {
+		assert(fGraph != 0);
+		double * x = fGraph->GetX();
+		double * y = fGraph->GetY();
+		double * z = fGraph->GetZ();
+		int npoints = fGraph->GetN();
+		double sum = 0;
+		for (int i  = 0; i < npoints; ++i) {
+			double d = distance2(x[i],y[i],z[i],par);
+			sum += d;
+		}
+		if (first) {
+			std::cout << "Total Initial distance square = " << sum << std::endl;
+		}
+		first = false;
+		return sum;
+	}
+
+};
+/////////////////////////////////
+
 void ProtonMomentumReweight::Loop() {
 	if (fChain == 0) return;
 
@@ -172,6 +226,7 @@ void ProtonMomentumReweight::Loop() {
 	TH1D *h1d_trklen_stop_XY=new TH1D(Form("h1d_trklen_stop_XY"),Form("reco stop with xy cut"),n_b,b_min,b_max);
 	TH1D *h1d_hytrklen_stop=new TH1D(Form("h1d_hytrklen_stop"),Form("reco stop"),n_b,b_min,b_max);
 	
+	TH1D *h1d_hytrklen=new TH1D(Form("h1d_hytrklen"),Form("reco+BQ"),n_b,b_min,b_max);
 	TH1D *h1d_trklen=new TH1D(Form("h1d_trklen"),Form("reco+BQ"),n_b,b_min,b_max);
 	TH1D *h1d_trklen_XY=new TH1D(Form("h1d_trklen_XY"),Form("reco+BQ+XY"),n_b,b_min,b_max);
 	TH1D *h1d_trklen_bmrw=new TH1D(Form("h1d_trklen_bmrw"),Form("reco_bmrw+BQ"),n_b,b_min,b_max);
@@ -205,11 +260,19 @@ void ProtonMomentumReweight::Loop() {
 
 	TH1D *h1d_kehy=new TH1D("h1d_kehy","",ny_edept,ymin_edept,ymax_edept);
 	TH1D *h1d_kehy_stop=new TH1D("h1d_kehy_stop","",ny_edept,ymin_edept,ymax_edept);
+	TH1D *h1d_kehy_inel=new TH1D("h1d_kehy_inel","",ny_edept,ymin_edept,ymax_edept);
 	TH1D *h1d_keff=new TH1D("h1d_keff","",ny_edept,ymin_edept,ymax_edept);
 	TH1D *h1d_keff_stop=new TH1D("h1d_keff_stop","",ny_edept,ymin_edept,ymax_edept);
+	TH1D *h1d_keff_inel=new TH1D("h1d_keff_inel","",ny_edept,ymin_edept,ymax_edept);
 
 	TH1D *h1d_kerange_stop=new TH1D("h1d_kerange_stop","", ny_edept, ymin_edept, ymax_edept);
 	TH1D *h1d_kecalo_stop=new TH1D("h1d_kecalo_stop","", ny_edept, ymin_edept, ymax_edept);
+
+        TH2D *trklen_lenkeff_stop=new TH2D("trklen_lenkeff_stop","", nx_trklen, xmin_trklen, xmax_trklen, nx_trklen, xmin_trklen, xmax_trklen);
+        TH2D *trklen_lenkeff_el=new TH2D("trklen_lenkeff_el","", nx_trklen, xmin_trklen, xmax_trklen, nx_trklen, xmin_trklen, xmax_trklen);
+        TH2D *trklen_lenkeff_inel=new TH2D("trklen_lenkeff_inel","", nx_trklen, xmin_trklen, xmax_trklen, nx_trklen, xmin_trklen, xmax_trklen);
+
+
 
 	//dedx_rr ---------------------------------------------------------------------------//
 	TH2D *h2d_rr_dedx_recoSTOP=new TH2D("h2d_rr_dedx_recoSTOP","",240,0,120,90,0,30);
@@ -229,16 +292,10 @@ void ProtonMomentumReweight::Loop() {
 	TH1D *h1d_zst_noSCE=new TH1D("h1d_zst_noSCE","",110,-10,100);
 	TH1D *h1d_zst_SCE=new TH1D("h1d_zst_SCE","",110,-10,100);
 
-
 	//Basic configure ------//
 	BetheBloch BB;
 	BB.SetPdgCode(pdg);
-	
-
-
-
-
-
+	//----------------------//	
 
 	for (Long64_t jentry=0; jentry<nentries;jentry++) { //main entry loop
 		Long64_t ientry = LoadTree(jentry);
@@ -282,6 +339,137 @@ void ProtonMomentumReweight::Loop() {
 
 		bool IsTrueEndOutside=false;
 		if (true_endz<0.) IsTrueEndOutside=true;
+
+		//First point of MCParticle entering TPC ------------------------------------------------------------------------//
+		bool is_beam_at_ff=false; //if the beam reach tpc
+		int key_reach_tpc=-99;
+		if (beamtrk_z->size()){
+			for (size_t kk=0; kk<beamtrk_z->size(); ++kk) {  //loop over all beam hits
+				double zpos_beam=beamtrk_z->at(kk);
+				if (zpos_beam>=0) {
+					key_reach_tpc=(int)kk;
+					break;
+				}
+			} //loop over all beam hits
+
+			//for (size_t kk=0; kk<beamtrk_z->size(); ++kk) {  //loop over all beam hits
+			//cout<<"["<<kk<<"] beamtrk_z:"<<beamtrk_z->at(kk) <<" beamtrk_Eng:"<<beamtrk_Eng->at(kk)<<endl;
+			//} //loop over all beam hits
+		} 
+		if (key_reach_tpc!=-99) { is_beam_at_ff=true; }
+		//cout<<"key_reach_tpc:"<<key_reach_tpc<<endl;	
+		//cout<<"is_beam_at_ff:"<<is_beam_at_ff<<endl;
+
+		//Get true trklen ---------------------------------------------------------------------------------------//
+		int key_st = 0;
+		double tmp_z = 9999;
+		vector<double> true_trklen_accum;
+		true_trklen_accum.reserve(beamtrk_z->size()); // initialize true_trklen_accum
+		for (int iz=0; iz<(int)beamtrk_z->size(); iz++) {
+			if (abs(beamtrk_z->at(iz)) < tmp_z){
+				tmp_z = abs(beamtrk_z->at(iz));
+				key_st = iz; // find the point where the beam enters the TPC (find the smallest abs(Z))
+			}
+			if (is_beam_at_ff) true_trklen_accum[iz] = 0.; // initialize true_trklen_accum [beam at ff]
+			if (!is_beam_at_ff) true_trklen_accum[iz] = -1; // initialize true_trklen_accum [beam not at ff]
+		}
+
+		//fix on the truth length by adding distance between 1st tpc hit to front face ------------------------------------------------------//
+		//[1] 3D projection on TPC front face
+		double zproj_beam=0; //set beam z at ff
+		double yproj_beam=0; //ini. value
+		double xproj_beam=0; //ini. value
+		int n_fit=3; //num of points used for fitting
+		if (beamtrk_z->size()) {
+
+			int key_fit_st=0;
+			int key_fit_ed=-1+(int)beamtrk_z->size();
+			if (key_reach_tpc!=-99) {
+				key_fit_st=key_reach_tpc-1;
+				key_fit_ed=key_reach_tpc+1;
+			}
+			if (key_fit_st<0) key_fit_st=0;
+			if (key_fit_ed>(-1+(int)beamtrk_z->size())) key_fit_ed=-1+(int)beamtrk_z->size();	
+
+			//cout<<"beamtrk_z->size():"<<beamtrk_z->size()<<endl;
+			//cout<<"key_reach_tpc:"<<key_reach_tpc<<endl;
+			//std::cout<<"key_fit_st-ed:"<<key_fit_st<<"-"<<key_fit_ed<<std::endl;
+
+			//start 3D line fit
+			TGraph2D *gr=new TGraph2D();
+			//cout<<"ck0"<<endl;
+			//for (int N=key_fit_st; N<key_fit_ed; N++) {
+			int nsize_fit=n_fit;
+			if ((1+(key_fit_ed-key_fit_st))<n_fit) nsize_fit=1+(key_fit_ed-key_fit_st);
+			if ((int)beamtrk_z->size()<=n_fit) nsize_fit=(int)beamtrk_z->size(); //in case really short track
+			for (int N=0; N<nsize_fit; N++) {
+				gr->SetPoint(N, beamtrk_x->at(N+key_fit_st), beamtrk_y->at(N+key_fit_st), beamtrk_z->at(N+key_fit_st));
+			}
+			//cout<<"ck1"<<endl;
+			//Initialization of parameters
+			//int N=(int)Z_RECO.size();
+			double ini_p1=(beamtrk_x->at(key_fit_ed)-beamtrk_x->at(key_fit_st))/(beamtrk_z->at(key_fit_ed)-beamtrk_z->at(key_fit_st));
+			double ini_p0=beamtrk_x->at(key_fit_st)-ini_p1*beamtrk_z->at(key_fit_st);
+			double ini_p3=beamtrk_y->at(key_fit_ed)-beamtrk_y->at(key_fit_st);
+			double ini_p2=beamtrk_y->at(key_fit_st)-ini_p3*beamtrk_z->at(key_fit_st);
+			//cout<<"ck2"<<endl;
+
+			ROOT::Fit::Fitter  fitter;
+			// make the functor objet
+			SumDistance2 sdist(gr);
+			ROOT::Math::Functor fcn(sdist,4);
+
+			// set the function and the initial parameter values
+			double pStart[4]={ini_p0, ini_p1, ini_p2, ini_p3};   
+			fitter.SetFCN(fcn,pStart);
+			//cout<<"ck3"<<endl;
+
+			// set step sizes different than default ones (0.3 times parameter values)
+			for (int ik = 0; ik < 4; ++ik) fitter.Config().ParSettings(ik).SetStepSize(0.01);
+			//cout<<"ck4"<<endl;
+
+			bool ok = fitter.FitFCN();
+			if (!ok) {
+				Error("line3Dfit","Line3D Fit failed");
+				//return 1;
+			}
+			//cout<<"ck5"<<endl;
+
+			const ROOT::Fit::FitResult & result = fitter.Result();
+			std::cout << "Total final distance square " << result.MinFcnValue() << std::endl;
+			result.Print(std::cout);
+			//cout<<"ck6"<<endl;
+
+			// get fit parameters
+			const double * parFit = result.GetParams();
+			yproj_beam=result.Parameter(2)+result.Parameter(3)*zproj_beam;
+			xproj_beam=result.Parameter(0)+result.Parameter(1)*zproj_beam;
+			//cout<<"ck7"<<endl;
+
+			delete gr;
+		}
+
+		//[2] Range compensation ----------------------------------------------------------//
+		double range_true_patch=0;
+		if (is_beam_at_ff) { //is beam at ff
+			//calculate distance 1st hit and pojected point at TPC front face
+			range_true_patch = sqrt( pow(beamtrk_x->at(key_reach_tpc)-xproj_beam, 2)+
+					pow(beamtrk_y->at(key_reach_tpc)-yproj_beam, 2)+	
+					pow(beamtrk_z->at(key_reach_tpc)-zproj_beam, 2) );
+			//range_true_patch=0; //no fix on true len
+		} //if entering tpc
+
+		//true_trklen_accum
+		double range_true=-9999;
+		if (is_beam_at_ff) { //is beam at ff
+			for (int iz=key_reach_tpc+1; iz<(int)beamtrk_z->size(); iz++) {
+				if (iz == key_reach_tpc+1) range_true = range_true_patch;
+				range_true += sqrt( pow(beamtrk_x->at(iz)-beamtrk_x->at(iz-1), 2)+
+						pow(beamtrk_y->at(iz)-beamtrk_y->at(iz-1), 2)+	
+						pow(beamtrk_z->at(iz)-beamtrk_z->at(iz-1), 2) );						    	
+				true_trklen_accum[iz] = range_true;
+			}
+		} //is beam at ff
 
 		//Get reco info ----------------------------------------------------------------------------------//
 		//Evt Classification -----------------------------------------------------------------------------//
@@ -459,6 +647,7 @@ void ProtonMomentumReweight::Loop() {
 		//Reco stopping/Inel p cut
 		bool IsRecoStop=false;
 		bool IsRecoInEL=false;
+		bool IsRecoEL=false;
 		double mom_beam_spec=-99; mom_beam_spec=beamMomentum_spec->at(0);
 		double bx_spec=beamPosx_spec->at(0);
 		double by_spec=beamPosy_spec->at(0);
@@ -483,7 +672,16 @@ void ProtonMomentumReweight::Loop() {
 		double csda_val_spec=csda_range_vs_mom_sm->Eval(mom_beam_spec);
 
 		if ((range_reco/csda_val_spec)>=min_norm_trklen_csda&&(range_reco/csda_val_spec)<max_norm_trklen_csda) IsRecoStop=true;
-		if ((range_reco/csda_val_spec)<min_norm_trklen_csda) IsRecoInEL=true;
+		//if ((range_reco/csda_val_spec)<min_norm_trklen_csda) IsRecoInEL=true;
+
+                if ((range_reco/csda_val_spec)<min_norm_trklen_csda) { //inel region
+                        if (pid>pid_1) IsRecoInEL=true;
+                        if (pid<=pid_1) IsRecoEL=true;
+                } //inel region
+                if ((range_reco/csda_val_spec)>=min_norm_trklen_csda&&(range_reco/csda_val_spec)<max_norm_trklen_csda) { //stopping p region
+                        if (pid>pid_2) IsRecoInEL=true;
+                        if (pid<=pid_2) IsRecoEL=true;
+		}
 
 		//kinetic energies
 		double ke_beam_MeV=1000.*p2ke(mom_beam); //ke_beam [MeV]
@@ -548,10 +746,12 @@ void ProtonMomentumReweight::Loop() {
 		} //if calo size not empty
 		double p_calo_MeV=1000.*ke2p(ke_calo_MeV/1000.);
 
-		//hypothetical length
+		//hypothetical length ------------------------------------------------------------------------//
 		double fitted_length = BB.Fit_dEdx_Residual_Length(trkdedx, trkres, pdg, false);
 		double fitted_KE=-1; 
 		if (fitted_length>0) fitted_KE=BB.KEFromRangeSpline(fitted_length);
+		//double len_keff=-99; len_keff=BB.RangeFromKE(KE_ff_reco);
+
 
 		//if (IsRecoInEL) {
 			//cout<<"\n\nrange_reco:"<<range_reco<<endl;
@@ -591,6 +791,15 @@ void ProtonMomentumReweight::Loop() {
 				//h1d_zend_XY->Fill(reco_endz);
 				//h1d_zend_bmrw_XY->Fill(reco_endz, mom_rw_minchi2);
 			//} //xy
+
+			if (IsRecoEL) { //reco el
+				trklen_lenkeff_el->Fill(range_reco, fitted_length);
+			} //reco el
+
+			if (IsRecoInEL) { //reco inel
+				h1d_keff_inel->Fill(ke_ff);
+				h1d_kehy_inel->Fill(fitted_KE);
+			} //reco inel
 
 			if (IsRecoStop) { //reco stop 
 				h1d_ke0_stop->Fill(ke_beam_MeV);           h1d_p0_stop->Fill(mom_beam_MeV);
@@ -687,8 +896,10 @@ void ProtonMomentumReweight::Loop() {
 
 		h1d_kehy->Write();
 		h1d_kehy_stop->Write();
+		h1d_kehy_inel->Write();
 
 		h1d_keff->Write();
+		h1d_keff_inel->Write();
 		h1d_keff_stop->Write();
 		h1d_pff->Write();
 		h1d_pff_stop->Write();
@@ -742,6 +953,8 @@ void ProtonMomentumReweight::Loop() {
 		h1d_zend_bmrw->Write();
 		//h1d_zend_XY->Write();
 		//h1d_zend_bmrw_XY->Write();
+
+		trklen_lenkeff_el->Write();
 
 	fout->Close();
 
