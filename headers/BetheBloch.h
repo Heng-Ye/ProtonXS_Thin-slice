@@ -322,7 +322,8 @@ double BetheBloch::Fit_dEdx_Residual_Length(const vector<double> dEdx, const vec
   double best_chi2 = 99999.;
   double min_additional_res_length = 0.; // == [cm]
   double max_additional_res_length = 200.; // == [cm]
-  double res_length_step = 0.5; // == [cm]
+  //double res_length_step = 0.5; // == [cm]
+  double res_length_step = 0.1; // HY modified == [cm]
   int res_length_trial = (max_additional_res_length - min_additional_res_length) / res_length_step;
   int this_N_calo = dEdx.size();
   if(this_N_calo <= 15){
