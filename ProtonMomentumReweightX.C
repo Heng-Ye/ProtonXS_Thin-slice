@@ -767,7 +767,7 @@ void ProtonMomentumReweight::Loop() {
 			if (fitted_length>0) fitted_KE=BB.KEFromRangeSpline(fitted_length);
 
 			//ke at end point ---------------------------------------------------------------------//
-			double kebb=-1; if (fitted_KE>0) kebb=fitted_KE-BB.KEAtLength(fitted_KE, range_reco);
+			double kebb=-1; if (fitted_KE>0) kebb=BB.KEAtLength(fitted_KE, range_reco);
 			double kecalo=-1; kecalo=fitted_KE-ke_calo_MeV;
 			double kend=-1; kend=1000.*(beamtrk_Eng->at(-2+beamtrk_Eng->size()));
 
@@ -901,7 +901,7 @@ void ProtonMomentumReweight::Loop() {
 			//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw.root","RECREATE");
 			//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_calo.root","RECREATE");
 			//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_rmxtrack_calo.root","RECREATE");
-			TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_rmxtrack_hyper.root","RECREATE");
+			TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_rmxtrack_hyper_new.root","RECREATE");
 			bm_nmu->Write();
 			bm_dmu->Write();
 			bm_mu_st->Write();
