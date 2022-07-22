@@ -763,13 +763,13 @@ void ProtonMomentumReweight::Loop() {
 			double fitted_length=-1; 
 			double tmp_fitted_length=BB.Fit_dEdx_Residual_Length(trkdedx, trkres, pdg, false);
 			if (tmp_fitted_length>0) fitted_length=tmp_fitted_length;
-			double fitted_KE=-1; 
+			double fitted_KE=-50; 
 			if (fitted_length>0) fitted_KE=BB.KEFromRangeSpline(fitted_length);
 
 			//ke at end point ---------------------------------------------------------------------//
-			double kebb=-1; if (fitted_KE>0) kebb=BB.KEAtLength(fitted_KE, range_reco);
-			double kecalo=-1; kecalo=fitted_KE-ke_calo_MeV;
-			double kend=-1; kend=1000.*(beamtrk_Eng->at(-2+beamtrk_Eng->size()));
+			double kebb=-50; if (fitted_KE>0) kebb=BB.KEAtLength(fitted_KE, range_reco);
+			double kecalo=-50; kecalo=fitted_KE-ke_calo_MeV;
+			double kend=-50; kend=1000.*(beamtrk_Eng->at(-2+beamtrk_Eng->size()));
 
 			//if (IsRecoInEL) {
 			//cout<<"\n\nrange_reco:"<<range_reco<<endl;
@@ -901,7 +901,10 @@ void ProtonMomentumReweight::Loop() {
 			//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw.root","RECREATE");
 			//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_calo.root","RECREATE");
 			//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_rmxtrack_calo.root","RECREATE");
-			TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_rmxtrack_hyper_new.root","RECREATE");
+			//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_rmxtrack_hyper_new.root","RECREATE");
+			//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_rmxtrack_hyper_stepsz0.2.root","RECREATE");
+			//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_rmxtrack_hyper_stepsz0.15.root","RECREATE");
+			TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_rmxtrack_hyper_stepsz0.105.root","RECREATE");
 			bm_nmu->Write();
 			bm_dmu->Write();
 			bm_mu_st->Write();
