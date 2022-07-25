@@ -3,6 +3,8 @@ import sys
 import math
 
 from argparse import ArgumentParser as ap
+import numpy as np
+from array import array
 from math import sqrt
 from math import exp
 
@@ -71,7 +73,6 @@ if not (args.d and args.o and args.c):
 if (args.d): print('Read data: '+args.d)
 if (args.c): print('MC data: '+args.c)
 if (args.o): print('Output folder: '+args.o)
-
 
 #Read data histograms ----------------------------------
 f_data=RT.TFile(args.d, "OPEN")
@@ -217,32 +218,158 @@ kend_bb_inel_mc.Scale(n_end_bb_inel_data/n_end_bb_inel_mc)
 
 
 #fitting to extract mu and sigma ----------------------------
+#Data
+#initial KE
 fit_kebeam_stop_data=VNFit(kebeam_stop_data, 430, 3)
-fit_kebeam_stop_data.SetName("fit_kebeam_stop_data")
+#fit_kebeam_stop_data.SetName("fit_kebeam_stop_data")
+
+#FF
+fit_kehy_stop_data=VNFit(kehy_stop_data, 410, 3)
+fit_kehy_inel_data=VNFit(kehy_inel_data, 410, 3)
+
+#EDept
+fit_range_stop_data=VNFit(kerange_stop_data, 400, 3)
+fit_calo_stop_data=VNFit(kecalo_stop_data, 400, 3)
+
+#End_Calo
+fit_kend_calo_stop_data=VNFit(kend_calo_stop_data, 20, 3)
+fit_kend_calo_el_data=VNFit(kend_calo_el_data, 20, 3)
+fit_kend_calo_inel_data=VNFit(kend_calo_inel_data, 20, 3)
+
+#End_bb
+fit_kend_bb_stop_data=VNFit(kend_bb_stop_data, 20, 3)
+fit_kend_bb_el_data=VNFit(kend_bb_el_data, 20, 3)
+fit_kend_bb_inel_data=VNFit(kend_bb_inel_data, 20, 3)
+
+
+#MC
+#initial KE
+fit_ke0_stop_mc=VNFit(ke0_stop_mc, 430, 3)
+#fit_ke0_stop_mc.SetName("fit_ke0_stop_mc")
+
+fit_kebeam_stop_mc=VNFit(kebeam_stop_mc, 430, 3)
+#fit_kebeam_stop_mc.SetName("fit_kebeam_stop_mc")
+
+#FF-truth
+fit_keff_stop_mc=VNFit(keff_stop_mc, 430, 3)
+#fit_keff_stop_mc.SetName("fit_keff_stop_mc")
+
+fit_keff_inel_mc=VNFit(keff_inel_mc,430, 3)
+#fit_keff_inel_mc.SetName("fit_keff_inel_mc")
+
+#FF-HY
+fit_kehy_stop_mc=VNFit(kehy_stop_mc, 400, 3)
+fit_kehy_inel_mc=VNFit(kehy_inel_mc, 400, 3)
+
+#EDept
+fit_kerange_stop_mc=VNFit(kerange_stop_mc, 420, 3)
+fit_kecalo_stop_mc=VNFit(kecalo_stop_mc, 420, 3)
+
+#End_true
+fit_kend_true_stop_mc=VNFit(kend_true_stop_mc, 20, 3)
+fit_kend_true_el_mc=VNFit(kend_true_el_mc, 20, 3)
+fit_kend_true_inel_mc=VNFit(kend_true_inel_mc, 20, 3)
+
+#End_calo
+fit_kend_calo_stop_mc=VNFit(kend_calo_stop_mc , 20, 3)
+fit_kend_calo_el_mc=VNFit(kend_calo_el_mc , 20, 3)
+fit_kend_calo_inel_mc=VNFit(kend_calo_inel_mc , 20, 3)
+fit_kend_bb_stop_mc=VNFit(kend_bb_stop_mc , 20, 3)
+fit_kend_bb_el_mc=VNFit(kend_bb_el_mc , 20, 3)
+fit_kend_bb_inel_mc=VNFit(kend_bb_inel_mc , 20, 3)
+
+#get fitted mu and sigma
+n_mc=2
+mu_sg_mc=[]
+'''
+fit=fit_ke0_stop_mc
+m=fit.GetParameter(0)
+er_m=fit.GetParError(0)
+s=fit.GetParameter(1)
+er_s=fit.GetParError(1)
+mu_sg_mc.append([m, er_m, s, er_s]) 
+'''
+
+
+#mu_sg_mc.append([])
+for i in range(n_mc):
+  fit=fit_ke0_stop_mc
+  if i==0: 
+    fit=fit_ke0_stop_mc
+  if i==1: 
+    fit=fit_kebeam_stop_mc
+  m=fit.GetParameter(0)
+  er_m=fit.GetParError(0)
+  s=fit.GetParameter(1)
+  er_s=fit.GetParError(1)
+  mu_sg_mc.append([m, er_m, s, er_s]) 
+
+
+print("n_mc=",n_mc,"\n")
+print("mu_sg_mc::",mu_sg_mc)
+print("len(mu_sg_mc):",mu_sg_mc)
+print("len(mu_sg_mc[0]):",len(mu_sg_mc[0]))
+
+
+	
+#m_stop_data=fit_kebeam_stop_data.GetParameter(0)
+#err_m_stop_data=fit_kebeam_stop_data.GetParError(0)
+#s_stop_data=fit_kebeam_stop_data.GetParameter(1)
+#err_s_stop_data=fit_kebeam_stop_data.GetParError(1)
+
+
+
+#  print(i)
+
+#test=[]
+#ex=[0,0,0]
+
+
+
+
+
+
+
+
+'''
+
 fit_kebeam_stop_data.SetLineStyle(2)
 m_stop_data=fit_kebeam_stop_data.GetParameter(0)
 err_m_stop_data=fit_kebeam_stop_data.GetParError(0)
 s_stop_data=fit_kebeam_stop_data.GetParameter(1)
 err_s_stop_data=fit_kebeam_stop_data.GetParError(1)
+#print('m_stop_data:'+m_stop_data+' s_stop_data:'+s_stop_data)
 
-fit_kebeam_stop_mc=VNFit(kebeam_stop_mc, 430, 3)
-fit_kebeam_stop_mc.SetName("fit_kebeam_stop_mc")
+
 fit_kebeam_stop_mc.SetLineStyle(2)
 m_stop_mc=fit_kebeam_stop_mc.GetParameter(0)
 err_m_stop_mc=fit_kebeam_stop_mc.GetParError(0)
 s_stop_mc=fit_kebeam_stop_mc.GetParameter(1)
 err_s_stop_mc=fit_kebeam_stop_mc.GetParError(1)
 
-fit_ke0_stop_mc=VNFit(ke0_stop_mc, 430, 3)
-fit_ke0_stop_mc.SetName("fit_ke0_stop_mc")
 fit_ke0_stop_mc.SetLineStyle(2)
 m0_stop_mc=fit_ke0_stop_mc.GetParameter(0)
 err_m0_stop_mc=fit_ke0_stop_mc.GetParError(0)
 s0_stop_mc=fit_ke0_stop_mc.GetParameter(1)
 err_s0_stop_mc=fit_ke0_stop_mc.GetParError(1)
 
+#FF-truth
+fit_keff_stop_mc.SetLineStyle(2)
+mff_stop_mc=fit_keff_stop_mc.GetParameter(0)
+err_mff_stop_mc=fit_keff_stop_mc.GetParError(0)
+sff_stop_mc=fit_keff_stop_mc.GetParameter(1)
+err_sff_stop_mc=fit_keff_stop_mc.GetParError(1)
 
-#Plots
+fit_keff_inel_mc.SetLineStyle(2)
+mff_inel_mc=fit_keff_inel_mc.GetParameter(0)
+err_mff_inel_mc=fit_keff_inel_mc.GetParError(0)
+sff_inel_mc=fit_keff_inel_mc.GetParameter(1)
+err_sff_inel_mc=fit_keff_inel_mc.GetParError(1)
+
+
+
+#Plots -----------------------------------------------------------------------------------------------------------------------------------
+#KEbeam
 c0=RT.TCanvas("c0","",1200,900)
 c0.Divide(1,1)
 c0.cd(1)
@@ -282,5 +409,32 @@ leg0.AddEntry(kebeam_stop_mc, txt0[2], "l")
 
 leg0.Draw()
 c0.Print(args.o+'/ke_ini.eps')
+
+#FF
+test=[]
+ex=[0,0,0]
+
+#test1 = [1, 2, 3]
+#test.append([4, 5, 6])
+
+#test = array.array('d', [1, 2, 3])
+test.append([1, 2, 3]) 
+test.append([4, 5, 6]) 
+print(test)
+print(len(test))
+print(len(test[0]))
+
+'''
+
+gr_mc = RT.TGraphErrors(len(mu_sg_mc[0]), array('d', mu_sg_mc[:,0]), array('d', mu_sg_mc[:,2]), array('d', mu_sg_mc[:,1]), array('d', mu_sg_mc[:,3]))
+
+cx=RT.TCanvas("cx","",1200,900)
+cx.Divide(1,1)
+cx.cd(1)
+gr_mc.Draw()
+cx.Print('test.eps')
+
+
+
 
 
