@@ -140,6 +140,11 @@ void ProtonMomentumReweight::Loop() {
 	TH1D *h1d_prange_stop=new TH1D("h1d_prange_stop","",nx,xmin,xmax);
 	TH1D *h1d_pcalo_stop=new TH1D("h1d_pcalo_stop","",nx,xmin,xmax);
 
+	//const. E-loss assumption	
+	double const_eloss_mc=47.0058/1.00097; //const E-loss from fit (calo)
+	//#p[0]:47.0058 err_p[0]:0.372157 p[1]:-1.00097 err_p[1]:0.00787403
+
+
 	//MC Beam Mom Gaussian 
 	//double m1=1007.1482; //MC prod4a [spec]
 	//double s1=60.703307; //MC prod4a [spec]
@@ -261,9 +266,15 @@ void ProtonMomentumReweight::Loop() {
 		TH1D *h1d_kehy=new TH1D("h1d_kehy","",ny_edept,ymin_edept,ymax_edept);
 		TH1D *h1d_kehy_stop=new TH1D("h1d_kehy_stop","",ny_edept,ymin_edept,ymax_edept);
 		TH1D *h1d_kehy_inel=new TH1D("h1d_kehy_inel","",ny_edept,ymin_edept,ymax_edept);
+
 		TH1D *h1d_keff=new TH1D("h1d_keff","",ny_edept,ymin_edept,ymax_edept);
 		TH1D *h1d_keff_stop=new TH1D("h1d_keff_stop","",ny_edept,ymin_edept,ymax_edept);
 		TH1D *h1d_keff_inel=new TH1D("h1d_keff_inel","",ny_edept,ymin_edept,ymax_edept);
+
+		TH1D *h1d_keffbeam=new TH1D("h1d_keffbeam","",ny_edept,ymin_edept,ymax_edept);
+		TH1D *h1d_keffbeam_stop=new TH1D("h1d_keffbeam_stop","",ny_edept,ymin_edept,ymax_edept);
+		TH1D *h1d_keffbeam_inel=new TH1D("h1d_keffbeam_inel","",ny_edept,ymin_edept,ymax_edept);
+
 
 		TH1D *h1d_kerange_stop=new TH1D("h1d_kerange_stop","", ny_edept, ymin_edept, ymax_edept);
 		TH1D *h1d_kecalo_stop=new TH1D("h1d_kecalo_stop","", ny_edept, ymin_edept, ymax_edept);
@@ -781,12 +792,13 @@ void ProtonMomentumReweight::Loop() {
 			//if (IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
 			//if (IsBeamXY&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
 			if (IsBeamMom&&IsBeamXY&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
-				//if (IsIntersection==false&&IsBeamMom&&IsBeamXY&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
+			//if (IsIntersection==false&&IsBeamMom&&IsBeamXY&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
 				h1d_ke0->Fill(ke_beam_MeV);
 				h1d_p0->Fill(mom_beam_MeV);
 				h1d_kebeam->Fill(ke_beam_spec_MeV);
 				h1d_pbeam->Fill(1000.*mom_beam_spec);
 
+				h1d_keffbeam->Fill(ke_beam_MeV-const_eloss_mc);
 				h1d_keff->Fill(ke_ff);
 				h1d_kehy->Fill(fitted_KE);
 				h1d_pff->Fill(1000.*ke2p(ke_ff/1000.));
@@ -818,6 +830,7 @@ void ProtonMomentumReweight::Loop() {
 				} //reco el
 
 				if (IsRecoInEL) { //reco inel
+					h1d_keffbeam_inel->Fill(ke_beam_MeV-const_eloss_mc);
 					h1d_keff_inel->Fill(ke_ff);
 					h1d_kehy_inel->Fill(fitted_KE);
 					h1d_kend_calo_inel->Fill(kecalo);
@@ -828,6 +841,7 @@ void ProtonMomentumReweight::Loop() {
 				if (IsRecoStop) { //reco stop 
 					h1d_ke0_stop->Fill(ke_beam_MeV);           h1d_p0_stop->Fill(mom_beam_MeV);
 					h1d_kebeam_stop->Fill(ke_beam_spec_MeV);   h1d_pbeam_stop->Fill(1000.*mom_beam_spec);
+					h1d_keffbeam_stop->Fill(ke_beam_MeV-const_eloss_mc);      	   //h1d_pff_stop->Fill(1000.*ke2p(ke_ff/1000.));
 					h1d_keff_stop->Fill(ke_ff);      	   h1d_pff_stop->Fill(1000.*ke2p(ke_ff/1000.));
 					h1d_kehy_stop->Fill(fitted_KE);      	   h1d_phy_stop->Fill(1000.*ke2p(fitted_KE/1000.));
 
@@ -928,6 +942,10 @@ void ProtonMomentumReweight::Loop() {
 			h1d_kehy->Write();
 			h1d_kehy_stop->Write();
 			h1d_kehy_inel->Write();
+
+			h1d_keffbeam->Write();
+			h1d_keffbeam_inel->Write();
+			h1d_keffbeam_stop->Write();
 
 			h1d_keff->Write();
 			h1d_keff_inel->Write();

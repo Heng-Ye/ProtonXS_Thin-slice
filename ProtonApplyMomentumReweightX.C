@@ -82,6 +82,10 @@ void ProtonApplyMomentumReweight::Loop() {
 	TH1D *h1d_prange_stop=new TH1D("h1d_prange_stop","",nx,xmin,xmax);
 	TH1D *h1d_pcalo_stop=new TH1D("h1d_pcalo_stop","",nx,xmin,xmax);
 
+	//const. E-loss assumption	
+	double const_eloss_mc=47.0058/1.00097; //const E-loss from fit (calo)
+	//#p[0]:47.0058 err_p[0]:0.372157 p[1]:-1.00097 err_p[1]:0.00787403
+
 	//MC Beam Mom Gaussian 
 	//double m1=1007.1482; //MC prod4a [spec]
 	//double s1=60.703307; //MC prod4a [spec]

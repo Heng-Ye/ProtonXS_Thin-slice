@@ -281,6 +281,13 @@ fit_kend_bb_inel_mc=VNFit(kend_bb_inel_mc , 20, 3)
 #get fitted mu and sigma
 n_mc=2
 mu_sg_mc=[]
+
+mu_mc=[]
+er_mu_mc=[]
+sigma_mc=[]
+er_sigma_mc=[]
+
+
 '''
 fit=fit_ke0_stop_mc
 m=fit.GetParameter(0)
@@ -303,6 +310,10 @@ for i in range(n_mc):
   s=fit.GetParameter(1)
   er_s=fit.GetParError(1)
   mu_sg_mc.append([m, er_m, s, er_s]) 
+  mu_mc.append(m)
+  er_mu_mc.append(er_m)
+  sigma_mc.append(s)
+  er_sigma_mc.append(er_s)
 
 
 print("n_mc=",n_mc,"\n")
@@ -426,7 +437,7 @@ print(len(test[0]))
 
 '''
 
-gr_mc = RT.TGraphErrors(len(mu_sg_mc[0]), array('d', mu_sg_mc[:,0]), array('d', mu_sg_mc[:,2]), array('d', mu_sg_mc[:,1]), array('d', mu_sg_mc[:,3]))
+gr_mc = RT.TGraphErrors(len(mu_mc), array('d', mu_mc[:]), array('d', sigma_mc[:]), array('d', er_mu_mc[:]), array('d', er_sigma_mc[:]))
 
 cx=RT.TCanvas("cx","",1200,900)
 cx.Divide(1,1)
