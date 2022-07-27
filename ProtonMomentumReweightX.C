@@ -770,6 +770,9 @@ void ProtonMomentumReweight::Loop() {
 				if (pid<=pid_2) IsRecoEL=true;
 			}
 
+			//Const E-loss ------------------------------------------------------------------------------------------//
+			double ke_ffbeam_MeV=ke_beam_spec_MeV-const_eloss_mc; //const E-loss (our assumption of KE at TPC FF)
+
 			//hypothetical length -------------------------------------------------------------------------------------//
 			double fitted_length=-1; 
 			double tmp_fitted_length=BB.Fit_dEdx_Residual_Length(trkdedx, trkres, pdg, false);
@@ -778,8 +781,8 @@ void ProtonMomentumReweight::Loop() {
 			if (fitted_length>0) fitted_KE=BB.KEFromRangeSpline(fitted_length);
 
 			//ke at end point ---------------------------------------------------------------------//
-			double kebb=-50; if (fitted_KE>0) kebb=BB.KEAtLength(fitted_KE, range_reco);
-			double kecalo=-50; kecalo=fitted_KE-ke_calo_MeV;
+			double kebb=-50; if (fitted_KE>0) kebb=BB.KEAtLength(ke_ffbeam_MeV, range_reco);
+			double kecalo=-50; kecalo=ke_ffbeam_MeV-ke_calo_MeV;
 			double kend=-50; kend=1000.*(beamtrk_Eng->at(-2+beamtrk_Eng->size()));
 
 			//if (IsRecoInEL) {
