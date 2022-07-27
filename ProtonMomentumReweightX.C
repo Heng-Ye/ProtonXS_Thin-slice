@@ -781,7 +781,8 @@ void ProtonMomentumReweight::Loop() {
 			if (fitted_length>0) fitted_KE=BB.KEFromRangeSpline(fitted_length);
 
 			//ke at end point ---------------------------------------------------------------------//
-			double kebb=-50; if (fitted_KE>0) kebb=BB.KEAtLength(ke_ffbeam_MeV, range_reco);
+			//double kebb=-50; if (fitted_KE>0) kebb=BB.KEAtLength(ke_ffbeam_MeV, range_reco);
+			double kebb=-50; kebb=BB.KEAtLength(ke_ffbeam_MeV, range_reco);
 			double kecalo=-50; kecalo=ke_ffbeam_MeV-ke_calo_MeV;
 			double kend=-50; kend=1000.*(beamtrk_Eng->at(-2+beamtrk_Eng->size()));
 
