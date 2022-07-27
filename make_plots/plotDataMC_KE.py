@@ -74,6 +74,11 @@ if (args.d): print('Read data: '+args.d)
 if (args.c): print('MC data: '+args.c)
 if (args.o): print('Output folder: '+args.o)
 
+#Const. E-loss Values -------------------------------------------
+const_eloss_mc=47.0058/1.00097
+const_eloss_data=45.6084/0.99943
+
+
 #Read data histograms ----------------------------------
 f_data=RT.TFile(args.d, "OPEN")
 #f_data.ls()
@@ -81,6 +86,11 @@ f_data=RT.TFile(args.d, "OPEN")
 #beam
 kebeam_data=f_data.Get("h1d_kebeam")
 kebeam_stop_data=f_data.Get("h1d_kebeam_stop")
+
+#ff-const E-loss from kebeam
+keffbeam_data=f_data.Get("h1d_keffbeam")
+keffbeam_stop_data=f_data.Get("h1d_keffbeam_stop")
+keffbeam_inel_data=f_data.Get("h1d_keffbeam_inel")
 
 #ff
 kehy_data=f_data.Get("h1d_kehy")
@@ -105,6 +115,9 @@ kend_bb_inel_data=f_data.Get("h1d_kend_bb_inel")
 
 #get entries 
 n_beam_stop_data=kebeam_stop_data.Integral()
+
+n_ffbeam_stop_data=keffbeam_stop_data.Integral()
+n_ffbeam_inel_data=keffbeam_inel_data.Integral()
 
 n_hy_stop_data=kehy_stop_data.Integral()
 n_hy_inel_data=kehy_inel_data.Integral()
@@ -137,11 +150,10 @@ keff_mc=f_mc.Get("h1d_keff");
 keff_stop_mc=f_mc.Get("h1d_keff_stop");
 keff_inel_mc=f_mc.Get("h1d_keff_inel");
 
-
-#ff-hyper
-kehy_mc=f_mc.Get("h1d_kehy")
-kehy_stop_mc=f_mc.Get("h1d_kehy_stop")
-kehy_inel_mc=f_mc.Get("h1d_kehy_inel")
+#ff-const E-loss from kebeam
+keffbeam_mc=f_mc.Get("h1d_keffbeam")
+keffbeam_stop_mc=f_mc.Get("h1d_keffbeam_stop")
+keffbeam_inel_mc=f_mc.Get("h1d_keffbeam_inel")
 
 #ff-hyper
 kehy_mc=f_mc.Get("h1d_kehy")
@@ -170,6 +182,9 @@ kend_true_inel_mc=f_mc.Get("h1d_kend_true_inel");
 n_beam_stop_mc=kebeam_stop_mc.Integral()
 n_0_stop_mc=ke0_stop_mc.Integral()
 
+n_ffbeam_stop_mc=keffbeam_stop_mc.Integral()
+n_ffbeam_inel_mc=keffbeam_inel_mc.Integral()
+
 n_ff_stop_mc=keff_stop_mc.Integral()
 n_ff_inel_mc=keff_inel_mc.Integral()
 
@@ -191,12 +206,16 @@ n_end_bb_stop_mc=kend_bb_stop_mc.Integral()
 n_end_bb_el_mc=kend_bb_el_mc.Integral()
 n_end_bb_inel_mc=kend_bb_inel_mc.Integral()
 
-#normalization [mc]
+#normalization [mc] ------------------------------------------------
 kebeam_stop_mc.Scale(n_beam_stop_data/n_beam_stop_mc)
 
 ke0_stop_mc.Scale(n_beam_stop_data/n_0_stop_mc)
+
 keff_stop_mc.Scale(n_hy_stop_data/n_ff_stop_mc)
 keff_inel_mc.Scale(n_beam_stop_data/n_ff_inel_mc)
+
+keffbeam_stop_mc.Scale(n_ffbeam_stop_data/n_ffbeam_stop_mc)
+keffbeam_inel_mc.Scale(n_ffbeam_inel_data/n_ffbeam_inel_mc)
 
 kehy_stop_mc.Scale(n_hy_stop_data/n_hy_stop_mc)
 kehy_inel_mc.Scale(n_hy_inel_data/n_hy_inel_mc)
@@ -216,20 +235,26 @@ kend_bb_stop_mc.Scale(n_end_bb_stop_data/n_end_bb_stop_mc)
 kend_bb_el_mc.Scale(n_end_bb_el_data/n_end_bb_el_mc)
 kend_bb_inel_mc.Scale(n_end_bb_inel_data/n_end_bb_inel_mc)
 
+keffbeam_stop_mc.Scale(n_hy_stop_data/n_ffbeam_stop_mc)
+keffbeam_inel_mc.Scale(n_hy_inel_data/n_ffbeam_inel_mc)
+
 
 #fitting to extract mu and sigma ----------------------------
 #Data
 #initial KE
 fit_kebeam_stop_data=VNFit(kebeam_stop_data, 430, 3)
-#fit_kebeam_stop_data.SetName("fit_kebeam_stop_data")
+
+#FF_constEloss
+fit_keffbeam_stop_data=VNFit(keffbeam_stop_data, 410, 3)
+fit_keffbeam_inel_data=VNFit(keffbeam_inel_data, 410, 3)
 
 #FF
 fit_kehy_stop_data=VNFit(kehy_stop_data, 410, 3)
 fit_kehy_inel_data=VNFit(kehy_inel_data, 410, 3)
 
 #EDept
-fit_range_stop_data=VNFit(kerange_stop_data, 400, 3)
-fit_calo_stop_data=VNFit(kecalo_stop_data, 400, 3)
+fit_kerange_stop_data=VNFit(kerange_stop_data, 400, 3)
+fit_kecalo_stop_data=VNFit(kecalo_stop_data, 400, 3)
 
 #End_Calo
 fit_kend_calo_stop_data=VNFit(kend_calo_stop_data, 20, 3)
@@ -245,17 +270,16 @@ fit_kend_bb_inel_data=VNFit(kend_bb_inel_data, 20, 3)
 #MC
 #initial KE
 fit_ke0_stop_mc=VNFit(ke0_stop_mc, 430, 3)
-#fit_ke0_stop_mc.SetName("fit_ke0_stop_mc")
-
 fit_kebeam_stop_mc=VNFit(kebeam_stop_mc, 430, 3)
-#fit_kebeam_stop_mc.SetName("fit_kebeam_stop_mc")
 
 #FF-truth
 fit_keff_stop_mc=VNFit(keff_stop_mc, 430, 3)
-#fit_keff_stop_mc.SetName("fit_keff_stop_mc")
-
 fit_keff_inel_mc=VNFit(keff_inel_mc,430, 3)
-#fit_keff_inel_mc.SetName("fit_keff_inel_mc")
+
+#FF-const E-loss
+fit_keffbeam_mc=VNFit(keffbeam_mc, 400, 3)
+fit_keffbeam_stop_mc=VNFit(keffbeam_stop_mc, 400, 3)
+fit_keffbeam_inel_mc=VNFit(keffbeam_inel_mc, 400, 3)
 
 #FF-HY
 fit_kehy_stop_mc=VNFit(kehy_stop_mc, 400, 3)
@@ -278,109 +302,89 @@ fit_kend_bb_stop_mc=VNFit(kend_bb_stop_mc , 20, 3)
 fit_kend_bb_el_mc=VNFit(kend_bb_el_mc , 20, 3)
 fit_kend_bb_inel_mc=VNFit(kend_bb_inel_mc , 20, 3)
 
-#get fitted mu and sigma
-n_mc=2
-mu_sg_mc=[]
+#get fitted mu and sigma [mc] ------------------------
+n_mc_stop=10
 
-mu_mc=[]
-er_mu_mc=[]
-sigma_mc=[]
-er_sigma_mc=[]
+mu_stop_mc=[]
+er_mu_stop_mc=[]
+sigma_stop_mc=[]
+er_sigma_stop_mc=[]
 
-
-'''
-fit=fit_ke0_stop_mc
-m=fit.GetParameter(0)
-er_m=fit.GetParError(0)
-s=fit.GetParameter(1)
-er_s=fit.GetParError(1)
-mu_sg_mc.append([m, er_m, s, er_s]) 
-'''
-
-
-#mu_sg_mc.append([])
-for i in range(n_mc):
+for i in range(n_mc_stop):
   fit=fit_ke0_stop_mc
   if i==0: 
     fit=fit_ke0_stop_mc
   if i==1: 
     fit=fit_kebeam_stop_mc
+  if i==2:
+    fit=fit_keff_stop_mc
+  if i==3:
+    fit=fit_keffbeam_stop_mc
+  if i==4:
+    fit=fit_kehy_stop_mc
+  if i==5:
+    fit=fit_kerange_stop_mc
+  if i==6:
+    fit=fit_kecalo_stop_mc
+  if i==7:
+    fit=fit_kend_calo_stop_mc
+  if i==8:
+    fit=fit_kend_bb_el_mc
+  if i==9:
+    fit=fit_kend_true_stop_mc
   m=fit.GetParameter(0)
   er_m=fit.GetParError(0)
   s=fit.GetParameter(1)
   er_s=fit.GetParError(1)
-  mu_sg_mc.append([m, er_m, s, er_s]) 
-  mu_mc.append(m)
-  er_mu_mc.append(er_m)
-  sigma_mc.append(s)
-  er_sigma_mc.append(er_s)
+  #mu_sg_mc.append([m, er_m, s, er_s]) 
+  mu_stop_mc.append(m)
+  er_mu_stop_mc.append(er_m)
+  sigma_stop_mc.append(s)
+  er_sigma_stop_mc.append(er_s)
+  print("i=",i," m=",m, "s=",s,"\n")
+    
 
-
-print("n_mc=",n_mc,"\n")
-print("mu_sg_mc::",mu_sg_mc)
-print("len(mu_sg_mc):",mu_sg_mc)
-print("len(mu_sg_mc[0]):",len(mu_sg_mc[0]))
-
-
+print("n_mc_stop=",n_mc_stop,"\n")
+#print("mu_sg_mc::",mu_sg_mc)
+#print("len(mu_sg_mc):",mu_sg_mc)
+#print("len(mu_sg_mc[0]):",len(mu_sg_mc[0]))
+print("const_eloss_mc:",const_eloss_mc)
 	
-#m_stop_data=fit_kebeam_stop_data.GetParameter(0)
-#err_m_stop_data=fit_kebeam_stop_data.GetParError(0)
-#s_stop_data=fit_kebeam_stop_data.GetParameter(1)
-#err_s_stop_data=fit_kebeam_stop_data.GetParError(1)
+#get fitted mu and sigma [data] -----------------
+n_data_stop=7
 
+mu_stop_data=[]
+er_mu_stop_data=[]
+sigma_stop_data=[]
+er_sigma_stop_data=[]
 
+for i in range(n_mc_stop):
+  fit=fit_kebeam_stop_data
+  if i==0: 
+    fit=fit_kebeam_stop_data
+  if i==1: 
+    fit=fit_keffbeam_stop_data
+  if i==2:
+    fit=fit_kehy_stop_data
+  if i==3:
+    fit=fit_kerange_stop_data
+  if i==4:
+    fit=fit_kecalo_stop_data
+  if i==5:
+    fit=fit_kend_calo_stop_data
+  if i==6:
+    fit=fit_kend_bb_el_data
+  m=fit.GetParameter(0)
+  er_m=fit.GetParError(0)
+  s=fit.GetParameter(1)
+  er_s=fit.GetParError(1)
+  mu_stop_data.append(m)
+  er_mu_stop_data.append(er_m)
+  sigma_stop_data.append(s)
+  er_sigma_stop_data.append(er_s)
 
-#  print(i)
-
-#test=[]
-#ex=[0,0,0]
-
-
-
-
-
-
-
-
-'''
-
-fit_kebeam_stop_data.SetLineStyle(2)
-m_stop_data=fit_kebeam_stop_data.GetParameter(0)
-err_m_stop_data=fit_kebeam_stop_data.GetParError(0)
-s_stop_data=fit_kebeam_stop_data.GetParameter(1)
-err_s_stop_data=fit_kebeam_stop_data.GetParError(1)
-#print('m_stop_data:'+m_stop_data+' s_stop_data:'+s_stop_data)
-
-
-fit_kebeam_stop_mc.SetLineStyle(2)
-m_stop_mc=fit_kebeam_stop_mc.GetParameter(0)
-err_m_stop_mc=fit_kebeam_stop_mc.GetParError(0)
-s_stop_mc=fit_kebeam_stop_mc.GetParameter(1)
-err_s_stop_mc=fit_kebeam_stop_mc.GetParError(1)
-
-fit_ke0_stop_mc.SetLineStyle(2)
-m0_stop_mc=fit_ke0_stop_mc.GetParameter(0)
-err_m0_stop_mc=fit_ke0_stop_mc.GetParError(0)
-s0_stop_mc=fit_ke0_stop_mc.GetParameter(1)
-err_s0_stop_mc=fit_ke0_stop_mc.GetParError(1)
-
-#FF-truth
-fit_keff_stop_mc.SetLineStyle(2)
-mff_stop_mc=fit_keff_stop_mc.GetParameter(0)
-err_mff_stop_mc=fit_keff_stop_mc.GetParError(0)
-sff_stop_mc=fit_keff_stop_mc.GetParameter(1)
-err_sff_stop_mc=fit_keff_stop_mc.GetParError(1)
-
-fit_keff_inel_mc.SetLineStyle(2)
-mff_inel_mc=fit_keff_inel_mc.GetParameter(0)
-err_mff_inel_mc=fit_keff_inel_mc.GetParError(0)
-sff_inel_mc=fit_keff_inel_mc.GetParameter(1)
-err_sff_inel_mc=fit_keff_inel_mc.GetParError(1)
-
-
-
-#Plots -----------------------------------------------------------------------------------------------------------------------------------
-#KEbeam
+#Plots #########################################################################################################################################################
+#KEbeam ------------------------------------------------------------------------------------------------------------------
 c0=RT.TCanvas("c0","",1200,900)
 c0.Divide(1,1)
 c0.cd(1)
@@ -408,9 +412,9 @@ fit_kebeam_stop_data.Draw("same")
 leg0=RT.TLegend(0.14,0.65,.9,0.9)
 leg0.SetFillStyle(0)
 txt0=[]
-txt0.append("Data: #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(m_stop_data,err_m_stop_data,s_stop_data,err_s_stop_data))
-txt0.append("MC(truth): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(m0_stop_mc,err_m0_stop_mc,s0_stop_mc,err_s0_stop_mc))
-txt0.append("MC(spec): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(m_stop_mc,err_m_stop_mc,s_stop_mc,err_s_stop_mc))
+txt0.append("Data: #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_stop_data[0],er_mu_stop_data[0],sigma_stop_data[0],er_sigma_stop_data[0]))
+txt0.append("MC(truth): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_stop_mc[0],er_mu_stop_mc[0],sigma_stop_mc[0],er_sigma_stop_mc[0]))
+txt0.append("MC(spec): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_stop_mc[1],er_mu_stop_mc[1],sigma_stop_mc[1],er_sigma_stop_mc[1]))
 
 print(txt0[0])
 leg0.AddEntry(kebeam_stop_data, txt0[0], "ep")
@@ -420,6 +424,79 @@ leg0.AddEntry(kebeam_stop_mc, txt0[2], "l")
 
 leg0.Draw()
 c0.Print(args.o+'/ke_ini.eps')
+
+#KEFF --------------------------------------------------------------------------------------------------------------------------
+c1=RT.TCanvas("c1","",1200,900)
+c1.Divide(1,1)
+c1.cd(1)
+
+f2d_keff=RT.TH2D("f2d_keff","", 370, 220, 600, 600, 0, keffbeam_stop_data.GetBinContent(keffbeam_stop_data.GetMaximumBin())+400)
+f2d_keff.SetTitle("Stopping Protons;Proton Kinetic Energy at TPC FF [MeV];")
+f2d_keff.GetXaxis().CenterTitle()
+f2d_keff.Draw()
+
+keffbeam_stop_data.SetLineColor(1)
+fit_keffbeam_stop_data.SetLineColor(1)
+
+keff_stop_mc.SetLineColor(3)
+fit_keff_stop_mc.SetLineColor(3)
+
+keffbeam_stop_mc.SetLineColor(2)
+fit_keffbeam_stop_mc.SetLineColor(2)
+
+kehy_stop_data.SetLineColor(4)
+kehy_stop_data.SetMarkerColor(4)
+fit_kehy_stop_data.SetLineColor(4)
+
+kehy_stop_mc.SetLineColor(6)
+kehy_stop_mc.SetMarkerColor(6)
+fit_kehy_stop_mc.SetLineColor(6)
+
+#kebeff_stop_mc.SetLineColor(3)
+
+fit_keff_stop_mc.Draw("same")
+keff_stop_mc.Draw("hist same")
+
+fit_keffbeam_stop_mc.Draw("same")
+keffbeam_stop_mc.Draw("hist same")
+
+fit_kehy_stop_data.Draw("same")
+kehy_stop_data.Draw("ep same")
+
+fit_kehy_stop_mc.Draw("same")
+kehy_stop_mc.Draw("hist same")
+
+keffbeam_stop_data.Draw("ep same")
+fit_keffbeam_stop_data.Draw("same")
+
+leg1=RT.TLegend(0.14,0.65,.9,0.9)
+leg1.SetFillStyle(0)
+txt1=[]
+txt1.append("Data(spec): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_stop_data[1],er_mu_stop_data[1],sigma_stop_data[1],er_sigma_stop_data[1]))
+txt1.append("Data(fit): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_stop_data[2],er_mu_stop_data[2],sigma_stop_data[2],er_sigma_stop_data[2]))
+txt1.append("MC(truth): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_stop_mc[2],er_mu_stop_mc[2],sigma_stop_mc[2],er_sigma_stop_mc[2]))
+txt1.append("MC(spec): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_stop_mc[3],er_mu_stop_mc[3],sigma_stop_mc[3],er_sigma_stop_mc[3]))
+txt1.append("MC(fit): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_stop_mc[4],er_mu_stop_mc[4],sigma_stop_mc[4],er_sigma_stop_mc[4]))
+
+print(txt1[0])
+leg1.AddEntry(keffbeam_stop_data, txt1[0], "ep")
+leg1.AddEntry(kehy_stop_data, txt1[1], "ep")
+leg1.AddEntry(keff_stop_mc, txt1[2], "l")
+leg1.AddEntry(keffbeam_stop_mc, txt1[3], "l")
+leg1.AddEntry(kehy_stop_mc, txt1[4], "l")
+
+#leg1.SetNColumns(2);
+
+leg1.Draw()
+c1.Print(args.o+'/ke_ff.eps')
+
+
+
+
+
+
+
+
 
 #FF
 test=[]
@@ -435,15 +512,15 @@ print(test)
 print(len(test))
 print(len(test[0]))
 
-'''
 
-gr_mc = RT.TGraphErrors(len(mu_mc), array('d', mu_mc[:]), array('d', sigma_mc[:]), array('d', er_mu_mc[:]), array('d', er_sigma_mc[:]))
 
-cx=RT.TCanvas("cx","",1200,900)
-cx.Divide(1,1)
-cx.cd(1)
-gr_mc.Draw()
-cx.Print('test.eps')
+gr_stop_mc = RT.TGraphErrors(len(mu_stop_mc), array('d', mu_stop_mc[:]), array('d', sigma_stop_mc[:]), array('d', er_mu_stop_mc[:]), array('d', er_sigma_stop_mc[:]))
+
+cx_stop_mc=RT.TCanvas("cx_stop_mc","",1200,900)
+cx_stop_mc.Divide(1,1)
+cx_stop_mc.cd(1)
+gr_stop_mc.Draw("ap")
+cx_stop_mc.Print('test.eps')
 
 
 

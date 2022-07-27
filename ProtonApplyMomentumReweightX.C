@@ -48,6 +48,7 @@
 #include "./headers/BasicFunctions.h"
 //#include "./headers/SliceParams.h"
 //#include "./headers/ThinSlice.h"
+#include "./headers/BetheBloch.h"
 
 using namespace std;
 using namespace ROOT::Math;
@@ -82,15 +83,38 @@ void ProtonApplyMomentumReweight::Loop() {
 	TH1D *h1d_prange_stop=new TH1D("h1d_prange_stop","",nx,xmin,xmax);
 	TH1D *h1d_pcalo_stop=new TH1D("h1d_pcalo_stop","",nx,xmin,xmax);
 
-	//const. E-loss assumption	
-	double const_eloss_mc=47.0058/1.00097; //const E-loss from fit (calo)
-	//#p[0]:47.0058 err_p[0]:0.372157 p[1]:-1.00097 err_p[1]:0.00787403
 
 	//MC Beam Mom Gaussian 
 	//double m1=1007.1482; //MC prod4a [spec]
 	//double s1=60.703307; //MC prod4a [spec]
 	double m1=997.969; //MC prod4a [truth]
 	double s1=54.4602; //MC prod4a [truth]
+
+	//const. E-loss assumption	
+	double const_eloss_mc=47.0058/1.00097; //const E-loss from fit (calo)
+	//#p[0]:47.0058 err_p[0]:0.372157 p[1]:-1.00097 err_p[1]:0.00787403
+
+	//New weighting func (using KEff_fit_stop at TPC FF as a reference) ------//
+	double mu_denom_data=411.06602388610895;
+	double sg_denom_data=47.075678784947826;
+
+	double mu_nom_data=390.81237292943916; //for data
+	double sg_nom_data=47.52091718691363; //for data
+
+	double mu_nom_mc=385.0483517211888; //for mc
+	double sg_nom_mc=38.53238867649893; //formc
+
+	//weighting func. (ke)
+	TF1 *kerw=new TF1(Form("kerw"),govg,0,800,4);
+	kerw->SetParameter(0, mu_nom_mc);
+	kerw->SetParameter(1, sg_nom_mc);
+	kerw->SetParameter(2, mu_denom_data);
+	kerw->SetParameter(3, sg_denom_data);
+
+	//ke cut range	
+	double mu_kemin=mu_nom_mc-3.*sg_nom_mc;
+	double mu_kemax=mu_nom_mc+3.*sg_nom_mc;
+	//------------------------------------------------------------------------//
 
 	//momentum cut range	
 	double mu_min=m1-3.*s1;
@@ -191,8 +215,8 @@ void ProtonApplyMomentumReweight::Loop() {
 	int nx_trklen=150;
 	double xmin_trklen=0;
 	double xmax_trklen=150;
-	int ny_edept=400;
-	double ymin_edept=0;
+	int ny_edept=450;
+	double ymin_edept=-100;
 	double ymax_edept=800;
 
 	TH1D *h1d_ke0=new TH1D("h1d_ke0","",ny_edept,ymin_edept,ymax_edept);
@@ -204,8 +228,30 @@ void ProtonApplyMomentumReweight::Loop() {
 	TH1D *h1d_keff=new TH1D("h1d_keff","",ny_edept,ymin_edept,ymax_edept);
 	TH1D *h1d_keff_stop=new TH1D("h1d_keff_stop","",ny_edept,ymin_edept,ymax_edept);
 
+	//TH1D *h1d_kehy=new TH1D("h1d_kehy","",ny_edept,ymin_edept,ymax_edept);
+	TH1D *h1d_kehy_stop=new TH1D("h1d_kehy_stop","",ny_edept,ymin_edept,ymax_edept);
+	TH1D *h1d_kehy_inel=new TH1D("h1d_kehy_inel","",ny_edept,ymin_edept,ymax_edept);
+	TH1D *h1d_kehy_el=new TH1D("h1d_kehy_el","",ny_edept,ymin_edept,ymax_edept);
+
+	TH1D *h1d_keffbeam_stop=new TH1D("h1d_keffbeam_stop","",ny_edept,ymin_edept,ymax_edept);
+	TH1D *h1d_keffbeam_inel=new TH1D("h1d_keffbeam_inel","",ny_edept,ymin_edept,ymax_edept);
+	TH1D *h1d_keffbeam_el=new TH1D("h1d_keffbeam_el","",ny_edept,ymin_edept,ymax_edept);
+
 	TH1D *h1d_kerange_stop=new TH1D("h1d_kerange_stop","", ny_edept, ymin_edept, ymax_edept);
 	TH1D *h1d_kecalo_stop=new TH1D("h1d_kecalo_stop","", ny_edept, ymin_edept, ymax_edept);
+
+	TH1D *h1d_kend_calo_stop=new TH1D("h1d_kend_calo_stop","", ny_edept, ymin_edept, ymax_edept);
+	TH1D *h1d_kend_calo_el=new TH1D("h1d_kend_calo_el","", ny_edept, ymin_edept, ymax_edept);
+	TH1D *h1d_kend_calo_inel=new TH1D("h1d_kend_calo_inel","", ny_edept, ymin_edept, ymax_edept);
+
+	TH1D *h1d_kend_bb_stop=new TH1D("h1d_kend_bb_stop","", ny_edept, ymin_edept, ymax_edept);
+	TH1D *h1d_kend_bb_el=new TH1D("h1d_kend_bb_el","", ny_edept, ymin_edept, ymax_edept);
+	TH1D *h1d_kend_bb_inel=new TH1D("h1d_kend_bb_inel","", ny_edept, ymin_edept, ymax_edept);
+
+	TH1D *h1d_kend_true_stop=new TH1D("h1d_kend_true_stop","", ny_edept, ymin_edept, ymax_edept);
+	TH1D *h1d_kend_true_el=new TH1D("h1d_kend_true_el","", ny_edept, ymin_edept, ymax_edept);
+	TH1D *h1d_kend_true_inel=new TH1D("h1d_kend_true_inel","", ny_edept, ymin_edept, ymax_edept);
+
 
 	//dedx_rr ---------------------------------------------------------------------------//
 	TH2D *h2d_rr_dedx_recoSTOP=new TH2D("h2d_rr_dedx_recoSTOP","",240,0,120,90,0,30);
@@ -224,6 +270,11 @@ void ProtonApplyMomentumReweight::Loop() {
 	//z-st
 	TH1D *h1d_zst_noSCE=new TH1D("h1d_zst_noSCE","",110,-10,100);
 	TH1D *h1d_zst_SCE=new TH1D("h1d_zst_SCE","",110,-10,100);
+
+	//Basic configure ------//
+	BetheBloch BB;
+	BB.SetPdgCode(pdg);
+	//----------------------//	
 
 	for (Long64_t jentry=0; jentry<nentries;jentry++) { //main entry loop
 		Long64_t ientry = LoadTree(jentry);
@@ -444,6 +495,7 @@ void ProtonApplyMomentumReweight::Loop() {
 		//Reco stopping/Inel p cut
 		bool IsRecoStop=false;
 		bool IsRecoInEL=false;
+		bool IsRecoEL=false;
 		double mom_beam_spec=-99; mom_beam_spec=beamMomentum_spec->at(0);
 		double bx_spec=beamPosx_spec->at(0);
 		double by_spec=beamPosy_spec->at(0);
@@ -468,7 +520,7 @@ void ProtonApplyMomentumReweight::Loop() {
 		double csda_val_spec=csda_range_vs_mom_sm->Eval(mom_beam_spec);
 
 		if ((range_reco/csda_val_spec)>=min_norm_trklen_csda&&(range_reco/csda_val_spec)<max_norm_trklen_csda) IsRecoStop=true;
-		if ((range_reco/csda_val_spec)<min_norm_trklen_csda) IsRecoInEL=true;
+		//if ((range_reco/csda_val_spec)<min_norm_trklen_csda) IsRecoInEL=true;
 
 		//kinetic energies
 		double ke_beam_MeV=1000.*p2ke(mom_beam); //ke_beam [MeV]
@@ -484,7 +536,11 @@ void ProtonApplyMomentumReweight::Loop() {
 		//} //loop over simIDE points
 
 		double ke_calo_MeV=0;
-		if (IsPandoraSlice&&IsBQ&&IsCaloSize) { //if calo size not empty
+		double pid=-99;
+		//if (IsPandoraSlice&&IsBQ&&IsCaloSize) { //if calo size not empty
+		vector<double> trkdedx; 
+		vector<double> trkres;
+		if (IsCaloSize) { //if calo size not empty
 			//no-sce
 			h2d_xy_noSCE->Fill(reco_stx_noSCE, reco_sty_noSCE);
 			h1d_zst_noSCE->Fill(reco_stz_noSCE);
@@ -493,8 +549,6 @@ void ProtonApplyMomentumReweight::Loop() {
 			h1d_zst_SCE->Fill(reco_stz);
 			
 			//calo
-			vector<double> trkdedx; 
-			vector<double> trkres;
 			for (size_t h=0; h<primtrk_hitz->size(); ++h) { //loop over reco hits of a given track
 				double hitx_reco=primtrk_hitx->at(h);
 				double hity_reco=primtrk_hity->at(h);
@@ -519,20 +573,48 @@ void ProtonApplyMomentumReweight::Loop() {
 				}
 
 			} //loop over reco hits of a given track
+			pid=chi2pid(trkdedx,trkres); //pid using stopping proton hypothesis
 
-			if (IsRecoStop) chi2pid_recostop->Fill(chi2pid(trkdedx,trkres));
-			if (IsRecoInEL) chi2pid_recoinel->Fill(chi2pid(trkdedx,trkres));
-			//if (IsPureMCS) chi2pid_truestop->Fill(chi2pid(trkdedx,trkres));
-			if (kel) chi2pid_trueel->Fill(chi2pid(trkdedx,trkres));
-			if (kinel) chi2pid_trueinel->Fill(chi2pid(trkdedx,trkres)); 
+			if (IsRecoStop) chi2pid_recostop->Fill(pid);
+			if (IsRecoInEL) chi2pid_recoinel->Fill(pid);
+			//if (IsPureMCS) chi2pid_truestop->Fill(pid);
+			if (kel) chi2pid_trueel->Fill(pid);
+			if (kinel) chi2pid_trueinel->Fill(pid); 
 
 		} //if calo size not empty
+
+		if ((range_reco/csda_val_spec)<min_norm_trklen_csda) { //inel region
+			if (pid>pid_1) IsRecoInEL=true;
+			if (pid<=pid_1) IsRecoEL=true;
+		} //inel region
+		if ((range_reco/csda_val_spec)>=min_norm_trklen_csda&&(range_reco/csda_val_spec)<max_norm_trklen_csda) { //stopping p region
+			if (pid>pid_2) IsRecoInEL=true;
+			if (pid<=pid_2) IsRecoEL=true;
+		}
+		
+		//Const E-loss ------------------------------------------------------------------------------------------//
+		double ke_ffbeam_MeV=ke_beam_spec_MeV-const_eloss_mc; //const E-loss (our assumption of KE at TPC FF)
+
+		//hypothetical length -------------------------------------------------------------------------------------//
+		double fitted_length=-1; 
+		double tmp_fitted_length=BB.Fit_dEdx_Residual_Length(trkdedx, trkres, pdg, false);
+		if (tmp_fitted_length>0) fitted_length=tmp_fitted_length;
+		double fitted_KE=-50; 
+		if (fitted_length>0) fitted_KE=BB.KEFromRangeSpline(fitted_length);
+	
+		//ke at end point ---------------------------------------------------------------------//
+		double kebb=-50; if (fitted_KE>0) kebb=BB.KEAtLength(ke_ffbeam_MeV, range_reco);
+		double kecalo=-50; kecalo=ke_ffbeam_MeV-ke_calo_MeV;
+		double kend=-50; kend=1000.*(beamtrk_Eng->at(-2+beamtrk_Eng->size()));
+
+
 
 		//if (IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
 		//if (IsBeamXY&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
 		if (IsBeamMom&&IsBeamXY&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
 			double mom_rw_minchi2=1.;
-			if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=gng[index_minchi2]->Eval(mom_beam_spec*1000.); //bmrw
+			//if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=gng[index_minchi2]->Eval(mom_beam_spec*1000.); //bmrw
+			if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=kerw->Eval(ke_ffbeam_MeV); //bmrw
 
 			h1d_ke0->Fill(ke_beam_MeV, mom_rw_minchi2);
 			h1d_p0->Fill(mom_beam_MeV, mom_rw_minchi2);
@@ -541,6 +623,8 @@ void ProtonApplyMomentumReweight::Loop() {
 
 			h1d_keff->Fill(ke_ff, mom_rw_minchi2);
 			h1d_pff->Fill(1000.*ke2p(ke_ff/1000.), mom_rw_minchi2);
+
+			//h1d_kehy->Fill(fitted_KE, mom_rw_minchi2);
 
 			h1d_trklen->Fill(range_reco, mom_rw_minchi2);	
 			h1d_zend->Fill(reco_endz, mom_rw_minchi2);
@@ -557,14 +641,30 @@ void ProtonApplyMomentumReweight::Loop() {
 				//h1d_zend_bmrw_XY->Fill(reco_endz, mom_rw_minchi2);
 			//} //xy
 
+			if (IsRecoEL) { //reco el
+				h1d_kehy_el->Fill(fitted_KE, mom_rw_minchi2);
+				h1d_keffbeam_el->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
+				h1d_kend_calo_el->Fill(kecalo, mom_rw_minchi2);
+				h1d_kend_bb_el->Fill(kebb, mom_rw_minchi2);
+				h1d_kend_true_el->Fill(kend, mom_rw_minchi2);
+
+			} //reco el			
+
 			if (IsRecoStop) { //reco stop 
 				h1d_ke0_stop->Fill(ke_beam_MeV, mom_rw_minchi2);           h1d_p0_stop->Fill(mom_beam_MeV, mom_rw_minchi2);
 				h1d_kebeam_stop->Fill(ke_beam_spec_MeV, mom_rw_minchi2);   h1d_pbeam_stop->Fill(1000.*mom_beam_spec, mom_rw_minchi2);
 				h1d_keff_stop->Fill(ke_ff, mom_rw_minchi2);      	   h1d_pff_stop->Fill(1000.*ke2p(ke_ff/1000.), mom_rw_minchi2);
 
+				h1d_kehy_stop->Fill(fitted_KE, mom_rw_minchi2);
+				h1d_keffbeam_stop->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
+
 				h1d_trklen_stop->Fill(range_reco, mom_rw_minchi2);
 				h1d_kerange_stop->Fill(ke_trklen_MeV, mom_rw_minchi2);     h1d_prange_stop->Fill(1000.*ke2p(ke_trklen), mom_rw_minchi2);
 				h1d_kecalo_stop->Fill(ke_calo_MeV, mom_rw_minchi2);	   h1d_pcalo_stop->Fill(1000.*ke2p(ke_calo_MeV/1000.), mom_rw_minchi2);	
+
+				h1d_kend_calo_stop->Fill(kecalo, mom_rw_minchi2);
+				h1d_kend_bb_stop->Fill(kebb, mom_rw_minchi2);
+				h1d_kend_true_stop->Fill(kend, mom_rw_minchi2);
 
 				//if (IsXY) { //xy-cut
 					//h1d_trklen_stop_XY->Fill(range_reco);
@@ -583,6 +683,16 @@ void ProtonApplyMomentumReweight::Loop() {
 					//} //tail of the beam	
 				//} //xy-cut
 			} //reco stop
+
+			if (IsRecoInEL) { //reco inel	
+				h1d_kehy_inel->Fill(fitted_KE, mom_rw_minchi2);
+				h1d_keffbeam_inel->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
+				h1d_kend_calo_inel->Fill(kecalo, mom_rw_minchi2);
+				h1d_kend_bb_inel->Fill(kebb, mom_rw_minchi2);
+				h1d_kend_true_inel->Fill(kend, mom_rw_minchi2);
+
+			} //reco inel
+
 		} //basic cuts
 
 	} //main entry loop
@@ -626,7 +736,8 @@ void ProtonApplyMomentumReweight::Loop() {
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_afterbmrw.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_afterbmrw_usespecasinput.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_calo_afterbmrw.root","RECREATE");
-   	TFile *fout = new TFile("mc_proton_beamxy_beammom_calo_rmxtrack_afterbmrw.root","RECREATE");
+   	//TFile *fout = new TFile("mc_proton_beamxy_beammom_calo_rmxtrack_afterbmrw.root","RECREATE");
+   	TFile *fout = new TFile("mc_proton_beamxy_beammom_calo_afterkerw.root","RECREATE");
 		bm_nmu->Write();
 		bm_dmu->Write();
 		bm_mu_st->Write();
@@ -693,6 +804,27 @@ void ProtonApplyMomentumReweight::Loop() {
 		h1d_zend_bmrw->Write();
 		//h1d_zend_XY->Write();
 		//h1d_zend_bmrw_XY->Write();
+
+
+		h1d_keffbeam_stop->Write();
+		h1d_keffbeam_inel->Write();
+		h1d_keffbeam_el->Write();
+
+		h1d_kehy_stop->Write();
+		h1d_kehy_inel->Write();
+		h1d_kehy_el->Write();
+
+		h1d_kend_calo_el->Write();
+		h1d_kend_calo_stop->Write();
+		h1d_kend_calo_inel->Write();
+
+		h1d_kend_bb_el->Write();
+		h1d_kend_bb_stop->Write();
+		h1d_kend_bb_inel->Write();
+
+		h1d_kend_true_el->Write();
+		h1d_kend_true_stop->Write();
+		h1d_kend_true_inel->Write();
 
 	fout->Close();
 
