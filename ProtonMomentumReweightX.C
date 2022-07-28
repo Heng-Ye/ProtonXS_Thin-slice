@@ -451,11 +451,11 @@ void ProtonMomentumReweight::Loop() {
 				for (int ik = 0; ik < 4; ++ik) fitter.Config().ParSettings(ik).SetStepSize(0.01);
 				//cout<<"ck4"<<endl;
 
-				bool ok = fitter.FitFCN();
-				if (!ok) {
-					Error("line3Dfit","Line3D Fit failed");
+				//bool ok = fitter.FitFCN();
+				//if (!ok) {
+					//Error("line3Dfit","Line3D Fit failed");
 					//return 1;
-				}
+				//}
 				//cout<<"ck5"<<endl;
 
 				const ROOT::Fit::FitResult & result = fitter.Result();
