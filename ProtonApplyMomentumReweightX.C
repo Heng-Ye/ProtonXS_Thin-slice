@@ -101,8 +101,8 @@ void ProtonApplyMomentumReweight::Loop() {
 	double mu_nom_data=390.81237292943916; //for data
 	double sg_nom_data=47.52091718691363; //for data
 
-	double mu_nom_mc=385.0483517211888; //for mc
-	double sg_nom_mc=38.53238867649893; //formc
+	double mu_nom_mc=388.560260293186; //for mc(KEbeam-const)
+	double sg_nom_mc=43.13168235197187; //formc
 
 	//weighting func. (ke)
 	TF1 *kerw=new TF1(Form("kerw"),govg,0,800,4);
