@@ -454,7 +454,7 @@ void ProtonMomentumReweight::Loop() {
 				bool ok = fitter.FitFCN();
 				if (!ok) {
 					//Error("line3Dfit","Line3D Fit failed");
-					return 1;
+					//return 1;
 				}
 				//cout<<"ck5"<<endl;
 
