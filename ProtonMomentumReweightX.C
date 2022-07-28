@@ -451,11 +451,11 @@ void ProtonMomentumReweight::Loop() {
 				for (int ik = 0; ik < 4; ++ik) fitter.Config().ParSettings(ik).SetStepSize(0.01);
 				//cout<<"ck4"<<endl;
 
-				//bool ok = fitter.FitFCN();
-				//if (!ok) {
+				bool ok = fitter.FitFCN();
+				if (!ok) {
 					//Error("line3Dfit","Line3D Fit failed");
-					//return 1;
-				//}
+					return 1;
+				}
 				//cout<<"ck5"<<endl;
 
 				const ROOT::Fit::FitResult & result = fitter.Result();
@@ -926,7 +926,8 @@ void ProtonMomentumReweight::Loop() {
 			//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_rmxtrack_hyper_stepsz0.2.root","RECREATE");
 			//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_rmxtrack_hyper_stepsz0.15.root","RECREATE");
 			//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_rmxtrack_hyper_stepsz0.105.root","RECREATE");
-			TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_rmxtrack_hyper.root","RECREATE");
+			//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_rmxtrack_hyper.root","RECREATE");
+			TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_hyper.root","RECREATE");
 			bm_nmu->Write();
 			bm_dmu->Write();
 			bm_mu_st->Write();
