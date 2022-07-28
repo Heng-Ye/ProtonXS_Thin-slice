@@ -459,8 +459,8 @@ void ProtonMomentumReweight::Loop() {
 				//cout<<"ck5"<<endl;
 
 				const ROOT::Fit::FitResult & result = fitter.Result();
-				std::cout << "Total final distance square " << result.MinFcnValue() << std::endl;
-				result.Print(std::cout);
+				//std::cout << "Total final distance square " << result.MinFcnValue() << std::endl;
+				//result.Print(std::cout);
 				//cout<<"ck6"<<endl;
 
 				// get fit parameters
