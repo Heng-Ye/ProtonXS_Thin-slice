@@ -221,12 +221,16 @@ void ProtonApplyMomentumReweight::Loop() {
 
 	TH1D *h1d_ke0=new TH1D("h1d_ke0","",ny_edept,ymin_edept,ymax_edept);
 	TH1D *h1d_ke0_stop=new TH1D("h1d_ke0_stop","",ny_edept,ymin_edept,ymax_edept);
+	TH1D *h1d_ke0_el=new TH1D("h1d_ke0_el","",ny_edept,ymin_edept,ymax_edept);
+	TH1D *h1d_ke0_inel=new TH1D("h1d_ke0_inel","",ny_edept,ymin_edept,ymax_edept);
 
 	TH1D *h1d_kebeam=new TH1D("h1d_kebeam","",ny_edept,ymin_edept,ymax_edept);
 	TH1D *h1d_kebeam_stop=new TH1D("h1d_kebeam_stop","",ny_edept,ymin_edept,ymax_edept);
 
 	TH1D *h1d_keff=new TH1D("h1d_keff","",ny_edept,ymin_edept,ymax_edept);
 	TH1D *h1d_keff_stop=new TH1D("h1d_keff_stop","",ny_edept,ymin_edept,ymax_edept);
+	TH1D *h1d_keff_el=new TH1D("h1d_keff_el","",ny_edept,ymin_edept,ymax_edept);
+	TH1D *h1d_keff_inel=new TH1D("h1d_keff_inel","",ny_edept,ymin_edept,ymax_edept);
 
 	//TH1D *h1d_kehy=new TH1D("h1d_kehy","",ny_edept,ymin_edept,ymax_edept);
 	TH1D *h1d_kehy_stop=new TH1D("h1d_kehy_stop","",ny_edept,ymin_edept,ymax_edept);
@@ -643,11 +647,13 @@ void ProtonApplyMomentumReweight::Loop() {
 			//} //xy
 
 			if (IsRecoEL) { //reco el
+				h1d_ke0_el->Fill(ke_beam_MeV, mom_rw_minchi2);
 				h1d_kehy_el->Fill(fitted_KE, mom_rw_minchi2);
 				h1d_keffbeam_el->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
 				h1d_kend_calo_el->Fill(kecalo, mom_rw_minchi2);
 				h1d_kend_bb_el->Fill(kebb, mom_rw_minchi2);
 				h1d_kend_true_el->Fill(kend, mom_rw_minchi2);
+				h1d_keff_el->Fill(ke_ff, mom_rw_minchi2);
 
 			} //reco el			
 
@@ -686,6 +692,8 @@ void ProtonApplyMomentumReweight::Loop() {
 			} //reco stop
 
 			if (IsRecoInEL) { //reco inel	
+				h1d_ke0_inel->Fill(ke_beam_MeV, mom_rw_minchi2);
+				h1d_keff_inel->Fill(ke_ff, mom_rw_minchi2);
 				h1d_kehy_inel->Fill(fitted_KE, mom_rw_minchi2);
 				h1d_keffbeam_inel->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
 				h1d_kend_calo_inel->Fill(kecalo, mom_rw_minchi2);
@@ -751,6 +759,8 @@ void ProtonApplyMomentumReweight::Loop() {
 		gr_predict_dedx_resrange->Write();
 
 		h1d_ke0->Write();
+		h1d_ke0_el->Write();
+		h1d_ke0_inel->Write();
 		h1d_ke0_stop->Write();
 		h1d_p0->Write();
 		h1d_p0_stop->Write();
@@ -760,6 +770,8 @@ void ProtonApplyMomentumReweight::Loop() {
 
 		h1d_keff->Write();
 		h1d_keff_stop->Write();
+		h1d_keff_el->Write();
+		h1d_keff_inel->Write();
 		h1d_pff->Write();
 		h1d_pff_stop->Write();
 
