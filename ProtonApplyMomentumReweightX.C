@@ -263,7 +263,6 @@ void ProtonApplyMomentumReweight::Loop() {
 
 	TH1D *h1d_kend_calo_stop=new TH1D("h1d_kend_calo_stop","", ny_edept, ymin_edept, ymax_edept);
 	TH1D *h1d_kend_calo_el=new TH1D("h1d_kend_calo_el","", ny_edept, ymin_edept, ymax_edept);
-
 	TH1D *h1d_kend_calo_el_inel=new TH1D("h1d_kend_calo_el_inel","",ny_edept,ymin_edept,ymax_edept); 
 	TH1D *h1d_kend_calo_el_el=new TH1D("h1d_kend_calo_el_el","",ny_edept,ymin_edept,ymax_edept); 
 	TH1D *h1d_kend_calo_el_midcosmic=new TH1D("h1d_kend_calo_el_midcosmic","",ny_edept,ymin_edept,ymax_edept); 
@@ -283,11 +282,29 @@ void ProtonApplyMomentumReweight::Loop() {
 	TH1D *h1d_kend_calo_inel_mideg=new TH1D("h1d_kend_calo_inel_mideg","",ny_edept,ymin_edept,ymax_edept); 
 	TH1D *h1d_kend_calo_inel_midother=new TH1D("h1d_kend_calo_inel_midother","",ny_edept,ymin_edept,ymax_edept); 
 
-
-
 	TH1D *h1d_kend_bb_stop=new TH1D("h1d_kend_bb_stop","", ny_edept, ymin_edept, ymax_edept);
 	TH1D *h1d_kend_bb_el=new TH1D("h1d_kend_bb_el","", ny_edept, ymin_edept, ymax_edept);
+	TH1D *h1d_kend_bb_el_inel=new TH1D("h1d_kend_bb_el_inel","",ny_edept,ymin_edept,ymax_edept); 
+	TH1D *h1d_kend_bb_el_el=new TH1D("h1d_kend_bb_el_el","",ny_edept,ymin_edept,ymax_edept); 
+	TH1D *h1d_kend_bb_el_midcosmic=new TH1D("h1d_kend_bb_el_midcosmic","",ny_edept,ymin_edept,ymax_edept); 
+	TH1D *h1d_kend_bb_el_midpi=new TH1D("h1d_kend_bb_el_midpi","",ny_edept,ymin_edept,ymax_edept); 
+	TH1D *h1d_kend_bb_el_midp=new TH1D("h1d_kend_bb_el_midp","",ny_edept,ymin_edept,ymax_edept); 
+	TH1D *h1d_kend_bb_el_midmu=new TH1D("h1d_kend_bb_el_midmu","",ny_edept,ymin_edept,ymax_edept); 
+	TH1D *h1d_kend_bb_el_mideg=new TH1D("h1d_kend_bb_el_mideg","",ny_edept,ymin_edept,ymax_edept); 
+	TH1D *h1d_kend_bb_el_midother=new TH1D("h1d_kend_bb_el_midother","",ny_edept,ymin_edept,ymax_edept); 
+
 	TH1D *h1d_kend_bb_inel=new TH1D("h1d_kend_bb_inel","", ny_edept, ymin_edept, ymax_edept);
+
+	TH1D *h1d_kend_bb_inel_inel=new TH1D("h1d_kend_bb_inel_inel","",ny_edept,ymin_edept,ymax_edept); 
+	TH1D *h1d_kend_bb_inel_el=new TH1D("h1d_kend_bb_inel_el","",ny_edept,ymin_edept,ymax_edept); 
+	TH1D *h1d_kend_bb_inel_midcosmic=new TH1D("h1d_kend_bb_inel_midcosmic","",ny_edept,ymin_edept,ymax_edept); 
+	TH1D *h1d_kend_bb_inel_midpi=new TH1D("h1d_kend_bb_inel_midpi","",ny_edept,ymin_edept,ymax_edept); 
+	TH1D *h1d_kend_bb_inel_midp=new TH1D("h1d_kend_bb_inel_midp","",ny_edept,ymin_edept,ymax_edept); 
+	TH1D *h1d_kend_bb_inel_midmu=new TH1D("h1d_kend_bb_inel_midmu","",ny_edept,ymin_edept,ymax_edept); 
+	TH1D *h1d_kend_bb_inel_mideg=new TH1D("h1d_kend_bb_inel_mideg","",ny_edept,ymin_edept,ymax_edept); 
+	TH1D *h1d_kend_bb_inel_midother=new TH1D("h1d_kend_bb_inel_midother","",ny_edept,ymin_edept,ymax_edept); 
+
+
 
 	TH1D *h1d_kend_true_stop=new TH1D("h1d_kend_true_stop","", ny_edept, ymin_edept, ymax_edept);
 	TH1D *h1d_kend_true_el=new TH1D("h1d_kend_true_el","", ny_edept, ymin_edept, ymax_edept);
@@ -695,34 +712,42 @@ void ProtonApplyMomentumReweight::Loop() {
 				if (kinel) { //inel
 					h1d_keffbeam_el_inel->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
 					h1d_kend_calo_el_inel->Fill(kecalo, mom_rw_minchi2);
+					h1d_kend_bb_el_inel->Fill(kebb, mom_rw_minchi2);
 				} //inel
 				if (kel) { 
 					h1d_keffbeam_el_el->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
 					h1d_kend_calo_el_el->Fill(kecalo, mom_rw_minchi2);
+					h1d_kend_bb_el_el->Fill(kebb, mom_rw_minchi2);
 				}
 				if (kMIDcosmic) {
 					h1d_keffbeam_el_midcosmic->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
 					h1d_kend_calo_el_midcosmic->Fill(kecalo, mom_rw_minchi2); 
+					h1d_kend_bb_el_midcosmic->Fill(kebb, mom_rw_minchi2);
 				}
 				if (kMIDpi) { 
 					h1d_keffbeam_el_midpi->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
 					h1d_kend_calo_el_midpi->Fill(kecalo, mom_rw_minchi2);
+					h1d_kend_bb_el_midpi->Fill(kebb, mom_rw_minchi2);
 				}
 				if (kMIDp) {
 					h1d_keffbeam_el_midp->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
 					h1d_kend_calo_el_midp->Fill(kecalo, mom_rw_minchi2);
+					h1d_kend_bb_el_midp->Fill(kebb, mom_rw_minchi2);
 				}
 				if (kMIDmu) { 
 					h1d_keffbeam_el_midmu->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
 					h1d_kend_calo_el_midmu->Fill(kecalo, mom_rw_minchi2);
+					h1d_kend_bb_el_midmu->Fill(kebb, mom_rw_minchi2);
 				}
 				if (kMIDeg) { 
 					h1d_keffbeam_el_mideg->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
 					h1d_kend_calo_el_mideg->Fill(kecalo, mom_rw_minchi2);
+					h1d_kend_bb_el_mideg->Fill(kebb, mom_rw_minchi2);
 				}
 				if (kMIDother) { 
 					h1d_keffbeam_el_midother->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
 					h1d_kend_calo_el_midother->Fill(kecalo, mom_rw_minchi2);
+					h1d_kend_bb_el_midother->Fill(kebb, mom_rw_minchi2);
 				}
 
 			} //reco el			
@@ -773,34 +798,43 @@ void ProtonApplyMomentumReweight::Loop() {
 				if (kinel) { //inel
 					h1d_keffbeam_inel_inel->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
 					h1d_kend_calo_inel_inel->Fill(kecalo, mom_rw_minchi2);
+					h1d_kend_bb_inel_inel->Fill(kebb, mom_rw_minchi2);
 				} //inel
 				if (kel) { 
 					h1d_keffbeam_inel_el->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
 					h1d_kend_calo_inel_el->Fill(kecalo, mom_rw_minchi2);
+					h1d_kend_bb_inel_el->Fill(kebb, mom_rw_minchi2);
 				}
 				if (kMIDcosmic) {
 					h1d_keffbeam_inel_midcosmic->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
-					h1d_kend_calo_inel_midcosmic->Fill(kecalo, mom_rw_minchi2); 
+					h1d_kend_calo_inel_midcosmic->Fill(kecalo, mom_rw_minchi2);
+					h1d_kend_bb_inel_midcosmic->Fill(kebb, mom_rw_minchi2);
 				}
 				if (kMIDpi) { 
 					h1d_keffbeam_inel_midpi->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
 					h1d_kend_calo_inel_midpi->Fill(kecalo, mom_rw_minchi2);
+					h1d_kend_bb_inel_midpi->Fill(kebb, mom_rw_minchi2);
 				}
 				if (kMIDp) {
 					h1d_keffbeam_inel_midp->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
 					h1d_kend_calo_inel_midp->Fill(kecalo, mom_rw_minchi2);
+					h1d_kend_bb_inel_midp->Fill(kebb, mom_rw_minchi2);
 				}
 				if (kMIDmu) { 
 					h1d_keffbeam_inel_midmu->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
 					h1d_kend_calo_inel_midmu->Fill(kecalo, mom_rw_minchi2);
+					h1d_kend_bb_inel_midmu->Fill(kebb, mom_rw_minchi2);
 				}
 				if (kMIDeg) { 
 					h1d_keffbeam_inel_mideg->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
 					h1d_kend_calo_inel_mideg->Fill(kecalo, mom_rw_minchi2);
+					h1d_kend_bb_inel_mideg->Fill(kebb, mom_rw_minchi2);
+
 				}
 				if (kMIDother) { 
 					h1d_keffbeam_inel_midother->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
 					h1d_kend_calo_inel_midother->Fill(kecalo, mom_rw_minchi2);
+					h1d_kend_bb_inel_midother->Fill(kebb, mom_rw_minchi2);
 				}
 
 			} //reco inel
@@ -973,8 +1007,29 @@ void ProtonApplyMomentumReweight::Loop() {
 
 
 		h1d_kend_bb_el->Write();
+		h1d_kend_bb_el_inel->Write();
+		h1d_kend_bb_el_el->Write();
+		h1d_kend_bb_el_midcosmic->Write();
+		h1d_kend_bb_el_midpi->Write();
+		h1d_kend_bb_el_midp->Write();
+		h1d_kend_bb_el_midmu->Write();
+		h1d_kend_bb_el_mideg->Write();
+		h1d_kend_bb_el_midother->Write();
+
+
+
 		h1d_kend_bb_stop->Write();
 		h1d_kend_bb_inel->Write();
+		h1d_kend_bb_inel->Write();
+		h1d_kend_bb_inel_inel->Write();
+		h1d_kend_bb_inel_el->Write();
+		h1d_kend_bb_inel_midcosmic->Write();
+		h1d_kend_bb_inel_midpi->Write();
+		h1d_kend_bb_inel_midp->Write();
+		h1d_kend_bb_inel_midmu->Write();
+		h1d_kend_bb_inel_mideg->Write();
+		h1d_kend_bb_inel_midother->Write();
+
 
 		h1d_kend_true_el->Write();
 		h1d_kend_true_stop->Write();
