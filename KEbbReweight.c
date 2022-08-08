@@ -19,7 +19,7 @@
 using namespace std;
 
 // number of distribution generated points
-#define NGEN 100000
+#define NGEN 1000000
 
 Double_t fitg(Double_t* x,Double_t *par) {
 	double m=par[0];
@@ -53,7 +53,7 @@ TF1* VNFit(TH1F* h, float pre_mean, float n_sigma) {
 	h->Fit("gg","remn");
 
 	//2nd fitting
-	TF1 *g=new TF1("g",fitg,gg->GetParameter(0)-n_sigma*gg->GetParameter(1),gg->GetParameter(0)+n_sigma*gg->GetParameter(1),3);
+	TF1 *g=new TF1("g",fitg,gg->GetParameter(0)-n_sigma*gg->GetParameter(1),gg->GetParameter(0)+n_sigma*gg->GetParameter(1),5);
 	//TF1 *g=new TF1("g",fitg,gg->GetParameter(0)-1,gg->GetParameter(0)+.5,3);
 	g->SetParameter(0,gg->GetParameter(0));
 	g->SetParameter(1,gg->GetParameter(1));
@@ -121,10 +121,11 @@ int main(int argc, char* argv[]) {
 	for (int j=0; j<n_range; ++j) {
 		gaus_kefit_data[j]=new TH1F(Form("gaus_kefit_data_%d",j),Form("Range:%d [cm]",j), nke, ke_min, ke_max);
 		#pragma omp parallel 
-		{
+		{ //parallel
   			printf("thread = %d\n", omp_get_thread_num());
 		
 			double range=0;
+			#pragma omp for
 			for (int i = 0; i < n; ++i) {
       				double ke_val_fit=gRandom->Gaus(mu_nom_data,sg_nom_data);
        				gaus_kefit_data[j]->Fill(ke_val_fit);
@@ -133,7 +134,7 @@ int main(int argc, char* argv[]) {
         		//double kebb=-50; kebb=BB.KEAtLength(ke_ffbeam_MeV, range_reco);
 
                		//printf("Hello");
-		}
+		} //parallel
 		Fit_gaus_kefit_data[j]=VNFit(gaus_kefit_data[j], gaus_kefit_data[j]->GetMean(), 3);
 		Fit_gaus_kefit_data[j]->SetLineColor(2);
 		Fit_gaus_kefit_data[j]->SetLineStyle(2);
