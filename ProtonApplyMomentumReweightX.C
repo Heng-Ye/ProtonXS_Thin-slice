@@ -117,8 +117,8 @@ void ProtonApplyMomentumReweight::Loop() {
 	//------------------------------------------------------------------------//
 
 	//momentum cut range	
-	double mu_min=m1-3.*s1;
-	double mu_max=m1+3.*s1;
+	double mu_min=1007.1482-3.*60.703307;
+	double mu_max=1007.1482+3.*60.703307;
 
 	//default gaussian
 	TF1 *g1=new TF1("g1",fitg,xmin,xmax,2);

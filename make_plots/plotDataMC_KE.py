@@ -44,8 +44,8 @@ def VNFit(h, pre_mean, n_sigma):
   return g
 
 
-#Run the code using the following commend
-#python plotDataMC_KE.py -d /dune/data2/users/hyliao/protonana/v09_39_01/KEHY/proton_beamxy_beammom_runAll.root -c ../mc_proton_beamxy_beammom_bmrw_hyper.root -drw /dune/data2/users/hyliao/protonana/v09_39_01/KEHY_BMRW/proton_beamxy_beammom_bmrw_runAll.root -crw ../mc_proton_beamxy_beammom_calo_afterkerw.root -o plots_beamxy_bmrw_calo_hyper
+#Run the code using the following commend -------------------------------------------------------------------------------------------------------------
+#python plotDataMC_KE.py -d /dune/data2/users/hyliao/protonana/v09_39_01/KEHY/proton_beamxy_beammom_runAll.root -c ../mc_proton_beamxy_beammom_bmrw_hyper.root -drw /dune/data2/users/hyliao/protonana/v09_39_01/KEHY_BMRW/proton_beamxy_beammom_bmrw_runAll.root -crw ../mc_proton_beamxy_beammom_calo_afterkerw_old.root -o plots_beamxy_bmrw_calo_hyper
 
 #--------------------------------------------------------------------------------------
 parser = ap()
@@ -652,6 +652,10 @@ fit_ke0_stop_mc.SetLineColor(3)
 kebeam_stop_mc.SetLineColor(2)
 ke0_stop_mc.SetLineColor(3)
 
+kebeam_stop_data.SetLineWidth(1)
+kebeam_stop_mc.SetLineWidth(1)
+ke0_stop_mc.SetLineWidth(1)
+
 fit_kebeam_stop_mc.Draw("same")
 kebeam_stop_mc.Draw("hist same")
 
@@ -705,6 +709,13 @@ kehy_stop_mc.SetMarkerColor(6)
 fit_kehy_stop_mc.SetLineColor(6)
 
 #kebeff_stop_mc.SetLineColor(3)
+
+keff_stop_mc.SetLineWidth(1)
+keffbeam_stop_mc.SetLineWidth(1)
+kehy_stop_data.SetLineWidth(1)
+kehy_stop_mc.SetLineWidth(1)
+keffbeam_stop_data.SetLineWidth(1)
+
 
 fit_keff_stop_mc.Draw("same")
 keff_stop_mc.Draw("hist same")
@@ -1262,7 +1273,16 @@ fit_keffbeam_stop_data_rw.SetLineColor(8)
 
 keffbeam_stop_mc_rw.SetLineColor(7)
 keffbeam_stop_mc_rw.SetMarkerColor(7)
+keffbeam_stop_mc_rw.SetLineWidth(1)
 fit_keffbeam_stop_mc_rw.SetLineColor(7)
+
+keff_stop_mc.SetLineWidth(1)
+kehy_stop_mc.SetLineWidth(1)
+kehy_stop_data.SetLineWidth(1)
+keffbeam_stop_data.SetLineWidth(1)
+keffbeam_stop_data_rw.SetLineWidth(1)
+keffbeam_stop_mc.SetLineWidth(1)
+keffbeam_stop_mc_rw.SetLineWidth(1)
 
 fit_keff_stop_mc.Draw("same")
 keff_stop_mc.Draw("hist same")
@@ -1276,14 +1296,14 @@ kehy_stop_data.Draw("ep same")
 fit_kehy_stop_mc.Draw("same")
 kehy_stop_mc.Draw("hist same")
 
-keffbeam_stop_data.Draw("ep same")
 fit_keffbeam_stop_data.Draw("same")
+keffbeam_stop_data.Draw("ep same")
 
 fit_keffbeam_stop_mc_rw.Draw("same")
 keffbeam_stop_mc_rw.Draw("hist same")
 
-keffbeam_stop_data_rw.Draw("ep same")
 fit_keffbeam_stop_data_rw.Draw("same")
+keffbeam_stop_data_rw.Draw("ep same")
 
 
 leg1_rw=RT.TLegend(0.14,0.65,.9,0.9)
@@ -1413,7 +1433,6 @@ cx_stop_mc.Divide(1,1)
 cx_stop_mc.cd(1)
 gr_stop_mc.Draw("ap")
 cx_stop_mc.Print('test.eps')
-
 
 
 
