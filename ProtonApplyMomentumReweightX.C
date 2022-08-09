@@ -83,6 +83,13 @@ void ProtonApplyMomentumReweight::Loop() {
 	TH1D *h1d_prange_stop=new TH1D("h1d_prange_stop","",nx,xmin,xmax);
 	TH1D *h1d_pcalo_stop=new TH1D("h1d_pcalo_stop","",nx,xmin,xmax);
 
+	h1d_p0->Sumw2();
+	h1d_p0_stop->Sumw2();
+	h1d_pbeam->Sumw2();
+	h1d_pff->Sumw2();
+	h1d_pff_stop->Sumw2();
+	h1d_prange_stop->Sumw2();
+	h1d_pcalo_stop->Sumw2();
 
 	//MC Beam Mom Gaussian 
 	//double m1=1007.1482; //MC prod4a [spec]
@@ -223,19 +230,32 @@ void ProtonApplyMomentumReweight::Loop() {
 	TH1D *h1d_ke0_stop=new TH1D("h1d_ke0_stop","",ny_edept,ymin_edept,ymax_edept);
 	TH1D *h1d_ke0_el=new TH1D("h1d_ke0_el","",ny_edept,ymin_edept,ymax_edept);
 	TH1D *h1d_ke0_inel=new TH1D("h1d_ke0_inel","",ny_edept,ymin_edept,ymax_edept);
+	h1d_ke0->Sumw2();
+	h1d_ke0_stop->Sumw2();
+	h1d_ke0_el->Sumw2();
+	h1d_ke0_inel->Sumw2();
 
 	TH1D *h1d_kebeam=new TH1D("h1d_kebeam","",ny_edept,ymin_edept,ymax_edept);
 	TH1D *h1d_kebeam_stop=new TH1D("h1d_kebeam_stop","",ny_edept,ymin_edept,ymax_edept);
+	h1d_kebeam->Sumw2();
+	h1d_kebeam_stop->Sumw2();
 
 	TH1D *h1d_keff=new TH1D("h1d_keff","",ny_edept,ymin_edept,ymax_edept);
 	TH1D *h1d_keff_stop=new TH1D("h1d_keff_stop","",ny_edept,ymin_edept,ymax_edept);
 	TH1D *h1d_keff_el=new TH1D("h1d_keff_el","",ny_edept,ymin_edept,ymax_edept);
 	TH1D *h1d_keff_inel=new TH1D("h1d_keff_inel","",ny_edept,ymin_edept,ymax_edept);
+	h1d_keff->Sumw2();
+	h1d_keff_stop->Sumw2();
+	h1d_keff_el->Sumw2();
+	h1d_keff_inel->Sumw2();
 
 	//TH1D *h1d_kehy=new TH1D("h1d_kehy","",ny_edept,ymin_edept,ymax_edept);
 	TH1D *h1d_kehy_stop=new TH1D("h1d_kehy_stop","",ny_edept,ymin_edept,ymax_edept);
 	TH1D *h1d_kehy_inel=new TH1D("h1d_kehy_inel","",ny_edept,ymin_edept,ymax_edept);
 	TH1D *h1d_kehy_el=new TH1D("h1d_kehy_el","",ny_edept,ymin_edept,ymax_edept);
+	h1d_kehy_stop->Sumw2();
+	h1d_kehy_inel->Sumw2();
+	h1d_kehy_el->Sumw2();
 
 	TH1D *h1d_keffbeam_stop=new TH1D("h1d_keffbeam_stop","",ny_edept,ymin_edept,ymax_edept);
 	TH1D *h1d_keffbeam_el=new TH1D("h1d_keffbeam_el","",ny_edept,ymin_edept,ymax_edept);
@@ -247,6 +267,16 @@ void ProtonApplyMomentumReweight::Loop() {
 	TH1D *h1d_keffbeam_el_midmu=new TH1D("h1d_keffbeam_el_midmu","",ny_edept,ymin_edept,ymax_edept); 
 	TH1D *h1d_keffbeam_el_mideg=new TH1D("h1d_keffbeam_el_mideg","",ny_edept,ymin_edept,ymax_edept); 
 	TH1D *h1d_keffbeam_el_midother=new TH1D("h1d_keffbeam_el_midother","",ny_edept,ymin_edept,ymax_edept); 
+	h1d_keffbeam_stop->Sumw2();
+	h1d_keffbeam_el->Sumw2();
+	h1d_keffbeam_el_inel->Sumw2();
+	h1d_keffbeam_el_el->Sumw2();
+	h1d_keffbeam_el_midcosmic->Sumw2();
+	h1d_keffbeam_el_midpi->Sumw2();
+	h1d_keffbeam_el_midp->Sumw2();
+	h1d_keffbeam_el_midmu->Sumw2();
+	h1d_keffbeam_el_mideg->Sumw2();
+	h1d_keffbeam_el_midother->Sumw2();
 
 	TH1D *h1d_keffbeam_inel=new TH1D("h1d_keffbeam_inel","",ny_edept,ymin_edept,ymax_edept);
 	TH1D *h1d_keffbeam_inel_inel=new TH1D("h1d_keffbeam_inel_inel","",ny_edept,ymin_edept,ymax_edept); 
@@ -257,9 +287,20 @@ void ProtonApplyMomentumReweight::Loop() {
 	TH1D *h1d_keffbeam_inel_midmu=new TH1D("h1d_keffbeam_inel_midmu","",ny_edept,ymin_edept,ymax_edept); 
 	TH1D *h1d_keffbeam_inel_mideg=new TH1D("h1d_keffbeam_inel_mideg","",ny_edept,ymin_edept,ymax_edept); 
 	TH1D *h1d_keffbeam_inel_midother=new TH1D("h1d_keffbeam_inel_midother","",ny_edept,ymin_edept,ymax_edept); 
+	h1d_keffbeam_inel->Sumw2();
+	h1d_keffbeam_inel_inel->Sumw2();
+	h1d_keffbeam_inel_el->Sumw2();
+	h1d_keffbeam_inel_midcosmic->Sumw2();
+	h1d_keffbeam_inel_midpi->Sumw2();
+	h1d_keffbeam_inel_midp->Sumw2();
+	h1d_keffbeam_inel_midmu->Sumw2();
+	h1d_keffbeam_inel_mideg->Sumw2();
+	h1d_keffbeam_inel_midother->Sumw2();
 
 	TH1D *h1d_kerange_stop=new TH1D("h1d_kerange_stop","", ny_edept, ymin_edept, ymax_edept);
 	TH1D *h1d_kecalo_stop=new TH1D("h1d_kecalo_stop","", ny_edept, ymin_edept, ymax_edept);
+	h1d_kerange_stop->Sumw2();
+	h1d_kecalo_stop->Sumw2();
 
 	TH1D *h1d_kend_calo_stop=new TH1D("h1d_kend_calo_stop","", ny_edept, ymin_edept, ymax_edept);
 	TH1D *h1d_kend_calo_el=new TH1D("h1d_kend_calo_el","", ny_edept, ymin_edept, ymax_edept);
@@ -271,6 +312,16 @@ void ProtonApplyMomentumReweight::Loop() {
 	TH1D *h1d_kend_calo_el_midmu=new TH1D("h1d_kend_calo_el_midmu","",ny_edept,ymin_edept,ymax_edept); 
 	TH1D *h1d_kend_calo_el_mideg=new TH1D("h1d_kend_calo_el_mideg","",ny_edept,ymin_edept,ymax_edept); 
 	TH1D *h1d_kend_calo_el_midother=new TH1D("h1d_kend_calo_el_midother","",ny_edept,ymin_edept,ymax_edept); 
+	h1d_kend_calo_stop->Sumw2();
+	h1d_kend_calo_el->Sumw2();
+	h1d_kend_calo_el_inel->Sumw2();
+	h1d_kend_calo_el_el->Sumw2();
+	h1d_kend_calo_el_midcosmic->Sumw2();
+	h1d_kend_calo_el_midpi->Sumw2();
+	h1d_kend_calo_el_midp->Sumw2();
+	h1d_kend_calo_el_midmu->Sumw2();
+	h1d_kend_calo_el_mideg->Sumw2();
+	h1d_kend_calo_el_midother->Sumw2();
 
 	TH1D *h1d_kend_calo_inel=new TH1D("h1d_kend_calo_inel","", ny_edept, ymin_edept, ymax_edept);
 	TH1D *h1d_kend_calo_inel_inel=new TH1D("h1d_kend_calo_inel_inel","",ny_edept,ymin_edept,ymax_edept); 
@@ -281,6 +332,15 @@ void ProtonApplyMomentumReweight::Loop() {
 	TH1D *h1d_kend_calo_inel_midmu=new TH1D("h1d_kend_calo_inel_midmu","",ny_edept,ymin_edept,ymax_edept); 
 	TH1D *h1d_kend_calo_inel_mideg=new TH1D("h1d_kend_calo_inel_mideg","",ny_edept,ymin_edept,ymax_edept); 
 	TH1D *h1d_kend_calo_inel_midother=new TH1D("h1d_kend_calo_inel_midother","",ny_edept,ymin_edept,ymax_edept); 
+	h1d_kend_calo_inel->Sumw2();
+	h1d_kend_calo_inel_inel->Sumw2();
+	h1d_kend_calo_inel_el->Sumw2();
+	h1d_kend_calo_inel_midcosmic->Sumw2();
+	h1d_kend_calo_inel_midpi->Sumw2();
+	h1d_kend_calo_inel_midp->Sumw2();
+	h1d_kend_calo_inel_midmu->Sumw2();
+	h1d_kend_calo_inel_mideg->Sumw2();
+	h1d_kend_calo_inel_midother->Sumw2();
 
 	TH1D *h1d_kend_bb_stop=new TH1D("h1d_kend_bb_stop","", ny_edept, ymin_edept, ymax_edept);
 	TH1D *h1d_kend_bb_el=new TH1D("h1d_kend_bb_el","", ny_edept, ymin_edept, ymax_edept);
@@ -292,9 +352,18 @@ void ProtonApplyMomentumReweight::Loop() {
 	TH1D *h1d_kend_bb_el_midmu=new TH1D("h1d_kend_bb_el_midmu","",ny_edept,ymin_edept,ymax_edept); 
 	TH1D *h1d_kend_bb_el_mideg=new TH1D("h1d_kend_bb_el_mideg","",ny_edept,ymin_edept,ymax_edept); 
 	TH1D *h1d_kend_bb_el_midother=new TH1D("h1d_kend_bb_el_midother","",ny_edept,ymin_edept,ymax_edept); 
+	h1d_kend_bb_stop->Sumw2();
+	h1d_kend_bb_el->Sumw2();
+	h1d_kend_bb_el_inel->Sumw2();
+	h1d_kend_bb_el_el->Sumw2();
+	h1d_kend_bb_el_midcosmic->Sumw2();
+	h1d_kend_bb_el_midpi->Sumw2();
+	h1d_kend_bb_el_midp->Sumw2();
+	h1d_kend_bb_el_midmu->Sumw2();
+	h1d_kend_bb_el_mideg->Sumw2();
+	h1d_kend_bb_el_midother->Sumw2();
 
 	TH1D *h1d_kend_bb_inel=new TH1D("h1d_kend_bb_inel","", ny_edept, ymin_edept, ymax_edept);
-
 	TH1D *h1d_kend_bb_inel_inel=new TH1D("h1d_kend_bb_inel_inel","",ny_edept,ymin_edept,ymax_edept); 
 	TH1D *h1d_kend_bb_inel_el=new TH1D("h1d_kend_bb_inel_el","",ny_edept,ymin_edept,ymax_edept); 
 	TH1D *h1d_kend_bb_inel_midcosmic=new TH1D("h1d_kend_bb_inel_midcosmic","",ny_edept,ymin_edept,ymax_edept); 
@@ -303,13 +372,22 @@ void ProtonApplyMomentumReweight::Loop() {
 	TH1D *h1d_kend_bb_inel_midmu=new TH1D("h1d_kend_bb_inel_midmu","",ny_edept,ymin_edept,ymax_edept); 
 	TH1D *h1d_kend_bb_inel_mideg=new TH1D("h1d_kend_bb_inel_mideg","",ny_edept,ymin_edept,ymax_edept); 
 	TH1D *h1d_kend_bb_inel_midother=new TH1D("h1d_kend_bb_inel_midother","",ny_edept,ymin_edept,ymax_edept); 
-
-
+	h1d_kend_bb_inel->Sumw2();
+	h1d_kend_bb_inel_inel->Sumw2();
+	h1d_kend_bb_inel_el->Sumw2();
+	h1d_kend_bb_inel_midcosmic->Sumw2();
+	h1d_kend_bb_inel_midpi->Sumw2();
+	h1d_kend_bb_inel_midp->Sumw2();
+	h1d_kend_bb_inel_midmu->Sumw2();
+	h1d_kend_bb_inel_mideg->Sumw2();
+	h1d_kend_bb_inel_midother->Sumw2();
 
 	TH1D *h1d_kend_true_stop=new TH1D("h1d_kend_true_stop","", ny_edept, ymin_edept, ymax_edept);
 	TH1D *h1d_kend_true_el=new TH1D("h1d_kend_true_el","", ny_edept, ymin_edept, ymax_edept);
 	TH1D *h1d_kend_true_inel=new TH1D("h1d_kend_true_inel","", ny_edept, ymin_edept, ymax_edept);
-
+	h1d_kend_true_stop->Sumw2();
+	h1d_kend_true_el->Sumw2();
+	h1d_kend_true_inel->Sumw2();
 
 	//dedx_rr ---------------------------------------------------------------------------//
 	TH2D *h2d_rr_dedx_recoSTOP=new TH2D("h2d_rr_dedx_recoSTOP","",240,0,120,90,0,30);
@@ -883,6 +961,7 @@ void ProtonApplyMomentumReweight::Loop() {
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_afterbmrw_usespecasinput.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_calo_afterbmrw.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_calo_rmxtrack_afterbmrw.root","RECREATE");
+   	//TFile *fout = new TFile("mc_proton_beamxy_calo_afterkerw.root","RECREATE");
    	TFile *fout = new TFile("mc_proton_beamxy_beammom_calo_afterkerw.root","RECREATE");
 		bm_nmu->Write();
 		bm_dmu->Write();
