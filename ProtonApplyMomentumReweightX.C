@@ -258,6 +258,7 @@ void ProtonApplyMomentumReweight::Loop() {
 	h1d_kehy_el->Sumw2();
 
 	TH1D *h1d_keffbeam_stop=new TH1D("h1d_keffbeam_stop","",ny_edept,ymin_edept,ymax_edept);
+	TH1D *h1d_keffbeam_el_noxy=new TH1D("h1d_keffbeam_el_noxy","",ny_edept,ymin_edept,ymax_edept);
 	TH1D *h1d_keffbeam_el=new TH1D("h1d_keffbeam_el","",ny_edept,ymin_edept,ymax_edept);
 	TH1D *h1d_keffbeam_el_inel=new TH1D("h1d_keffbeam_el_inel","",ny_edept,ymin_edept,ymax_edept); 
 	TH1D *h1d_keffbeam_el_el=new TH1D("h1d_keffbeam_el_el","",ny_edept,ymin_edept,ymax_edept); 
@@ -745,13 +746,23 @@ void ProtonApplyMomentumReweight::Loop() {
 		double kend=-50; kend=1000.*(beamtrk_Eng->at(-2+beamtrk_Eng->size()));
 
 
+		if (IsBeamMom&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
+			if (IsRecoEL) { //reco el
+			}
+		}
 
 		//if (IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
 		//if (IsBeamXY&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
-		if (IsBeamMom&&IsBeamXY&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
+		//if (IsBeamMom&&IsBeamXY&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
+		if (IsBeamMom&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
 			double mom_rw_minchi2=1.;
 			//if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=gng[index_minchi2]->Eval(mom_beam_spec*1000.); //bmrw
 			if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=kerw->Eval(ke_ffbeam_MeV); //bmrw
+
+
+			h1d_keffbeam_el_noxy->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
+
+			if (IsBeamXY) { //beam xy
 
 			h1d_ke0->Fill(ke_beam_MeV, mom_rw_minchi2);
 			h1d_p0->Fill(mom_beam_MeV, mom_rw_minchi2);
@@ -916,7 +927,7 @@ void ProtonApplyMomentumReweight::Loop() {
 				}
 
 			} //reco inel
-
+			} //beam xy
 		} //basic cuts
 
 	} //main entry loop
@@ -1046,7 +1057,7 @@ void ProtonApplyMomentumReweight::Loop() {
 		h1d_keffbeam_inel_mideg->Write();
 		h1d_keffbeam_inel_midother->Write();
 
-
+		h1d_keffbeam_el_noxy->Write();
 		h1d_keffbeam_el->Write();
 		h1d_keffbeam_el_inel->Write();
 		h1d_keffbeam_el_el->Write();

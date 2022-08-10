@@ -8,8 +8,11 @@
 #include "TString.h"
 
 #include "TH1.h"
+#include "TH2.h"
 #include "TRandom2.h"
 #include "TFile.h"
+#include "TGraphErrors.h"
+
 
 //#include "TF1.h"
 //#include "./headers/BasicParameters.h"
@@ -19,7 +22,7 @@
 using namespace std;
 
 // number of distribution generated points
-#define NGEN 1000000
+#define NGEN 50000000
 
 Double_t fitg(Double_t* x,Double_t *par) {
 	double m=par[0];
@@ -89,6 +92,19 @@ int main(int argc, char* argv[]) {
         double mu_nom_mc=388.560260293186; //for mc(KEbeam-const)
         double sg_nom_mc=43.13168235197187; //formc
 
+	double Mu_ref=mu_denom_data;
+	double Sg_ref=sg_denom_data;
+
+	//double Mu_exp=mu_nom_mc;
+	//double Sg_exp=sg_nom_mc;
+
+	double Mu_exp=mu_nom_data;
+	double Sg_exp=sg_nom_data;
+
+	//Output file name -------------------
+	//TString str_out="kebb_reweight_mc.root";
+	TString str_out="kebb_reweight_data.root";
+
         //weighting func. (ke)
         //TF1 *kerw=new TF1(Form("kerw"),govg,0,800,4);
         //kerw->SetParameter(0, mu_nom_mc);
@@ -101,48 +117,151 @@ int main(int argc, char* argv[]) {
         BB.SetPdgCode(2212);
         //----------------------//      
 
-        //double kebb=-50; kebb=BB.KEAtLength(ke_ffbeam_MeV, range_reco);
-
-	//double ke_fit=BB.KEAtLength(
    	int n=NGEN; //number of points in generator
-	double nke=1000;
-	double ke_min=0;
-	double ke_max=1000;
 
+	//KE=KE(range) -------------------------------------------------------------------------------------------------------------------//
+	float nke=100;
+	float ke_min=0;
+	float ke_max=1000;
 
-	const int n_range=1;
-	TH1F *gaus_kefit_data[n_range];
-	TF1* Fit_gaus_kefit_data[n_range];
+	const int n_range=201; //# of range data points
+	float range=0; //range start
+	float d_range=.5; //step size [cm]
+	float d_slice=0.01; //slice size [cm]
 
-	//TH1F * gaus_kefit = new TH1F("gaus_kefit","", nke, ke_min, ke_max); 
-	TFile *fout = new TFile("test.root","RECREATE");
+	TH1F *gaus_ref[n_range]; //served as truth
+	TH1F *gaus_exp[n_range]; //measurement
+	TF1* Fit_ref[n_range];
+	TF1* Fit_exp[n_range];
 
+	vector<float> mu_ref;
+	vector<float> er_mu_ref;
+	vector<float> sg_ref;
+	vector<float> er_sg_ref;
 
+	vector<float> mu_exp;
+	vector<float> er_mu_exp;
+	vector<float> sg_exp;
+	vector<float> er_sg_exp;
+
+	vector<float> range_vec; //vector to store range values
+	vector<float> zero;
 	for (int j=0; j<n_range; ++j) {
-		gaus_kefit_data[j]=new TH1F(Form("gaus_kefit_data_%d",j),Form("Range:%d [cm]",j), nke, ke_min, ke_max);
-		#pragma omp parallel 
-		{ //parallel
-  			printf("thread = %d\n", omp_get_thread_num());
+		float tmp_range=range+(float)j*d_range;
+		range_vec.push_back(tmp_range);
+		zero.push_back(0);
+		cout<<"Create Gaussian at range="<<tmp_range<<"cm"<<endl;
 		
-			double range=0;
-			#pragma omp for
-			for (int i = 0; i < n; ++i) {
-      				double ke_val_fit=gRandom->Gaus(mu_nom_data,sg_nom_data);
-       				gaus_kefit_data[j]->Fill(ke_val_fit);
-   			}
-		
-        		//double kebb=-50; kebb=BB.KEAtLength(ke_ffbeam_MeV, range_reco);
-
-               		//printf("Hello");
-		} //parallel
-		Fit_gaus_kefit_data[j]=VNFit(gaus_kefit_data[j], gaus_kefit_data[j]->GetMean(), 3);
-		Fit_gaus_kefit_data[j]->SetLineColor(2);
-		Fit_gaus_kefit_data[j]->SetLineStyle(2);
-		Fit_gaus_kefit_data[j]->SetName(Form("Fit_gaus_kefit_data_%d",j));
-		gaus_kefit_data[j]->Write();
-		Fit_gaus_kefit_data[j]->Write();
+		gaus_ref[j]=new TH1F(Form("gaus_ref_%d",j),Form("Length:%.1f [cm]",tmp_range), nke, ke_min, ke_max);
+		gaus_exp[j]=new TH1F(Form("gaus_exp_%d",j),Form("Length:%.1f [cm]",tmp_range), nke, ke_min, ke_max);
 	}
+
+	TH2F *trklen_ke_ref=new TH2F("trklen_ke_ref","",200,0,200,1000,0,1000);
+	TH2F *trklen_ke_exp=new TH2F("trklen_ke_exp","",200,0,200,1000,0,1000);
+	TH1F *KEend_bb_ref=new TH1F("KEend_bb_ref","",1000,0,1000);
+	TH1F *KEend_bb_exp=new TH1F("KEend_bb_exp","",1000,0,1000);
+
+	//TH2F *KEff_KEend_bb_fit=new TH2F("KEff_KEend_bb_fit","",2000,0,200,10000,0,1000);
+
+	TFile *fout = new TFile(str_out.Data(),"RECREATE");
+	#pragma omp parallel 
+	{ //parallel
+  		printf("thread = %d\n", omp_get_thread_num());
+		#pragma omp for
+		for (int i = 0; i < n; ++i) { //event generator loop
+			//keff
+      			double keff_ref=gRandom->Gaus(Mu_ref, Sg_ref);
+			double keff_exp=gRandom->Gaus(Mu_exp, Sg_exp);
+
+			//travel distance (assuming full energy deposition)
+			double range_ref=BB.RangeFromKESpline(keff_ref); //max. length
+			double range_exp=BB.RangeFromKESpline(keff_exp); //max. length
+
+			double kend_bb_ref=BB.KEAtLength(keff_ref, range_ref);
+			double kend_bb_exp=BB.KEAtLength(keff_exp, range_exp);
+
+			trklen_ke_ref->Fill(range_ref, keff_ref);
+			trklen_ke_exp->Fill(range_exp, keff_exp);
+			KEend_bb_ref->Fill(kend_bb_ref);
+			KEend_bb_exp->Fill(kend_bb_exp);
+			//KEff_KEend_bb_fit->Fill(kend_bb_fit,keff_fit);
+
+			for (int j=0; j<n_range; ++j) { //event evolution as traveling inside tpc
+				float range_cen=range_vec.at(j);
+				float range_plus=range_cen+d_slice;
+				float range_munus=range_cen-d_slice;
+
+				if (range_ref>=range_cen) {
+					double len_seg_ref=BB.KEAtLength(keff_ref, range_cen);
+					gaus_ref[j]->Fill(len_seg_ref);
+				}
+
+				if (range_exp>=range_cen) {
+					double len_seg_exp=BB.KEAtLength(keff_exp, range_exp);
+					gaus_exp[j]->Fill(len_seg_exp);
+				}
+			} //event evolution as traveling inside tpc
+   		} //event generator loop
+	} //parallel
+
+	for (int j=0; j<n_range; ++j) { //fit gaussian in each seg
+		Fit_ref[j]=VNFit(gaus_ref[j], gaus_ref[j]->GetMean(), 3);
+		Fit_ref[j]->SetLineColor(2);
+		Fit_ref[j]->SetLineStyle(2);
+		Fit_ref[j]->SetName(Form("Fit_ref_%d",j));
+
+		mu_ref.push_back(Fit_ref[j]->GetParameter(0));
+		er_mu_ref.push_back(Fit_ref[j]->GetParError(0));
+		sg_ref.push_back(Fit_ref[j]->GetParameter(1));
+		er_sg_ref.push_back(Fit_ref[j]->GetParError(1));
+
+		Fit_exp[j]=VNFit(gaus_exp[j], gaus_exp[j]->GetMean(), 3);
+		Fit_exp[j]->SetLineColor(2);
+		Fit_exp[j]->SetLineStyle(2);
+		Fit_exp[j]->SetName(Form("Fit_exp_%d",j));
+
+		mu_exp.push_back(Fit_exp[j]->GetParameter(0));
+		er_mu_exp.push_back(Fit_exp[j]->GetParError(0));
+		sg_exp.push_back(Fit_exp[j]->GetParameter(1));
+		er_sg_exp.push_back(Fit_exp[j]->GetParError(1));
+
+		gaus_ref[j]->Write();
+		Fit_ref[j]->Write();
+		gaus_exp[j]->Write();
+		Fit_exp[j]->Write();
+		
+	} //fit gaussian in each seg
+
+	TGraphErrors *mu_len_ref=new TGraphErrors(range_vec.size(), &range_vec.at(0), &mu_ref.at(0), &zero.at(0), &er_mu_ref.at(0));
+	TGraphErrors *sg_len_ref=new TGraphErrors(range_vec.size(), &range_vec.at(0), &sg_ref.at(0), &zero.at(0), &er_sg_ref.at(0));
+	mu_len_ref->SetName("mu_len_ref");
+	sg_len_ref->SetName("sg_len_ref");
+
+	TGraphErrors *mu_len_exp=new TGraphErrors(range_vec.size(), &range_vec.at(0), &mu_exp.at(0), &zero.at(0), &er_mu_exp.at(0));
+	TGraphErrors *sg_len_exp=new TGraphErrors(range_vec.size(), &range_vec.at(0), &sg_exp.at(0), &zero.at(0), &er_sg_exp.at(0));
+	mu_len_exp->SetName("mu_len_exp");
+	sg_len_exp->SetName("sg_len_exp");
+
+
+
+	mu_len_ref->Write();
+	sg_len_ref->Write();
+
+	mu_len_exp->Write();
+	sg_len_exp->Write();
+
+	trklen_ke_ref->Write();
+	trklen_ke_exp->Write();
+
+	KEend_bb_ref->Write();
+	KEend_bb_exp->Write();
+
+	//KEff_KEend_bb_fit->Write();
+
+
 	fout->Close();
+
+
 
 	return 0;
 }
