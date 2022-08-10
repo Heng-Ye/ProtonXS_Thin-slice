@@ -194,6 +194,9 @@ n_end_calo_inel_data_rw=kend_calo_inel_data_rw.Integral()
 
 n_ffbeam_el_data_rw=keffbeam_el_data_rw.Integral()
 
+kend_calo_elinel_data_rw=kend_calo_el_data_rw.Clone()
+kend_calo_elinel_data_rw.Add(kend_calo_inel_data_rw)
+
 
 #Read MC histograms ----------------------------------
 f_mc=RT.TFile(args.c, "OPEN")
@@ -392,7 +395,8 @@ n_end_bb_inel_mc_rw=kend_bb_inel_mc_rw.Integral()
 
 n_ffbeam_el_mc_rw=keffbeam_el_mc_rw.Integral()
 
-
+kend_calo_elinel_mc_rw=kend_calo_el_mc_rw.Clone()
+kend_calo_elinel_mc_rw.Add(kend_calo_inel_mc_rw)
 
 #normalization [mc] ------------------------------------------------
 kebeam_stop_mc.Scale(n_beam_stop_data/n_beam_stop_mc)
@@ -440,7 +444,7 @@ kehy_stop_mc_rw.Scale(n_hy_stop_data/n_hy_stop_mc_rw)
 kehy_inel_mc_rw.Scale(n_hy_inel_data/n_hy_inel_mc_rw)
 
 kerange_stop_mc_rw.Scale(n_range_stop_data/n_range_stop_mc_rw)
-kecalo_stop_mc_rw.Scale(n_calo_stop_data/n_calo_stop_mc_rw)
+kecalo_stop_mc_rw.Scale(n_calo_stop_data_rw/n_calo_stop_mc_rw)
 
 kend_true_stop_mc_rw.Scale(n_end_calo_stop_data/n_end_true_stop_mc_rw)
 kend_true_el_mc_rw.Scale(n_end_calo_el_data/n_end_true_el_mc_rw)
@@ -467,6 +471,7 @@ kend_calo_inel_midmu_mc_rw.Scale(n_end_calo_inel_data/n_end_calo_inel_mc_rw)
 kend_calo_inel_mideg_mc_rw.Scale(n_end_calo_inel_data/n_end_calo_inel_mc_rw)
 kend_calo_inel_midother_mc_rw.Scale(n_end_calo_inel_data/n_end_calo_inel_mc_rw)
 
+kend_calo_elinel_mc_rw.Scale((n_end_calo_el_data_rw+n_end_calo_inel_data_rw)/(n_end_calo_el_mc_rw+n_end_calo_inel_mc_rw))
 
 kend_bb_stop_mc_rw.Scale(n_end_bb_stop_data/n_end_bb_stop_mc_rw)
 kend_bb_el_mc_rw.Scale(n_end_bb_el_data/n_end_bb_el_mc_rw)
@@ -1453,15 +1458,15 @@ f2d_keff_rw.SetTitle("Stopping Protons;Proton Kinetic Energy at TPC FF [MeV];")
 f2d_keff_rw.GetXaxis().CenterTitle()
 f2d_keff_rw.Draw()
 
-keffbeam_stop_data_rw.SetLineColor(8)
-keffbeam_stop_data_rw.SetMarkerColor(8)
+keffbeam_stop_data_rw.SetLineColor(94)
+keffbeam_stop_data_rw.SetMarkerColor(94)
 keffbeam_stop_data_rw.SetLineWidth(1)
-fit_keffbeam_stop_data_rw.SetLineColor(8)
+fit_keffbeam_stop_data_rw.SetLineColor(94)
 
-keffbeam_stop_mc_rw.SetLineColor(7)
-keffbeam_stop_mc_rw.SetMarkerColor(7)
+keffbeam_stop_mc_rw.SetLineColor(38)
+keffbeam_stop_mc_rw.SetMarkerColor(38)
 keffbeam_stop_mc_rw.SetLineWidth(1)
-fit_keffbeam_stop_mc_rw.SetLineColor(7)
+fit_keffbeam_stop_mc_rw.SetLineColor(38)
 
 keff_stop_mc.SetLineWidth(1)
 kehy_stop_mc.SetLineWidth(1)
@@ -1486,11 +1491,11 @@ kehy_stop_mc.Draw("hist same")
 fit_keffbeam_stop_data.Draw("same")
 keffbeam_stop_data.Draw("ep same")
 
-fit_keffbeam_stop_mc_rw.Draw("same")
-keffbeam_stop_mc_rw.Draw("hist same")
-
 fit_keffbeam_stop_data_rw.Draw("same")
 keffbeam_stop_data_rw.Draw("ep same")
+
+fit_keffbeam_stop_mc_rw.Draw("same")
+keffbeam_stop_mc_rw.Draw("hist same")
 
 
 leg1_rw=RT.TLegend(0.14,0.65,.9,0.9)
@@ -1507,7 +1512,7 @@ txt1_rw.append("MC(rw): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".for
 print(txt1_rw[0])
 leg1_rw.AddEntry(keffbeam_stop_data, txt1_rw[0], "ep")
 leg1_rw.AddEntry(kehy_stop_data, txt1_rw[1], "ep")
-leg1_rw.AddEntry(keffbeam_stop_data_rw, txt1_rw[2], "l")
+leg1_rw.AddEntry(keffbeam_stop_data_rw, txt1_rw[2], "ep")
 leg1_rw.AddEntry(keff_stop_mc, txt1_rw[3], "l")
 leg1_rw.AddEntry(keffbeam_stop_mc, txt1_rw[4], "l")
 leg1_rw.AddEntry(kehy_stop_mc, txt1_rw[5], "l")
@@ -2060,7 +2065,7 @@ r2d_kend_inel_rw.GetXaxis().CenterTitle()
 r2d_kend_inel_rw.Draw("")
 R_kend_calo_inel_rw.Draw("ep same")
 
-line_kend_inel_rw=RT.TLine(-150, 1, 300, 1)
+line_kend_inel_rw=RT.TLine(-150, 1, 600, 1)
 line_kend_inel_rw.SetLineColor(1)
 line_kend_inel_rw.SetLineStyle(2)
 line_kend_inel_rw.Draw("same")
@@ -2068,6 +2073,86 @@ line_kend_inel_rw.Draw("same")
 
 re1_inel_rw.Print(args.o+'/ratio_end_inel_rw.eps')
 
+
+#KEend: inel+el ---------------------------------------
+c5_elinel_rw=RT.TCanvas("c5_elinel_rw","",1200,900)
+c5_elinel_rw.Divide(1,1)
+c5_elinel_rw.cd(1)
+
+kend_calo_el_mc_rw.SetLineWidth(1)
+kend_calo_el_data_rw.SetLineWidth(1)
+
+f2d_kend_calo_elinel_rw=RT.TH2D("f2d_kend_calo_elinel_mc_rw","", 750, -100, 600, 600, 0, kend_calo_inel_data_rw.GetBinContent(kend_calo_inel_data_rw.GetMaximumBin())+500)
+f2d_kend_calo_elinel_rw.SetTitle("All Protons;Proton Kinetic Energy at Track End [MeV];")
+f2d_kend_calo_elinel_rw.GetXaxis().CenterTitle()
+f2d_kend_calo_elinel_rw.Draw()
+
+kend_calo_elinel_mc_rw.SetLineWidth(1)
+kend_calo_elinel_data_rw.SetLineWidth(1)
+
+kend_calo_elinel_mc_rw.SetLineColor(2)
+
+kend_calo_elinel_mc_rw.Draw("hist same")
+kend_calo_elinel_data_rw.Draw("ep same")
+
+leg_kend_calo_elinel_rw=RT.TLegend(0.6,0.7,.9,0.87)
+leg_kend_calo_elinel_rw.SetFillStyle(0)
+leg_kend_calo_elinel_rw.AddEntry(kend_calo_elinel_data_rw, "Data", "ep")
+leg_kend_calo_elinel_rw.AddEntry(kend_calo_elinel_mc_rw, "MC", "l")
+#leg_kend_calo_el_rw.SetNColumns(2);
+leg_kend_calo_elinel_rw.Draw()
+
+c5_elinel_rw.Print(args.o+'/KEend_elinel_rw.eps')
+
+#ratio
+R_kend_calo_elinel_rw=kend_calo_elinel_data_rw.Clone()
+R_kend_calo_elinel_rw.Divide(R_kend_calo_elinel_rw, kend_calo_elinel_mc_rw)
+
+re1_elinel_rw=RT.TCanvas("re1_elinel_rw","",1200,900)
+re1_elinel_rw.Divide(1,1)
+re1_elinel_rw.cd(1)
+
+r2d_kend_elinel_rw=RT.TH2D("r2d_kend_elinel_rw","", 750, -100, 600, 10, 0, 3)
+r2d_kend_elinel_rw.SetTitle("All Protons;Proton Kinetic Energy at Track End [MeV]; Data/MC")
+r2d_kend_elinel_rw.GetXaxis().CenterTitle()
+r2d_kend_elinel_rw.Draw("")
+R_kend_calo_elinel_rw.Draw("ep same")
+
+line_kend_elinel_rw=RT.TLine(-100, 1, 600, 1)
+line_kend_elinel_rw.SetLineColor(1)
+line_kend_elinel_rw.SetLineStyle(2)
+line_kend_elinel_rw.Draw("same")
+
+re1_elinel_rw.Print(args.o+'/ratio_end_elinel_rw.eps')
+
+
+
+#Edept: Stopping Protons ---------------------------------------
+c6_stop_rw=RT.TCanvas("c6_stop_rw","",1200,900)
+c6_stop_rw.Divide(1,1)
+c6_stop_rw.cd(1)
+
+kecalo_stop_data_rw.SetLineWidth(1)
+kecalo_stop_mc_rw.SetLineWidth(1)
+
+f2d_kecalo_stop_rw=RT.TH2D("f2d_kecalo_stop_rw","", 750, -100, 600, 600, 0, kecalo_stop_data_rw.GetBinContent(kecalo_stop_data_rw.GetMaximumBin())+500)
+f2d_kecalo_stop_rw.SetTitle("Stopping Protons; Energy [MeV];")
+f2d_kecalo_stop_rw.GetXaxis().CenterTitle()
+f2d_kecalo_stop_rw.Draw()
+
+kecalo_stop_mc_rw.SetLineColor(2)
+
+kecalo_stop_mc_rw.Draw("hist same")
+kecalo_stop_data_rw.Draw("ep same")
+
+leg_kecalo_stop_rw=RT.TLegend(0.6,0.7,.9,0.87)
+leg_kecalo_stop_rw.SetFillStyle(0)
+leg_kecalo_stop_rw.AddEntry(kecalo_stop_data_rw, "Data", "ep")
+leg_kecalo_stop_rw.AddEntry(kecalo_stop_mc_rw, "MC", "l")
+#leg_kend_calo_el_rw.SetNColumns(2);
+leg_kecalo_stop_rw.Draw()
+
+c6_stop_rw.Print(args.o+'/Edept_stop_rw.eps')
 
 
 '''
