@@ -1004,7 +1004,7 @@ leg3.AddEntry(kerange_stop_mc, txt2[1], "l")
 leg3.Draw()
 c3.Print(args.o+'/ke_range.eps')
 
-#KEend_calo --------------------------------------------------------------------------------------------------------------------------
+#KEend_calo ----------------------------------------------------------------------------------------------------------------------------------------------------------
 #stop
 c4=RT.TCanvas("c4","",1200,900)
 c4.Divide(1,1)
@@ -1050,17 +1050,12 @@ leg4.AddEntry(kend_true_stop_mc, txt4[2], "l")
 leg4.Draw()
 c4.Print(args.o+'/kend_calo_stop.eps')
 
-
-
-
-
-
-#el_rw
+#el_rw ---------------------------------------------------------------------------------------------------------------------------------------------
 c4_el=RT.TCanvas("c4_el","",1200,900)
 c4_el.Divide(1,1)
 c4_el.cd(1)
 
-f2d_kend_calo_el=RT.TH2D("f2d_kend_calo_el","", 420, -120, 300, 600, 0, kend_calo_el_data.GetBinContent(kend_calo_el_data.GetMaximumBin())+250)
+f2d_kend_calo_el=RT.TH2D("f2d_kend_calo_el","", 420, -120, 300, 600, 0, kend_calo_el_data.GetBinContent(kend_calo_el_data.GetMaximumBin())+350)
 f2d_kend_calo_el.SetTitle("Elastic-scattering Protons;Proton Kinetic Energy at Track End [MeV];")
 f2d_kend_calo_el.GetXaxis().CenterTitle()
 f2d_kend_calo_el.Draw()
@@ -1081,7 +1076,6 @@ fit_kend_true_el_mc.SetLineColor(3)
 kend_true_el_mc.SetLineWidth(1)
 kend_calo_el_mc_rw.SetLineWidth(1)
 kend_calo_el_data_rw.SetLineWidth(1)
-
 
 #fit_kend_calo_el_data.Draw("same")
 #fit_kend_calo_el_mc.Draw("same")
@@ -1109,7 +1103,7 @@ leg4_el.AddEntry(kend_calo_el_mc_rw, txt4_el[1], "l")
 leg4_el.AddEntry(kend_true_el_mc, txt4_el[2], "l")
 
 leg4_el.Draw()
-c4_el.Print(args.o+'/kend_calo_el_rw.eps')
+c4_el.Print(args.o+'/kend_calo_el_rw_true.eps')
 
 
 
@@ -1533,11 +1527,6 @@ c1_el_rw=RT.TCanvas("c1_el_rw","",1200,900)
 c1_el_rw.Divide(1,1)
 c1_el_rw.cd(1)
 
-f2d_keff_el_rw=RT.TH2D("f2d_keff_el_rw","", 370, 220, 600, 600, 0, keffbeam_el_data.GetBinContent(keffbeam_el_data.GetMaximumBin())+400)
-f2d_keff_el_rw.SetTitle("Elastic-scattering Protons;Proton Kinetic Energy at TPC FF [MeV];")
-f2d_keff_el_rw.GetXaxis().CenterTitle()
-f2d_keff_el_rw.Draw()
-
 keffbeam_el_data_rw.SetLineColor(1)
 keffbeam_el_data_rw.SetMarkerColor(1)
 
@@ -1568,6 +1557,18 @@ keffbeam_el_midmu_mc_rw.SetLineColor(28)
 keffbeam_el_mideg_mc_rw.SetLineColor(30)
 keffbeam_el_midother_mc_rw.SetLineColor(15)
 
+n_rb_el=2
+keffbeam_el_mc_rw.Rebin(n_rb_el)
+keffbeam_el_data_rw.Rebin(n_rb_el)
+keffbeam_el_inel_mc_rw.Rebin(n_rb_el)
+keffbeam_el_el_mc_rw.Rebin(n_rb_el)
+keffbeam_el_midp_mc_rw.Rebin(n_rb_el)
+keffbeam_el_midpi_mc_rw.Rebin(n_rb_el)
+keffbeam_el_midmu_mc_rw.Rebin(n_rb_el)
+keffbeam_el_mideg_mc_rw.Rebin(n_rb_el)
+keffbeam_el_midcosmic_mc_rw.Rebin(n_rb_el)
+keffbeam_el_midother_mc_rw.Rebin(n_rb_el)
+
 hs_keffbeam_el_rw=RT.THStack("hs_keffbeam_el_rw","");
 hs_keffbeam_el_rw.Add(keffbeam_el_inel_mc_rw)
 hs_keffbeam_el_rw.Add(keffbeam_el_el_mc_rw)
@@ -1581,39 +1582,43 @@ hs_keffbeam_el_rw.Add(keffbeam_el_midother_mc_rw)
 keffbeam_el_mc_rw.SetLineWidth(1)
 keffbeam_el_data_rw.SetLineWidth(1)
 
+f2d_keff_el_rw=RT.TH2D("f2d_keff_el_rw","", 370, 220, 600, 600, 0, keffbeam_el_data_rw.GetBinContent(keffbeam_el_data_rw.GetMaximumBin())+500)
+f2d_keff_el_rw.SetTitle("Elastic-scattering Protons;Proton Kinetic Energy at TPC FF [MeV];")
+f2d_keff_el_rw.GetXaxis().CenterTitle()
+f2d_keff_el_rw.Draw()
+
 hs_keffbeam_el_rw.Draw("hist same")
 #fit_keffbeam_stop_mc_rw.Draw("same")
 keffbeam_el_mc_rw.Draw("hist same")
 #fit_keffbeam_stop_data_rw.Draw("same")
 keffbeam_el_data_rw.Draw("ep same")
 
+leg_keffbeam_el_rw=RT.TLegend(0.14,0.75,.9,0.87)
+leg_keffbeam_el_rw.SetFillStyle(0)
+txt_keffbeam_el_rw=[]
+txt_keffbeam_el_rw.append("Data(rw): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_el_data_rw[0],er_mu_el_data_rw[0],sigma_el_data_rw[0],er_sigma_el_data_rw[0]))
+txt_keffbeam_el_rw.append("MC(rw): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_el_mc_rw[0],er_mu_el_mc_rw[0],sigma_el_mc_rw[0],er_sigma_el_mc_rw[0]))
+leg_keffbeam_el_rw.AddEntry(keffbeam_el_data_rw, txt_keffbeam_el_rw[0], "ep")
+leg_keffbeam_el_rw.AddEntry(0, "", "")
+leg_keffbeam_el_rw.AddEntry(keffbeam_el_mc_rw, txt_keffbeam_el_rw[1], "l")
+leg_keffbeam_el_rw.AddEntry(0, "", "")
+leg_keffbeam_el_rw.SetNColumns(2);
 
-tleg11_rw=RT.TLegend(0.14,0.75,.9,0.87)
-tleg11_rw.SetFillStyle(0)
-txt11_rw=[]
-txt11_rw.append("Data(rw): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_el_data_rw[0],er_mu_el_data_rw[0],sigma_el_data_rw[0],er_sigma_el_data_rw[0]))
-txt11_rw.append("MC(rw): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_el_mc_rw[0],er_mu_el_mc_rw[0],sigma_el_mc_rw[0],er_sigma_el_mc_rw[0]))
-tleg11_rw.AddEntry(keffbeam_el_data_rw, txt11_rw[0], "ep")
-tleg11_rw.AddEntry(0, "", "")
-tleg11_rw.AddEntry(keffbeam_el_mc_rw, txt11_rw[1], "l")
-tleg11_rw.AddEntry(0, "", "")
-tleg11_rw.SetNColumns(2);
 
+leg2_keffbeam_el_rw=RT.TLegend(0.14,0.62,.88,0.73)
+leg2_keffbeam_el_rw.SetFillStyle(0)
+leg2_keffbeam_el_rw.AddEntry(keffbeam_el_inel_mc_rw, "Inel", "f")
+leg2_keffbeam_el_rw.AddEntry(keffbeam_el_el_mc_rw, "El", "f")
+leg2_keffbeam_el_rw.AddEntry(keffbeam_el_midcosmic_mc_rw, "misID:cosmic", "f")
+leg2_keffbeam_el_rw.AddEntry(keffbeam_el_midp_mc_rw, "misID:p", "f")
+leg2_keffbeam_el_rw.AddEntry(keffbeam_el_midpi_mc_rw, "misID:#pi", "f")
+leg2_keffbeam_el_rw.AddEntry(keffbeam_el_midmu_mc_rw, "misID:#mu", "f")
+leg2_keffbeam_el_rw.AddEntry(keffbeam_el_mideg_mc_rw, "misID:e/#gamma", "f")
+leg2_keffbeam_el_rw.AddEntry(keffbeam_el_midother_mc_rw, "misID:other", "f")
+leg2_keffbeam_el_rw.SetNColumns(4);
 
-leg11_rw=RT.TLegend(0.14,0.62,.88,0.73)
-leg11_rw.SetFillStyle(0)
-leg11_rw.AddEntry(keffbeam_el_inel_mc_rw, "Inel", "f")
-leg11_rw.AddEntry(keffbeam_el_el_mc_rw, "El", "f")
-leg11_rw.AddEntry(keffbeam_el_midcosmic_mc_rw, "misID:cosmic", "f")
-leg11_rw.AddEntry(keffbeam_el_midp_mc_rw, "misID:p", "f")
-leg11_rw.AddEntry(keffbeam_el_midpi_mc_rw, "misID:#pi", "f")
-leg11_rw.AddEntry(keffbeam_el_midmu_mc_rw, "misID:#mu", "f")
-leg11_rw.AddEntry(keffbeam_el_mideg_mc_rw, "misID:e/#gamma", "f")
-leg11_rw.AddEntry(keffbeam_el_midother_mc_rw, "misID:other", "f")
-leg11_rw.SetNColumns(4);
-
-tleg11_rw.Draw()
-leg11_rw.Draw()
+leg_keffbeam_el_rw.Draw()
+leg2_keffbeam_el_rw.Draw()
 
 c1_el_rw.Print(args.o+'/ke_ff_el_rw.eps')
 
@@ -1637,14 +1642,7 @@ line_keff_el_rw.SetLineColor(1)
 line_keff_el_rw.SetLineStyle(2)
 line_keff_el_rw.Draw("same")
 
-
 r1_el_rw.Print(args.o+'/ratio_ff_el_rw.eps')
-
-
-
-
-
-
 
 
 #inel:keff -----------------------------------------------------------------------------------------------------------------------------------------
@@ -1652,7 +1650,7 @@ c1_inel_rw=RT.TCanvas("c1_inel_rw","",1200,900)
 c1_inel_rw.Divide(1,1)
 c1_inel_rw.cd(1)
 
-f2d_keff_inel_rw=RT.TH2D("f2d_keff_inel_rw","", 370, 220, 600, 600, 0, keffbeam_inel_data.GetBinContent(keffbeam_inel_data.GetMaximumBin())+400)
+f2d_keff_inel_rw=RT.TH2D("f2d_keff_inel_rw","", 370, 220, 600, 600, 0, keffbeam_inel_data_rw.GetBinContent(keffbeam_inel_data_rw.GetMaximumBin())+1400)
 f2d_keff_inel_rw.SetTitle("Inelastic-scattering Protons;Proton Kinetic Energy at TPC FF [MeV];")
 f2d_keff_inel_rw.GetXaxis().CenterTitle()
 f2d_keff_inel_rw.Draw()
@@ -1687,6 +1685,19 @@ keffbeam_inel_midmu_mc_rw.SetLineColor(28)
 keffbeam_inel_mideg_mc_rw.SetLineColor(30)
 keffbeam_inel_midother_mc_rw.SetLineColor(15)
 
+
+n_rb_inel=2
+keffbeam_inel_mc_rw.Rebin(n_rb_inel)
+keffbeam_inel_data_rw.Rebin(n_rb_inel)
+keffbeam_inel_inel_mc_rw.Rebin(n_rb_inel)
+keffbeam_inel_el_mc_rw.Rebin(n_rb_inel)
+keffbeam_inel_midp_mc_rw.Rebin(n_rb_inel)
+keffbeam_inel_midpi_mc_rw.Rebin(n_rb_inel)
+keffbeam_inel_midmu_mc_rw.Rebin(n_rb_inel)
+keffbeam_inel_mideg_mc_rw.Rebin(n_rb_inel)
+keffbeam_inel_midcosmic_mc_rw.Rebin(n_rb_inel)
+keffbeam_inel_midother_mc_rw.Rebin(n_rb_inel)
+
 hs_keffbeam_inel_rw=RT.THStack("hs_keffbeam_inel_rw","");
 hs_keffbeam_inel_rw.Add(keffbeam_inel_inel_mc_rw)
 hs_keffbeam_inel_rw.Add(keffbeam_inel_el_mc_rw)
@@ -1706,33 +1717,31 @@ keffbeam_inel_mc_rw.Draw("hist same")
 #fit_keffbeam_stop_data_rw.Draw("same")
 keffbeam_inel_data_rw.Draw("ep same")
 
+leg_keffbeam_inel_rw=RT.TLegend(0.14,0.75,.9,0.87)
+leg_keffbeam_inel_rw.SetFillStyle(0)
+txt_keffbeam_inel_rw=[]
+txt_keffbeam_inel_rw.append("Data(rw): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_inel_data_rw[0],er_mu_inel_data_rw[0],sigma_inel_data_rw[0],er_sigma_inel_data_rw[0]))
+txt_keffbeam_inel_rw.append("MC(rw): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_inel_mc_rw[0],er_mu_inel_mc_rw[0],sigma_inel_mc_rw[0],er_sigma_inel_mc_rw[0]))
+leg_keffbeam_inel_rw.AddEntry(keffbeam_inel_data_rw, txt_keffbeam_inel_rw[0], "ep")
+leg_keffbeam_inel_rw.AddEntry(0, "", "")
+leg_keffbeam_inel_rw.AddEntry(keffbeam_inel_mc_rw, txt_keffbeam_inel_rw[1], "l")
+leg_keffbeam_inel_rw.AddEntry(0, "", "")
+leg_keffbeam_inel_rw.SetNColumns(2);
 
-itleg11_rw=RT.TLegend(0.14,0.75,.9,0.87)
-itleg11_rw.SetFillStyle(0)
-itxt11_rw=[]
-itxt11_rw.append("Data(rw): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_inel_data_rw[0],er_mu_inel_data_rw[0],sigma_inel_data_rw[0],er_sigma_inel_data_rw[0]))
-itxt11_rw.append("MC(rw): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_inel_mc_rw[0],er_mu_inel_mc_rw[0],sigma_inel_mc_rw[0],er_sigma_inel_mc_rw[0]))
-itleg11_rw.AddEntry(keffbeam_inel_data_rw, itxt11_rw[0], "ep")
-itleg11_rw.AddEntry(0, "", "")
-itleg11_rw.AddEntry(keffbeam_inel_mc_rw, itxt11_rw[1], "l")
-itleg11_rw.AddEntry(0, "", "")
-itleg11_rw.SetNColumns(2);
+leg2_keffbeam_inel_rw=RT.TLegend(0.14,0.62,.88,0.73)
+leg2_keffbeam_inel_rw.SetFillStyle(0)
+leg2_keffbeam_inel_rw.AddEntry(keffbeam_inel_inel_mc_rw, "Inel", "f")
+leg2_keffbeam_inel_rw.AddEntry(keffbeam_inel_el_mc_rw, "El", "f")
+leg2_keffbeam_inel_rw.AddEntry(keffbeam_inel_midcosmic_mc_rw, "misID:cosmic", "f")
+leg2_keffbeam_inel_rw.AddEntry(keffbeam_inel_midp_mc_rw, "misID:p", "f")
+leg2_keffbeam_inel_rw.AddEntry(keffbeam_inel_midpi_mc_rw, "misID:#pi", "f")
+leg2_keffbeam_inel_rw.AddEntry(keffbeam_inel_midmu_mc_rw, "misID:#mu", "f")
+leg2_keffbeam_inel_rw.AddEntry(keffbeam_inel_mideg_mc_rw, "misID:e/#gamma", "f")
+leg2_keffbeam_inel_rw.AddEntry(keffbeam_inel_midother_mc_rw, "misID:other", "f")
+leg2_keffbeam_inel_rw.SetNColumns(4);
 
-
-ileg11_rw=RT.TLegend(0.14,0.62,.88,0.73)
-ileg11_rw.SetFillStyle(0)
-ileg11_rw.AddEntry(keffbeam_inel_inel_mc_rw, "Inel", "f")
-ileg11_rw.AddEntry(keffbeam_inel_el_mc_rw, "El", "f")
-ileg11_rw.AddEntry(keffbeam_inel_midcosmic_mc_rw, "misID:cosmic", "f")
-ileg11_rw.AddEntry(keffbeam_inel_midp_mc_rw, "misID:p", "f")
-ileg11_rw.AddEntry(keffbeam_inel_midpi_mc_rw, "misID:#pi", "f")
-ileg11_rw.AddEntry(keffbeam_inel_midmu_mc_rw, "misID:#mu", "f")
-ileg11_rw.AddEntry(keffbeam_inel_mideg_mc_rw, "misID:e/#gamma", "f")
-ileg11_rw.AddEntry(keffbeam_inel_midother_mc_rw, "misID:other", "f")
-ileg11_rw.SetNColumns(4);
-
-itleg11_rw.Draw()
-ileg11_rw.Draw()
+leg_keffbeam_inel_rw.Draw()
+leg2_keffbeam_inel_rw.Draw()
 
 c1_inel_rw.Print(args.o+'/ke_ff_inel_rw.eps')
 
@@ -1816,19 +1825,10 @@ leg4_rw.Draw()
 c4_rw.Print(args.o+'/kend_calo_stop_rw.eps')
 
 
-
-
-
-#el -----------------------------------------------------------------------------------------------------------------------------------------
+#kend_calo_el -----------------------------------------------------------------------------------------------------------------------------------------
 c4_el_rw=RT.TCanvas("c4_el_rw","",1200,900)
 c4_el_rw.Divide(1,1)
 c4_el_rw.cd(1)
-
-f2d_kend_calo_el_rw=RT.TH2D("f2d_kend_calo_rw","", 450, -150, 300, 600, 0, kend_calo_el_data_rw.GetBinContent(kend_calo_el_data_rw.GetMaximumBin())+800)
-f2d_kend_calo_el_rw.SetTitle("Elastic-scattering Protons;Proton Kinetic Energy at Track End [MeV];")
-f2d_kend_calo_el_rw.GetXaxis().CenterTitle()
-f2d_kend_calo_el_rw.Draw()
-
 
 kend_calo_el_data_rw.SetLineColor(1)
 kend_calo_el_data_rw.SetMarkerColor(1)
@@ -1860,6 +1860,17 @@ kend_calo_el_midmu_mc_rw.SetLineColor(28)
 kend_calo_el_mideg_mc_rw.SetLineColor(30)
 kend_calo_el_midother_mc_rw.SetLineColor(15)
 
+kend_calo_el_mc_rw.Rebin(n_rb_el)
+kend_calo_el_data_rw.Rebin(n_rb_el)
+kend_calo_el_inel_mc_rw.Rebin(n_rb_el)
+kend_calo_el_el_mc_rw.Rebin(n_rb_el)
+kend_calo_el_midp_mc_rw.Rebin(n_rb_el)
+kend_calo_el_midpi_mc_rw.Rebin(n_rb_el)
+kend_calo_el_midmu_mc_rw.Rebin(n_rb_el)
+kend_calo_el_mideg_mc_rw.Rebin(n_rb_el)
+kend_calo_el_midcosmic_mc_rw.Rebin(n_rb_el)
+kend_calo_el_midother_mc_rw.Rebin(n_rb_el)
+
 hs_kend_calo_el_rw=RT.THStack("hs_kend_calo_el_rw","");
 hs_kend_calo_el_rw.Add(kend_calo_el_inel_mc_rw)
 hs_kend_calo_el_rw.Add(kend_calo_el_el_mc_rw)
@@ -1873,39 +1884,41 @@ hs_kend_calo_el_rw.Add(kend_calo_el_midother_mc_rw)
 kend_calo_el_mc_rw.SetLineWidth(1)
 kend_calo_el_data_rw.SetLineWidth(1)
 
+f2d_kend_calo_el_rw=RT.TH2D("f2d_kend_calo_rw","", 450, -150, 300, 600, 0, kend_calo_el_data_rw.GetBinContent(kend_calo_el_data_rw.GetMaximumBin())+1000)
+f2d_kend_calo_el_rw.SetTitle("Elastic-scattering Protons;Proton Kinetic Energy at Track End [MeV];")
+f2d_kend_calo_el_rw.GetXaxis().CenterTitle()
+f2d_kend_calo_el_rw.Draw()
 hs_kend_calo_el_rw.Draw("hist same")
 #fit_kend_calo_stop_mc_rw.Draw("same")
 kend_calo_el_mc_rw.Draw("hist same")
 #fit_kend_calo_stop_data_rw.Draw("same")
 kend_calo_el_data_rw.Draw("ep same")
 
+leg_kend_calo_el_rw=RT.TLegend(0.14,0.75,.9,0.87)
+leg_kend_calo_el_rw.SetFillStyle(0)
+txt_kend_calo_el_rw=[]
+txt_kend_calo_el_rw.append("Data(rw): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_el_data_rw[1],er_mu_el_data_rw[1],sigma_el_data_rw[1],er_sigma_el_data_rw[1]))
+txt_kend_calo_el_rw.append("MC(rw): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_el_mc_rw[1],er_mu_el_mc_rw[1],sigma_el_mc_rw[1],er_sigma_el_mc_rw[1]))
+leg_kend_calo_el_rw.AddEntry(kend_calo_el_data_rw, txt_kend_calo_el_rw[0], "ep")
+leg_kend_calo_el_rw.AddEntry(0, "", "")
+leg_kend_calo_el_rw.AddEntry(kend_calo_el_mc_rw, txt_kend_calo_el_rw[1], "l")
+leg_kend_calo_el_rw.AddEntry(0, "", "")
+leg_kend_calo_el_rw.SetNColumns(2);
 
-tleg111_rw=RT.TLegend(0.14,0.75,.9,0.87)
-tleg111_rw.SetFillStyle(0)
-txt111_rw=[]
-txt111_rw.append("Data(rw): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_el_data_rw[1],er_mu_el_data_rw[1],sigma_el_data_rw[1],er_sigma_el_data_rw[1]))
-txt111_rw.append("MC(rw): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_el_mc_rw[1],er_mu_el_mc_rw[1],sigma_el_mc_rw[1],er_sigma_el_mc_rw[1]))
-tleg111_rw.AddEntry(kend_calo_el_data_rw, txt111_rw[0], "ep")
-tleg111_rw.AddEntry(0, "", "")
-tleg111_rw.AddEntry(kend_calo_el_mc_rw, txt111_rw[1], "l")
-tleg111_rw.AddEntry(0, "", "")
-tleg111_rw.SetNColumns(2);
+leg2_kend_calo_el_rw=RT.TLegend(0.14,0.62,.88,0.73)
+leg2_kend_calo_el_rw.SetFillStyle(0)
+leg2_kend_calo_el_rw.AddEntry(kend_calo_el_inel_mc_rw, "Inel", "f")
+leg2_kend_calo_el_rw.AddEntry(kend_calo_el_el_mc_rw, "El", "f")
+leg2_kend_calo_el_rw.AddEntry(kend_calo_el_midcosmic_mc_rw, "misID:cosmic", "f")
+leg2_kend_calo_el_rw.AddEntry(kend_calo_el_midp_mc_rw, "misID:p", "f")
+leg2_kend_calo_el_rw.AddEntry(kend_calo_el_midpi_mc_rw, "misID:#pi", "f")
+leg2_kend_calo_el_rw.AddEntry(kend_calo_el_midmu_mc_rw, "misID:#mu", "f")
+leg2_kend_calo_el_rw.AddEntry(kend_calo_el_mideg_mc_rw, "misID:e/#gamma", "f")
+leg2_kend_calo_el_rw.AddEntry(kend_calo_el_midother_mc_rw, "misID:other", "f")
+leg2_kend_calo_el_rw.SetNColumns(4);
 
-
-leg111_rw=RT.TLegend(0.14,0.62,.88,0.73)
-leg111_rw.SetFillStyle(0)
-leg111_rw.AddEntry(kend_calo_el_inel_mc_rw, "Inel", "f")
-leg111_rw.AddEntry(kend_calo_el_el_mc_rw, "El", "f")
-leg111_rw.AddEntry(kend_calo_el_midcosmic_mc_rw, "misID:cosmic", "f")
-leg111_rw.AddEntry(kend_calo_el_midp_mc_rw, "misID:p", "f")
-leg111_rw.AddEntry(kend_calo_el_midpi_mc_rw, "misID:#pi", "f")
-leg111_rw.AddEntry(kend_calo_el_midmu_mc_rw, "misID:#mu", "f")
-leg111_rw.AddEntry(kend_calo_el_mideg_mc_rw, "misID:e/#gamma", "f")
-leg111_rw.AddEntry(kend_calo_el_midother_mc_rw, "misID:other", "f")
-leg111_rw.SetNColumns(4);
-
-tleg111_rw.Draw()
-leg111_rw.Draw()
+leg_kend_calo_el_rw.Draw()
+leg2_kend_calo_el_rw.Draw()
 
 c4_el_rw.Print(args.o+'/kend_calo_el_rw.eps')
 
@@ -1929,35 +1942,13 @@ line_kend_el_rw.SetLineColor(1)
 line_kend_el_rw.SetLineStyle(2)
 line_kend_el_rw.Draw("same")
 
-
 re1_el_rw.Print(args.o+'/ratio_end_el_rw.eps')
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#inel -----------------------------------------------------------------------------------------------------------------------------------------
+#inel -----------------------------------------------------------------------------------------------------------------------------------------------------------
 c4_inel_rw=RT.TCanvas("c4_inel_rw","",1200,900)
 c4_inel_rw.Divide(1,1)
 c4_inel_rw.cd(1)
-
-f2d_kend_calo_inel_rw=RT.TH2D("f2d_kend_calo_rw","", 750, -150, 600, 600, 0, kend_calo_inel_data_rw.GetBinContent(kend_calo_inel_data_rw.GetMaximumBin())+300)
-f2d_kend_calo_inel_rw.SetTitle("Inelastic-scattering Protons;Proton Kinetic Energy at Track End [MeV];")
-f2d_kend_calo_inel_rw.GetXaxis().CenterTitle()
-f2d_kend_calo_inel_rw.Draw()
-
 
 kend_calo_inel_data_rw.SetLineColor(1)
 kend_calo_inel_data_rw.SetMarkerColor(1)
@@ -1989,6 +1980,17 @@ kend_calo_inel_midmu_mc_rw.SetLineColor(28)
 kend_calo_inel_mideg_mc_rw.SetLineColor(30)
 kend_calo_inel_midother_mc_rw.SetLineColor(15)
 
+kend_calo_inel_mc_rw.Rebin(n_rb_inel)
+kend_calo_inel_data_rw.Rebin(n_rb_inel)
+kend_calo_inel_inel_mc_rw.Rebin(n_rb_inel)
+kend_calo_inel_el_mc_rw.Rebin(n_rb_inel)
+kend_calo_inel_midp_mc_rw.Rebin(n_rb_inel)
+kend_calo_inel_midpi_mc_rw.Rebin(n_rb_inel)
+kend_calo_inel_midmu_mc_rw.Rebin(n_rb_inel)
+kend_calo_inel_mideg_mc_rw.Rebin(n_rb_inel)
+kend_calo_inel_midcosmic_mc_rw.Rebin(n_rb_inel)
+kend_calo_inel_midother_mc_rw.Rebin(n_rb_inel)
+
 hs_kend_calo_inel_rw=RT.THStack("hs_kend_calo_inel_rw","");
 hs_kend_calo_inel_rw.Add(kend_calo_inel_inel_mc_rw)
 hs_kend_calo_inel_rw.Add(kend_calo_inel_el_mc_rw)
@@ -2001,6 +2003,11 @@ hs_kend_calo_inel_rw.Add(kend_calo_inel_midother_mc_rw)
 
 kend_calo_inel_mc_rw.SetLineWidth(1)
 kend_calo_inel_data_rw.SetLineWidth(1)
+
+f2d_kend_calo_inel_rw=RT.TH2D("f2d_kend_calo_rw","", 750, -150, 600, 600, 0, kend_calo_inel_data_rw.GetBinContent(kend_calo_inel_data_rw.GetMaximumBin())+300)
+f2d_kend_calo_inel_rw.SetTitle("Inelastic-scattering Protons;Proton Kinetic Energy at Track End [MeV];")
+f2d_kend_calo_inel_rw.GetXaxis().CenterTitle()
+f2d_kend_calo_inel_rw.Draw()
 
 hs_kend_calo_inel_rw.Draw("hist same")
 #fit_kend_calo_stop_mc_rw.Draw("same")
