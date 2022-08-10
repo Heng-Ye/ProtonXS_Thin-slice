@@ -197,7 +197,7 @@ int main(int argc, char* argv[]) {
 				}
 
 				if (range_exp>=range_cen) {
-					double len_seg_exp=BB.KEAtLength(keff_exp, range_exp);
+					double len_seg_exp=BB.KEAtLength(keff_exp, range_cen);
 					gaus_exp[j]->Fill(len_seg_exp);
 				}
 			} //event evolution as traveling inside tpc
