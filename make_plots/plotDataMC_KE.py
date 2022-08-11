@@ -1122,6 +1122,10 @@ f2d_kend_calo_inel.SetTitle("Inelastic-scattering Protons;Proton Kinetic Energy 
 f2d_kend_calo_inel.GetXaxis().CenterTitle()
 f2d_kend_calo_inel.Draw()
 
+kend_calo_inel_data.SetLineWidth(1)
+kend_calo_inel_mc.SetLineWidth(1)
+kend_true_inel_mc.SetLineWidth(1)
+
 kend_calo_inel_data.SetLineColor(1)
 fit_kend_calo_inel_data.SetLineColor(1)
 
@@ -1138,7 +1142,7 @@ kend_true_inel_mc.Draw("hist same")
 kend_calo_inel_mc.Draw("hist same")
 kend_calo_inel_data.Draw("ep same")
 
-leg4_inel=RT.TLegend(0.54,0.65,.9,0.9)
+leg4_inel=RT.TLegend(0.44,0.60,.9,0.87)
 leg4_inel.SetFillStyle(0)
 txt4_inel=[]
 txt4_inel.append("Data(calo)".format())
@@ -1154,6 +1158,8 @@ leg4_inel.Draw()
 c4_inel.Print(args.o+'/kend_calo_inel.eps')
 
 
+
+
 #inel_rw
 c4_inel=RT.TCanvas("c4_inel","",1200,900)
 c4_inel.Divide(1,1)
@@ -1164,23 +1170,20 @@ f2d_kend_calo_inel.SetTitle("Elastic-scattering Protons;Proton Kinetic Energy at
 f2d_kend_calo_inel.GetXaxis().CenterTitle()
 f2d_kend_calo_inel.Draw()
 
-kend_calo_inel_data.SetLineColor(1)
-fit_kend_calo_inel_data.SetLineColor(1)
-kend_calo_inel_data_rw.SetLineColor(4)
-fit_kend_calo_inel_data.SetLineColor(4)
+kend_calo_inel_data_rw.SetLineColor(1)
+kend_calo_inel_data_rw.SetMarkerColor(1)
+kend_calo_inel_mc_rw.SetLineColor(2)
+kend_true_inel_mc_rw.SetLineColor(3)
 
-kend_calo_inel_mc.SetLineColor(2)
-fit_kend_calo_inel_mc.SetLineColor(2)
-kend_calo_inel_mc_rw.SetLineColor(7)
-fit_kend_calo_inel_mc_rw.SetLineColor(7)
+kend_calo_inel_data_rw.SetLineWidth(1)
+kend_calo_inel_mc_rw.SetLineWidth(1)
+kend_true_inel_mc_rw.SetLineWidth(1)
 
-kend_true_inel_mc.SetLineColor(3)
-fit_kend_true_inel_mc.SetLineColor(3)
 
 #fit_kend_calo_inel_data.Draw("same")
 #fit_kend_calo_inel_mc.Draw("same")
 #fit_kend_true_inel_mc.Draw("same")
-kend_true_inel_mc.Draw("hist same")
+kend_true_inel_mc_rw.Draw("hist same")
 #kend_calo_inel_mc.Draw("hist same")
 #kend_calo_inel_data.Draw("ep same")
 kend_calo_inel_mc_rw.Draw("hist same")
@@ -2135,7 +2138,7 @@ c6_stop_rw.cd(1)
 kecalo_stop_data_rw.SetLineWidth(1)
 kecalo_stop_mc_rw.SetLineWidth(1)
 
-f2d_kecalo_stop_rw=RT.TH2D("f2d_kecalo_stop_rw","", 750, -100, 600, 600, 0, kecalo_stop_data_rw.GetBinContent(kecalo_stop_data_rw.GetMaximumBin())+500)
+f2d_kecalo_stop_rw=RT.TH2D("f2d_kecalo_stop_rw","", 750, 0, 600, 600, 0, kecalo_stop_data_rw.GetBinContent(kecalo_stop_data_rw.GetMaximumBin())+500)
 f2d_kecalo_stop_rw.SetTitle("Stopping Protons; Energy [MeV];")
 f2d_kecalo_stop_rw.GetXaxis().CenterTitle()
 f2d_kecalo_stop_rw.Draw()
@@ -2154,6 +2157,27 @@ leg_kecalo_stop_rw.Draw()
 
 c6_stop_rw.Print(args.o+'/Edept_stop_rw.eps')
 
+
+#ratio (stopping protons)
+R_kecalo_stop_rw=kecalo_stop_data_rw.Clone()
+R_kecalo_stop_rw.Divide(R_kecalo_stop_rw, kecalo_stop_mc_rw)
+
+re1_stop_rw=RT.TCanvas("re1_stop_rw","",1200,900)
+re1_stop_rw.Divide(1,1)
+re1_stop_rw.cd(1)
+
+r2d_kecalo_stop_rw=RT.TH2D("r2d_kecalo_stop_rw","", 750, 0, 600, 10, 0, 3)
+r2d_kecalo_stop_rw.SetTitle(" Protons;Energy [MeV]; Data/MC")
+r2d_kecalo_stop_rw.GetXaxis().CenterTitle()
+r2d_kecalo_stop_rw.Draw("")
+R_kecalo_stop_rw.Draw("ep same")
+
+line_kecalo_stop_rw=RT.TLine(-100, 1, 600, 1)
+line_kecalo_stop_rw.SetLineColor(1)
+line_kecalo_stop_rw.SetLineStyle(2)
+line_kecalo_stop_rw.Draw("same")
+
+re1_stop_rw.Print(args.o+'/ratio_Edept_stop_rw.eps')
 
 '''
 #Construct the weighting func ----------------------------------------
