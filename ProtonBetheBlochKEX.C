@@ -140,8 +140,8 @@ void ProtonBetheBlochKE::Loop() {
 	double err_Eloss_mc=0.281126;
 
 	//Basic configure ------//
-	//BetheBloch BB;
-	//BB.SetPdgCode(pdg);
+	BetheBloch BB;
+	BB.SetPdgCode(pdg);
 
 	//Kinetic energies -------------------------------------------------------------------------------------------------------//
 	//int nke=320;
@@ -149,13 +149,73 @@ void ProtonBetheBlochKE::Loop() {
 	double kemin=-800;
 	double kemax=800;
 
-	//ff
-	TH1D *h1d_kebeam=new TH1D("h1d_kebeam","", nke, kemin, kemax); //ke from beamline inst.
-	TH1D *h1d_ke0=new TH1D("h1d_ke0","", nke, kemin, kemax); //ke from ke_truth0
+	//Initial Energy --------------------------------------------------------
+	TH1D *h1d_kebeam=new TH1D("h1d_kebeam","", nke, kemin, kemax);
+	TH1D *h1d_kebeam_stop=new TH1D("h1d_kebeam_stop","", nke, kemin, kemax);
+	TH1D *h1d_kebeam_el=new TH1D("h1d_kebeam_el","", nke, kemin, kemax);
+	TH1D *h1d_kebeam_inel=new TH1D("h1d_kebeam_inel","", nke, kemin, kemax);
+	h1d_kebeam->Sumw2();
+	h1d_kebeam_stop->Sumw2();
+	h1d_kebeam_el->Sumw2();
+	h1d_kebeam_inel->Sumw2();
+
+	TH1D *h1d_ke0=new TH1D("h1d_ke0","", nke, kemin, kemax);
+	TH1D *h1d_ke0_stop=new TH1D("h1d_ke0_stop","", nke, kemin, kemax);
+	TH1D *h1d_ke0_el=new TH1D("h1d_ke0_el","", nke, kemin, kemax);
+	TH1D *h1d_ke0_inel=new TH1D("h1d_ke0_inel","", nke, kemin, kemax);
+	h1d_ke0->Sumw2();
+	h1d_ke0_stop->Sumw2();
+	h1d_ke0_el->Sumw2();
+	h1d_ke0_inel->Sumw2();
+
+	//Front-face (FF) -----------------------------------------------------------------------------
+	//hyper fit
+	TH1D *h1d_kehy=new TH1D("h1d_kehy","", nke, kemin, kemax);
+	TH1D *h1d_kehy_stop=new TH1D("h1d_kehy_stop","", nke, kemin, kemax);
+	TH1D *h1d_kehy_el=new TH1D("h1d_kehy_el","", nke, kemin, kemax);
+	TH1D *h1d_kehy_inel=new TH1D("h1d_kehy_inel","", nke, kemin, kemax);
+	h1d_kehy->Sumw2();
+	h1d_kehy_stop->Sumw2();
+	h1d_kehy_el->Sumw2();
+	h1d_kehy_inel->Sumw2();
 	
-	TH1D *h1d_keff_truth=new TH1D("h1d_keff_truth","", nke, kemin, kemax); //keff_truth
-	TH1D *h1d_keff_truth_el=new TH1D("h1d_keff_truth_el","", nke, kemin, kemax); //keff_truth
-	TH1D *h1d_keff_truth_inel=new TH1D("h1d_keff_truth_inel","", nke, kemin, kemax); //keff_truth
+	//ff-truth
+	TH1D *h1d_keff_truth=new TH1D("h1d_keff_truth","", nke, kemin, kemax);
+	TH1D *h1d_keff_truth_stop=new TH1D("h1d_keff_truth_stop","", nke, kemin, kemax);
+	TH1D *h1d_keff_truth_el=new TH1D("h1d_keff_truth_el","", nke, kemin, kemax);
+	TH1D *h1d_keff_truth_inel=new TH1D("h1d_keff_truth_inel","", nke, kemin, kemax);
+	h1d_keff_truth->Sumw2();
+	h1d_keff_truth_stop->Sumw2();
+	h1d_keff_truth_el->Sumw2();
+	h1d_keff_truth_inel->Sumw2();
+
+	//ff-range
+	TH1D *h1d_kerange=new TH1D("h1d_kerange","", nke, kemin, kemax);
+	TH1D *h1d_kerange_stop=new TH1D("h1d_kerange_stop","", nke, kemin, kemax);
+	TH1D *h1d_kerange_el=new TH1D("h1d_kerange_el","", nke, kemin, kemax);
+	TH1D *h1d_kerange_inel=new TH1D("h1d_kerange_inel","", nke, kemin, kemax);
+	h1d_kerange->Sumw2();
+	h1d_kerange_stop->Sumw2();
+	h1d_kerange_el->Sumw2();
+	h1d_kerange_inel->Sumw2();
+
+	//ff-calo
+	TH1D *h1d_kecalo=new TH1D("h1d_kecalo","", nke, kemin, kemax);
+	TH1D *h1d_kecalo_stop=new TH1D("h1d_kecalo_stop","", nke, kemin, kemax);
+	TH1D *h1d_kecalo_el=new TH1D("h1d_kecalo_el","", nke, kemin, kemax);
+	TH1D *h1d_kecalo_inel=new TH1D("h1d_kecalo_inel","", nke, kemin, kemax);
+	h1d_kecalo->Sumw2();
+	h1d_kecalo_stop->Sumw2();
+	h1d_kecalo_el->Sumw2();
+	h1d_kecalo_inel->Sumw2();
+
+	
+
+
+
+
+
+
 
 	TH1D *h1d_keff_reco=new TH1D("h1d_keff_reco","", nke, kemin, kemax); //keff_reco
 	TH1D *h1d_keff_reco_el=new TH1D("h1d_keff_reco_el","", nke, kemin, kemax); //keff_reco
@@ -295,20 +355,69 @@ void ProtonBetheBlochKE::Loop() {
 */
 	TH2D *h2d_trklen_KEbb_RecoEl=new TH2D("h2d_trklen_KEbb_RecoEl","",140, 0, 140, nke, kemin, kemax);
 
-	//E-loss scan
+	//E-loss scan --------------------------------------------------------------------------------------------------//
+	//Calo, hyper/range
 	const int n_eloss=40;
 	vector<double> Eloss;
-	TH1D *h1d_KEend_tune_bmrw[n_eloss];
+	vector<double> Eloss_hy;
+
+	TH1D *h1d_KEend_calo_tune_bmrw[n_eloss];
+	TH1D *h1d_KEend_calo_stop_tune_bmrw[n_eloss];
+	TH1D *h1d_KEend_calo_el_tune_bmrw[n_eloss];
+
+	TH1D *h1d_KEend_hy_tune_bmrw[n_eloss];
+	TH1D *h1d_KEend_hy_stop_tune_bmrw[n_eloss];
+	TH1D *h1d_KEend_hy_el_tune_bmrw[n_eloss];
+
+	TH1D *h1d_KEend_range_tune_bmrw[n_eloss];
+	TH1D *h1d_KEend_range_stop_tune_bmrw[n_eloss];
+	TH1D *h1d_KEend_range_el_tune_bmrw[n_eloss];
+
 	double Eloss_start=37.;
+	double Eloss_hy_start=15.;
+
 	double dEloss=0.5;
 	for (int k=0; k<n_eloss; ++k) {
+		//for calo
 		double eloss_step=Eloss_start+(double)k*dEloss;
 		Eloss.push_back(eloss_step);
 
-		h1d_KEend_tune_bmrw[k]=new TH1D(Form("h1d_KEend_tune_bmrw_%d",k),"", nke, kemin, kemax);
-	}
+		//for hy/range
+		double eloss_hy_step=Eloss_hy_start+(double)k*dEloss;
+		Eloss_hy.push_back(eloss_hy_step);
 
-	//------------------------------------------------------------------------------------------------------------------------//
+		h1d_KEend_calo_tune_bmrw[k]=new TH1D(Form("h1d_KEend_calo_tune_bmrw_%d",k),"", nke, kemin, kemax);
+		h1d_KEend_calo_stop_tune_bmrw[k]=new TH1D(Form("h1d_KEend_calo_stop_tune_bmrw_%d",k),"", nke, kemin, kemax);
+		h1d_KEend_calo_el_tune_bmrw[k]=new TH1D(Form("h1d_KEend_calo_el_tune_bmrw_%d",k),"", nke, kemin, kemax);
+
+		h1d_KEend_hy_tune_bmrw[k]=new TH1D(Form("h1d_KEend_hy_tune_bmrw_%d",k),"", nke, kemin, kemax);
+		h1d_KEend_hy_stop_tune_bmrw[k]=new TH1D(Form("h1d_KEend_hy_stop_tune_bmrw_%d",k),"", nke, kemin, kemax);
+		h1d_KEend_hy_el_tune_bmrw[k]=new TH1D(Form("h1d_KEend_hy_el_tune_bmrw_%d",k),"", nke, kemin, kemax);
+
+
+		h1d_KEend_range_tune_bmrw[k]=new TH1D(Form("h1d_KEend_range_tune_bmrw_%d",k),"", nke, kemin, kemax);
+		h1d_KEend_range_stop_tune_bmrw[k]=new TH1D(Form("h1d_KEend_range_stop_tune_bmrw_%d",k),"", nke, kemin, kemax);
+		h1d_KEend_range_el_tune_bmrw[k]=new TH1D(Form("h1d_KEend_range_el_tune_bmrw_%d",k),"", nke, kemin, kemax);
+
+	}
+	//--------------------h1d_KEend_tune_bmrw----------------------------------------------------------------------------------------------------//
+
+
+	//dKE Histograms ------------------------------------------------------------------------------------------------------//
+	int n_dke=900;
+	double dke_min=-400;
+	double dke_max=500;
+	TH1D *h1d_dKE_beam_hy_bmrw=new TH1D(Form("h1d_dKE_beam_hy_bmrw"),"",n_dke,dke_min,dke_max);
+	TH1D *h1d_dKE_beam_hy_stop_bmrw=new TH1D(Form("h1d_dKE_beam_hy_stop_bmrw"),"",n_dke,dke_min,dke_max);
+	TH1D *h1d_dKE_beam_hy_el_bmrw=new TH1D(Form("h1d_dKE_beam_hy_el_bmrw"),"",n_dke,dke_min,dke_max);
+	TH1D *h1d_dKE_beam_hy_inel_bmrw=new TH1D(Form("h1d_dKE_beam_hy_inel_bmrw"),"",n_dke,dke_min,dke_max);
+
+	TH1D *h1d_dKE_beam_truth_bmrw=new TH1D(Form("h1d_dKE_beam_truth_bmrw"),"",n_dke,dke_min,dke_max);
+	TH1D *h1d_dKE_beam_truth_stop_bmrw=new TH1D(Form("h1d_dKE_beam_truth_stop_bmrw"),"",n_dke,dke_min,dke_max);
+
+	TH1D *h1d_dKE_0_truth_bmrw=new TH1D(Form("h1d_dKE_0_truth_bmrw"),"",n_dke,dke_min,dke_max);
+	TH1D *h1d_dKE_0_truth_stop_bmrw=new TH1D(Form("h1d_dKE_0_truth_stop_bmrw"),"",n_dke,dke_min,dke_max);
+
 
 	//Beam momentum reweighting ----------------------------------------------------------------------------------------------//
 	//MC KE beam Gaussian 
@@ -372,7 +481,7 @@ void ProtonBetheBlochKE::Loop() {
 	int cnt_array=0;
 	int index_original=0;
 	//int index_minchi2=13331; //index of minchi2(this index is wrong)
-	//int index_minchi2=17537; //index of minchi2
+	//int index_minchi2=17537; //index of minchi2(new index, no beamXY cut)
 	int index_minchi2=11623; //index of minchi2(with beamXY cut)
 	for (int imu=0; imu<nmu; ++imu){ //mu loop
 		double frac_mu=mu_st-(double)imu*dmu;
@@ -640,7 +749,8 @@ void ProtonBetheBlochKE::Loop() {
 		//if ((range_reco/csda_val_spec)<min_norm_trklen_csda) IsRecoInEL=true;
 		//
 		
-
+		bool IsBeamXY=false;
+		if ((pow(((bx_spec-meanX_mc)/(1.5*rmsX_mc)),2)+pow(((by_spec-meanY_mc)/(1.5*rmsY_mc)),2))<=1.) IsBeamXY=true;
 
                 //PID parameter & cut
                 double pid=-99;
@@ -873,8 +983,9 @@ void ProtonBetheBlochKE::Loop() {
 
 		double mean_Elossrange_stop=433.441-405.371; //KEstop using range, unit:MeV
 		//double mean_Elosscalo_stop=433.441-379.074; //
-		//double mean_Elosscalo_stop=(4.77927e+01)/(1.00480e+00); //using fit [bmrw]
-		double mean_Elosscalo_stop=(4.95958e+01)/(1.00489e+00); //using fit [no bmrw]
+		//double mean_Elosscalo_stop=(4.77927e+01)/(1.00480e+00); //using fit [bmrw-old version with]
+		//double mean_Elosscalo_stop=(4.95958e+01)/(1.00489e+00); //using fit [no bmrw]
+		double mean_Elosscalo_stop=(4.70058e+01)/(1.00097e+00); //using fit [bmrw+beamxy with index_minchi2=11623]
 		//fit result
    		//p0           4.77927e+01   3.62629e-01   1.40469e-08   0.00000e+00
    		//p1          -1.00480e+00   7.70658e-03   7.70658e-03  -4.73181e-08
@@ -1030,6 +1141,12 @@ void ProtonBetheBlochKE::Loop() {
 		//double KEcsda_inel=1000.*ke_vs_csda_range_sm->Eval(csda_truth); //given precise KEff, cossesponding CSDA range
 		//double Edept_range=KEcsda_inel;
 
+		//hypothetical length -------------------------------------------------------------------------------------//
+		double fitted_length=-1; 
+		double tmp_fitted_length=BB.Fit_dEdx_Residual_Length(trkdedx, trkres, pdg, false);
+		if (tmp_fitted_length>0) fitted_length=tmp_fitted_length;
+		double fitted_KE=-50; 
+		if (fitted_length>0) fitted_KE=BB.KEFromRangeSpline(fitted_length);
 
 		//KEend -------------------------------------------------------------------------------------------------------------------//
 		double KEend_true=1000.*(beamtrk_Eng->at(-2+beamtrk_Eng->size()));
@@ -1061,15 +1178,23 @@ void ProtonBetheBlochKE::Loop() {
 
 
 
-		if (IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
+		//if (IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
+		if (IsBeamXY&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
 			Fill1DHist(h1d_kebeam, ke_beam_spec_MeV);
 			Fill1DHist(h1d_ke0, ke0);
 			Fill1DHist(h1d_keff_truth, ke_ff);
+			Fill1DHist(h1d_kehy, fitted_KE);
+			Fill1DHist(h1d_kerange, KEcsda);
+			Fill1DHist(h1d_kecalo, ke_calo_MeV);
+
 			Fill1DHist(h1d_keff_reco_constErange, KEff_reco);
 			Fill1DHist(h1d_ntrklen, ntrklen_reco);
+			h1d_dKE_beam_hy_bmrw->Fill(ke_beam_spec_MeV-fitted_KE);
+			h1d_dKE_beam_truth_bmrw->Fill(ke_beam_spec_MeV-ke_ff);
+			h1d_dKE_0_truth_bmrw->Fill(ke0-ke_ff);
 
 			double mom_rw_minchi2=1;
-			if ((mom_beam_spec*1000.)>=mmu_min&&(mom_beam_spec*1000.)<=mmu_max) mom_rw_minchi2=gng[index_minchi2]->Eval(mom_beam_spec*1000.); //bmrw(use me!)
+			//if ((mom_beam_spec*1000.)>=mmu_min&&(mom_beam_spec*1000.)<=mmu_max) mom_rw_minchi2=gng[index_minchi2]->Eval(mom_beam_spec*1000.); //bmrw(use me!)
 			//if ((ke_beam_spec_MeV-mean_Elosscalo_stop)>=mu_min&&(ke_beam_spec_MeV-mean_Elosscalo_stop)<=mu_max) mom_rw_minchi2=gng->Eval(ke_beam_spec_MeV-mean_Elosscalo_stop); //bmrw
 
 			//h1d_keff_reco_constErange->Fill(KEff_reco, mom_rw_minchi2);
@@ -1077,11 +1202,45 @@ void ProtonBetheBlochKE::Loop() {
 			//h1d_kebb_reco_constErange->Fill(KEbb_reco_constErange, mom_rw_minchi2);
 			//h1d_Edept_reco->Fill(KEcsda, mom_rw_minchi2);
 
+			if (IsRecoStop) {
+				Fill1DHist(h1d_keff_truth_stop, ke_ff);
+				Fill1DHist(h1d_kebeam_stop, ke_beam_spec_MeV);
+				Fill1DHist(h1d_ke0_stop, ke0);
+				Fill1DHist(h1d_kehy_stop, fitted_KE);
+				Fill1DHist(h1d_kerange_stop, KEcsda);
+				Fill1DHist(h1d_kecalo_stop, ke_calo_MeV);
+				h1d_dKE_beam_hy_stop_bmrw->Fill(ke_beam_spec_MeV-fitted_KE);
+				h1d_dKE_beam_truth_stop_bmrw->Fill(ke_beam_spec_MeV-ke_ff);
+				h1d_dKE_0_truth_stop_bmrw->Fill(ke0-ke_ff);
+			}
+
+
+
 			for (int k=0; k<n_eloss; ++k) {
-				h1d_KEend_tune_bmrw[k]->Fill((ke_beam_spec_MeV-Eloss.at(k)-ke_calo_MeV), mom_rw_minchi2);
+				h1d_KEend_calo_tune_bmrw[k]->Fill((ke_beam_spec_MeV-Eloss.at(k)-ke_calo_MeV), mom_rw_minchi2);
+				h1d_KEend_hy_tune_bmrw[k]->Fill((ke_beam_spec_MeV-Eloss_hy.at(k)-fitted_KE), mom_rw_minchi2);
+				h1d_KEend_range_tune_bmrw[k]->Fill((ke_beam_spec_MeV-Eloss_hy.at(k)-KEcsda), mom_rw_minchi2);
+
+				if (IsRecoStop) {
+					h1d_KEend_calo_stop_tune_bmrw[k]->Fill((ke_beam_spec_MeV-Eloss.at(k)-ke_calo_MeV), mom_rw_minchi2);
+					h1d_KEend_hy_stop_tune_bmrw[k]->Fill((ke_beam_spec_MeV-Eloss_hy.at(k)-fitted_KE), mom_rw_minchi2);
+					h1d_KEend_range_stop_tune_bmrw[k]->Fill((ke_beam_spec_MeV-Eloss_hy.at(k)-KEcsda), mom_rw_minchi2);
+				}
+				if (IsRecoEL) { //IsRecoEL
+					h1d_KEend_calo_el_tune_bmrw[k]->Fill((ke_beam_spec_MeV-Eloss.at(k)-ke_calo_MeV), mom_rw_minchi2);
+					h1d_KEend_hy_el_tune_bmrw[k]->Fill((ke_beam_spec_MeV-Eloss_hy.at(k)-fitted_KE), mom_rw_minchi2);
+					h1d_KEend_range_el_tune_bmrw[k]->Fill((ke_beam_spec_MeV-Eloss_hy.at(k)-KEcsda), mom_rw_minchi2);
+				} //IsRecoEL
 			}
 
 			if (IsRecoInEL)	{ //IsRecoInEL
+				Fill1DHist(h1d_kebeam_inel, ke_beam_spec_MeV);
+				Fill1DHist(h1d_ke0_inel, ke0);
+				Fill1DHist(h1d_kehy_inel, fitted_KE);
+				Fill1DHist(h1d_keff_truth_inel, ke_ff);
+				Fill1DHist(h1d_kerange_inel, KEcsda);
+				Fill1DHist(h1d_kecalo_inel, ke_calo_MeV);
+				h1d_dKE_beam_hy_inel_bmrw->Fill(ke_beam_spec_MeV-fitted_KE);
 				//h1d_kebb_reco->Fill(KEbb_reco_constErange, mom_rw_minchi2);
 				//h1d_kebb_recoInel->Fill(KEbb_reco_constErange, mom_rw_minchi2);
 				//h2d_trklen_KEbb_RecoInel->Fill(range_reco, KEbb_reco_constErange, mom_rw_minchi2);
@@ -1162,6 +1321,13 @@ void ProtonBetheBlochKE::Loop() {
 			} //IsRecoInEL
 
 			if (IsRecoEL) { //IsRecoEL
+				Fill1DHist(h1d_ke0_el, ke0);
+				Fill1DHist(h1d_kebeam_el, ke_beam_spec_MeV);
+				Fill1DHist(h1d_kehy_el, fitted_KE);
+				Fill1DHist(h1d_keff_truth_el, ke_ff);
+				Fill1DHist(h1d_kerange_el, KEcsda);
+				Fill1DHist(h1d_kecalo_el, ke_calo_MeV);
+				h1d_dKE_beam_hy_el_bmrw->Fill(ke_beam_spec_MeV-fitted_KE);
 				//h1d_kebb_reco->Fill(KEbb_reco_Edept_range, mom_rw_minchi2);
 				//h1d_kebb_recoEl->Fill(KEbb_reco_Edept_range, mom_rw_minchi2);
 				//h2d_trklen_KEbb_RecoEl->Fill(range_reco, KEbb_reco_constErange, mom_rw_minchi2);
@@ -1331,7 +1497,50 @@ void ProtonBetheBlochKE::Loop() {
    	//TFile *fout = new TFile("mc_kebb_bmrw.root","RECREATE");
    	//TFile *fout = new TFile("mc_kebb_nobmrw.root","RECREATE");
    	//TFile *fout = new TFile("mc_kecalo_bmrw_ElossTune.root","RECREATE");
-   	TFile *fout = new TFile("mc_kecalo_bmrw_beamxy_ElossTune.root","RECREATE");
+   	//TFile *fout = new TFile("mc_kecalo_bmrw_beamxy_ElossTune.root","RECREATE");
+   	//TFile *fout = new TFile("mc_kecalo_nobmrw_beamxy_ElossTune.root","RECREATE");
+   	TFile *fout = new TFile("mc_kecalo_nobmrw_beamxy_ElossTuneHyper.root","RECREATE");
+		h1d_kebeam->Write();
+		h1d_kebeam_stop->Write();
+		h1d_kebeam_el->Write();
+		h1d_kebeam_inel->Write();
+
+		h1d_ke0->Write();
+		h1d_ke0_stop->Write();
+		h1d_ke0_el->Write();
+		h1d_ke0_inel->Write();
+
+		h1d_keff_truth->Write();
+		h1d_keff_truth_stop->Write();
+		h1d_keff_truth_el->Write();
+		h1d_keff_truth_inel->Write();
+
+		h1d_kehy->Write();
+		h1d_kehy_stop->Write();
+		h1d_kehy_el->Write();
+		h1d_kehy_inel->Write();
+
+		h1d_kerange->Write();
+		h1d_kerange_stop->Write();
+		h1d_kerange_el->Write();
+		h1d_kerange_inel->Write();
+
+		h1d_kecalo->Write();
+		h1d_kecalo_stop->Write();
+		h1d_kecalo_el->Write();
+		h1d_kecalo_inel->Write();
+
+		h1d_dKE_beam_hy_bmrw->Write();
+		h1d_dKE_beam_hy_stop_bmrw->Write();
+		h1d_dKE_beam_hy_el_bmrw->Write();
+		h1d_dKE_beam_hy_inel_bmrw->Write();
+
+		h1d_dKE_beam_truth_bmrw->Write();
+		h1d_dKE_beam_truth_stop_bmrw->Write();
+		h1d_dKE_0_truth_bmrw->Write();
+		h1d_dKE_0_truth_stop_bmrw->Write();
+
+
 
 /*
 		h1d_kebb_truth_el->Write();
@@ -1346,12 +1555,7 @@ void ProtonBetheBlochKE::Loop() {
 
 
 /*
-		h1d_kebeam->Write();
-		h1d_ke0->Write();
 
-		h1d_keff_truth->Write();
-		h1d_keff_truth_el->Write();
-		h1d_keff_truth_inel->Write();
 
 		h1d_keff_reco_constErange->Write();
 		h1d_keff_reco_constErange_el->Write();
@@ -1463,7 +1667,19 @@ void ProtonBetheBlochKE::Loop() {
 */
 
 		for (int k=0; k<n_eloss; ++k) {
-			h1d_KEend_tune_bmrw[k]->Write();
+			h1d_KEend_calo_tune_bmrw[k]->Write();
+			h1d_KEend_calo_stop_tune_bmrw[k]->Write();
+			h1d_KEend_calo_el_tune_bmrw[k]->Write();
+
+			h1d_KEend_hy_tune_bmrw[k]->Write();
+			h1d_KEend_hy_stop_tune_bmrw[k]->Write();
+			h1d_KEend_hy_el_tune_bmrw[k]->Write();
+
+			h1d_KEend_range_tune_bmrw[k]->Write();
+			h1d_KEend_range_stop_tune_bmrw[k]->Write();
+			h1d_KEend_range_el_tune_bmrw[k]->Write();
+
+
 		}
 
 /*
