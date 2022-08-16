@@ -69,7 +69,8 @@ TF1* FitKEEnd(TH1D* h, Int_t col) {
 
         //2nd fitting -----------------------------------------------------------------------------------------------------------//
         //TF1 *g=new TF1("g", fitg, gg->GetParameter(0)-1.*gg->GetParameter(1), gg->GetParameter(0)+1.*gg->GetParameter(1), 3);
-        TF1 *g=new TF1("g", fitg, gg->GetParameter(0)-40., gg->GetParameter(0)+20., 3);
+        //TF1 *g=new TF1("g", fitg, gg->GetParameter(0)-40., gg->GetParameter(0)+20., 3); //calo
+        TF1 *g=new TF1("g", fitg, gg->GetParameter(0)-40., gg->GetParameter(0)+40., 3); //hyper
         //TF1 *g=new TF1("g",fitg,0.3,0.5,3);
 
         //TF1 *g=new TF1("g",fitg,gg->GetParameter(0)-1,gg->GetParameter(0)+.5,3);
@@ -103,14 +104,19 @@ void plot_KEend_vs_Eloss() {
 	//TString outpath="./plot_KEend_Eloss_nobmrw_beamxy/";
 	//TString fin="../mc_kecalo_bmrw_beamxy_ElossTune.root";
 	
-	TString outpath="./plot_KEend_Eloss_nobmrw_beamxy/hy_stop/";
+	//TString outpath="./plot_KEend_Eloss_nobmrw_beamxy/hy_stop/";
+	//TString outpath="./plot_KEend_Eloss_nobmrw_beamxy/hy/";
+	//TString outpath="./plot_KEend_Eloss_nobmrw_beamxy/range/";
+	//TString outpath="./plot_KEend_Eloss_nobmrw_beamxy/range_stop/";
+	//TString outpath="./plot_KEend_Eloss_nobmrw_beamxy/calo_stop/";
+	TString outpath="./plot_KEend_Eloss_nobmrw_beamxy/calo/";
 	TString fin="../mc_kecalo_nobmrw_beamxy_ElossTuneHyper.root";
 	
 	//setup e-loss map 
 	vector<double> Eloss;
 	const int n_eloss=40;
-        //double Eloss_start=37.; //calo
-        double Eloss_start=15.; //hyper, range
+        double Eloss_start=37.; //calo
+        //double Eloss_start=15.; //hyper, range
         double dEloss=0.5;
         for (int k=0; k<n_eloss; ++k) {
                 double eloss_step=Eloss_start+(double)k*dEloss;
@@ -153,7 +159,13 @@ void plot_KEend_vs_Eloss() {
                 //Eloss.push_back(eloss_step);
 
                 //h1d[k]=(TH1D*)f_->Get(Form("h1d_KEend_tune_bmrw_%d",k));
-                h1d[k]=(TH1D*)f_->Get(Form("h1d_KEend_hy_stop_tune_bmrw_%d",k));
+                //h1d[k]=(TH1D*)f_->Get(Form("h1d_KEend_hy_stop_tune_bmrw_%d",k));
+                //h1d[k]=(TH1D*)f_->Get(Form("h1d_KEend_hy_tune_bmrw_%d",k));
+                //h1d[k]=(TH1D*)f_->Get(Form("h1d_KEend_range_tune_bmrw_%d",k));
+                //h1d[k]=(TH1D*)f_->Get(Form("h1d_KEend_range_stop_tune_bmrw_%d",k));
+                //h1d[k]=(TH1D*)f_->Get(Form("h1d_KEend_calo_stop_tune_bmrw_%d",k));
+                h1d[k]=(TH1D*)f_->Get(Form("h1d_KEend_calo_tune_bmrw_%d",k));
+
 
 		//fit -------------------------------------------------------------------------------//
 		fitke[k]=FitKEEnd(h1d[k],2);
@@ -182,15 +194,25 @@ void plot_KEend_vs_Eloss() {
 	//gr_de_mu->SetTitle("MC");
 	//gr_de_mu->GetXaxis()->SetTitle("<#DeltaE> [MeV]");
 	//gr_de_mu->GetYaxis()->SetTitle("#mu of KE_{end} [MeV]");
-	TH2D* f2d_fit=new TH2D("f2d_fit","", 25, 35, 60, 25,-10,15);
+	TH2D* f2d_fit=new TH2D("f2d_fit","", 25, 35, 60, 25,-10,15); //calo
+	//TH2D* f2d_fit=new TH2D("f2d_fit","", 17, 14, 31, 16,-11,5); //hy
+	//TH2D* f2d_fit=new TH2D("f2d_fit","", 15, 20, 35, 17,-9,8); //range
 	//f2d_fit->SetTitle("MC; <#DeltaE> [MeV]; #mu of KE_{end} [MeV]");	
-	f2d_fit->SetTitle("MC (bmrw); <#DeltaE> [MeV]; #mu of KE_{end} [MeV]");	
+	//f2d_fit->SetTitle("MC (bmrw); <#DeltaE> [MeV]; #mu of KE_{end} [MeV]");	
+	f2d_fit->SetTitle("MC; <#DeltaE> [MeV]; #mu of KE_{end} [MeV]");	
 	f2d_fit->Draw();
 
 	gr_de_mu->Draw("p same");
 
-	double fit_min=37.;
-	double fit_max=58.;
+	double fit_min=37.; //calo
+	double fit_max=58.; //calo
+
+	//double fit_min=15.; //hy
+	//double fit_max=30.; //hy
+
+	//double fit_min=20.; //range
+	//double fit_max=35.; //range
+
         TF1 *line_best=new TF1("line_best", "[0]+[1]*x", fit_min, fit_max);
 	double mm=(mu.at(0)-mu.at(-1+mu.size()))/(Eloss.at(0)-Eloss.at(-1+Eloss.size()));
 	double bb=mu.at(0)-mm*Eloss.at(0);
