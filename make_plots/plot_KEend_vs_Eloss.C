@@ -100,13 +100,17 @@ void plot_KEend_vs_Eloss() {
 	//TString outpath="./plot_KEend_Eloss_bmrw/";
 	//TString fin="../mc_kecalo_bmrw_ElossTune.root";
 	
-	TString outpath="./plot_KEend_Eloss_bmrw_beamxy/";
-	TString fin="../mc_kecalo_bmrw_beamxy_ElossTune.root";
+	//TString outpath="./plot_KEend_Eloss_nobmrw_beamxy/";
+	//TString fin="../mc_kecalo_bmrw_beamxy_ElossTune.root";
+	
+	TString outpath="./plot_KEend_Eloss_nobmrw_beamxy/hy_stop/";
+	TString fin="../mc_kecalo_nobmrw_beamxy_ElossTuneHyper.root";
 	
 	//setup e-loss map 
 	vector<double> Eloss;
 	const int n_eloss=40;
-        double Eloss_start=37.;
+        //double Eloss_start=37.; //calo
+        double Eloss_start=15.; //hyper, range
         double dEloss=0.5;
         for (int k=0; k<n_eloss; ++k) {
                 double eloss_step=Eloss_start+(double)k*dEloss;
@@ -114,7 +118,6 @@ void plot_KEend_vs_Eloss() {
 
                 //h1d_KEend_tune_bmrw[k]=new TH1D(Form("h1d_KEend_tune_bmrw_%d",k),"", nke, kemin, kemax);
         }
-
 
 	//const int n_eloss=2;
         //for (int k=0; k<n_eloss; ++k) {
@@ -149,7 +152,8 @@ void plot_KEend_vs_Eloss() {
                 //double eloss_step=Eloss_start+(double)k*dEloss;
                 //Eloss.push_back(eloss_step);
 
-                h1d[k]=(TH1D*)f_->Get(Form("h1d_KEend_tune_bmrw_%d",k));
+                //h1d[k]=(TH1D*)f_->Get(Form("h1d_KEend_tune_bmrw_%d",k));
+                h1d[k]=(TH1D*)f_->Get(Form("h1d_KEend_hy_stop_tune_bmrw_%d",k));
 
 		//fit -------------------------------------------------------------------------------//
 		fitke[k]=FitKEEnd(h1d[k],2);
