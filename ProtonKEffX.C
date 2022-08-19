@@ -903,7 +903,8 @@ void ProtonKEff::Loop() {
 
 		//hypothetical length -------------------------------------------------------------------------------------//
 		double fitted_length=-1; 
-		double tmp_fitted_length=BB.Fit_dEdx_Residual_Length(trkdedx, trkres, pdg, false);
+		//double tmp_fitted_length=BB.Fit_dEdx_Residual_Length(trkdedx, trkres, pdg, false);
+		double tmp_fitted_length=BB.Fit_Proton_Residual_Length_Likelihood(trkdedx, trkres, pdg, false);
 		if (tmp_fitted_length>0) fitted_length=tmp_fitted_length;
 		double fitted_KE=-50; 
 		if (fitted_length>0) fitted_KE=BB.KEFromRangeSpline(fitted_length);
@@ -957,7 +958,8 @@ void ProtonKEff::Loop() {
 
 
 	//save results...
-   	TFile *fout = new TFile("mc_keff.root","RECREATE");
+   	//TFile *fout = new TFile("mc_keff.root","RECREATE");
+   	TFile *fout = new TFile("mc_keff_newlikelihood.root","RECREATE");
 		//h1d_kecalo->Write();
 		h2d_KEffbeam_KEhy_stop->Write();
 		h2d_KEffbeam_KEhy_inel->Write();
