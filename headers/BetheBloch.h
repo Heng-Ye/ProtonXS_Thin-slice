@@ -4,6 +4,7 @@
 #include <cmath>
 #include <algorithm>
 #include <map>
+ROOT::Math::VavilovAccurate vav;
 
 using namespace std;
 
