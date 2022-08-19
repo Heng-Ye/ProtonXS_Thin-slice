@@ -4,6 +4,9 @@
 #include <cmath>
 #include <algorithm>
 #include <map>
+
+#include "Math/VavilovAccurate.h"
+
 ROOT::Math::VavilovAccurate vav;
 
 using namespace std;
@@ -38,6 +41,10 @@ class BetheBloch {
   void CreateSplineAtKE(int iKE);
 
   double Fit_dEdx_Residual_Length(const vector<double> dEdx, const vector<double> ResRange, int PID, bool save_graph); //Sungbin's dE/dx vs RR Fitter  
+
+  double Landau_xi(double KE, double pitch);
+
+  double Get_Wmax(double KE);
  
   double dEdx_PDF(double KE, double pitch, double dEdx); //Sungbin's dEdx_PDF
 
@@ -61,9 +68,6 @@ class BetheBloch {
   void CreateSplines(int np = 1000, double minke = .01, double maxke = 2e5);
 
 };
-
-
-
 
 
 BetheBloch::BetheBloch()
@@ -448,6 +452,25 @@ double BetheBloch::Fit_dEdx_Residual_Length(const vector<double> dEdx, const vec
 
 }
 
+
+double BetheBloch::Landau_xi(double KE, double pitch){
+  double gamma = (KE/mass)+1.0;
+  double beta = TMath::Sqrt(1-(1.0/(gamma*gamma)));
+  double xi = rho * pitch * 0.5 * K * (Z / A) * pow(1. / beta, 2);
+  return xi;
+}
+
+double BetheBloch::Get_Wmax(double KE){
+  double me = 0.511; //MeV me*c^2
+  double gamma = (KE/mass)+1.0;
+  double beta = TMath::Sqrt(1-(1.0/(gamma*gamma)));
+  double Wmax = (2.0 * me * pow(beta * gamma, 2)) / (1.0 + 2.0 * me * (gamma / mass) + pow((me / mass),2));
+
+  return Wmax;
+}
+
+
+
 double dEdx_PDF_fuction(double *x, double *par){
   // == par[5] = {kappa, beta^2, xi, <dE/dx>BB, width}
   double a = par[2] / par[4];
@@ -498,9 +521,10 @@ double BetheBloch::dEdx_PDF(double KE, double pitch, double dEdx){
 
 
 double BetheBloch::Fit_Proton_Residual_Length_Likelihood(const vector<double> dEdx, const vector<double> ResRange, int PID, bool save_graph){
-  // == only for charged pions
+  // == only for protons
   int abs_PID = abs(PID);
-  if(!abs(PID) == 2212){
+  //if(!abs(PID) == 2212){
+  if(PID != 2212){
     return -9999.;
   }
   double best_additional_res_length = -0.1;
@@ -526,15 +550,18 @@ double BetheBloch::Fit_Proton_Residual_Length_Likelihood(const vector<double> dE
     double this_m2lnL = 0.;
     for(int j = N_skip; j < this_N_hits - N_skip; j++){ // == Do not use first and last N_skip hits 
       double this_res_length = ResRange.at(j) + this_additional_res_length;
-      double this_KE = map_BB[abs_PID]->KEFromRangeSpline(this_res_length);
-      double dEdx_theory = map_BB[abs_PID]->meandEdx(this_KE);
+      //double this_KE = map_BB[abs_PID]->KEFromRangeSpline(this_res_length);
+      double this_KE = KEFromRangeSpline(this_res_length);
+      //double dEdx_theory = map_BB[abs_PID]->meandEdx(this_KE);
+      double dEdx_theory = meandEdx(this_KE);
       double dEdx_measured = dEdx.at(j);
       if(dEdx_measured < dEdx_truncate_bellow || dEdx_measured > dEdx_truncate_upper) continue; // == Truncate
 
       // == Likelihood
       double this_pitch = fabs(ResRange.at(j - 1) - ResRange.at(j + 1)) / 2.0;
       //cout << "[HadAna::Fit_Pion_Residual_Length_Likelihood] " << j << ", ResRange.at(j) : " << ResRange.at(j) << ", this_KE : " << this_KE << ", this_pitch : " << this_pitch << ", dEdx_measured : " << dEdx_measured << endl;
-      double this_likelihood = map_BB[abs_PID] -> dEdx_PDF(this_KE, this_pitch, dEdx_measured);
+      //double this_likelihood = map_BB[abs_PID] -> dEdx_PDF(this_KE, this_pitch, dEdx_measured);
+      double this_likelihood = dEdx_PDF(this_KE, this_pitch, dEdx_measured);
       //cout << "[HadAna::Fit_Pion_Residual_Length_Likelihood] dEdx_measured : " << dEdx_measured << ", dEdx_PDF : " << this_likelihood << ", log(this_likelihood) : " << log(this_likelihood) << endl;
       this_m2lnL += (-2.0) * log(this_likelihood);
     }
@@ -592,8 +619,10 @@ double BetheBloch::Fit_Proton_Residual_Length_Likelihood(const vector<double> dE
 
   double original_res_length = ResRange.at(this_N_calo - 1); // == [cm]
   double best_total_res_length = best_additional_res_length + original_res_length;
-  double best_KE = map_BB[abs_PID]->KEFromRangeSpline(best_total_res_length);
-  double best_mom = map_BB[abs_PID]->KEtoMomentum(best_KE);
+  //double best_KE = map_BB[abs_PID]->KEFromRangeSpline(best_total_res_length);
+  double best_KE = KEFromRangeSpline(best_total_res_length);
+  //double best_mom = map_BB[abs_PID]->KEtoMomentum(best_KE);
+  //double best_mom = KEtoMomentum(best_KE);
 
   // == Define fitting failed cases
   if(i_bestfit == res_length_trial - 1){
