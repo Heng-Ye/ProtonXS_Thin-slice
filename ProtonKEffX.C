@@ -592,8 +592,8 @@ void ProtonKEff::Loop() {
 			//} //loop over all beam hits
 		} 
 		if (key_reach_tpc!=-99) { is_beam_at_ff=true; }
-		cout<<"key_reach_tpc:"<<key_reach_tpc<<endl;	
-		cout<<"is_beam_at_ff:"<<is_beam_at_ff<<endl;
+		//cout<<"key_reach_tpc:"<<key_reach_tpc<<endl;	
+		//cout<<"is_beam_at_ff:"<<is_beam_at_ff<<endl;
 
 		//Get true trklen ---------------------------------------------------------------------------------------//
 		int key_st = 0;
@@ -641,9 +641,9 @@ void ProtonKEff::Loop() {
 			if (key_fit_st<0) key_fit_st=0;
 			if (key_fit_ed>(-1+(int)beamtrk_z->size())) key_fit_ed=-1+(int)beamtrk_z->size();	
 
-			cout<<"beamtrk_z->size():"<<beamtrk_z->size()<<endl;
-			cout<<"key_reach_tpc:"<<key_reach_tpc<<endl;
-			std::cout<<"key_fit_st-ed:"<<key_fit_st<<"-"<<key_fit_ed<<std::endl;
+			//cout<<"beamtrk_z->size():"<<beamtrk_z->size()<<endl;
+			//cout<<"key_reach_tpc:"<<key_reach_tpc<<endl;
+			//std::cout<<"key_fit_st-ed:"<<key_fit_st<<"-"<<key_fit_ed<<std::endl;
 
 			//start 3D line fit
 			TGraph2D *gr=new TGraph2D();
@@ -959,7 +959,7 @@ void ProtonKEff::Loop() {
 
 	//save results...
    	//TFile *fout = new TFile("mc_keff.root","RECREATE");
-   	TFile *fout = new TFile("mc_keff_newlikelihood.root","RECREATE");
+   	TFile *fout = new TFile("mc_keff_likeli.root","RECREATE");
 		//h1d_kecalo->Write();
 		h2d_KEffbeam_KEhy_stop->Write();
 		h2d_KEffbeam_KEhy_inel->Write();
