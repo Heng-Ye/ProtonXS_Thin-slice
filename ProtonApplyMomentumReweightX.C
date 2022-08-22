@@ -97,6 +97,16 @@ void ProtonApplyMomentumReweight::Loop() {
 	double m1=997.969; //MC prod4a [truth]
 	double s1=54.4602; //MC prod4a [truth]
 
+
+	//const E-loss using stopping protons ---------
+	double Eloss_mc_hy_stop=19.542/0.998495;
+	//p[0]:19.542;   //err_p[0]:0.126113
+	//p[1]:0.998495; //err_p[1]:0.00549534
+
+	double R_fit_hy=1.0008142352819318;
+	double er_R_fit_hy=0.04629667706788889;
+
+
 	//const. E-loss assumption	
 	double const_eloss_mc=47.0058/1.00097; //const E-loss from fit (calo)
 	//#p[0]:47.0058 err_p[0]:0.372157 p[1]:-1.00097 err_p[1]:0.00787403
