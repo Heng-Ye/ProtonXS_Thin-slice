@@ -47,6 +47,8 @@ def VNFit(h, pre_mean, n_sigma):
 #MC File ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 file_mc='../mc_keff.root'
 out_path='./keff_study'
+#file_mc='../mc_keff_newlikelihood.root'
+#out_path='./keff_study_likelihood'
 
 #Plt Style -------------------------------------------------------------------------------
 parser = ap()
@@ -70,6 +72,10 @@ KEffbeam_KEhy_inel=f_mc.Get("h2d_KEffbeam_KEhy_inel")
 
 KEffbeam_dKEhy_stop=f_mc.Get("h2d_KEffbeam_dKEhy_stop")
 KEffbeam_dKEhy_inel=f_mc.Get("h2d_KEffbeam_dKEhy_inel")
+
+ratio_KEffbeam_KEhy_stop=f_mc.Get("h1d_ratio_KEffbeam_KEhy_stop")
+
+
 
 #[1]
 c0_ff_mc=RT.TCanvas("c0_ff_mc","",1200,900)
@@ -123,4 +129,35 @@ ll4.SetLineStyle(2)
 ll4.Draw()
 c0_ff_mc.Print(out_path+'/keffbeam_dkehy_inel.eps')
 
+#[5]Ratio of (KEHY/(KEbeam-dE))
+c0_r_mc=RT.TCanvas("c0_r_mc","",1200,900)
+c0_r_mc.Divide(1,1)
+c0_r_mc.cd(1)
+f2d_ratio_KEffbeam_KEhy_stop=RT.TH2D("f2d_ratio_KEffbeam_KEhy_stop","", 10,0.5,1.5, 100,0,3000)
+f2d_ratio_KEffbeam_KEhy_stop.SetTitle("Stopping Protons; KE(fit)/(KE_{beam}-#DeltaE); Events")
+f2d_ratio_KEffbeam_KEhy_stop.Draw()
+ratio_KEffbeam_KEhy_stop.Draw("same")
+
+fit_ratio_KEffbeam_KEhy_stop=VNFit(ratio_KEffbeam_KEhy_stop, 1, 3)
+fit_ratio_KEffbeam_KEhy_stop.SetLineColor(2)
+fit_ratio_KEffbeam_KEhy_stop.SetMarkerStyle(2)
+fit_ratio_KEffbeam_KEhy_stop.Draw("same")
+
+mu=fit_ratio_KEffbeam_KEhy_stop.GetParameter(0)
+er_mu=fit_ratio_KEffbeam_KEhy_stop.GetParError(0)
+sigma=fit_ratio_KEffbeam_KEhy_stop.GetParameter(1)
+er_sigma=fit_ratio_KEffbeam_KEhy_stop.GetParError(1)
+
+print('mu:',mu)
+print('sigma:',sigma)
+
+leg0=RT.TLegend(0.1,0.7,.92,0.95)
+leg0.SetFillStyle(0)
+txt0=[]
+txt0.append("Data: #mu={:.4f}#pm{:.4f} MeV, #sigma={:.4f}#pm{:.4f} MeV".format(mu,er_mu,sigma,er_sigma))
+leg0.AddEntry(ratio_KEffbeam_KEhy_stop, txt0[0], "l")
+#leg0.SetNColumns(2);
+leg0.Draw()
+
+c0_r_mc.Print(out_path+'/ratio_kehy_keffbeam_stop.eps')
 
