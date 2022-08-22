@@ -903,8 +903,8 @@ void ProtonKEff::Loop() {
 
 		//hypothetical length -------------------------------------------------------------------------------------//
 		double fitted_length=-1; 
-		//double tmp_fitted_length=BB.Fit_dEdx_Residual_Length(trkdedx, trkres, pdg, false);
-		double tmp_fitted_length=BB.Fit_Proton_Residual_Length_Likelihood(trkdedx, trkres, pdg, false);
+		double tmp_fitted_length=BB.Fit_dEdx_Residual_Length(trkdedx, trkres, pdg, false);
+		//double tmp_fitted_length=BB.Fit_Proton_Residual_Length_Likelihood(trkdedx, trkres, pdg, false);
 		if (tmp_fitted_length>0) fitted_length=tmp_fitted_length;
 		double fitted_KE=-50; 
 		if (fitted_length>0) fitted_KE=BB.KEFromRangeSpline(fitted_length);
