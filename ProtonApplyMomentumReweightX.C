@@ -426,7 +426,11 @@ void ProtonApplyMomentumReweight::Loop() {
 	TH2D *h2d_trklen_ratio_KEbbtruth_KEffbeam_stop=new TH2D("h2d_trklen_ratio_KEbbtruth_KEffbeam_stop","", 14000,0,140,4000,-20,20);
 	TH2D *h2d_trklen_ratio_KEbbtruth_KEffbeam_el=new TH2D("h2d_trklen_ratio_KEbbtruth_KEffbeam_el","", 14000,0,140,4000,-20,20);
 	TH2D *h2d_trklen_ratio_KEbbtruth_KEffbeam_inel=new TH2D("h2d_trklen_ratio_KEbbtruth_KEffbeam_inel","", 14000,0,140,4000,-20,20);
-	
+
+	//ff	
+	TH2D *h2d_keffbeam_keff_stop=new TH2D("h2d_keffbeam_keff_stop","", ny_edept, ymin_edept, ymax_edept, ny_edept, ymin_edept, ymax_edept);
+	TH2D *h2d_keffbeam_keff_el=new TH2D("h2d_keffbeam_keff_el","", ny_edept, ymin_edept, ymax_edept, ny_edept, ymin_edept, ymax_edept);
+	TH2D *h2d_keffbeam_keff_inel=new TH2D("h2d_keffbeam_keff_inel","", ny_edept, ymin_edept, ymax_edept, ny_edept, ymin_edept, ymax_edept);
 	
 
 	//Basic configure ------//
@@ -822,6 +826,7 @@ void ProtonApplyMomentumReweight::Loop() {
 				h1d_keff_el->Fill(ke_ff, mom_rw_minchi2);
 				h2d_trklen_ratio_KEbbfit_KEffbeam_el->Fill(range_reco, (kebb_fit/kebb));
 				h2d_trklen_ratio_KEbbtruth_KEffbeam_el->Fill(range_reco, (kebb_truth/kebb));
+				h2d_keffbeam_keff_el->Fill(ke_ffbeam_MeV, ke_ff);
 
 				if (kinel) { //inel
 					h1d_keffbeam_el_inel->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
@@ -885,6 +890,7 @@ void ProtonApplyMomentumReweight::Loop() {
 				h2d_trklen_ratio_KEbbfit_KEffbeam_stop->Fill(range_reco, (kebb_fit/kebb));
 				h2d_trklen_ratio_KEbbtruth_KEffbeam_stop->Fill(range_reco, (kebb_truth/kebb));
 
+				h2d_keffbeam_keff_stop->Fill(ke_ffbeam_MeV, ke_ff);
 
 				//if (IsXY) { //xy-cut
 					//h1d_trklen_stop_XY->Fill(range_reco);
@@ -915,6 +921,8 @@ void ProtonApplyMomentumReweight::Loop() {
 
 				h2d_trklen_ratio_KEbbfit_KEffbeam_inel->Fill(range_reco, (kebb_fit/kebb));
 				h2d_trklen_ratio_KEbbtruth_KEffbeam_inel->Fill(range_reco, (kebb_truth/kebb));
+
+				h2d_keffbeam_keff_inel->Fill(ke_ffbeam_MeV, ke_ff);
 
 				if (kinel) { //inel
 					h1d_keffbeam_inel_inel->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
@@ -1165,6 +1173,10 @@ void ProtonApplyMomentumReweight::Loop() {
 		h2d_trklen_ratio_KEbbtruth_KEffbeam_stop->Write();
 		h2d_trklen_ratio_KEbbtruth_KEffbeam_el->Write();
 		h2d_trklen_ratio_KEbbtruth_KEffbeam_inel->Write();
+
+		h2d_keffbeam_keff_stop->Write();
+		h2d_keffbeam_keff_el->Write();
+		h2d_keffbeam_keff_inel->Write();
 
 	fout->Close();
 

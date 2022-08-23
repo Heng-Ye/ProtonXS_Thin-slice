@@ -75,6 +75,15 @@ KEffbeam_dKEhy_inel=f_mc.Get("h2d_KEffbeam_dKEhy_inel")
 
 ratio_KEffbeam_KEhy_stop=f_mc.Get("h1d_ratio_KEffbeam_KEhy_stop")
 
+keffbeam_keff_stop=f_mc.Get("h2d_keffbeam_keff_stop")
+keffbeam_keff_el=f_mc.Get("h2d_keffbeam_keff_el")
+keffbeam_keff_inel=f_mc.Get("h2d_keffbeam_keff_inel")
+
+kehy_keff_stop=f_mc.Get("h2d_kehy_keff_stop")
+kehy_keff_el=f_mc.Get("h2d_kehy_keff_el")
+kehy_keff_inel=f_mc.Get("h2d_kehy_keff_inel")
+
+
 
 
 #[1]
@@ -160,4 +169,31 @@ leg0.AddEntry(ratio_KEffbeam_KEhy_stop, txt0[0], "l")
 leg0.Draw()
 
 c0_r_mc.Print(out_path+'/ratio_kehy_keffbeam_stop.eps')
+
+
+#[6]KEff(truth) vs (KEbeam-dE)*R --------------------------------------------------
+c1_ff_mc=RT.TCanvas("c1_ff_mc","",1200,900)
+c1_ff_mc.Divide(1,1)
+c1_ff_mc.cd(1)
+
+f2d1_mc=RT.TH2D("f2d1_mc","", 400, 200, 600, 400, 200, 600)
+f2d1_mc.SetTitle("Stopping Protons; (KE_{beam}-#DeltaE)*R [MeV]; KE(truth) [MeV]")
+f2d1_mc.Draw("")
+
+keffbeam_keff_stop.Draw("colz same")
+ll1=RT.TLine(200,200,600,600)
+ll1.SetLineColor(2)
+ll1.SetLineStyle(2)
+ll1.Draw()
+c1_ff_mc.Print(out_path+'/keffbeam_keff_stop.eps')
+
+f2d1_mc.Draw("")
+keffbeam_keff_el.Draw("colz same")
+c1_ff_mc.Print(out_path+'/keffbeam_keff_el.eps')
+
+f2d1_mc.Draw("")
+keffbeam_keff_inel.Draw("colz same")
+c1_ff_mc.Print(out_path+'/keffbeam_keff_inel.eps')
+
+
 
