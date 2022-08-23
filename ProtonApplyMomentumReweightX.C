@@ -232,8 +232,8 @@ void ProtonApplyMomentumReweight::Loop() {
 	int nx_trklen=150;
 	double xmin_trklen=0;
 	double xmax_trklen=150;
-	int ny_edept=450;
-	double ymin_edept=-100;
+	int ny_edept=500;
+	double ymin_edept=-200;
 	double ymax_edept=800;
 
 	TH1D *h1d_ke0=new TH1D("h1d_ke0","",ny_edept,ymin_edept,ymax_edept);
@@ -400,6 +400,13 @@ void ProtonApplyMomentumReweight::Loop() {
 	h1d_kend_true_el->Sumw2();
 	h1d_kend_true_inel->Sumw2();
 
+	TH1D *h1d_kend_bbtrue_stop=new TH1D("h1d_kend_bbtrue_stop","", ny_edept, ymin_edept, ymax_edept);
+	TH1D *h1d_kend_bbtrue_el=new TH1D("h1d_kend_bbtrue_el","", ny_edept, ymin_edept, ymax_edept);
+	TH1D *h1d_kend_bbtrue_inel=new TH1D("h1d_kend_bbtrue_inel","", ny_edept, ymin_edept, ymax_edept);
+	h1d_kend_bbtrue_stop->Sumw2();
+	h1d_kend_bbtrue_el->Sumw2();
+	h1d_kend_bbtrue_inel->Sumw2();
+
 	//dedx_rr ---------------------------------------------------------------------------//
 	TH2D *h2d_rr_dedx_recoSTOP=new TH2D("h2d_rr_dedx_recoSTOP","",240,0,120,90,0,30);
 
@@ -432,6 +439,18 @@ void ProtonApplyMomentumReweight::Loop() {
 	TH2D *h2d_keffbeam_keff_el=new TH2D("h2d_keffbeam_keff_el","", ny_edept, ymin_edept, ymax_edept, ny_edept, ymin_edept, ymax_edept);
 	TH2D *h2d_keffbeam_keff_inel=new TH2D("h2d_keffbeam_keff_inel","", ny_edept, ymin_edept, ymax_edept, ny_edept, ymin_edept, ymax_edept);
 	
+	TH2D *h2d_kehy_keff_stop=new TH2D("h2d_kehy_keff_stop","", ny_edept, ymin_edept, ymax_edept, ny_edept, ymin_edept, ymax_edept);
+	TH2D *h2d_kehy_keff_el=new TH2D("h2d_kehy_keff_el","", ny_edept, ymin_edept, ymax_edept, ny_edept, ymin_edept, ymax_edept);
+	TH2D *h2d_kehy_keff_inel=new TH2D("h2d_kehy_keff_inel","", ny_edept, ymin_edept, ymax_edept, ny_edept, ymin_edept, ymax_edept);
+
+	//end
+	TH2D *h2d_kebb_keendtruth_stop=new TH2D("h2d_kebb_keendtruth_stop","", ny_edept, ymin_edept, ymax_edept, ny_edept, ymin_edept, ymax_edept);
+	TH2D *h2d_kebb_keendtruth_el=new TH2D("h2d_kebb_keendtruth_el","", ny_edept, ymin_edept, ymax_edept, ny_edept, ymin_edept, ymax_edept);
+	TH2D *h2d_kebb_keendtruth_inel=new TH2D("h2d_kebb_keendtruth_inel","", ny_edept, ymin_edept, ymax_edept, ny_edept, ymin_edept, ymax_edept);
+		
+	TH2D *h2d_kebb_kebbtruth_stop=new TH2D("h2d_kebb_kebbtruth_stop","", ny_edept, ymin_edept, ymax_edept, ny_edept, ymin_edept, ymax_edept);
+	TH2D *h2d_kebb_kebbtruth_el=new TH2D("h2d_kebb_kebbtruth_el","", ny_edept, ymin_edept, ymax_edept, ny_edept, ymin_edept, ymax_edept);
+	TH2D *h2d_kebb_kebbtruth_inel=new TH2D("h2d_kebb_kebbtruth_inel","", ny_edept, ymin_edept, ymax_edept, ny_edept, ymin_edept, ymax_edept);
 
 	//Basic configure ------//
 	BetheBloch BB;
@@ -823,10 +842,14 @@ void ProtonApplyMomentumReweight::Loop() {
 				h1d_kend_calo_el->Fill(kecalo, mom_rw_minchi2);
 				h1d_kend_bb_el->Fill(kebb, mom_rw_minchi2);
 				h1d_kend_true_el->Fill(kend, mom_rw_minchi2);
+				h1d_kend_bbtrue_el->Fill(kebb_truth, mom_rw_minchi2);
 				h1d_keff_el->Fill(ke_ff, mom_rw_minchi2);
 				h2d_trklen_ratio_KEbbfit_KEffbeam_el->Fill(range_reco, (kebb_fit/kebb));
 				h2d_trklen_ratio_KEbbtruth_KEffbeam_el->Fill(range_reco, (kebb_truth/kebb));
 				h2d_keffbeam_keff_el->Fill(ke_ffbeam_MeV, ke_ff);
+				h2d_kehy_keff_el->Fill(fitted_KE, ke_ff);
+				h2d_kebb_keendtruth_el->Fill(kebb, kend);
+				h2d_kebb_kebbtruth_el->Fill(kebb, kebb_truth);
 
 				if (kinel) { //inel
 					h1d_keffbeam_el_inel->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
@@ -886,11 +909,15 @@ void ProtonApplyMomentumReweight::Loop() {
 				h1d_kend_calo_stop->Fill(kecalo, mom_rw_minchi2);
 				h1d_kend_bb_stop->Fill(kebb, mom_rw_minchi2);
 				h1d_kend_true_stop->Fill(kend, mom_rw_minchi2);
+				h1d_kend_bbtrue_stop->Fill(kebb_truth, mom_rw_minchi2);
 
 				h2d_trklen_ratio_KEbbfit_KEffbeam_stop->Fill(range_reco, (kebb_fit/kebb));
 				h2d_trklen_ratio_KEbbtruth_KEffbeam_stop->Fill(range_reco, (kebb_truth/kebb));
 
 				h2d_keffbeam_keff_stop->Fill(ke_ffbeam_MeV, ke_ff);
+				h2d_kehy_keff_stop->Fill(fitted_KE, ke_ff);
+				h2d_kebb_keendtruth_stop->Fill(kebb, kend);
+				h2d_kebb_kebbtruth_stop->Fill(kebb, kebb_truth);
 
 				//if (IsXY) { //xy-cut
 					//h1d_trklen_stop_XY->Fill(range_reco);
@@ -918,11 +945,16 @@ void ProtonApplyMomentumReweight::Loop() {
 				h1d_kend_calo_inel->Fill(kecalo, mom_rw_minchi2);
 				h1d_kend_bb_inel->Fill(kebb, mom_rw_minchi2);
 				h1d_kend_true_inel->Fill(kend, mom_rw_minchi2);
+				h1d_kend_bbtrue_inel->Fill(kebb_truth, mom_rw_minchi2);
 
 				h2d_trklen_ratio_KEbbfit_KEffbeam_inel->Fill(range_reco, (kebb_fit/kebb));
 				h2d_trklen_ratio_KEbbtruth_KEffbeam_inel->Fill(range_reco, (kebb_truth/kebb));
 
 				h2d_keffbeam_keff_inel->Fill(ke_ffbeam_MeV, ke_ff);
+				h2d_kehy_keff_inel->Fill(fitted_KE, ke_ff);
+
+				h2d_kebb_keendtruth_inel->Fill(kebb, kend);
+				h2d_kebb_kebbtruth_inel->Fill(kebb, kebb_truth);
 
 				if (kinel) { //inel
 					h1d_keffbeam_inel_inel->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
@@ -1178,6 +1210,22 @@ void ProtonApplyMomentumReweight::Loop() {
 		h2d_keffbeam_keff_el->Write();
 		h2d_keffbeam_keff_inel->Write();
 
+		h2d_kehy_keff_stop->Write();
+		h2d_kehy_keff_el->Write();
+		h2d_kehy_keff_inel->Write();
+
+		h1d_kend_bbtrue_stop->Write();
+		h1d_kend_bbtrue_el->Write();
+		h1d_kend_bbtrue_inel->Write();
+
+
+		h2d_kebb_keendtruth_stop->Write();
+		h2d_kebb_keendtruth_el->Write();
+		h2d_kebb_keendtruth_inel->Write();
+
+		h2d_kebb_kebbtruth_stop->Write();
+		h2d_kebb_kebbtruth_el->Write();
+		h2d_kebb_kebbtruth_inel->Write();
 	fout->Close();
 
 
