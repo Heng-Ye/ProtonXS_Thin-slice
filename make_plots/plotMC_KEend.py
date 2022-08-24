@@ -204,13 +204,29 @@ ll.Draw()
 c2_end_mc.Print(out_path+'/kebb_kend_truth_inel.eps')
 
 #[4]------------------------------------------------------------------------------------------------------
-f2d2_mc.SetTitle("Reconstructed Stopping Protons; (KE_{beam}-#DeltaE)*R-#Sigma(dE/dx)*dx [MeV]; KE at Track End (Truth) [MeV]")
+f2d2_mc.SetTitle("Reconstructed Stopping Protons; (KE_{beam}-#DeltaE)*R-E_{dept} [MeV]; KE at Track End (Truth) [MeV]")
 f2d2_mc.Draw("")
 
 kecalo_keendtruth_stop.SetMarkerSize(.3)
 kecalo_keendtruth_stop.Draw("same")
 ll.Draw()
 c2_end_mc.Print(out_path+'/kecalo_keend_truth_stop.eps')
+
+f2d2_mc.SetTitle("Reconstructed Elastic-scattering Protons; (KE_{beam}-#DeltaE)*R-E_{dept} [MeV]; KE at Track End (Truth) [MeV]")
+f2d2_mc.Draw("")
+
+kecalo_keendtruth_el.SetMarkerSize(.3)
+kecalo_keendtruth_el.Draw("same")
+ll.Draw()
+c2_end_mc.Print(out_path+'/kecalo_keend_truth_el.eps')
+
+f2d2_mc.SetTitle("Reconstructed Inelastic-scattering Protons; (KE_{beam}-#DeltaE)*R-E_{dept} [MeV]; KE at Track End (Truth) [MeV]")
+f2d2_mc.Draw("")
+
+kecalo_keendtruth_inel.SetMarkerSize(.3)
+kecalo_keendtruth_inel.Draw("same")
+ll.Draw()
+c2_end_mc.Print(out_path+'/kecalo_keend_truth_inel.eps')
 
 
 #kecalo_keendtruth_stop=f_mc.Get("h2d_kecalo_keendtruth_stop")
