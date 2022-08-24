@@ -46,6 +46,7 @@ def VNFit(h, pre_mean, n_sigma):
 
 #MC File ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 file_mc='../mc_proton_beamxy_beammom_nobmrw.root'
+#file_mc='../mc_proton_beamxy_beammom_nobmrw_old.root'
 out_path='./keend_study'
 
 #Plt Style -------------------------------------------------------------------------------
@@ -77,6 +78,19 @@ kend_bb_inel=f_mc.Get("h1d_kend_bb_inel")
 kend_true_el=f_mc.Get("h1d_kend_true_el")
 kend_true_inel=f_mc.Get("h1d_kend_true_inel")
 
+#2D scatter plots
+kebb_keendtruth_stop=f_mc.Get("h2d_kebb_keendtruth_stop")
+kebb_keendtruth_el=f_mc.Get("h2d_kebb_keendtruth_el")
+kebb_keendtruth_inel=f_mc.Get("h2d_kebb_keendtruth_inel")
+
+kebb_kebbtruth_stop=f_mc.Get("h2d_kebb_kebbtruth_stop")
+kebb_kebbtruth_el=f_mc.Get("h2d_kebb_kebbtruth_el")
+kebb_kebbtruth_inel=f_mc.Get("h2d_kebb_kebbtruth_inel")
+
+kecalo_keendtruth_stop=f_mc.Get("h2d_kecalo_keendtruth_stop")
+kecalo_keendtruth_el=f_mc.Get("h2d_kecalo_keendtruth_el")
+kecalo_keendtruth_inel=f_mc.Get("h2d_kecalo_keendtruth_inel")
+
 
 #[1]------------------------------------------------------------------------------------------------------
 c0_end_mc=RT.TCanvas("c0_end_mc","",1200,900)
@@ -84,7 +98,7 @@ c0_end_mc.Divide(1,1)
 c0_end_mc.cd(1).SetLogy(0)
 
 #f2d_mc=RT.TH2D("f2d_mc","", 700, -100, 600, 900, 0.01, 2000) #logy
-f2d_mc=RT.TH2D("f2d_mc","", 700, -100, 600, 900, 0., 1000) #liny
+f2d_mc=RT.TH2D("f2d_mc","", 800, -200, 600, 900, 0., 1000) #liny
 f2d_mc.SetTitle("Reconstructed Elastic-scattering Protons; Kinetic Energy at Track End [MeV]; Events")
 f2d_mc.Draw("")
 
@@ -121,7 +135,7 @@ c1_end_mc=RT.TCanvas("c1_end_mc","",1200,900)
 c1_end_mc.Divide(1,1)
 c1_end_mc.cd(1).SetLogy(0)
 
-f2d_mc=RT.TH2D("f2d_mc","", 700, -100, 600, 900, 0., 400) #liny
+f2d_mc=RT.TH2D("f2d_mc","", 800, -200, 600, 900, 0., 400) #liny
 f2d_mc.SetTitle("Reconstructed Inelastic-scattering Protons; Kinetic Energy at Track End [MeV]; Events")
 f2d_mc.Draw("")
 
@@ -151,4 +165,55 @@ leg1.Draw()
 #ll.SetLineStyle(2)
 #ll.Draw()
 c1_end_mc.Print(out_path+'/keend_inel.eps')
+
+#[3]--------------------------------------------------------------------------------------------------------------------------------------
+#stop
+c2_end_mc=RT.TCanvas("c2_end_mc","",1200,900)
+c2_end_mc.Divide(1,1)
+c2_end_mc.cd(1).SetLogy(0)
+
+f2d2_mc=RT.TH2D("f2d_mc","", 800, -200, 600, 800, -200, 600) #liny
+f2d2_mc.SetTitle("Reconstructed Stopping Protons; Kinetic Energy at Track End (BB) [MeV]; Kinetic Energy at Track End (Truth) [MeV]")
+f2d2_mc.Draw("")
+
+kebb_keendtruth_stop.SetMarkerSize(.3)
+kebb_keendtruth_stop.Draw("same")
+
+ll=RT.TLine(-200,-200,600,600)
+ll.SetLineColor(2)
+ll.SetLineStyle(2)
+ll.Draw()
+c2_end_mc.Print(out_path+'/kebb_kend_truth_stop.eps')
+
+#el
+f2d2_mc.SetTitle("Reconstructed Elastic Protons; Kinetic Energy at Track End (BB) [MeV]; Kinetic Energy at Track End (Truth) [MeV]")
+f2d2_mc.Draw("")
+
+kebb_keendtruth_el.SetMarkerSize(.3)
+kebb_keendtruth_el.Draw("same")
+ll.Draw()
+c2_end_mc.Print(out_path+'/kebb_kend_truth_el.eps')
+
+#inel
+f2d2_mc.SetTitle("Reconstructed Inelastic Protons; Kinetic Energy at Track End (BB) [MeV]; Kinetic Energy at Track End (Truth) [MeV]")
+f2d2_mc.Draw("")
+
+kebb_keendtruth_inel.SetMarkerSize(.3)
+kebb_keendtruth_inel.Draw("same")
+ll.Draw()
+c2_end_mc.Print(out_path+'/kebb_kend_truth_inel.eps')
+
+#[4]------------------------------------------------------------------------------------------------------
+f2d2_mc.SetTitle("Reconstructed Stopping Protons; (KE_{beam}-#DeltaE)*R-#Sigma(dE/dx)*dx [MeV]; KE at Track End (Truth) [MeV]")
+f2d2_mc.Draw("")
+
+kecalo_keendtruth_stop.SetMarkerSize(.3)
+kecalo_keendtruth_stop.Draw("same")
+ll.Draw()
+c2_end_mc.Print(out_path+'/kecalo_keend_truth_stop.eps')
+
+
+#kecalo_keendtruth_stop=f_mc.Get("h2d_kecalo_keendtruth_stop")
+#kecalo_keendtruth_el=f_mc.Get("h2d_kecalo_keendtruth_el")
+#kecalo_keendtruth_inel=f_mc.Get("h2d_kecalo_keendtruth_inel")
 
