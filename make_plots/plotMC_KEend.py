@@ -125,6 +125,8 @@ kecalo_keendtruth_inel=f_mc.Get("h2d_kecalo_keendtruth_inel")
 kebbtruelength_keendtruth_stop=f_mc.Get("h2d_kebbtruelength_keendtruth_stop")
 kebbtruelength_keendtruth_el=f_mc.Get("h2d_kebbtruelength_keendtruth_el")
 kebbtruelength_keendtruth_inel=f_mc.Get("h2d_kebbtruelength_keendtruth_inel")
+kebbtruelength_keendtruth_trueel=f_mc.Get("h2d_kebbtruelength_keendtruth_trueel")
+
 
 kend_bbtruelength_stop=f_mc.Get("h1d_kend_bbtruelength_stop")
 kend_bbtruelength_el=f_mc.Get("h1d_kend_bbtruelength_el")
@@ -144,6 +146,8 @@ ratio_rangehy_rangereco_el=f_mc.Get("h1d_ratio_rangehy_rangereco_el")
 recorange_rangehy_el=f_mc.Get("h2d_recorange_rangehy_el")
 recorange_rangehy_stop=f_mc.Get("h2d_recorange_rangehy_stop")
 
+kend_bbcorr_el=f_mc.Get("h1d_kend_bbcorr_el")
+kend_bbcorr_inel=f_mc.Get("h1d_kend_bbcorr_inel")
 
 #[1]------------------------------------------------------------------------------------------------------
 c0_end_mc=RT.TCanvas("c0_end_mc","",1200,900)
@@ -165,17 +169,22 @@ kend_true_el.SetLineColor(3)
 kend_true_el.SetMarkerColor(3)
 kend_bbtruelength_el.SetLineColor(51)
 kend_bbtruelength_el.SetMarkerColor(51)
+kend_bbcorr_el.SetLineColor(7)
+kend_bbcorr_el.SetMarkerColor(7)
 
 kend_true_el.Draw("hist same")
 kend_calo_el.Draw("hist same")
 kend_bb_el.Draw("hist same")
 kend_bbtruelength_el.Draw("hist same")
+kend_bbcorr_el.Draw("hist same")
+
 
 leg0=RT.TLegend(0.45,0.6,.87,0.87)
 leg0.SetFillStyle(0)
 leg0.AddEntry(kend_calo_el, "Calo.", "l")
 leg0.AddEntry(kend_bb_el, "BB", "l")
 leg0.AddEntry(kend_true_el, "Truth", "l")
+leg0.AddEntry(kend_bbcorr_el, "BB with Range Corr.", "l")
 leg0.AddEntry(kend_bbtruelength_el, "BB with Range(truth)", "l")
 
 #leg0.SetNColumns(2);
@@ -188,7 +197,8 @@ leg0.Draw()
 #ll.SetLineStyle(2)
 #ll.Draw()
 #c0_end_mc.Print(out_path+'/keend_el.eps')
-c0_end_mc.Print(out_path+'/keend__el.eps')
+#c0_end_mc.Print(out_path+'/keend__el.eps')
+c0_end_mc.Print(out_path+'/keend___el.eps')
 
 
 #[2]------------------------------------------------------------------------------------------------------
@@ -302,6 +312,12 @@ kebbtruelength_keendtruth_el.Draw("same")
 ll.Draw()
 c2_end_mc.Print(out_path+'/kebbtruelength_keend_truth_el.eps')
 
+f2d2_mc.SetTitle("True Elastic-scattering Protons; KE_{BB} at Track End (True Range) [MeV]; Kinetic Energy at Track End (Truth) [MeV]")
+f2d2_mc.Draw()
+kebbtruelength_keendtruth_trueel.SetMarkerSize(.3)
+kebbtruelength_keendtruth_trueel.Draw("same")
+ll.Draw()
+c2_end_mc.Print(out_path+'/kebbtruelength_keend_truth_trueel.eps')
 
 
 
@@ -312,14 +328,14 @@ c3_mc=RT.TCanvas("c3_mc","",1200,900)
 c3_mc.Divide(1,1)
 c3_mc.cd(1).SetLogy(0)
 
-f2d3_mc=RT.TH2D("f2d_mc","", 140,0,140,140,0,140) #liny
+f2d3_mc=RT.TH2D("f2d_mc","", 100,40,140,100,40,140) #liny
 f2d3_mc.SetTitle("Reconstructed Stopping Protons; Track Length (Reco) [cm]; Track Length (Truth) [cm]")
 f2d3_mc.Draw("")
 
 recorange_truerange_stop.SetMarkerSize(.3)
 recorange_truerange_stop.Draw("same")
 
-lll=RT.TLine(0,0,140,140)
+lll=RT.TLine(40,40,140,140)
 lll.SetLineColor(2)
 lll.SetLineStyle(2)
 lll.Draw()
@@ -338,7 +354,7 @@ c4_mc=RT.TCanvas("c4_mc","",1200,900)
 c4_mc.Divide(1,1)
 c4_mc.cd(1).SetLogy(1)
 
-f2dl_mc=RT.TH2D("f2dl_mc","", 60,-.1,1.7,100,1,25000) #liny
+f2dl_mc=RT.TH2D("f2dl_mc","", 90,0.8,1.7,100,1,100000) #liny
 f2dl_mc.SetTitle("Stopping Protons; Range Ratio; Events")
 f2dl_mc.Draw("")
 
@@ -348,7 +364,7 @@ f2dl_mc.Draw("")
 ratio_rangetrue_rangereco_stop.SetLineColor(2)
 ratio_rangehy_rangereco_stop.SetLineColor(4)
 
-ratio_rangetrue_rangereco_stop.Draw("hist same")
+#ratio_rangetrue_rangereco_stop.Draw("hist same")
 ratio_rangehy_rangereco_stop.Draw("hist same")
 
 #fit ratio
@@ -384,17 +400,17 @@ for i in range(n_mc):
   print("i=",i," m=",m, "s=",s,"\n")
 
 
-fit_ratio_rangetrue_rangereco_stop.Draw("same")
+#fit_ratio_rangetrue_rangereco_stop.Draw("same")
 fit_ratio_rangehy_rangereco_stop.Draw("same")
 
-leg1l=RT.TLegend(0.2,0.7,.7,0.87)
+leg1l=RT.TLegend(0.2,0.8,.9,0.9)
 leg1l.SetFillStyle(0)
 txt_mc=[]
-txt_mc.append("Range(truth)/Range(reco): #mu={:.2f}#pm{:.2f}, #sigma={:.2f}#pm{:.2f}".format(mu_mc[0],er_mu_mc[0],sigma_mc[0],er_sigma_mc[0]))
-txt_mc.append("Range(Fit)/Range(reco): #mu={:.2f}#pm{:.2f}, #sigma={:.2f}#pm{:.2f}".format(mu_mc[1],er_mu_mc[1],sigma_mc[1],er_sigma_mc[1]))
+#txt_mc.append("Range(truth)/Range(reco): #mu={:.2f}#pm{:.2f}, #sigma={:.2f}#pm{:.2f}".format(mu_mc[0],er_mu_mc[0],sigma_mc[0],er_sigma_mc[0]))
+txt_mc.append("Range(Fit)/Range(reco): #mu={:.3f}#pm{:.3f}, #sigma={:.2f}#pm{:.2f}".format(mu_mc[1],er_mu_mc[1],sigma_mc[1],er_sigma_mc[1]))
 
-leg1l.AddEntry(ratio_rangetrue_rangereco_stop, txt_mc[0], "l")
-leg1l.AddEntry(ratio_rangehy_rangereco_stop, txt_mc[1], "l")
+#leg1l.AddEntry(ratio_rangetrue_rangereco_stop, txt_mc[0], "l")
+leg1l.AddEntry(ratio_rangehy_rangereco_stop, txt_mc[0], "l")
 leg1l.Draw()
 
 c4_mc.Print(out_path+'/ratios_range_stop.eps')
