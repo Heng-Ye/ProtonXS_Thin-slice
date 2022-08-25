@@ -470,6 +470,8 @@ void ProtonApplyMomentumReweight::Loop() {
 	h1d_kend_bbtruelength_el->Sumw2();
 	h1d_kend_bbtruelength_inel->Sumw2();
 
+	TH1D *h1d_kend_bbcorr_el=new TH1D("h1d_kend_bbcorr_el","", ny_edept, ymin_edept, ymax_edept);
+	TH1D *h1d_kend_bbcorr_inel=new TH1D("h1d_kend_bbcorr_inel","", ny_edept, ymin_edept, ymax_edept);
 
 	//dedx_rr ---------------------------------------------------------------------------//
 	TH2D *h2d_rr_dedx_recoSTOP=new TH2D("h2d_rr_dedx_recoSTOP","",240,0,120,90,0,30);
@@ -1016,7 +1018,12 @@ void ProtonApplyMomentumReweight::Loop() {
 	
 		//ke at end point ---------------------------------------------------------------------//
 		//double kebb=-50; if (fitted_KE>0) kebb=BB.KEAtLength(ke_ffbeam_MeV, range_reco);
+
+		double ratio_range_reco_stop=1.0071824773690985;
+
 		double kebb=-50; kebb=BB.KEAtLength(ke_ffbeam_MeV, range_reco);
+		double kebb_corr=-50; kebb_corr=BB.KEAtLength(ke_ffbeam_MeV, range_reco*ratio_range_reco_stop);
+
 		double kebb_fit=-50; kebb_fit=BB.KEAtLength(fitted_KE, range_reco);
 		double kebb_truth=-50; kebb_truth=BB.KEAtLength(ke_ff, range_reco);
 
@@ -1078,6 +1085,7 @@ void ProtonApplyMomentumReweight::Loop() {
 				h1d_keffbeam_el->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
 				h1d_kend_calo_el->Fill(kecalo, mom_rw_minchi2);
 				h1d_kend_bb_el->Fill(kebb, mom_rw_minchi2);
+				h1d_kend_bbcorr_el->Fill(kebb_corr, mom_rw_minchi2);
 				h1d_kend_true_el->Fill(kend, mom_rw_minchi2);
 				h1d_kend_bbtrue_el->Fill(kebb_truth, mom_rw_minchi2);
 				h1d_kend_bbtruelength_el->Fill(kebb_truerange, mom_rw_minchi2);
@@ -1201,6 +1209,7 @@ void ProtonApplyMomentumReweight::Loop() {
 				h1d_keffbeam_inel->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
 				h1d_kend_calo_inel->Fill(kecalo, mom_rw_minchi2);
 				h1d_kend_bb_inel->Fill(kebb, mom_rw_minchi2);
+				h1d_kend_bbcorr_inel->Fill(kebb_corr, mom_rw_minchi2);
 				h1d_kend_true_inel->Fill(kend, mom_rw_minchi2);
 				h1d_kend_bbtrue_inel->Fill(kebb_truth, mom_rw_minchi2);
 				h1d_kend_bbtruelength_inel->Fill(kebb_truerange, mom_rw_minchi2);
@@ -1517,6 +1526,8 @@ void ProtonApplyMomentumReweight::Loop() {
 		h2d_recorange_rangehy_el->Write();
 		h2d_recorange_rangehy_stop->Write();
 
+		h1d_kend_bbcorr_inel->Write();
+		h1d_kend_bbcorr_el->Write();
 
 	fout->Close();
 
