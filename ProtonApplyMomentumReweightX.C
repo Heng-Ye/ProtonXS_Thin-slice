@@ -515,6 +515,7 @@ void ProtonApplyMomentumReweight::Loop() {
 	TH2D *h2d_kebbtruelength_keendtruth_stop=new TH2D("h2d_kebbtruelength_keendtruth_stop","", ny_edept, ymin_edept, ymax_edept, ny_edept, ymin_edept, ymax_edept);
 	TH2D *h2d_kebbtruelength_keendtruth_el=new TH2D("h2d_kebbtruelength_keendtruth_el","", ny_edept, ymin_edept, ymax_edept, ny_edept, ymin_edept, ymax_edept);
 	TH2D *h2d_kebbtruelength_keendtruth_inel=new TH2D("h2d_kebbtruelength_keendtruth_inel","", ny_edept, ymin_edept, ymax_edept, ny_edept, ymin_edept, ymax_edept);
+	TH2D *h2d_kebbtruelength_keendtruth_trueel=new TH2D("h2d_kebbtruelength_keendtruth_trueel","", ny_edept, ymin_edept, ymax_edept, ny_edept, ymin_edept, ymax_edept);
 
 
 	
@@ -1019,7 +1020,7 @@ void ProtonApplyMomentumReweight::Loop() {
 		double kebb_fit=-50; kebb_fit=BB.KEAtLength(fitted_KE, range_reco);
 		double kebb_truth=-50; kebb_truth=BB.KEAtLength(ke_ff, range_reco);
 
-		double kebb_truerange=-50; kebb_truerange=BB.KEAtLength(fitted_KE, range_true);
+		double kebb_truerange=-50; kebb_truerange=BB.KEAtLength(ke_ffbeam_MeV, range_true);
 
 		double kecalo=-50; kecalo=ke_ffbeam_MeV-ke_calo_MeV;
 		double kend=-50; kend=1000.*(beamtrk_Eng->at(-2+beamtrk_Eng->size()));
@@ -1106,6 +1107,7 @@ void ProtonApplyMomentumReweight::Loop() {
 					h1d_keffbeam_el_el->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
 					h1d_kend_calo_el_el->Fill(kecalo, mom_rw_minchi2);
 					h1d_kend_bb_el_el->Fill(kebb, mom_rw_minchi2);
+					h2d_kebbtruelength_keendtruth_trueel->Fill(kebb_truerange, kend);
 				}
 				if (kMIDcosmic) {
 					h1d_keffbeam_el_midcosmic->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
@@ -1495,6 +1497,7 @@ void ProtonApplyMomentumReweight::Loop() {
 		h2d_kebbtruelength_keendtruth_stop->Write();
 		h2d_kebbtruelength_keendtruth_el->Write();
 		h2d_kebbtruelength_keendtruth_inel->Write();
+		h2d_kebbtruelength_keendtruth_trueel->Write();
 
 		h1d_kend_bbtruelength_stop->Write();
 		h1d_kend_bbtruelength_el->Write();
