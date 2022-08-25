@@ -46,6 +46,7 @@ def VNFit(h, pre_mean, n_sigma):
 
 #MC File ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 file_mc='../mc_keff.root'
+file_mc_2d='../mc_proton_beamxy_beammom_nobmrw.root'
 out_path='./keff_study'
 #file_mc='../mc_keff_newlikelihood.root'
 #out_path='./keff_study_likelihood'
@@ -63,8 +64,9 @@ RT.gStyle.SetLineWidth(1)
 tt = RT.TLatex();
 tt.SetNDC();
 
-#read files --------------------
+#read files -------------------------
 f_mc=RT.TFile(file_mc, "OPEN")
+f_mc_2d=RT.TFile(file_mc_2d, "OPEN")
 
 #ff ------------------------------------------------------------------------
 KEffbeam_KEhy_stop=f_mc.Get("h2d_KEffbeam_KEhy_stop")
@@ -75,13 +77,13 @@ KEffbeam_dKEhy_inel=f_mc.Get("h2d_KEffbeam_dKEhy_inel")
 
 ratio_KEffbeam_KEhy_stop=f_mc.Get("h1d_ratio_KEffbeam_KEhy_stop")
 
-keffbeam_keff_stop=f_mc.Get("h2d_keffbeam_keff_stop")
-keffbeam_keff_el=f_mc.Get("h2d_keffbeam_keff_el")
-keffbeam_keff_inel=f_mc.Get("h2d_keffbeam_keff_inel")
+keffbeam_keff_stop=f_mc_2d.Get("h2d_keffbeam_keff_stop")
+keffbeam_keff_el=f_mc_2d.Get("h2d_keffbeam_keff_el")
+keffbeam_keff_inel=f_mc_2d.Get("h2d_keffbeam_keff_inel")
 
-kehy_keff_stop=f_mc.Get("h2d_kehy_keff_stop")
-kehy_keff_el=f_mc.Get("h2d_kehy_keff_el")
-kehy_keff_inel=f_mc.Get("h2d_kehy_keff_inel")
+kehy_keff_stop=f_mc_2d.Get("h2d_kehy_keff_stop")
+kehy_keff_el=f_mc_2d.Get("h2d_kehy_keff_el")
+kehy_keff_inel=f_mc_2d.Get("h2d_kehy_keff_inel")
 
 
 
@@ -187,13 +189,50 @@ ll1.SetLineStyle(2)
 ll1.Draw()
 c1_ff_mc.Print(out_path+'/keffbeam_keff_stop.eps')
 
+f2d1_mc.SetTitle("Elastic-scattering Protons; (KE_{beam}-#DeltaE)*R [MeV]; KE(truth) [MeV]")
 f2d1_mc.Draw("")
 keffbeam_keff_el.Draw("colz same")
+ll1.Draw()
 c1_ff_mc.Print(out_path+'/keffbeam_keff_el.eps')
 
+profx_keffbeam_keff_el=keffbeam_keff_el.ProfileX()
+f2d1_mc.Draw("")
+keffbeam_keff_el.Draw("colz same")
+fit_profx_keffbeam_keff_el=profx_keffbeam_keff_el.Fit("pol1","","same",320,510)
+
+ll2=RT.TLine(320,320,510,510)
+ll2.SetLineColor(2)
+ll2.SetLineStyle(2)
+ll2.Draw()
+
+c1_ff_mc.Print(out_path+'/keffbeam_keff_el_with_fit.eps')
+
+
+
+
+
+
+
+
+f2d1_mc.SetTitle("Inelastic-scattering Protons; (KE_{beam}-#DeltaE)*R [MeV]; KE(truth) [MeV]")
 f2d1_mc.Draw("")
 keffbeam_keff_inel.Draw("colz same")
+ll1.Draw()
 c1_ff_mc.Print(out_path+'/keffbeam_keff_inel.eps')
+
+
+profx_keffbeam_keff_inel=keffbeam_keff_inel.ProfileX()
+f2d1_mc.Draw("")
+keffbeam_keff_inel.Draw("colz same")
+fit_profx_keffbeam_keff_inel=profx_keffbeam_keff_inel.Fit("pol1","","same",320,510)
+
+ll2.Draw()
+
+
+c1_ff_mc.Print(out_path+'/keffbeam_keff_inel_with_fit.eps')
+
+
+
 
 
 
