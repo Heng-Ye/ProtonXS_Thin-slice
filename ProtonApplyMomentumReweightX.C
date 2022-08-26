@@ -1328,7 +1328,8 @@ void ProtonApplyMomentumReweight::Loop() {
    	//TFile *fout = new TFile("mc_proton_beamxy_calo_afterkerw.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_calo_afterkerw.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw.root","RECREATE");
-   	TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_new.root","RECREATE");
+   	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_new.root","RECREATE");
+   	TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_new2.root","RECREATE");
 		bm_nmu->Write();
 		bm_dmu->Write();
 		bm_mu_st->Write();
