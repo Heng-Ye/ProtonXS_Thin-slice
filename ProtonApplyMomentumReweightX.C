@@ -1055,11 +1055,11 @@ void ProtonApplyMomentumReweight::Loop() {
 		//double kebb=-50; kebb=BB.KEAtLength(ke_ffbeam_MeV, range_reco);
 		double kebb=-50; kebb=BB.KEAtLength(ke_ffbeam_MeV, range_reco);
 		double kebb_corr=-50; kebb_corr=BB.KEAtLength(ke_ffbeam_MeV, range_reco*ratio_range_reco_stop);
-		double r_keconst_keff=kebb/ke_ff;
 
 		double kebb_fit=-50; kebb_fit=BB.KEAtLength(fitted_KE, range_reco);
 		double kebb_truth=-50; kebb_truth=BB.KEAtLength(ke_ff, range_reco);
-		double r_kefit_keff=kebb_fit/ke_ff;
+		double r_keconst_keff=kebb/kebb_truth;
+		double r_kefit_keff=kebb_fit/kebb_truth;
 
 		double kebb_truerange=-50; kebb_truerange=BB.KEAtLength(ke_ffbeam_MeV, range_true);
 
