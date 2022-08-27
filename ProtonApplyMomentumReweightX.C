@@ -549,14 +549,14 @@ void ProtonApplyMomentumReweight::Loop() {
 
 	//Efficiency vs trklen ------------------------------------------------------------------------------------------//
 	//2D histograms
-	int nx_trklen=1400;
-	double xmin_trklen=0;
-	double xmax_trklen=140;
+	int nx__trklen=1400;
+	double xmin__trklen=0;
+	double xmax__trklen=140;
 	int ny_eff=2000;
 	double ymin_eff=-20;
 	double ymax_eff=20;
-	TH2D *h2d_trklen_eff_KEconst_KEff_all=new TH2D("h2d_trklen_eff_KEconst_KEff_all","",nx_trklen,xmin_trklen,xmax_trklen,ny_eff,ymin_eff,ymax_eff);
-	TH2D *h2d_trklen_eff_KEhy_KEff_all=new TH2D("h2d_trklen_eff_KEhy_KEff_all","",nx_trklen,xmin_trklen,xmax_trklen,ny_eff,ymin_eff,ymax_eff);
+	TH2D *h2d_trklen_eff_KEconst_KEff_all=new TH2D("h2d_trklen_eff_KEconst_KEff_all","", nx__trklen, xmin__trklen, xmax__trklen, ny_eff, ymin_eff, ymax_eff);
+	TH2D *h2d_trklen_eff_KEhy_KEff_all=new TH2D("h2d_trklen_eff_KEhy_KEff_all","", nx__trklen, xmin__trklen, xmax__trklen, ny_eff, ymin_eff, ymax_eff);
 	
 	//1D histograms
 	//TH1D *h1d_KEconst_all=new TH1D("h1d_KEconst_all","",nx_trklen, xmin_trklen, xmax_trklen);
