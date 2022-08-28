@@ -531,7 +531,8 @@ double BetheBloch::Fit_Proton_Residual_Length_Likelihood(const vector<double> dE
   double best_m2lnL = 99999.;
   double min_additional_res_length = 0.; // == [cm]
   double max_additional_res_length = 450.; // == [cm]
-  double res_length_step = 1.0; // == [cm]
+  //double res_length_step = 1.0; // == [cm]
+  double res_length_step = 0.105; // == [cm //HY:Set step size to 0.105 cm
   int res_length_trial = (max_additional_res_length - min_additional_res_length) / res_length_step;
   int N_skip = 3;
   int this_N_calo = dEdx.size();
