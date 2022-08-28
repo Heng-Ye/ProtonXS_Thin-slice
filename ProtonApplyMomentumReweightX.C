@@ -559,6 +559,7 @@ void ProtonApplyMomentumReweight::Loop() {
 	TH2D *h2d_trklen_eff_KEconst_KEff_stop=new TH2D("h2d_trklen_eff_KEconst_KEff_stop","", nx__trklen, xmin__trklen, xmax__trklen, ny_eff, ymin_eff, ymax_eff);
 	TH2D *h2d_trklen_eff_KEconst_KEff_el=new TH2D("h2d_trklen_eff_KEconst_KEff_el","", nx__trklen, xmin__trklen, xmax__trklen, ny_eff, ymin_eff, ymax_eff);
 	TH2D *h2d_trklen_eff_KEconst_KEff_inel=new TH2D("h2d_trklen_eff_KEconst_KEff_inel","", nx__trklen, xmin__trklen, xmax__trklen, ny_eff, ymin_eff, ymax_eff);
+
 	TH2D *h2d_trklen_eff_KEhy_KEff_all=new TH2D("h2d_trklen_eff_KEhy_KEff_all","", nx__trklen, xmin__trklen, xmax__trklen, ny_eff, ymin_eff, ymax_eff);
 	TH2D *h2d_trklen_eff_KEhy_KEff_stop=new TH2D("h2d_trklen_eff_KEhy_KEff_stop","", nx__trklen, xmin__trklen, xmax__trklen, ny_eff, ymin_eff, ymax_eff);
 	TH2D *h2d_trklen_eff_KEhy_KEff_el=new TH2D("h2d_trklen_eff_KEhy_KEff_el","", nx__trklen, xmin__trklen, xmax__trklen, ny_eff, ymin_eff, ymax_eff);
@@ -1063,7 +1064,9 @@ void ProtonApplyMomentumReweight::Loop() {
 		double kebb_corr=-50; kebb_corr=BB.KEAtLength(ke_ffbeam_MeV, range_reco*ratio_range_reco_stop);
 
 		double kebb_fit=-50; kebb_fit=BB.KEAtLength(fitted_KE, range_reco);
-		double kebb_truth=-50; kebb_truth=BB.KEAtLength(ke_ff, range_reco);
+		//double kebb_truth=-50; kebb_truth=BB.KEAtLength(ke_ff, range_reco);
+		double kebb_truth=-50; kebb_truth=BB.KEAtLength(ke_ff, range_true);
+
 		double r_keconst_keff=kebb/kebb_truth;
 		double r_kefit_keff=kebb_fit/kebb_truth;
 
