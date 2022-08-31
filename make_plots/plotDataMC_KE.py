@@ -47,6 +47,8 @@ def VNFit(h, pre_mean, n_sigma):
 #Run the code using the following commend -------------------------------------------------------------------------------------------------------------
 #python plotDataMC_KE.py -d /dune/data2/users/hyliao/protonana/v09_39_01/KEHY/proton_beamxy_beammom_runAll.root -c ../mc_proton_beamxy_beammom_bmrw_hyper.root -drw /dune/data2/users/hyliao/protonana/v09_39_01/KEHY_BMRW/proton_beamxy_beammom_bmrw_runAll.root -crw ../mc_proton_beamxy_beammom_calo_afterkerw.root -o plots_beamxy_bmrw_calo_hyper
 
+#python plotDataMC_KE.py -d /dune/data2/users/hyliao/protonana/v09_39_01/KEHY_Eloss_using_Calo/proton_beamxy_beammom_runAll.root -c ../mc_proton_beamxy_beammom_nobmrw_noRcorr.root -drw /dune/data2/users/hyliao/protonana/v09_39_01/KEHY_KEBEAMFF/proton_beamxy_beammom_runAll.root -crw ../mc_proton_beamxy_beammom_bmrw_new.root -o plots_beamxy_bmrw_evtbyevt_corr
+
 #--------------------------------------------------------------------------------------
 parser = ap()
 
@@ -217,7 +219,7 @@ keff_inel_mc=f_mc.Get("h1d_keff_inel");
 #keff_el_mc=f_mc.Get("h1d_keff_el");
 
 #ff-const E-loss from kebeam
-keffbeam_mc=f_mc.Get("h1d_keffbeam")
+#keffbeam_mc=f_mc.Get("h1d_keffbeam")
 keffbeam_stop_mc=f_mc.Get("h1d_keffbeam_stop")
 keffbeam_inel_mc=f_mc.Get("h1d_keffbeam_inel")
 keffbeam_el_mc=f_mc.Get("h1d_keffbeam_el")
@@ -345,7 +347,6 @@ kend_calo_el_mideg_mc_rw=f_mc_rw.Get("h1d_kend_calo_el_mideg")
 kend_calo_el_midother_mc_rw=f_mc_rw.Get("h1d_kend_calo_el_midother")
 
 kend_calo_inel_mc_rw=f_mc_rw.Get("h1d_kend_calo_inel")
-kend_calo_inel_mc_rw=f_mc_rw.Get("h1d_kend_calo_inel")
 kend_calo_inel_el_mc_rw=f_mc_rw.Get("h1d_kend_calo_inel_el")
 kend_calo_inel_inel_mc_rw=f_mc_rw.Get("h1d_kend_calo_inel_inel")
 kend_calo_inel_midcosmic_mc_rw=f_mc_rw.Get("h1d_kend_calo_inel_midcosmic")
@@ -359,7 +360,25 @@ kend_calo_inel_midother_mc_rw=f_mc_rw.Get("h1d_kend_calo_inel_midother")
 #ke-end[bb]
 kend_bb_stop_mc_rw=f_mc_rw.Get("h1d_kend_bb_stop")
 kend_bb_el_mc_rw=f_mc_rw.Get("h1d_kend_bb_el")
+kend_bb_el_el_mc_rw=f_mc_rw.Get("h1d_kend_bb_el_el")
+kend_bb_el_inel_mc_rw=f_mc_rw.Get("h1d_kend_bb_el_inel")
+kend_bb_el_midcosmic_mc_rw=f_mc_rw.Get("h1d_kend_bb_el_midcosmic")
+kend_bb_el_midpi_mc_rw=f_mc_rw.Get("h1d_kend_bb_el_midpi")
+kend_bb_el_midp_mc_rw=f_mc_rw.Get("h1d_kend_bb_el_midp")
+kend_bb_el_midmu_mc_rw=f_mc_rw.Get("h1d_kend_bb_el_midmu")
+kend_bb_el_mideg_mc_rw=f_mc_rw.Get("h1d_kend_bb_el_mideg")
+kend_bb_el_midother_mc_rw=f_mc_rw.Get("h1d_kend_bb_el_midother")
+
 kend_bb_inel_mc_rw=f_mc_rw.Get("h1d_kend_bb_inel")
+kend_bb_inel_el_mc_rw=f_mc_rw.Get("h1d_kend_bb_inel_el")
+kend_bb_inel_inel_mc_rw=f_mc_rw.Get("h1d_kend_bb_inel_inel")
+kend_bb_inel_midcosmic_mc_rw=f_mc_rw.Get("h1d_kend_bb_inel_midcosmic")
+kend_bb_inel_midpi_mc_rw=f_mc_rw.Get("h1d_kend_bb_inel_midpi")
+kend_bb_inel_midp_mc_rw=f_mc_rw.Get("h1d_kend_bb_inel_midp")
+kend_bb_inel_midmu_mc_rw=f_mc_rw.Get("h1d_kend_bb_inel_midmu")
+kend_bb_inel_mideg_mc_rw=f_mc_rw.Get("h1d_kend_bb_inel_mideg")
+kend_bb_inel_midother_mc_rw=f_mc_rw.Get("h1d_kend_bb_inel_midother")
+
 
 #ke-end[truth]
 kend_true_stop_mc_rw=f_mc_rw.Get("h1d_kend_true_stop");
@@ -450,32 +469,52 @@ kend_true_stop_mc_rw.Scale(n_end_calo_stop_data/n_end_true_stop_mc_rw)
 kend_true_el_mc_rw.Scale(n_end_calo_el_data/n_end_true_el_mc_rw)
 kend_true_inel_mc_rw.Scale(n_end_calo_inel_data/n_end_true_inel_mc_rw)
 
-kend_calo_stop_mc_rw.Scale(n_end_calo_stop_data/n_end_calo_stop_mc_rw)
-kend_calo_el_mc_rw.Scale(n_end_calo_el_data/n_end_calo_el_mc_rw)
-kend_calo_el_el_mc_rw.Scale(n_end_calo_el_data/n_end_calo_el_mc_rw)
-kend_calo_el_inel_mc_rw.Scale(n_end_calo_el_data/n_end_calo_el_mc_rw)
-kend_calo_el_midcosmic_mc_rw.Scale(n_end_calo_el_data/n_end_calo_el_mc_rw)
-kend_calo_el_midpi_mc_rw.Scale(n_end_calo_el_data/n_end_calo_el_mc_rw)
-kend_calo_el_midp_mc_rw.Scale(n_end_calo_el_data/n_end_calo_el_mc_rw)
-kend_calo_el_midmu_mc_rw.Scale(n_end_calo_el_data/n_end_calo_el_mc_rw)
-kend_calo_el_mideg_mc_rw.Scale(n_end_calo_el_data/n_end_calo_el_mc_rw)
-kend_calo_el_midother_mc_rw.Scale(n_end_calo_el_data/n_end_calo_el_mc_rw)
+kend_calo_stop_mc_rw.Scale(n_end_calo_stop_data_rw/n_end_calo_stop_mc_rw)
+kend_calo_el_mc_rw.Scale(n_end_calo_el_data_rw/n_end_calo_el_mc_rw)
+kend_calo_el_el_mc_rw.Scale(n_end_calo_el_data_rw/n_end_calo_el_mc_rw)
+kend_calo_el_inel_mc_rw.Scale(n_end_calo_el_data_rw/n_end_calo_el_mc_rw)
+kend_calo_el_midcosmic_mc_rw.Scale(n_end_calo_el_data_rw/n_end_calo_el_mc_rw)
+kend_calo_el_midpi_mc_rw.Scale(n_end_calo_el_data_rw/n_end_calo_el_mc_rw)
+kend_calo_el_midp_mc_rw.Scale(n_end_calo_el_data_rw/n_end_calo_el_mc_rw)
+kend_calo_el_midmu_mc_rw.Scale(n_end_calo_el_data_rw/n_end_calo_el_mc_rw)
+kend_calo_el_mideg_mc_rw.Scale(n_end_calo_el_data_rw/n_end_calo_el_mc_rw)
+kend_calo_el_midother_mc_rw.Scale(n_end_calo_el_data_rw/n_end_calo_el_mc_rw)
 
-kend_calo_inel_mc_rw.Scale(n_end_calo_inel_data/n_end_calo_inel_mc_rw)
-kend_calo_inel_el_mc_rw.Scale(n_end_calo_inel_data/n_end_calo_inel_mc_rw)
-kend_calo_inel_inel_mc_rw.Scale(n_end_calo_inel_data/n_end_calo_inel_mc_rw)
-kend_calo_inel_midcosmic_mc_rw.Scale(n_end_calo_inel_data/n_end_calo_inel_mc_rw)
-kend_calo_inel_midpi_mc_rw.Scale(n_end_calo_inel_data/n_end_calo_inel_mc_rw)
-kend_calo_inel_midp_mc_rw.Scale(n_end_calo_inel_data/n_end_calo_inel_mc_rw)
-kend_calo_inel_midmu_mc_rw.Scale(n_end_calo_inel_data/n_end_calo_inel_mc_rw)
-kend_calo_inel_mideg_mc_rw.Scale(n_end_calo_inel_data/n_end_calo_inel_mc_rw)
-kend_calo_inel_midother_mc_rw.Scale(n_end_calo_inel_data/n_end_calo_inel_mc_rw)
+kend_calo_inel_mc_rw.Scale(n_end_calo_inel_data_rw/n_end_calo_inel_mc_rw)
+kend_calo_inel_el_mc_rw.Scale(n_end_calo_inel_data_rw/n_end_calo_inel_mc_rw)
+kend_calo_inel_inel_mc_rw.Scale(n_end_calo_inel_data_rw/n_end_calo_inel_mc_rw)
+kend_calo_inel_midcosmic_mc_rw.Scale(n_end_calo_inel_data_rw/n_end_calo_inel_mc_rw)
+kend_calo_inel_midpi_mc_rw.Scale(n_end_calo_inel_data_rw/n_end_calo_inel_mc_rw)
+kend_calo_inel_midp_mc_rw.Scale(n_end_calo_inel_data_rw/n_end_calo_inel_mc_rw)
+kend_calo_inel_midmu_mc_rw.Scale(n_end_calo_inel_data_rw/n_end_calo_inel_mc_rw)
+kend_calo_inel_mideg_mc_rw.Scale(n_end_calo_inel_data_rw/n_end_calo_inel_mc_rw)
+kend_calo_inel_midother_mc_rw.Scale(n_end_calo_inel_data_rw/n_end_calo_inel_mc_rw)
 
 kend_calo_elinel_mc_rw.Scale((n_end_calo_el_data_rw+n_end_calo_inel_data_rw)/(n_end_calo_el_mc_rw+n_end_calo_inel_mc_rw))
 
 kend_bb_stop_mc_rw.Scale(n_end_bb_stop_data/n_end_bb_stop_mc_rw)
-kend_bb_el_mc_rw.Scale(n_end_bb_el_data/n_end_bb_el_mc_rw)
-kend_bb_inel_mc_rw.Scale(n_end_bb_inel_data/n_end_bb_inel_mc_rw)
+
+kend_bb_el_mc_rw.Scale(n_end_bb_el_data_rw/n_end_bb_el_mc_rw)
+kend_bb_el_el_mc_rw.Scale(n_end_bb_el_data_rw/n_end_bb_el_mc_rw)
+kend_bb_el_inel_mc_rw.Scale(n_end_bb_el_data_rw/n_end_bb_el_mc_rw)
+kend_bb_el_midcosmic_mc_rw.Scale(n_end_bb_el_data_rw/n_end_bb_el_mc_rw)
+kend_bb_el_midpi_mc_rw.Scale(n_end_bb_el_data_rw/n_end_bb_el_mc_rw)
+kend_bb_el_midp_mc_rw.Scale(n_end_bb_el_data_rw/n_end_bb_el_mc_rw)
+kend_bb_el_midmu_mc_rw.Scale(n_end_bb_el_data_rw/n_end_bb_el_mc_rw)
+kend_bb_el_mideg_mc_rw.Scale(n_end_bb_el_data_rw/n_end_bb_el_mc_rw)
+kend_bb_el_midother_mc_rw.Scale(n_end_bb_el_data_rw/n_end_bb_el_mc_rw)
+
+
+kend_bb_inel_mc_rw.Scale(n_end_bb_inel_data_rw/n_end_bb_inel_mc_rw)
+kend_bb_inel_el_mc_rw.Scale(n_end_bb_inel_data_rw/n_end_bb_inel_mc_rw)
+kend_bb_inel_inel_mc_rw.Scale(n_end_bb_inel_data_rw/n_end_bb_inel_mc_rw)
+kend_bb_inel_midcosmic_mc_rw.Scale(n_end_bb_inel_data_rw/n_end_bb_inel_mc_rw)
+kend_bb_inel_midpi_mc_rw.Scale(n_end_bb_inel_data_rw/n_end_bb_inel_mc_rw)
+kend_bb_inel_midp_mc_rw.Scale(n_end_bb_inel_data_rw/n_end_bb_inel_mc_rw)
+kend_bb_inel_midmu_mc_rw.Scale(n_end_bb_inel_data_rw/n_end_bb_inel_mc_rw)
+kend_bb_inel_mideg_mc_rw.Scale(n_end_bb_inel_data_rw/n_end_bb_inel_mc_rw)
+kend_bb_inel_midother_mc_rw.Scale(n_end_bb_inel_data_rw/n_end_bb_inel_mc_rw)
+
 
 keffbeam_el_mc_rw.Scale(n_ffbeam_el_data_rw/n_ffbeam_el_mc_rw)
 keffbeam_el_inel_mc_rw.Scale(n_ffbeam_el_data_rw/n_ffbeam_el_mc_rw)
@@ -539,7 +578,7 @@ fit_keff_inel_mc=VNFit(keff_inel_mc,430, 3)
 #fit_keff_el_mc=VNFit(keff_el_mc,430, 3)
 
 #FF-const E-loss
-fit_keffbeam_mc=VNFit(keffbeam_mc, 400, 3)
+#fit_keffbeam_mc=VNFit(keffbeam_mc, 400, 3)
 fit_keffbeam_stop_mc=VNFit(keffbeam_stop_mc, 400, 3)
 fit_keffbeam_inel_mc=VNFit(keffbeam_inel_mc, 400, 3)
 fit_keffbeam_el_mc=VNFit(keffbeam_el_mc, 400, 3)
@@ -1112,101 +1151,6 @@ c4_el.Print(args.o+'/kend_calo_el_rw_true.eps')
 
 
 
-#inel
-c4_inel=RT.TCanvas("c4_inel","",1200,900)
-c4_inel.Divide(1,1)
-c4_inel.cd(1)
-
-f2d_kend_calo_inel=RT.TH2D("f2d_kend_calo_inel","", 750, -150, 600, 600, 0, kend_calo_inel_data.GetBinContent(kend_calo_inel_data.GetMaximumBin())+250)
-f2d_kend_calo_inel.SetTitle("Inelastic-scattering Protons;Proton Kinetic Energy at Track End [MeV];")
-f2d_kend_calo_inel.GetXaxis().CenterTitle()
-f2d_kend_calo_inel.Draw()
-
-kend_calo_inel_data.SetLineWidth(1)
-kend_calo_inel_mc.SetLineWidth(1)
-kend_true_inel_mc.SetLineWidth(1)
-
-kend_calo_inel_data.SetLineColor(1)
-fit_kend_calo_inel_data.SetLineColor(1)
-
-kend_calo_inel_mc.SetLineColor(2)
-fit_kend_calo_inel_mc.SetLineColor(2)
-
-kend_true_inel_mc.SetLineColor(3)
-fit_kend_true_inel_mc.SetLineColor(3)
-
-#fit_kend_calo_inel_data.Draw("same")
-#fit_kend_calo_inel_mc.Draw("same")
-#fit_kend_true_inel_mc.Draw("same")
-kend_true_inel_mc.Draw("hist same")
-kend_calo_inel_mc.Draw("hist same")
-kend_calo_inel_data.Draw("ep same")
-
-leg4_inel=RT.TLegend(0.44,0.60,.9,0.87)
-leg4_inel.SetFillStyle(0)
-txt4_inel=[]
-txt4_inel.append("Data(calo)".format())
-txt4_inel.append("MC(calo)".format())
-txt4_inel.append("MC(truth)".format())
-
-print(txt4_inel[0])
-leg4_inel.AddEntry(kend_calo_inel_data, txt4_inel[0], "ep")
-leg4_inel.AddEntry(kend_calo_inel_mc, txt4_inel[1], "l")
-leg4_inel.AddEntry(kend_true_inel_mc, txt4_inel[2], "l")
-
-leg4_inel.Draw()
-c4_inel.Print(args.o+'/kend_calo_inel.eps')
-
-
-
-
-#inel_rw
-c4_inel=RT.TCanvas("c4_inel","",1200,900)
-c4_inel.Divide(1,1)
-c4_inel.cd(1)
-
-f2d_kend_calo_inel=RT.TH2D("f2d_kend_calo_inel","", 420, -150, 600, 600, 0, kend_calo_inel_data.GetBinContent(kend_calo_inel_data.GetMaximumBin())+250)
-f2d_kend_calo_inel.SetTitle("Elastic-scattering Protons;Proton Kinetic Energy at Track End [MeV];")
-f2d_kend_calo_inel.GetXaxis().CenterTitle()
-f2d_kend_calo_inel.Draw()
-
-kend_calo_inel_data_rw.SetLineColor(1)
-kend_calo_inel_data_rw.SetMarkerColor(1)
-kend_calo_inel_mc_rw.SetLineColor(2)
-kend_true_inel_mc_rw.SetLineColor(3)
-
-kend_calo_inel_data_rw.SetLineWidth(1)
-kend_calo_inel_mc_rw.SetLineWidth(1)
-kend_true_inel_mc_rw.SetLineWidth(1)
-
-
-#fit_kend_calo_inel_data.Draw("same")
-#fit_kend_calo_inel_mc.Draw("same")
-#fit_kend_true_inel_mc.Draw("same")
-kend_true_inel_mc_rw.Draw("hist same")
-#kend_calo_inel_mc.Draw("hist same")
-#kend_calo_inel_data.Draw("ep same")
-kend_calo_inel_mc_rw.Draw("hist same")
-kend_calo_inel_data_rw.Draw("ep same")
-
-leg4_inel=RT.TLegend(0.54,0.65,.9,0.9)
-leg4_inel.SetFillStyle(0)
-txt4_inel=[]
-#txt4_inel.append("Data(calo)".format())
-txt4_inel.append("Data(calo)[rw]".format())
-#txt4_inel.append("MC(calo)".format())
-txt4_inel.append("MC(calo)[rw]".format())
-txt4_inel.append("MC(truth)".format())
-
-print(txt4_inel[0])
-#leg4_inel.AddEntry(kend_calo_inel_data, txt4_inel[0], "ep")
-leg4_inel.AddEntry(kend_calo_inel_data_rw, txt4_inel[0], "ep")
-#leg4_inel.AddEntry(kend_calo_inel_mc, txt4_inel[2], "l")
-leg4_inel.AddEntry(kend_calo_inel_mc_rw, txt4_inel[1], "l")
-leg4_inel.AddEntry(kend_true_inel_mc, txt4_inel[2], "l")
-
-leg4_inel.Draw()
-c4_inel.Print(args.o+'/kend_calo_inel_rw.eps')
 
 
 
@@ -1345,13 +1289,111 @@ leg5_el.Draw()
 c5_el.Print(args.o+'/kend_bb_el_rw.eps')
 
 
+
+#el_rw_with_MC_components ---------------------------------------------------------------------------------------------
+c5x_el_=RT.TCanvas("c5_el","",1200,900)
+c5x_el_.Divide(1,1)
+c5x_el_.cd(1)
+
+f2dx_kend_bb_el=RT.TH2D("f2dx_kend_bb_el","", 420, -110, 600, 600, 0, kend_bb_el_data_rw.GetBinContent(kend_bb_el_data.GetMaximumBin())+700)
+f2dx_kend_bb_el.SetTitle("Elastic-scattering Protons;Proton Kinetic Energy at Track End [MeV];")
+f2dx_kend_bb_el.GetXaxis().CenterTitle()
+f2dx_kend_bb_el.Draw()
+
+kend_bb_el_data_rw.SetLineColor(1)
+kend_bb_el_data_rw.SetMarkerColor(1)
+kend_bb_el_data_rw.SetLineWidth(1)
+
+kend_bb_el_inel_mc_rw.SetFillColor(2)
+kend_bb_el_el_mc_rw.SetFillColor(4)
+kend_bb_el_midcosmic_mc_rw.SetFillColor(5)
+kend_bb_el_midpi_mc_rw.SetFillColor(6)
+kend_bb_el_midp_mc_rw.SetFillColor(3)
+kend_bb_el_midmu_mc_rw.SetFillColor(28)
+kend_bb_el_mideg_mc_rw.SetFillColor(30)
+kend_bb_el_midother_mc_rw.SetFillColor(15)
+
+kend_bb_el_inel_mc_rw.SetLineColor(2)
+kend_bb_el_el_mc_rw.SetLineColor(4)
+kend_bb_el_midcosmic_mc_rw.SetLineColor(5)
+kend_bb_el_midpi_mc_rw.SetLineColor(6)
+kend_bb_el_midp_mc_rw.SetLineColor(3)
+kend_bb_el_midmu_mc_rw.SetLineColor(28)
+kend_bb_el_mideg_mc_rw.SetLineColor(30)
+kend_bb_el_midother_mc_rw.SetLineColor(15)
+
+#re-bin
+n_rb_el=2
+kend_bb_el_mc_rw.Rebin(n_rb_el)
+kend_bb_el_data_rw.Rebin(n_rb_el)
+kend_bb_el_inel_mc_rw.Rebin(n_rb_el)
+kend_bb_el_el_mc_rw.Rebin(n_rb_el)
+kend_bb_el_midp_mc_rw.Rebin(n_rb_el)
+kend_bb_el_midpi_mc_rw.Rebin(n_rb_el)
+kend_bb_el_midmu_mc_rw.Rebin(n_rb_el)
+kend_bb_el_mideg_mc_rw.Rebin(n_rb_el)
+kend_bb_el_midcosmic_mc_rw.Rebin(n_rb_el)
+kend_bb_el_midother_mc_rw.Rebin(n_rb_el)
+
+#stack
+hs_kend_bb_el_rw=RT.THStack("hs_kend_bb_el_rw","");
+hs_kend_bb_el_rw.Add(kend_bb_el_inel_mc_rw)
+hs_kend_bb_el_rw.Add(kend_bb_el_el_mc_rw)
+hs_kend_bb_el_rw.Add(kend_bb_el_midp_mc_rw)
+hs_kend_bb_el_rw.Add(kend_bb_el_midcosmic_mc_rw)
+hs_kend_bb_el_rw.Add(kend_bb_el_midpi_mc_rw)
+hs_kend_bb_el_rw.Add(kend_bb_el_midmu_mc_rw)
+hs_kend_bb_el_rw.Add(kend_bb_el_mideg_mc_rw)
+hs_kend_bb_el_rw.Add(kend_bb_el_midother_mc_rw)
+
+hs_kend_bb_el_rw.Draw("hist same")
+kend_bb_el_data_rw.Draw("ep same")
+
+leg1_el_rw=RT.TLegend(0.14,0.75,.9,0.87)
+leg1_el_rw.SetFillStyle(0)
+leg1_el_rw.AddEntry(kend_bb_el_data_rw, "Data", "ep")
+leg1_el_rw.AddEntry(0, "", "")
+leg1_el_rw.AddEntry(kend_bb_el_mc_rw, "MC(rw)", "l")
+leg1_el_rw.AddEntry(0, "", "")
+leg1_el_rw.SetNColumns(2);
+
+leg2_el_rw=RT.TLegend(0.14,0.62,.88,0.73)
+leg2_el_rw.SetFillStyle(0)
+leg2_el_rw.AddEntry(kend_bb_el_inel_mc_rw, "Inel", "f")
+leg2_el_rw.AddEntry(kend_bb_el_el_mc_rw, "El", "f")
+leg2_el_rw.AddEntry(kend_bb_el_midcosmic_mc_rw, "misID:cosmic", "f")
+leg2_el_rw.AddEntry(kend_bb_el_midp_mc_rw, "misID:p", "f")
+leg2_el_rw.AddEntry(kend_bb_el_midpi_mc_rw, "misID:#pi", "f")
+leg2_el_rw.AddEntry(kend_bb_el_midmu_mc_rw, "misID:#mu", "f")
+leg2_el_rw.AddEntry(kend_bb_el_mideg_mc_rw, "misID:e/#gamma", "f")
+leg2_el_rw.AddEntry(kend_bb_el_midother_mc_rw, "misID:other", "f")
+leg2_el_rw.SetNColumns(4);
+
+leg1_el_rw.Draw()
+leg2_el_rw.Draw()
+c5x_el_.Print(args.o+'/kend_bb_el_withMCcomponents_rw.eps')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #inel_rw
 c5_inel=RT.TCanvas("c5_inel","",1200,900)
 c5_inel.Divide(1,1)
 c5_inel.cd(1)
 
 f2d_kend_bb_inel=RT.TH2D("f2d_kend_bb_inel","", 420, -110, 600, 600, 0, kend_bb_inel_data.GetBinContent(kend_bb_inel_data.GetMaximumBin())+250)
-f2d_kend_bb_inel.SetTitle("Elastic-scattering Protons;Proton Kinetic Energy at Track End [MeV];")
+f2d_kend_bb_inel.SetTitle("Inelastic-scattering Protons;Proton Kinetic Energy at Track End [MeV];")
 f2d_kend_bb_inel.GetXaxis().CenterTitle()
 f2d_kend_bb_inel.Draw()
 
@@ -1395,6 +1437,97 @@ leg5_inel.AddEntry(kend_true_inel_mc, txt5_inel[2], "l")
 
 leg5_inel.Draw()
 c5_inel.Print(args.o+'/kend_bb_inel_rw.eps')
+
+
+#inel_rw_with_MC_components --------------------------------------------------------------------------------------------------------------------
+c5x_inel_=RT.TCanvas("c5_inel","",1200,900)
+c5x_inel_.Divide(1,1)
+c5x_inel_.cd(1)
+
+f2dx_kend_bb_inel=RT.TH2D("f2dx_kend_bb_inel","", 420, -110, 600, 600, 0, kend_bb_inel_data_rw.GetBinContent(kend_bb_inel_data.GetMaximumBin())+600)
+f2dx_kend_bb_inel.SetTitle("Inelastic-scattering Protons;Proton Kinetic Energy at Track End [MeV];")
+f2dx_kend_bb_inel.GetXaxis().CenterTitle()
+f2dx_kend_bb_inel.Draw()
+
+kend_bb_inel_data_rw.SetLineColor(1)
+kend_bb_inel_data_rw.SetMarkerColor(1)
+kend_bb_inel_data_rw.SetLineWidth(1)
+
+kend_bb_inel_inel_mc_rw.SetFillColor(2)
+kend_bb_inel_el_mc_rw.SetFillColor(4)
+kend_bb_inel_midcosmic_mc_rw.SetFillColor(5)
+kend_bb_inel_midpi_mc_rw.SetFillColor(6)
+kend_bb_inel_midp_mc_rw.SetFillColor(3)
+kend_bb_inel_midmu_mc_rw.SetFillColor(28)
+kend_bb_inel_mideg_mc_rw.SetFillColor(30)
+kend_bb_inel_midother_mc_rw.SetFillColor(15)
+
+kend_bb_inel_inel_mc_rw.SetLineColor(2)
+kend_bb_inel_el_mc_rw.SetLineColor(4)
+kend_bb_inel_midcosmic_mc_rw.SetLineColor(5)
+kend_bb_inel_midpi_mc_rw.SetLineColor(6)
+kend_bb_inel_midp_mc_rw.SetLineColor(3)
+kend_bb_inel_midmu_mc_rw.SetLineColor(28)
+kend_bb_inel_mideg_mc_rw.SetLineColor(30)
+kend_bb_inel_midother_mc_rw.SetLineColor(15)
+
+#re-bin
+n_rb_inel=2
+kend_bb_inel_mc_rw.Rebin(n_rb_inel)
+kend_bb_inel_data_rw.Rebin(n_rb_inel)
+kend_bb_inel_inel_mc_rw.Rebin(n_rb_inel)
+kend_bb_inel_el_mc_rw.Rebin(n_rb_inel)
+kend_bb_inel_midp_mc_rw.Rebin(n_rb_inel)
+kend_bb_inel_midpi_mc_rw.Rebin(n_rb_inel)
+kend_bb_inel_midmu_mc_rw.Rebin(n_rb_inel)
+kend_bb_inel_mideg_mc_rw.Rebin(n_rb_inel)
+kend_bb_inel_midcosmic_mc_rw.Rebin(n_rb_inel)
+kend_bb_inel_midother_mc_rw.Rebin(n_rb_inel)
+
+#stack
+hs_kend_bb_inel_rw=RT.THStack("hs_kend_bb_inel_rw","");
+hs_kend_bb_inel_rw.Add(kend_bb_inel_inel_mc_rw)
+hs_kend_bb_inel_rw.Add(kend_bb_inel_el_mc_rw)
+hs_kend_bb_inel_rw.Add(kend_bb_inel_midp_mc_rw)
+hs_kend_bb_inel_rw.Add(kend_bb_inel_midcosmic_mc_rw)
+hs_kend_bb_inel_rw.Add(kend_bb_inel_midpi_mc_rw)
+hs_kend_bb_inel_rw.Add(kend_bb_inel_midmu_mc_rw)
+hs_kend_bb_inel_rw.Add(kend_bb_inel_mideg_mc_rw)
+hs_kend_bb_inel_rw.Add(kend_bb_inel_midother_mc_rw)
+
+hs_kend_bb_inel_rw.Draw("hist same")
+kend_bb_inel_data_rw.Draw("ep same")
+
+tleg111in_rw=RT.TLegend(0.14,0.75,.9,0.87)
+tleg111in_rw.SetFillStyle(0)
+txt111in_rw=[]
+#txt111_rw.append("Data(rw): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_el_data_rw[1],er_mu_el_data_rw[1],sigma_el_data_rw[1],er_sigma_el_data_rw[1]))
+#txt111_rw.append("MC(rw): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_el_mc_rw[1],er_mu_el_mc_rw[1],sigma_el_mc_rw[1],er_sigma_el_mc_rw[1]))
+tleg111in_rw.AddEntry(kend_bb_inel_data_rw, "Data", "ep")
+tleg111in_rw.AddEntry(0, "", "")
+tleg111in_rw.AddEntry(kend_bb_inel_mc_rw, "MC(rw)", "l")
+tleg111in_rw.AddEntry(0, "", "")
+tleg111in_rw.SetNColumns(2);
+
+leg111in_rw=RT.TLegend(0.14,0.62,.88,0.73)
+leg111in_rw.SetFillStyle(0)
+leg111in_rw.AddEntry(kend_bb_inel_inel_mc_rw, "Inel", "f")
+leg111in_rw.AddEntry(kend_bb_inel_el_mc_rw, "El", "f")
+leg111in_rw.AddEntry(kend_bb_inel_midcosmic_mc_rw, "misID:cosmic", "f")
+leg111in_rw.AddEntry(kend_bb_inel_midp_mc_rw, "misID:p", "f")
+leg111in_rw.AddEntry(kend_bb_inel_midpi_mc_rw, "misID:#pi", "f")
+leg111in_rw.AddEntry(kend_bb_inel_midmu_mc_rw, "misID:#mu", "f")
+leg111in_rw.AddEntry(kend_bb_inel_mideg_mc_rw, "misID:e/#gamma", "f")
+leg111in_rw.AddEntry(kend_bb_inel_midother_mc_rw, "misID:other", "f")
+leg111in_rw.SetNColumns(4);
+
+tleg111in_rw.Draw()
+leg111in_rw.Draw()
+c5x_inel_.Print(args.o+'/kend_bb_inel_withMCcomponents_rw.eps')
+
+
+
+
 
 
 
@@ -2075,6 +2208,120 @@ line_kend_inel_rw.Draw("same")
 
 
 re1_inel_rw.Print(args.o+'/ratio_end_inel_rw.eps')
+
+
+
+
+#inel
+c4_inel=RT.TCanvas("c4_inel","",1200,900)
+c4_inel.Divide(1,1)
+c4_inel.cd(1)
+
+kend_calo_inel_data.SetLineWidth(1)
+kend_calo_inel_mc.SetLineWidth(1)
+kend_true_inel_mc.SetLineWidth(1)
+
+kend_calo_inel_data.SetLineColor(1)
+fit_kend_calo_inel_data.SetLineColor(1)
+
+kend_calo_inel_mc.SetLineColor(2)
+fit_kend_calo_inel_mc.SetLineColor(2)
+
+kend_true_inel_mc.SetLineColor(3)
+fit_kend_true_inel_mc.SetLineColor(3)
+
+kend_true_inel_mc.Rebin(n_rb_inel)
+kend_calo_inel_mc.Rebin(n_rb_inel)
+kend_calo_inel_data.Rebin(n_rb_inel)
+
+f2d_kend_calo_inel=RT.TH2D("f2d_kend_calo_inel","", 750, -150, 600, 600, 0, kend_calo_inel_data.GetBinContent(kend_calo_inel_data.GetMaximumBin())+300)
+f2d_kend_calo_inel.SetTitle("Inelastic-scattering Protons;Proton Kinetic Energy at Track End [MeV];")
+f2d_kend_calo_inel.GetXaxis().CenterTitle()
+f2d_kend_calo_inel.Draw()
+
+kend_true_inel_mc.Draw("hist same")
+kend_calo_inel_mc.Draw("hist same")
+kend_calo_inel_data.Draw("ep same")
+
+leg4_inel=RT.TLegend(0.44,0.65,.9,0.87)
+leg4_inel.SetFillStyle(0)
+txt4_inel=[]
+txt4_inel.append("Data(calo)".format())
+txt4_inel.append("MC(calo)".format())
+txt4_inel.append("MC(truth)".format())
+
+print(txt4_inel[0])
+leg4_inel.AddEntry(kend_calo_inel_data, txt4_inel[0], "ep")
+leg4_inel.AddEntry(kend_calo_inel_mc, txt4_inel[1], "l")
+leg4_inel.AddEntry(kend_true_inel_mc, txt4_inel[2], "l")
+
+leg4_inel.Draw()
+c4_inel.Print(args.o+'/kend_calo_inel.eps')
+
+
+
+
+#keend_calo_inel_rw ----------------------------------------------------------------------------------------------------------------------------------------------
+c4_inel=RT.TCanvas("c4_inel","",1200,900)
+c4_inel.Divide(1,1)
+c4_inel.cd(1)
+
+f2d_kend_calo_inel=RT.TH2D("f2d_kend_calo_inel","", 420, -150, 600, 600, 0, kend_calo_inel_data_rw.GetBinContent(kend_calo_inel_data_rw.GetMaximumBin())+300)
+f2d_kend_calo_inel.SetTitle("Inelastic-scattering Protons;Proton Kinetic Energy at Track End [MeV];")
+f2d_kend_calo_inel.GetXaxis().CenterTitle()
+f2d_kend_calo_inel.Draw()
+
+kend_calo_inel_data_rw.SetLineColor(1)
+kend_calo_inel_data_rw.SetMarkerColor(1)
+kend_calo_inel_mc_rw.SetLineColor(2)
+kend_true_inel_mc_rw.SetLineColor(3)
+
+kend_calo_inel_data_rw.SetLineWidth(1)
+kend_calo_inel_mc_rw.SetLineWidth(1)
+kend_true_inel_mc_rw.SetLineWidth(1)
+
+kend_true_inel_mc_rw.Rebin(n_rb_inel)
+
+kend_true_inel_mc_rw.Draw("hist same")
+kend_calo_inel_mc_rw.Draw("hist same")
+kend_calo_inel_data_rw.Draw("ep same")
+
+leg4_inel=RT.TLegend(0.44,0.65,.9,0.87)
+leg4_inel.SetFillStyle(0)
+txt4_inel=[]
+txt4_inel.append("Data(calo)[rw]".format())
+txt4_inel.append("MC(calo)[rw]".format())
+txt4_inel.append("MC(truth)[rw]".format())
+
+print(txt4_inel[0])
+leg4_inel.AddEntry(kend_calo_inel_data_rw, txt4_inel[0], "ep")
+leg4_inel.AddEntry(kend_calo_inel_mc_rw, txt4_inel[1], "l")
+leg4_inel.AddEntry(kend_true_inel_mc, txt4_inel[2], "l")
+
+leg4_inel.Draw()
+c4_inel.Print(args.o+'/kend_calo_inel_nocomponents_rw.eps')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #KEend: inel+el ---------------------------------------
