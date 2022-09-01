@@ -49,6 +49,9 @@ def VNFit(h, pre_mean, n_sigma):
 
 #python plotDataMC_KE.py -d /dune/data2/users/hyliao/protonana/v09_39_01/KEHY_Eloss_using_Calo/proton_beamxy_beammom_runAll.root -c ../mc_proton_beamxy_beammom_nobmrw_noRcorr.root -drw /dune/data2/users/hyliao/protonana/v09_39_01/KEHY_KEBEAMFF/proton_beamxy_beammom_runAll.root -crw ../mc_proton_beamxy_beammom_bmrw_new.root -o plots_beamxy_bmrw_evtbyevt_corr
 
+#python plotDataMC_KE.py -d /dune/data2/users/hyliao/protonana/v09_39_01/KEHY_Eloss_using_Calo/proton_beamxy_beammom_runAll.root -c ../mc_proton_beamxy_beammom_nobmrw_noRcorr.root -drw /dune/data2/users/hyliao/protonana/v09_39_01/KEHY_KEBEAMFF/proton_beamxy_beammom_runAll.root -crw ../mc_proton_beamxy_beammom_bmrw_by_kefit.root -o plots_beamxy_bmrw_evtbyevt_corr
+
+
 #--------------------------------------------------------------------------------------
 parser = ap()
 
