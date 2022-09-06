@@ -49,8 +49,11 @@ def VNFit(h, pre_mean, n_sigma):
 
 #python plotDataMC_KE.py -d /dune/data2/users/hyliao/protonana/v09_39_01/KEHY_Eloss_using_Calo/proton_beamxy_beammom_runAll.root -c ../mc_proton_beamxy_beammom_nobmrw_noRcorr.root -drw /dune/data2/users/hyliao/protonana/v09_39_01/KEHY_KEBEAMFF/proton_beamxy_beammom_runAll.root -crw ../mc_proton_beamxy_beammom_bmrw_new.root -o plots_beamxy_bmrw_evtbyevt_corr
 
-#python plotDataMC_KE.py -d /dune/data2/users/hyliao/protonana/v09_39_01/KEHY_Eloss_using_Calo/proton_beamxy_beammom_runAll.root -c ../mc_proton_beamxy_beammom_nobmrw_noRcorr.root -drw /dune/data2/users/hyliao/protonana/v09_39_01/KEHY_KEBEAMFF/proton_beamxy_beammom_runAll.root -crw ../mc_proton_beamxy_beammom_bmrw_by_kefit.root -o plots_beamxy_bmrw_evtbyevt_corr
+#KE_use_Fit (HY:pls revise data here)
+#python plotDataMC_KE.py -d /dune/data2/users/hyliao/protonana/v09_39_01/KEHY/proton_beamxy_beammom_runAll.root -c ../mc_proton_beamxy_beammom_nobmrw_noRcorr.root -drw /dune/data2/users/hyliao/protonana/v09_39_01/KEFit/proton_beamxy_beammom_runAll.root -crw ../mc_proton_beamxy_beammom_bmrw_by_kefit.root -o plots_beamxy_bmrw_evtbyevt_corr
 
+#KEff_use_const E-loss
+#python plotDataMC_KE.py -d /dune/data2/users/hyliao/protonana/v09_39_01/KEHY/proton_beamxy_beammom_runAll.root -c ../mc_proton_beamxy_beammom_nobmrw_noRcorr.root -drw /dune/data2/users/hyliao/protonana/v09_39_01/KEHY/proton_beamxy_beammom_runAll.root -crw ../mc_proton_beamxy_beammom_bmrw_by_kebeamff.root -o plots_beamxy_bmrw_evtbyevt_corr
 
 #--------------------------------------------------------------------------------------
 parser = ap()
@@ -1740,7 +1743,8 @@ keffbeam_el_data_rw.Draw("ep same")
 leg_keffbeam_el_rw=RT.TLegend(0.14,0.75,.9,0.87)
 leg_keffbeam_el_rw.SetFillStyle(0)
 txt_keffbeam_el_rw=[]
-txt_keffbeam_el_rw.append("Data(rw): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_el_data_rw[0],er_mu_el_data_rw[0],sigma_el_data_rw[0],er_sigma_el_data_rw[0]))
+#txt_keffbeam_el_rw.append("Data(rw): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_el_data_rw[0],er_mu_el_data_rw[0],sigma_el_data_rw[0],er_sigma_el_data_rw[0]))
+txt_keffbeam_el_rw.append("Data: #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_el_data_rw[0],er_mu_el_data_rw[0],sigma_el_data_rw[0],er_sigma_el_data_rw[0]))
 txt_keffbeam_el_rw.append("MC(rw): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_el_mc_rw[0],er_mu_el_mc_rw[0],sigma_el_mc_rw[0],er_sigma_el_mc_rw[0]))
 leg_keffbeam_el_rw.AddEntry(keffbeam_el_data_rw, txt_keffbeam_el_rw[0], "ep")
 leg_keffbeam_el_rw.AddEntry(0, "", "")
@@ -1864,7 +1868,8 @@ keffbeam_inel_data_rw.Draw("ep same")
 leg_keffbeam_inel_rw=RT.TLegend(0.14,0.75,.9,0.87)
 leg_keffbeam_inel_rw.SetFillStyle(0)
 txt_keffbeam_inel_rw=[]
-txt_keffbeam_inel_rw.append("Data(rw): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_inel_data_rw[0],er_mu_inel_data_rw[0],sigma_inel_data_rw[0],er_sigma_inel_data_rw[0]))
+#txt_keffbeam_inel_rw.append("Data(rw): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_inel_data_rw[0],er_mu_inel_data_rw[0],sigma_inel_data_rw[0],er_sigma_inel_data_rw[0]))
+txt_keffbeam_inel_rw.append("Data: #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_inel_data_rw[0],er_mu_inel_data_rw[0],sigma_inel_data_rw[0],er_sigma_inel_data_rw[0]))
 txt_keffbeam_inel_rw.append("MC(rw): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_inel_mc_rw[0],er_mu_inel_mc_rw[0],sigma_inel_mc_rw[0],er_sigma_inel_mc_rw[0]))
 leg_keffbeam_inel_rw.AddEntry(keffbeam_inel_data_rw, txt_keffbeam_inel_rw[0], "ep")
 leg_keffbeam_inel_rw.AddEntry(0, "", "")
