@@ -4,7 +4,8 @@ void pdune_world() {
   gSystem->Load("libGdml");
   
   //TGeoManager* geom = TGeoManager::Import("/dune/app/users/hyliao/WORK/larsoft_mydev/v09_32_00_e20_prof_test/srcs/dunetpc/dune/Geometry/gdml/protodune_v8_refactored_nowires.gdml");
-  TGeoManager* geom = TGeoManager::Import("/dune/app/users/hyliao/WORK/larsoft_mydev/v09_32_00_e20_prof_test/srcs/dunetpc/dune/Geometry/gdml/protodune_v7_refactored_nowires.gdml");
+  //TGeoManager* geom = TGeoManager::Import("/dune/app/users/hyliao/WORK/larsoft_mydev/v09_32_00_e20_prof_test/srcs/dunetpc/dune/Geometry/gdml/protodune_v7_refactored_nowires.gdml");
+  TGeoManager* geom = TGeoManager::Import("/dune/app/users/hyliao/WORK/larsoft_mydev/v09_32_00_e20_prof_version_for_reco2_and_prod4a/srcs/dunetpc/dune/Geometry/gdml/protodune_v7_refactored_nowires.gdml");
   //TGeoManager* geom = TGeoManager::Import("/dune/app/users/hyliao/WORK/larsoft_mydev/v09_32_00_e20_prof_test/srcs/dunetpc/dune/Geometry/gdml/protodune_v8_refactored.gdml");
   //TBrowser*       b = new TBrowser();
   //geom->GetTopVolume()->Draw();
