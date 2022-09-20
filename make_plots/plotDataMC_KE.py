@@ -50,7 +50,7 @@ def VNFit(h, pre_mean, n_sigma):
 #python plotDataMC_KE.py -d /dune/data2/users/hyliao/protonana/v09_39_01/KEHY_Eloss_using_Calo/proton_beamxy_beammom_runAll.root -c ../mc_proton_beamxy_beammom_nobmrw_noRcorr.root -drw /dune/data2/users/hyliao/protonana/v09_39_01/KEHY_KEBEAMFF/proton_beamxy_beammom_runAll.root -crw ../mc_proton_beamxy_beammom_bmrw_new.root -o plots_beamxy_bmrw_evtbyevt_corr
 
 #KE_use_Fit (HY:pls revise data here)
-#python plotDataMC_KE.py -d /dune/data2/users/hyliao/protonana/v09_39_01/KEHY/proton_beamxy_beammom_runAll.root -c ../mc_proton_beamxy_beammom_nobmrw_noRcorr.root -drw /dune/data2/users/hyliao/protonana/v09_39_01/KEFit/proton_beamxy_beammom_runAll.root -crw ../mc_proton_beamxy_beammom_bmrw_by_kefit.root -o plots_beamxy_bmrw_evtbyevt_corr
+#python plotDataMC_KE.py -d /dune/data2/users/hyliao/protonana/v09_39_01/KEFit/proton_beamxy_beammom_runAll.root -c ../mc_proton_beamxy_beammom_nobmrw_noRcorr.root -drw /dune/data2/users/hyliao/protonana/v09_39_01/KEFit/proton_beamxy_beammom_runAll.root -crw ../mc_proton_beamxy_beammom_bmrw_by_kefit.root -o plots_beamxy_bmrw_evtbyevt_corr
 
 #KEff_use_const E-loss
 #python plotDataMC_KE.py -d /dune/data2/users/hyliao/protonana/v09_39_01/KEHY/proton_beamxy_beammom_runAll.root -c ../mc_proton_beamxy_beammom_nobmrw_noRcorr.root -drw /dune/data2/users/hyliao/protonana/v09_39_01/KEHY/proton_beamxy_beammom_runAll.root -crw ../mc_proton_beamxy_beammom_bmrw_by_kebeamff.root -o plots_beamxy_bmrw_evtbyevt_corr
@@ -1106,7 +1106,7 @@ c4_el.Divide(1,1)
 c4_el.cd(1)
 
 f2d_kend_calo_el=RT.TH2D("f2d_kend_calo_el","", 420, -120, 300, 600, 0, kend_calo_el_data.GetBinContent(kend_calo_el_data.GetMaximumBin())+350)
-f2d_kend_calo_el.SetTitle("Elastic-scattering Protons;Proton Kinetic Energy at Track End [MeV];")
+f2d_kend_calo_el.SetTitle("Elastic-scattering Proton Candidates;Proton Kinetic Energy at Track End [MeV];")
 f2d_kend_calo_el.GetXaxis().CenterTitle()
 f2d_kend_calo_el.Draw()
 
@@ -1207,7 +1207,7 @@ c5_inel.Divide(1,1)
 c5_inel.cd(1)
 
 f2d_kend_bb_inel=RT.TH2D("f2d_kend_bb_inel","", 750, -150, 600, 600, 0, kend_bb_inel_data.GetBinContent(kend_bb_inel_data.GetMaximumBin())+250)
-f2d_kend_bb_inel.SetTitle("Inelastic-scattering Protons;Proton Kinetic Energy at Track End [MeV];")
+f2d_kend_bb_inel.SetTitle("Inelastic-scattering Proton Candidates;Proton Kinetic Energy at Track End [MeV];")
 f2d_kend_bb_inel.GetXaxis().CenterTitle()
 f2d_kend_bb_inel.Draw()
 
@@ -1248,7 +1248,8 @@ c5_el.Divide(1,1)
 c5_el.cd(1)
 
 f2d_kend_bb_el=RT.TH2D("f2d_kend_bb_el","", 420, -120, 300, 600, 0, kend_bb_el_data.GetBinContent(kend_bb_el_data.GetMaximumBin())+250)
-f2d_kend_bb_el.SetTitle("Elastic-scattering Protons;Proton Kinetic Energy at Track End [MeV];")
+#f2d_kend_bb_el.SetTitle("Elastic-scattering Protons;Proton Kinetic Energy at Track End [MeV];")
+f2d_kend_bb_el.SetTitle("Elastic-scattering Proton Candidates;Proton Kinetic Energy at Track End [MeV];")
 f2d_kend_bb_el.GetXaxis().CenterTitle()
 f2d_kend_bb_el.Draw()
 
@@ -1302,7 +1303,7 @@ c5x_el_.Divide(1,1)
 c5x_el_.cd(1)
 
 f2dx_kend_bb_el=RT.TH2D("f2dx_kend_bb_el","", 420, -110, 600, 600, 0, kend_bb_el_data_rw.GetBinContent(kend_bb_el_data.GetMaximumBin())+700)
-f2dx_kend_bb_el.SetTitle("Elastic-scattering Protons;Proton Kinetic Energy at Track End [MeV];")
+f2dx_kend_bb_el.SetTitle("Elastic-scattering Proton Candidates;Proton Kinetic Energy at Track End [MeV];")
 f2dx_kend_bb_el.GetXaxis().CenterTitle()
 f2dx_kend_bb_el.Draw()
 
@@ -1399,7 +1400,7 @@ c5_inel.Divide(1,1)
 c5_inel.cd(1)
 
 f2d_kend_bb_inel=RT.TH2D("f2d_kend_bb_inel","", 420, -110, 600, 600, 0, kend_bb_inel_data.GetBinContent(kend_bb_inel_data.GetMaximumBin())+250)
-f2d_kend_bb_inel.SetTitle("Inelastic-scattering Protons;Proton Kinetic Energy at Track End [MeV];")
+f2d_kend_bb_inel.SetTitle("Inelastic-scattering Proton Candidates;Proton Kinetic Energy at Track End [MeV];")
 f2d_kend_bb_inel.GetXaxis().CenterTitle()
 f2d_kend_bb_inel.Draw()
 
@@ -1451,7 +1452,7 @@ c5x_inel_.Divide(1,1)
 c5x_inel_.cd(1)
 
 f2dx_kend_bb_inel=RT.TH2D("f2dx_kend_bb_inel","", 420, -110, 600, 600, 0, kend_bb_inel_data_rw.GetBinContent(kend_bb_inel_data.GetMaximumBin())+600)
-f2dx_kend_bb_inel.SetTitle("Inelastic-scattering Protons;Proton Kinetic Energy at Track End [MeV];")
+f2dx_kend_bb_inel.SetTitle("Inelastic-scattering Proton Candidates;Proton Kinetic Energy at Track End [MeV];")
 f2dx_kend_bb_inel.GetXaxis().CenterTitle()
 f2dx_kend_bb_inel.Draw()
 
@@ -1543,7 +1544,7 @@ c5x_inel.Divide(1,1)
 c5x_inel.cd(1)
 
 f2d_keffbeam_inel=RT.TH2D("f2d_keffbeam_inel","", 420, 200, 600, 600, 0, keffbeam_inel_data.GetBinContent(keffbeam_inel_data.GetMaximumBin())+250)
-f2d_keffbeam_inel.SetTitle("Elastic-scattering Protons;Proton Kinetic Energy at Track End [MeV];")
+f2d_keffbeam_inel.SetTitle("Elastic-scattering Proton Candidates;Proton Kinetic Energy at Track End [MeV];")
 f2d_keffbeam_inel.GetXaxis().CenterTitle()
 f2d_keffbeam_inel.Draw()
 
@@ -1730,7 +1731,7 @@ keffbeam_el_mc_rw.SetLineWidth(1)
 keffbeam_el_data_rw.SetLineWidth(1)
 
 f2d_keff_el_rw=RT.TH2D("f2d_keff_el_rw","", 370, 220, 600, 600, 0, keffbeam_el_data_rw.GetBinContent(keffbeam_el_data_rw.GetMaximumBin())+500)
-f2d_keff_el_rw.SetTitle("Elastic-scattering Protons;Proton Kinetic Energy at TPC FF [MeV];")
+f2d_keff_el_rw.SetTitle("Elastic-scattering Proton Candidates;Proton Kinetic Energy at TPC FF [MeV];")
 f2d_keff_el_rw.GetXaxis().CenterTitle()
 f2d_keff_el_rw.Draw()
 
@@ -1780,7 +1781,7 @@ r1_el_rw.Divide(1,1)
 r1_el_rw.cd(1)
 
 r2d_keff_el_rw=RT.TH2D("r2d_keff_el_rw","", 370, 220, 600, 10, 0, 3)
-r2d_keff_el_rw.SetTitle("Elastic-scattering Protons;Proton Kinetic Energy at TPC FF [MeV]; Data/MC")
+r2d_keff_el_rw.SetTitle("Elastic-scattering Proton Candidates;Proton Kinetic Energy at TPC FF [MeV]; Data/MC")
 r2d_keff_el_rw.GetXaxis().CenterTitle()
 r2d_keff_el_rw.Draw("")
 R_keffbeam_el.Draw("ep same")
@@ -1799,7 +1800,7 @@ c1_inel_rw.Divide(1,1)
 c1_inel_rw.cd(1)
 
 f2d_keff_inel_rw=RT.TH2D("f2d_keff_inel_rw","", 370, 220, 600, 600, 0, keffbeam_inel_data_rw.GetBinContent(keffbeam_inel_data_rw.GetMaximumBin())+1400)
-f2d_keff_inel_rw.SetTitle("Inelastic-scattering Protons;Proton Kinetic Energy at TPC FF [MeV];")
+f2d_keff_inel_rw.SetTitle("Inelastic-scattering Proton Candidates;Proton Kinetic Energy at TPC FF [MeV];")
 f2d_keff_inel_rw.GetXaxis().CenterTitle()
 f2d_keff_inel_rw.Draw()
 
@@ -1904,7 +1905,7 @@ r1_inel_rw.Divide(1,1)
 r1_inel_rw.cd(1)
 
 r2d_keff_inel_rw=RT.TH2D("r2d_keff_inel_rw","", 370, 220, 600, 10, 0, 3)
-r2d_keff_inel_rw.SetTitle("Inelastic-scattering Protons;Proton Kinetic Energy at TPC FF [MeV]; Data/MC")
+r2d_keff_inel_rw.SetTitle("Inelastic-scattering Proton Candidates;Proton Kinetic Energy at TPC FF [MeV]; Data/MC")
 r2d_keff_inel_rw.GetXaxis().CenterTitle()
 r2d_keff_inel_rw.Draw("")
 R_keffbeam_inel.Draw("ep same")
@@ -2034,7 +2035,7 @@ kend_calo_el_mc_rw.SetLineWidth(1)
 kend_calo_el_data_rw.SetLineWidth(1)
 
 f2d_kend_calo_el_rw=RT.TH2D("f2d_kend_calo_rw","", 450, -150, 300, 600, 0, kend_calo_el_data_rw.GetBinContent(kend_calo_el_data_rw.GetMaximumBin())+1000)
-f2d_kend_calo_el_rw.SetTitle("Elastic-scattering Protons;Proton Kinetic Energy at Track End [MeV];")
+f2d_kend_calo_el_rw.SetTitle("Elastic-scattering Proton Candidates;Proton Kinetic Energy at Track End [MeV];")
 f2d_kend_calo_el_rw.GetXaxis().CenterTitle()
 f2d_kend_calo_el_rw.Draw()
 hs_kend_calo_el_rw.Draw("hist same")
@@ -2046,7 +2047,8 @@ kend_calo_el_data_rw.Draw("ep same")
 leg_kend_calo_el_rw=RT.TLegend(0.14,0.75,.9,0.87)
 leg_kend_calo_el_rw.SetFillStyle(0)
 txt_kend_calo_el_rw=[]
-txt_kend_calo_el_rw.append("Data(rw): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_el_data_rw[1],er_mu_el_data_rw[1],sigma_el_data_rw[1],er_sigma_el_data_rw[1]))
+#txt_kend_calo_el_rw.append("Data(rw): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_el_data_rw[1],er_mu_el_data_rw[1],sigma_el_data_rw[1],er_sigma_el_data_rw[1]))
+txt_kend_calo_el_rw.append("Data: #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_el_data_rw[1],er_mu_el_data_rw[1],sigma_el_data_rw[1],er_sigma_el_data_rw[1]))
 txt_kend_calo_el_rw.append("MC(rw): #mu={:.1f}#pm{:.1f} MeV, #sigma={:.1f}#pm{:.1f} MeV".format(mu_el_mc_rw[1],er_mu_el_mc_rw[1],sigma_el_mc_rw[1],er_sigma_el_mc_rw[1]))
 leg_kend_calo_el_rw.AddEntry(kend_calo_el_data_rw, txt_kend_calo_el_rw[0], "ep")
 leg_kend_calo_el_rw.AddEntry(0, "", "")
@@ -2081,7 +2083,7 @@ re1_el_rw.Divide(1,1)
 re1_el_rw.cd(1)
 
 r2d_kend_el_rw=RT.TH2D("r2d_kend_el_rw","", 450, -150, 300, 10, 0, 3)
-r2d_kend_el_rw.SetTitle("Elastic-scattering Protons;Proton Kinetic Energy at Track End [MeV]; Data/MC")
+r2d_kend_el_rw.SetTitle("Elastic-scattering Proton Candidates;Proton Kinetic Energy at Track End [MeV]; Data/MC")
 r2d_kend_el_rw.GetXaxis().CenterTitle()
 r2d_kend_el_rw.Draw("")
 R_kend_calo_el_rw.Draw("ep same")
@@ -2154,7 +2156,7 @@ kend_calo_inel_mc_rw.SetLineWidth(1)
 kend_calo_inel_data_rw.SetLineWidth(1)
 
 f2d_kend_calo_inel_rw=RT.TH2D("f2d_kend_calo_rw","", 750, -150, 600, 600, 0, kend_calo_inel_data_rw.GetBinContent(kend_calo_inel_data_rw.GetMaximumBin())+300)
-f2d_kend_calo_inel_rw.SetTitle("Inelastic-scattering Protons;Proton Kinetic Energy at Track End [MeV];")
+f2d_kend_calo_inel_rw.SetTitle("Inelastic-scattering Proton Candidates;Proton Kinetic Energy at Track End [MeV];")
 f2d_kend_calo_inel_rw.GetXaxis().CenterTitle()
 f2d_kend_calo_inel_rw.Draw()
 
@@ -2204,7 +2206,7 @@ re1_inel_rw.Divide(1,1)
 re1_inel_rw.cd(1)
 
 r2d_kend_inel_rw=RT.TH2D("r2d_kend_inel_rw","", 750, -150, 600, 10, 0, 3)
-r2d_kend_inel_rw.SetTitle("Inelastic-scattering Protons;Proton Kinetic Energy at Track End [MeV]; Data/MC")
+r2d_kend_inel_rw.SetTitle("Inelastic-scattering Proton Candidates;Proton Kinetic Energy at Track End [MeV]; Data/MC")
 r2d_kend_inel_rw.GetXaxis().CenterTitle()
 r2d_kend_inel_rw.Draw("")
 R_kend_calo_inel_rw.Draw("ep same")
@@ -2243,7 +2245,7 @@ kend_calo_inel_mc.Rebin(n_rb_inel)
 kend_calo_inel_data.Rebin(n_rb_inel)
 
 f2d_kend_calo_inel=RT.TH2D("f2d_kend_calo_inel","", 750, -150, 600, 600, 0, kend_calo_inel_data.GetBinContent(kend_calo_inel_data.GetMaximumBin())+300)
-f2d_kend_calo_inel.SetTitle("Inelastic-scattering Protons;Proton Kinetic Energy at Track End [MeV];")
+f2d_kend_calo_inel.SetTitle("Inelastic-scattering Proton Candidates;Proton Kinetic Energy at Track End [MeV];")
 f2d_kend_calo_inel.GetXaxis().CenterTitle()
 f2d_kend_calo_inel.Draw()
 
@@ -2275,7 +2277,7 @@ c4_inel.Divide(1,1)
 c4_inel.cd(1)
 
 f2d_kend_calo_inel=RT.TH2D("f2d_kend_calo_inel","", 420, -150, 600, 600, 0, kend_calo_inel_data_rw.GetBinContent(kend_calo_inel_data_rw.GetMaximumBin())+300)
-f2d_kend_calo_inel.SetTitle("Inelastic-scattering Protons;Proton Kinetic Energy at Track End [MeV];")
+f2d_kend_calo_inel.SetTitle("Inelastic-scattering Proton Candidates;Proton Kinetic Energy at Track End [MeV];")
 f2d_kend_calo_inel.GetXaxis().CenterTitle()
 f2d_kend_calo_inel.Draw()
 
