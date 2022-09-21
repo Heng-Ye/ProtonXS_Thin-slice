@@ -48,6 +48,7 @@
 #include "./headers/BasicFunctions.h"
 //#include "./headers/SliceParams.h"
 //#include "./headers/ThinSlice.h"
+#include "./headers/util.h"
 #include "./headers/BetheBloch.h"
 
 using namespace std;
