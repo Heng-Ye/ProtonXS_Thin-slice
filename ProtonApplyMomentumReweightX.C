@@ -180,11 +180,11 @@ void ProtonApplyMomentumReweight::Loop() {
 	//double mu_nom_mc=388.560260293186; //for mc(KEbeam-const_from_calo)
 	//double sg_nom_mc=43.13168235197187; //formc
 
-	double mu_nom_mc=416.224743039812; //for mc(KEbeam-const) with R=1 (R=Ratio of KEff(Fit)/(KEbeam-dE))
-	double sg_nom_mc=42.786018962508784; //
+	//double mu_nom_mc=416.224743039812; //for mc(KEbeam-const) with R=1 (R=Ratio of KEff(Fit)/(KEbeam-dE))
+	//double sg_nom_mc=42.786018962508784; //
 
-	//double mu_nom_mc=416.1620092367158; //for mc [KE(Fit)]
-	//double sg_nom_mc=40.48356757740762; //
+	double mu_nom_mc=416.1620092367158; //for mc [KE(Fit)]
+	double sg_nom_mc=40.48356757740762; //
 
 	//i= 0  m= 416.2247430398121 s= 42.786018962508784 [kebeam-dE]*1 (R=1)
 	//i= 1  m= 416.1620092367158 s= 40.48356757740762 [KE(Fit)] 
@@ -300,8 +300,10 @@ void ProtonApplyMomentumReweight::Loop() {
 	int nx_trklen=150;
 	double xmin_trklen=0;
 	double xmax_trklen=150;
-	int ny_edept=500;
-	double ymin_edept=-200;
+	//int ny_edept=500;
+	//double ymin_edept=-200;
+	int ny_edept=450;
+	double ymin_edept=-100;
 	double ymax_edept=800;
 
 	TH1D *h1d_ke0=new TH1D("h1d_ke0","",ny_edept,ymin_edept,ymax_edept);
@@ -539,8 +541,6 @@ void ProtonApplyMomentumReweight::Loop() {
 	TH2D *h2d_kebbtruelength_keendtruth_el=new TH2D("h2d_kebbtruelength_keendtruth_el","", ny_edept, ymin_edept, ymax_edept, ny_edept, ymin_edept, ymax_edept);
 	TH2D *h2d_kebbtruelength_keendtruth_inel=new TH2D("h2d_kebbtruelength_keendtruth_inel","", ny_edept, ymin_edept, ymax_edept, ny_edept, ymin_edept, ymax_edept);
 	TH2D *h2d_kebbtruelength_keendtruth_trueel=new TH2D("h2d_kebbtruelength_keendtruth_trueel","", ny_edept, ymin_edept, ymax_edept, ny_edept, ymin_edept, ymax_edept);
-
-
 	
 	TH2D *h2d_kecalo_keendtruth_stop=new TH2D("h2d_kecalo_keendtruth_stop","", ny_edept, ymin_edept, ymax_edept, ny_edept, ymin_edept, ymax_edept);
 	TH2D *h2d_kecalo_keendtruth_el=new TH2D("h2d_kecalo_keendtruth_el","", ny_edept, ymin_edept, ymax_edept, ny_edept, ymin_edept, ymax_edept);
@@ -1067,8 +1067,8 @@ void ProtonApplyMomentumReweight::Loop() {
 		//Const E-loss ------------------------------------------------------------------------------------------//
 		//double ke_ffbeam_MeV=ke_beam_spec_MeV-const_eloss_mc; //const E-loss (our assumption of KE at TPC FF)
 		double slope_kff_keffbeamR=0.859605;
-		double ke_ffbeam_MeV=(ke_beam_spec_MeV-Eloss_mc_hy_stop); //const E-loss with correction
-		//double ke_ffbeam_MeV=(ke_beam_spec_MeV-Eloss_mc_hy_stop)*R_fit_hy; //const E-loss with correction
+		//double ke_ffbeam_MeV=(ke_beam_spec_MeV-Eloss_mc_hy_stop); //const E-loss with correction
+		//double ke_ffbeam_MeV=(ke_beam_spec_MeV-Eloss_mc_hy_stop)*R_fit_hy; //const E-loss with correction (R_fit_hy is essentially one)
 		//double ke_ffbeam_MeV=(ke_beam_spec_MeV-Eloss_mc_hy_stop)*R_fit_hy*slope_kff_keffbeamR; //const E-loss with correction
 
 		//hypothetical length -------------------------------------------------------------------------------------//
@@ -1078,6 +1078,7 @@ void ProtonApplyMomentumReweight::Loop() {
 		if (tmp_fitted_length>0) fitted_length=tmp_fitted_length;
 		double fitted_KE=-50; 
 		if (fitted_length>0) fitted_KE=BB.KEFromRangeSpline(fitted_length);
+		double ke_ffbeam_MeV=fitted_KE;
 	
 		//ke at end point ---------------------------------------------------------------------//
 		//double kebb=-50; if (fitted_KE>0) kebb=BB.KEAtLength(ke_ffbeam_MeV, range_reco);
@@ -1085,21 +1086,21 @@ void ProtonApplyMomentumReweight::Loop() {
 		double ratio_range_reco_stop=1.0071824773690985;
 
 		//double kebb=-50; kebb=BB.KEAtLength(ke_ffbeam_MeV, range_reco);
-		double kebb=-1000; kebb=BB.KEAtLength(ke_ffbeam_MeV, range_reco);
-		double kebb_corr=-1000; kebb_corr=BB.KEAtLength(ke_ffbeam_MeV, range_reco*ratio_range_reco_stop);
+		double kebb=-9999.; kebb=BB.KEAtLength(ke_ffbeam_MeV, range_reco);
+		double kebb_corr=-9999.; kebb_corr=BB.KEAtLength(ke_ffbeam_MeV, range_reco*ratio_range_reco_stop);
 
-		double kebb_fit=-1000; kebb_fit=BB.KEAtLength(fitted_KE, range_reco);
+		double kebb_fit=-9999.; kebb_fit=BB.KEAtLength(fitted_KE, range_reco);
 		//double kebb_truth=-50; kebb_truth=BB.KEAtLength(ke_ff, range_reco);
-		double kebb_truth=-1000; kebb_truth=BB.KEAtLength(ke_ff, range_true);
+		double kebb_truth=-9999.; kebb_truth=BB.KEAtLength(ke_ff, range_true);
 
 		double r_keconst_keff=kebb/kebb_truth;
 		double r_kefit_keff=kebb_fit/kebb_truth;
 		double r_kefit_keconst=kebb_fit/kebb;
 
-		double kebb_truerange=-1000; kebb_truerange=BB.KEAtLength(ke_ffbeam_MeV, range_true);
+		double kebb_truerange=-9999.; kebb_truerange=BB.KEAtLength(ke_ffbeam_MeV, range_true);
 
-		double kecalo=-1000; kecalo=ke_ffbeam_MeV-ke_calo_MeV;
-		double kend=-1000; kend=1000.*(beamtrk_Eng->at(-2+beamtrk_Eng->size()));
+		double kecalo=-9999.; kecalo=ke_ffbeam_MeV-ke_calo_MeV;
+		double kend=-9999.; kend=1000.*(beamtrk_Eng->at(-2+beamtrk_Eng->size()));
 
 		//range_ratio -------------------------------------------------//
 		double r_range=range_true/range_reco;
@@ -1120,17 +1121,26 @@ void ProtonApplyMomentumReweight::Loop() {
 			if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=kerw->Eval(ke_ffbeam_MeV); //new bmrw
 			//std::cout<<"ke_beam_spec_MeV:"<<ke_beam_spec_MeV<<" ke_ffbeam_MeV:"<<ke_ffbeam_MeV<<" mom_rw_minchi2:"<<mom_rw_minchi2<<std::endl;
 
-			h1d_keffbeam_el_noxy->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
+			//h1d_keffbeam_el_noxy->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
+			Fill1DWHist(h1d_keffbeam_el_noxy, ke_ffbeam_MeV, mom_rw_minchi2);
 
 			if (IsBeamXY) { //beam xy
 
-			h1d_ke0->Fill(ke_beam_MeV, mom_rw_minchi2);
-			h1d_p0->Fill(mom_beam_MeV, mom_rw_minchi2);
-			h1d_kebeam->Fill(ke_beam_spec_MeV, mom_rw_minchi2);
-			h1d_pbeam->Fill(1000.*mom_beam_spec, mom_rw_minchi2);
+			//h1d_ke0->Fill(ke_beam_MeV, mom_rw_minchi2);
+			//h1d_p0->Fill(mom_beam_MeV, mom_rw_minchi2);
+			//h1d_kebeam->Fill(ke_beam_spec_MeV, mom_rw_minchi2);
+			//h1d_pbeam->Fill(1000.*mom_beam_spec, mom_rw_minchi2);
 
-			h1d_keff->Fill(ke_ff, mom_rw_minchi2);
-			h1d_pff->Fill(1000.*ke2p(ke_ff/1000.), mom_rw_minchi2);
+			Fill1DWHist(h1d_ke0, ke_beam_MeV, mom_rw_minchi2);
+			Fill1DWHist(h1d_p0, mom_beam_MeV, mom_rw_minchi2);
+			Fill1DWHist(h1d_kebeam, ke_beam_spec_MeV, mom_rw_minchi2);
+			Fill1DWHist(h1d_pbeam, 1000.*mom_beam_spec, mom_rw_minchi2);
+
+			//h1d_keff->Fill(ke_ff, mom_rw_minchi2);
+			//h1d_pff->Fill(1000.*ke2p(ke_ff/1000.), mom_rw_minchi2);
+
+			Fill1DWHist(h1d_keff, ke_ff, mom_rw_minchi2);
+			Fill1DWHist(h1d_pff, 1000.*ke2p(ke_ff/1000.), mom_rw_minchi2);
 
 			//h1d_kehy->Fill(fitted_KE, mom_rw_minchi2);
 
@@ -1153,20 +1163,33 @@ void ProtonApplyMomentumReweight::Loop() {
 			//} //xy
 
 			if (IsRecoEL) { //reco el
-				h1d_ke0_el->Fill(ke_beam_MeV, mom_rw_minchi2);
-				h1d_kehy_el->Fill(fitted_KE, mom_rw_minchi2);
-				h1d_keffbeam_el->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
-				h1d_kend_calo_el->Fill(kecalo, mom_rw_minchi2);
-				h1d_kend_bb_el->Fill(kebb, mom_rw_minchi2);
-				h1d_kend_bbtruth_el->Fill(kebb_truth, mom_rw_minchi2);
+				//h1d_ke0_el->Fill(ke_beam_MeV, mom_rw_minchi2);
+				//h1d_kehy_el->Fill(fitted_KE, mom_rw_minchi2);
+				//h1d_keffbeam_el->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
+				//h1d_kend_calo_el->Fill(kecalo, mom_rw_minchi2);
+				//h1d_kend_bb_el->Fill(kebb, mom_rw_minchi2);
+				//h1d_kend_bbtruth_el->Fill(kebb_truth, mom_rw_minchi2);
 
+				Fill1DWHist(h1d_ke0_el, ke_beam_MeV, mom_rw_minchi2);
+				Fill1DWHist(h1d_kehy_el, fitted_KE, mom_rw_minchi2);
+				Fill1DWHist(h1d_keffbeam_el, ke_ffbeam_MeV, mom_rw_minchi2);
+				Fill1DWHist(h1d_kend_calo_el, kecalo, mom_rw_minchi2);	
+				Fill1DWHist(h1d_kend_bb_el, kebb, mom_rw_minchi2);
+				Fill1DWHist(h1d_kend_bbtruth_el, kebb_truth, mom_rw_minchi2);
 
-				h1d_kend_bbcorr_el->Fill(kebb_corr, mom_rw_minchi2);
-				h1d_kend_true_el->Fill(kend, mom_rw_minchi2);
-				h1d_kend_bbtrue_el->Fill(kebb_truth, mom_rw_minchi2);
-				h1d_kend_bbtruelength_el->Fill(kebb_truerange, mom_rw_minchi2);
+				//h1d_kend_bbcorr_el->Fill(kebb_corr, mom_rw_minchi2);
+				//h1d_kend_true_el->Fill(kend, mom_rw_minchi2);
+				//h1d_kend_bbtrue_el->Fill(kebb_truth, mom_rw_minchi2);
+				//h1d_kend_bbtruelength_el->Fill(kebb_truerange, mom_rw_minchi2);
 
-				h1d_keff_el->Fill(ke_ff, mom_rw_minchi2);
+				Fill1DWHist(h1d_kend_bbcorr_el, kebb_corr, mom_rw_minchi2);
+				Fill1DWHist(h1d_kend_true_el, kend, mom_rw_minchi2);
+				Fill1DWHist(h1d_kend_bbtrue_el, kebb_truth, mom_rw_minchi2);
+				Fill1DWHist(h1d_kend_bbtruelength_el, kebb_truerange, mom_rw_minchi2);
+
+				//h1d_keff_el->Fill(ke_ff, mom_rw_minchi2);
+				Fill1DWHist(h1d_keff_el, ke_ff, mom_rw_minchi2);
+
 				h2d_trklen_ratio_KEbbfit_KEffbeam_el->Fill(range_reco, (kebb_fit/kebb));
 				h2d_trklen_ratio_KEbbtruth_KEffbeam_el->Fill(range_reco, (kebb_truth/kebb));
 				h2d_keffbeam_keff_el->Fill(ke_ffbeam_MeV, ke_ff);
@@ -1197,66 +1220,107 @@ void ProtonApplyMomentumReweight::Loop() {
 				//}
 
 				if (kinel) { //inel
-					h1d_keffbeam_el_inel->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
-					h1d_kend_calo_el_inel->Fill(kecalo, mom_rw_minchi2);
-					h1d_kend_bb_el_inel->Fill(kebb, mom_rw_minchi2);
+					//h1d_keffbeam_el_inel->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
+					//h1d_kend_calo_el_inel->Fill(kecalo, mom_rw_minchi2);
+					//h1d_kend_bb_el_inel->Fill(kebb, mom_rw_minchi2);
+
+					Fill1DWHist(h1d_keffbeam_el_inel, ke_ffbeam_MeV, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_calo_el_inel, kecalo, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_bb_el_inel, kebb, mom_rw_minchi2);
+
 				} //inel
 				if (kel) { 
-					h1d_keffbeam_el_el->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
-					h1d_kend_calo_el_el->Fill(kecalo, mom_rw_minchi2);
-					h1d_kend_bb_el_el->Fill(kebb, mom_rw_minchi2);
+					//h1d_keffbeam_el_el->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
+					//h1d_kend_calo_el_el->Fill(kecalo, mom_rw_minchi2);
+					//h1d_kend_bb_el_el->Fill(kebb, mom_rw_minchi2);
 					h2d_kebbtruelength_keendtruth_trueel->Fill(kebb_truerange, kend);
+
+					Fill1DWHist(h1d_keffbeam_el_el, ke_ffbeam_MeV, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_calo_el_el, kecalo, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_bb_el_el, kebb, mom_rw_minchi2);
 				}
 				if (kMIDcosmic) {
-					h1d_keffbeam_el_midcosmic->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
-					h1d_kend_calo_el_midcosmic->Fill(kecalo, mom_rw_minchi2); 
-					h1d_kend_bb_el_midcosmic->Fill(kebb, mom_rw_minchi2);
+					//h1d_keffbeam_el_midcosmic->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
+					//h1d_kend_calo_el_midcosmic->Fill(kecalo, mom_rw_minchi2); 
+					//h1d_kend_bb_el_midcosmic->Fill(kebb, mom_rw_minchi2);
+
+					Fill1DWHist(h1d_keffbeam_el_midcosmic, ke_ffbeam_MeV, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_calo_el_midcosmic, kecalo, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_bb_el_midcosmic, kebb, mom_rw_minchi2);
 				}
 				if (kMIDpi) { 
-					h1d_keffbeam_el_midpi->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
-					h1d_kend_calo_el_midpi->Fill(kecalo, mom_rw_minchi2);
-					h1d_kend_bb_el_midpi->Fill(kebb, mom_rw_minchi2);
+					//h1d_keffbeam_el_midpi->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
+					//h1d_kend_calo_el_midpi->Fill(kecalo, mom_rw_minchi2);
+					//h1d_kend_bb_el_midpi->Fill(kebb, mom_rw_minchi2);
+					Fill1DWHist(h1d_keffbeam_el_midpi, ke_ffbeam_MeV, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_calo_el_midpi, kecalo, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_bb_el_midpi, kebb, mom_rw_minchi2);
 				}
 				if (kMIDp) {
-					h1d_keffbeam_el_midp->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
-					h1d_kend_calo_el_midp->Fill(kecalo, mom_rw_minchi2);
-					h1d_kend_bb_el_midp->Fill(kebb, mom_rw_minchi2);
+					//h1d_keffbeam_el_midp->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
+					//h1d_kend_calo_el_midp->Fill(kecalo, mom_rw_minchi2);
+					//h1d_kend_bb_el_midp->Fill(kebb, mom_rw_minchi2);
+					Fill1DWHist(h1d_keffbeam_el_midp,ke_ffbeam_MeV, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_calo_el_midp, kecalo, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_bb_el_midp, kebb, mom_rw_minchi2);
 				}
 				if (kMIDmu) { 
-					h1d_keffbeam_el_midmu->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
-					h1d_kend_calo_el_midmu->Fill(kecalo, mom_rw_minchi2);
-					h1d_kend_bb_el_midmu->Fill(kebb, mom_rw_minchi2);
+					//h1d_keffbeam_el_midmu->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
+					//h1d_kend_calo_el_midmu->Fill(kecalo, mom_rw_minchi2);
+					//h1d_kend_bb_el_midmu->Fill(kebb, mom_rw_minchi2);
+
+					Fill1DWHist(h1d_keffbeam_el_midmu, ke_ffbeam_MeV, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_calo_el_midmu, kecalo, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_bb_el_midmu, kebb, mom_rw_minchi2);
 				}
 				if (kMIDeg) { 
-					h1d_keffbeam_el_mideg->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
-					h1d_kend_calo_el_mideg->Fill(kecalo, mom_rw_minchi2);
-					h1d_kend_bb_el_mideg->Fill(kebb, mom_rw_minchi2);
+					//h1d_keffbeam_el_mideg->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
+					//h1d_kend_calo_el_mideg->Fill(kecalo, mom_rw_minchi2);
+					//h1d_kend_bb_el_mideg->Fill(kebb, mom_rw_minchi2);
+					Fill1DWHist(h1d_keffbeam_el_mideg, ke_ffbeam_MeV, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_calo_el_mideg, kecalo, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_bb_el_mideg, kebb, mom_rw_minchi2);
 				}
 				if (kMIDother) { 
-					h1d_keffbeam_el_midother->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
-					h1d_kend_calo_el_midother->Fill(kecalo, mom_rw_minchi2);
-					h1d_kend_bb_el_midother->Fill(kebb, mom_rw_minchi2);
+					//h1d_keffbeam_el_midother->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
+					//h1d_kend_calo_el_midother->Fill(kecalo, mom_rw_minchi2);
+					//h1d_kend_bb_el_midother->Fill(kebb, mom_rw_minchi2);
+					Fill1DWHist(h1d_keffbeam_el_midother, ke_ffbeam_MeV, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_calo_el_midother, kecalo, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_bb_el_midother, kebb, mom_rw_minchi2);
 				}
 
 			} //reco el			
 
 			if (IsRecoStop) { //reco stop 
-				h1d_ke0_stop->Fill(ke_beam_MeV, mom_rw_minchi2);           h1d_p0_stop->Fill(mom_beam_MeV, mom_rw_minchi2);
-				h1d_kebeam_stop->Fill(ke_beam_spec_MeV, mom_rw_minchi2);   h1d_pbeam_stop->Fill(1000.*mom_beam_spec, mom_rw_minchi2);
-				h1d_keff_stop->Fill(ke_ff, mom_rw_minchi2);      	   h1d_pff_stop->Fill(1000.*ke2p(ke_ff/1000.), mom_rw_minchi2);
+				//h1d_ke0_stop->Fill(ke_beam_MeV, mom_rw_minchi2);           h1d_p0_stop->Fill(mom_beam_MeV, mom_rw_minchi2);
+				//h1d_kebeam_stop->Fill(ke_beam_spec_MeV, mom_rw_minchi2);   h1d_pbeam_stop->Fill(1000.*mom_beam_spec, mom_rw_minchi2);
+				//h1d_keff_stop->Fill(ke_ff, mom_rw_minchi2);      	   h1d_pff_stop->Fill(1000.*ke2p(ke_ff/1000.), mom_rw_minchi2);
+				Fill1DWHist(h1d_ke0_stop, ke_beam_MeV, mom_rw_minchi2);  Fill1DWHist(h1d_p0_stop,mom_beam_MeV, mom_rw_minchi2);
+				Fill1DWHist(h1d_kebeam_stop,ke_beam_spec_MeV,mom_rw_minchi2); Fill1DWHist(h1d_pbeam_stop,1000.*mom_beam_spec, mom_rw_minchi2);
+				Fill1DWHist(h1d_keff_stop,ke_ff, mom_rw_minchi2); Fill1DWHist(h1d_pff_stop,1000.*ke2p(ke_ff/1000.), mom_rw_minchi2);
 
-				h1d_kehy_stop->Fill(fitted_KE, mom_rw_minchi2);
-				h1d_keffbeam_stop->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
+				//h1d_kehy_stop->Fill(fitted_KE, mom_rw_minchi2);
+				//h1d_keffbeam_stop->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
+				Fill1DWHist(h1d_kehy_stop, fitted_KE, mom_rw_minchi2);
+				Fill1DWHist(h1d_keffbeam_stop, ke_ffbeam_MeV, mom_rw_minchi2);
 
 				h1d_trklen_stop->Fill(range_reco, mom_rw_minchi2);
-				h1d_kerange_stop->Fill(ke_trklen_MeV, mom_rw_minchi2);     h1d_prange_stop->Fill(1000.*ke2p(ke_trklen), mom_rw_minchi2);
-				h1d_kecalo_stop->Fill(ke_calo_MeV, mom_rw_minchi2);	   h1d_pcalo_stop->Fill(1000.*ke2p(ke_calo_MeV/1000.), mom_rw_minchi2);	
+				//h1d_kerange_stop->Fill(ke_trklen_MeV, mom_rw_minchi2);     h1d_prange_stop->Fill(1000.*ke2p(ke_trklen), mom_rw_minchi2);
+				//h1d_kecalo_stop->Fill(ke_calo_MeV, mom_rw_minchi2);	   h1d_pcalo_stop->Fill(1000.*ke2p(ke_calo_MeV/1000.), mom_rw_minchi2);	
+				Fill1DWHist(h1d_kerange_stop, ke_trklen_MeV, mom_rw_minchi2); Fill1DWHist(h1d_prange_stop, 1000.*ke2p(ke_trklen), mom_rw_minchi2);
+				Fill1DWHist(h1d_kecalo_stop, ke_calo_MeV, mom_rw_minchi2); Fill1DWHist(h1d_pcalo_stop, 1000.*ke2p(ke_calo_MeV/1000.), mom_rw_minchi2);	
 
-				h1d_kend_calo_stop->Fill(kecalo, mom_rw_minchi2);
-				h1d_kend_bb_stop->Fill(kebb, mom_rw_minchi2);
-				h1d_kend_true_stop->Fill(kend, mom_rw_minchi2);
-				h1d_kend_bbtrue_stop->Fill(kebb_truth, mom_rw_minchi2);
-				h1d_kend_bbtruelength_stop->Fill(kebb_truerange, mom_rw_minchi2);
+				//h1d_kend_calo_stop->Fill(kecalo, mom_rw_minchi2);
+				//h1d_kend_bb_stop->Fill(kebb, mom_rw_minchi2);
+				//h1d_kend_true_stop->Fill(kend, mom_rw_minchi2);
+				//h1d_kend_bbtrue_stop->Fill(kebb_truth, mom_rw_minchi2);
+				//h1d_kend_bbtruelength_stop->Fill(kebb_truerange, mom_rw_minchi2);
+				Fill1DWHist(h1d_kend_calo_stop, kecalo, mom_rw_minchi2);
+				Fill1DWHist(h1d_kend_bb_stop, kebb, mom_rw_minchi2);
+				Fill1DWHist(h1d_kend_true_stop, kend, mom_rw_minchi2);
+				Fill1DWHist(h1d_kend_bbtrue_stop, kebb_truth, mom_rw_minchi2);
+				Fill1DWHist(h1d_kend_bbtruelength_stop, kebb_truerange, mom_rw_minchi2);
 
 				h2d_trklen_ratio_KEbbfit_KEffbeam_stop->Fill(range_reco, (kebb_fit/kebb));
 				h2d_trklen_ratio_KEbbtruth_KEffbeam_stop->Fill(range_reco, (kebb_truth/kebb));
@@ -1296,18 +1360,29 @@ void ProtonApplyMomentumReweight::Loop() {
 			} //reco stop
 
 			if (IsRecoInEL) { //reco inel	
-				h1d_ke0_inel->Fill(ke_beam_MeV, mom_rw_minchi2);
-				h1d_keff_inel->Fill(ke_ff, mom_rw_minchi2);
-				h1d_kehy_inel->Fill(fitted_KE, mom_rw_minchi2);
-				h1d_keffbeam_inel->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
-				h1d_kend_calo_inel->Fill(kecalo, mom_rw_minchi2);
-				h1d_kend_bb_inel->Fill(kebb, mom_rw_minchi2);
-				h1d_kend_bbcorr_inel->Fill(kebb_corr, mom_rw_minchi2);
-				h1d_kend_true_inel->Fill(kend, mom_rw_minchi2);
-				h1d_kend_bbtrue_inel->Fill(kebb_truth, mom_rw_minchi2);
-				h1d_kend_bbtruelength_inel->Fill(kebb_truerange, mom_rw_minchi2);
+				//h1d_ke0_inel->Fill(ke_beam_MeV, mom_rw_minchi2);
+				//h1d_keff_inel->Fill(ke_ff, mom_rw_minchi2);
+				//h1d_kehy_inel->Fill(fitted_KE, mom_rw_minchi2);
+				//h1d_keffbeam_inel->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
+				//h1d_kend_calo_inel->Fill(kecalo, mom_rw_minchi2);
+				//h1d_kend_bb_inel->Fill(kebb, mom_rw_minchi2);
+				//h1d_kend_bbcorr_inel->Fill(kebb_corr, mom_rw_minchi2);
+				//h1d_kend_true_inel->Fill(kend, mom_rw_minchi2);
+				//h1d_kend_bbtrue_inel->Fill(kebb_truth, mom_rw_minchi2);
+				//h1d_kend_bbtruelength_inel->Fill(kebb_truerange, mom_rw_minchi2);
+				Fill1DWHist(h1d_ke0_inel,ke_beam_MeV, mom_rw_minchi2);
+				Fill1DWHist(h1d_keff_inel,ke_ff, mom_rw_minchi2);
+				Fill1DWHist(h1d_kehy_inel,fitted_KE, mom_rw_minchi2);
+				Fill1DWHist(h1d_keffbeam_inel,ke_ffbeam_MeV, mom_rw_minchi2);
+				Fill1DWHist(h1d_kend_calo_inel,kecalo, mom_rw_minchi2);
+				Fill1DWHist(h1d_kend_bb_inel,kebb, mom_rw_minchi2);
+				Fill1DWHist(h1d_kend_bbcorr_inel,kebb_corr, mom_rw_minchi2);
+				Fill1DWHist(h1d_kend_true_inel,kend, mom_rw_minchi2);
+				Fill1DWHist(h1d_kend_bbtrue_inel,kebb_truth, mom_rw_minchi2);
+				Fill1DWHist(h1d_kend_bbtruelength_inel,kebb_truerange, mom_rw_minchi2);
 
-				h1d_kend_bbtruth_inel->Fill(kebb_truth, mom_rw_minchi2);
+				//h1d_kend_bbtruth_inel->Fill(kebb_truth, mom_rw_minchi2);
+				Fill1DWHist(h1d_kend_bbtruth_inel,kebb_truth, mom_rw_minchi2);
 
 				h2d_trklen_ratio_KEbbfit_KEffbeam_inel->Fill(range_reco, (kebb_fit/kebb));
 				h2d_trklen_ratio_KEbbtruth_KEffbeam_inel->Fill(range_reco, (kebb_truth/kebb));
@@ -1340,45 +1415,68 @@ void ProtonApplyMomentumReweight::Loop() {
 
 
 				if (kinel) { //inel
-					h1d_keffbeam_inel_inel->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
-					h1d_kend_calo_inel_inel->Fill(kecalo, mom_rw_minchi2);
-					h1d_kend_bb_inel_inel->Fill(kebb, mom_rw_minchi2);
+					//h1d_keffbeam_inel_inel->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
+					//h1d_kend_calo_inel_inel->Fill(kecalo, mom_rw_minchi2);
+					//h1d_kend_bb_inel_inel->Fill(kebb, mom_rw_minchi2);
+					Fill1DWHist(h1d_keffbeam_inel_inel,ke_ffbeam_MeV,mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_calo_inel_inel,kecalo, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_bb_inel_inel,kebb, mom_rw_minchi2);
 				} //inel
 				if (kel) { 
-					h1d_keffbeam_inel_el->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
-					h1d_kend_calo_inel_el->Fill(kecalo, mom_rw_minchi2);
-					h1d_kend_bb_inel_el->Fill(kebb, mom_rw_minchi2);
+					//h1d_keffbeam_inel_el->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
+					//h1d_kend_calo_inel_el->Fill(kecalo, mom_rw_minchi2);
+					//h1d_kend_bb_inel_el->Fill(kebb, mom_rw_minchi2);
+					Fill1DWHist(h1d_keffbeam_inel_el,ke_ffbeam_MeV, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_calo_inel_el,kecalo, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_bb_inel_el,kebb, mom_rw_minchi2);
 				}
 				if (kMIDcosmic) {
-					h1d_keffbeam_inel_midcosmic->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
-					h1d_kend_calo_inel_midcosmic->Fill(kecalo, mom_rw_minchi2);
-					h1d_kend_bb_inel_midcosmic->Fill(kebb, mom_rw_minchi2);
+					//h1d_keffbeam_inel_midcosmic->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
+					//h1d_kend_calo_inel_midcosmic->Fill(kecalo, mom_rw_minchi2);
+					//h1d_kend_bb_inel_midcosmic->Fill(kebb, mom_rw_minchi2);
+					Fill1DWHist(h1d_keffbeam_inel_midcosmic,ke_ffbeam_MeV, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_calo_inel_midcosmic,kecalo, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_bb_inel_midcosmic,kebb, mom_rw_minchi2);
 				}
 				if (kMIDpi) { 
-					h1d_keffbeam_inel_midpi->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
-					h1d_kend_calo_inel_midpi->Fill(kecalo, mom_rw_minchi2);
-					h1d_kend_bb_inel_midpi->Fill(kebb, mom_rw_minchi2);
+					//h1d_keffbeam_inel_midpi->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
+					//h1d_kend_calo_inel_midpi->Fill(kecalo, mom_rw_minchi2);
+					//h1d_kend_bb_inel_midpi->Fill(kebb, mom_rw_minchi2);
+					Fill1DWHist(h1d_keffbeam_inel_midpi,ke_ffbeam_MeV, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_calo_inel_midpi,kecalo, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_bb_inel_midpi,kebb, mom_rw_minchi2);
 				}
 				if (kMIDp) {
-					h1d_keffbeam_inel_midp->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
-					h1d_kend_calo_inel_midp->Fill(kecalo, mom_rw_minchi2);
-					h1d_kend_bb_inel_midp->Fill(kebb, mom_rw_minchi2);
+					//h1d_keffbeam_inel_midp->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
+					//h1d_kend_calo_inel_midp->Fill(kecalo, mom_rw_minchi2);
+					//h1d_kend_bb_inel_midp->Fill(kebb, mom_rw_minchi2);
+					Fill1DWHist(h1d_keffbeam_inel_midp,ke_ffbeam_MeV, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_calo_inel_midp,kecalo, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_bb_inel_midp, kebb, mom_rw_minchi2);
 				}
 				if (kMIDmu) { 
-					h1d_keffbeam_inel_midmu->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
-					h1d_kend_calo_inel_midmu->Fill(kecalo, mom_rw_minchi2);
-					h1d_kend_bb_inel_midmu->Fill(kebb, mom_rw_minchi2);
+					//h1d_keffbeam_inel_midmu->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
+					//h1d_kend_calo_inel_midmu->Fill(kecalo, mom_rw_minchi2);
+					//h1d_kend_bb_inel_midmu->Fill(kebb, mom_rw_minchi2);
+					Fill1DWHist(h1d_keffbeam_inel_midmu,ke_ffbeam_MeV, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_calo_inel_midmu,kecalo, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_bb_inel_midmu, kebb, mom_rw_minchi2);
 				}
 				if (kMIDeg) { 
-					h1d_keffbeam_inel_mideg->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
-					h1d_kend_calo_inel_mideg->Fill(kecalo, mom_rw_minchi2);
-					h1d_kend_bb_inel_mideg->Fill(kebb, mom_rw_minchi2);
-
+					//h1d_keffbeam_inel_mideg->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
+					//h1d_kend_calo_inel_mideg->Fill(kecalo, mom_rw_minchi2);
+					//h1d_kend_bb_inel_mideg->Fill(kebb, mom_rw_minchi2);
+					Fill1DWHist(h1d_keffbeam_inel_mideg,ke_ffbeam_MeV, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_calo_inel_mideg, kecalo, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_bb_inel_mideg, kebb, mom_rw_minchi2);
 				}
 				if (kMIDother) { 
-					h1d_keffbeam_inel_midother->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
-					h1d_kend_calo_inel_midother->Fill(kecalo, mom_rw_minchi2);
-					h1d_kend_bb_inel_midother->Fill(kebb, mom_rw_minchi2);
+					//h1d_keffbeam_inel_midother->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
+					//h1d_kend_calo_inel_midother->Fill(kecalo, mom_rw_minchi2);
+					//h1d_kend_bb_inel_midother->Fill(kebb, mom_rw_minchi2);
+					Fill1DWHist(h1d_keffbeam_inel_midother,ke_ffbeam_MeV, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_calo_inel_midother, kecalo, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_bb_inel_midother, kebb, mom_rw_minchi2);
 				}
 
 			} //reco inel
@@ -1439,8 +1537,10 @@ void ProtonApplyMomentumReweight::Loop() {
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_new.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_by_kebeamff_test.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_by_kebeamff.root","RECREATE");
-   	TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kebeamff.root","RECREATE");
+   	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kebeamff.root","RECREATE");
+   	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_by_kefit.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kefit.root","RECREATE");
+   	TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kefit_new.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_likelihoodfit.root","RECREATE");
 		bm_nmu->Write();
 		bm_dmu->Write();
