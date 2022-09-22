@@ -172,8 +172,15 @@ void ProtonApplyMomentumReweight::Loop() {
 	//double mu_denom_data=411.06602388610895; //old
 	//double sg_denom_data=47.075678784947826; //old
 
-	double mu_denom_data=411.05145837595467; //new with event-by-event R corr
-	double sg_denom_data=47.48714821962207; //new with event-by-event R corr
+	//double mu_denom_data=411.05145837595467; //new with event-by-event R corr (const E-loss using stopping protons)
+	//double sg_denom_data=47.48714821962207; //new with event-by-event R corr (const E-loss using stopping protons)
+
+	double mu_denom_data=411.06645442311424; //new with event-by-event R corr (KEHY(fit) using stopping protons)
+	double sg_denom_data=47.076122305960645; //new with event-by-event R corr (KEHY(fit) using stopping protons)
+
+	//Data //
+	//i= 0  m= 411.05145837595467 s= 47.48714821962207 [kebeam-dE]*R (R~1)
+        //i= 1  m= 411.06645442311424 s= 47.076122305960645 [KE(Fit)]
 
 	//double mu_nom_data=390.81237292943916; //for data (now use event-by-event correction)
 	//double sg_nom_data=47.52091718691363; //for data (now use event-by-event correction)
@@ -198,8 +205,10 @@ void ProtonApplyMomentumReweight::Loop() {
 	kerw->SetParameter(3, sg_denom_data);
 
 	//ke cut range	
-	double mu_kemin=mu_nom_mc-3.*sg_nom_mc;
-	double mu_kemax=mu_nom_mc+3.*sg_nom_mc;
+	//double mu_kemin=mu_nom_mc-3.*sg_nom_mc;
+	//double mu_kemax=mu_nom_mc+3.*sg_nom_mc;
+	double mu_kemin=mu_nom_mc-5.*sg_nom_mc;
+	double mu_kemax=mu_nom_mc+5.*sg_nom_mc;
 	//------------------------------------------------------------------------//
 
 	//momentum cut range	
@@ -342,7 +351,7 @@ void ProtonApplyMomentumReweight::Loop() {
 	TH1D *h1d_dke_keffbeam_keff_inel=new TH1D("h1d_dke_keffbeam_keff_inel","",ny_edept,ymin_edept,ymax_edept);
 
 	TH1D *h1d_keffbeam_stop=new TH1D("h1d_keffbeam_stop","",ny_edept,ymin_edept,ymax_edept);
-	TH1D *h1d_keffbeam_el_noxy=new TH1D("h1d_keffbeam_el_noxy","",ny_edept,ymin_edept,ymax_edept);
+	//TH1D *h1d_keffbeam_el_noxy=new TH1D("h1d_keffbeam_el_noxy","",ny_edept,ymin_edept,ymax_edept);
 	TH1D *h1d_keffbeam_el=new TH1D("h1d_keffbeam_el","",ny_edept,ymin_edept,ymax_edept);
 	TH1D *h1d_keffbeam_el_inel=new TH1D("h1d_keffbeam_el_inel","",ny_edept,ymin_edept,ymax_edept); 
 	TH1D *h1d_keffbeam_el_el=new TH1D("h1d_keffbeam_el_el","",ny_edept,ymin_edept,ymax_edept); 
@@ -1116,7 +1125,8 @@ void ProtonApplyMomentumReweight::Loop() {
 		//if (IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
 		//if (IsBeamXY&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
 		//if (IsBeamMom&&IsBeamXY&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
-		if (IsBeamMom&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
+		//if (IsBeamMom&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
+		if (IsBeamXY&&IsBeamMom&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
 			double mom_rw_minchi2=1.;
 			//if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=gng[index_minchi2]->Eval(mom_beam_spec*1000.); //old bmrw
 			//if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=kerw->Eval(ke_ffbeam_MeV); //new bmrw (const E-loss)
@@ -1124,9 +1134,9 @@ void ProtonApplyMomentumReweight::Loop() {
 			//std::cout<<"ke_beam_spec_MeV:"<<ke_beam_spec_MeV<<" ke_ffbeam_MeV:"<<ke_ffbeam_MeV<<" mom_rw_minchi2:"<<mom_rw_minchi2<<std::endl;
 
 			//h1d_keffbeam_el_noxy->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
-			Fill1DWHist(h1d_keffbeam_el_noxy, ke_ffbeam_MeV, mom_rw_minchi2);
+			//Fill1DWHist(h1d_keffbeam_el_noxy, ke_ffbeam_MeV, mom_rw_minchi2);
 
-			if (IsBeamXY) { //beam xy
+			//if (IsBeamXY) { //beam xy
 
 			//h1d_ke0->Fill(ke_beam_MeV, mom_rw_minchi2);
 			//h1d_p0->Fill(mom_beam_MeV, mom_rw_minchi2);
@@ -1482,7 +1492,7 @@ void ProtonApplyMomentumReweight::Loop() {
 				}
 
 			} //reco inel
-			} //beam xy
+			//} //beam xy
 		} //basic cuts
 
 	} //main entry loop
@@ -1629,7 +1639,7 @@ void ProtonApplyMomentumReweight::Loop() {
 		h1d_keffbeam_inel_mideg->Write();
 		h1d_keffbeam_inel_midother->Write();
 
-		h1d_keffbeam_el_noxy->Write();
+		//h1d_keffbeam_el_noxy->Write();
 		h1d_keffbeam_el->Write();
 		h1d_keffbeam_el_inel->Write();
 		h1d_keffbeam_el_el->Write();
