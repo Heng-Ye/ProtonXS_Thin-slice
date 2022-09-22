@@ -52,6 +52,8 @@ def VNFit(h, pre_mean, n_sigma):
 #KE_use_Fit (HY:pls revise data here)
 #python plotDataMC_KE.py -d /dune/data2/users/hyliao/protonana/v09_39_01/KEFit/proton_beamxy_beammom_runAll.root -c ../mc_proton_beamxy_beammom_nobmrw_noRcorr.root -drw /dune/data2/users/hyliao/protonana/v09_39_01/KEFit/proton_beamxy_beammom_runAll.root -crw ../mc_proton_beamxy_beammom_bmrw_by_kefit.root -o plots_beamxy_bmrw_evtbyevt_corr
 
+#python plotDataMC_KE.py -d /dune/data2/users/hyliao/protonana/v09_39_01/KEFit/proton_beamxy_beammom_runAll.root -c ../mc_proton_beamxy_beammom_bmrw_by_kefit_new.root -drw /dune/data2/users/hyliao/protonana/v09_39_01/KEFit/proton_beamxy_beammom_runAll.root -crw ../mc_proton_beamxy_beammom_bmrw_by_kefit_new.root -o plots_beamxy_bmrw_evtbyevt_corr
+
 #KEff_use_const E-loss
 #python plotDataMC_KE.py -d /dune/data2/users/hyliao/protonana/v09_39_01/KEHY/proton_beamxy_beammom_runAll.root -c ../mc_proton_beamxy_beammom_nobmrw_noRcorr.root -drw /dune/data2/users/hyliao/protonana/v09_39_01/KEHY/proton_beamxy_beammom_runAll.root -crw ../mc_proton_beamxy_beammom_bmrw_by_kebeamff.root -o plots_beamxy_bmrw_evtbyevt_corr
 
@@ -1730,7 +1732,8 @@ hs_keffbeam_el_rw.Add(keffbeam_el_midother_mc_rw)
 keffbeam_el_mc_rw.SetLineWidth(1)
 keffbeam_el_data_rw.SetLineWidth(1)
 
-f2d_keff_el_rw=RT.TH2D("f2d_keff_el_rw","", 370, 220, 600, 600, 0, keffbeam_el_data_rw.GetBinContent(keffbeam_el_data_rw.GetMaximumBin())+500)
+#f2d_keff_el_rw=RT.TH2D("f2d_keff_el_rw","", 370, 220, 600, 600, 0, keffbeam_el_data_rw.GetBinContent(keffbeam_el_data_rw.GetMaximumBin())+500) #const E-loss
+f2d_keff_el_rw=RT.TH2D("f2d_keff_el_rw","", 700, -100, 600, 600, 0, keffbeam_el_data_rw.GetBinContent(keffbeam_el_data_rw.GetMaximumBin())+500) #KEff=KEfit
 f2d_keff_el_rw.SetTitle("Elastic-scattering Proton Candidates;Proton Kinetic Energy at TPC FF [MeV];")
 f2d_keff_el_rw.GetXaxis().CenterTitle()
 f2d_keff_el_rw.Draw()
@@ -1798,8 +1801,10 @@ r1_el_rw.Print(args.o+'/ratio_ff_el_rw.eps')
 c1_inel_rw=RT.TCanvas("c1_inel_rw","",1200,900)
 c1_inel_rw.Divide(1,1)
 c1_inel_rw.cd(1)
+c1_inel_rw.cd(1).SetLogy()
 
-f2d_keff_inel_rw=RT.TH2D("f2d_keff_inel_rw","", 370, 220, 600, 600, 0, keffbeam_inel_data_rw.GetBinContent(keffbeam_inel_data_rw.GetMaximumBin())+1400)
+#f2d_keff_inel_rw=RT.TH2D("f2d_keff_inel_rw","", 370, 220, 600, 600, 0, keffbeam_inel_data_rw.GetBinContent(keffbeam_inel_data_rw.GetMaximumBin())+1400) #const E-loss
+f2d_keff_inel_rw=RT.TH2D("f2d_keff_inel_rw","", 800, -100, 700, 600, 0, keffbeam_inel_data_rw.GetBinContent(keffbeam_inel_data_rw.GetMaximumBin())+1400) #KEff=KEfit
 f2d_keff_inel_rw.SetTitle("Inelastic-scattering Proton Candidates;Proton Kinetic Energy at TPC FF [MeV];")
 f2d_keff_inel_rw.GetXaxis().CenterTitle()
 f2d_keff_inel_rw.Draw()
