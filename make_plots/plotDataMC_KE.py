@@ -52,7 +52,9 @@ def VNFit(h, pre_mean, n_sigma):
 #KE_use_Fit (HY:pls revise data here)
 #python plotDataMC_KE.py -d /dune/data2/users/hyliao/protonana/v09_39_01/KEFit/proton_beamxy_beammom_runAll.root -c ../mc_proton_beamxy_beammom_nobmrw_noRcorr.root -drw /dune/data2/users/hyliao/protonana/v09_39_01/KEFit/proton_beamxy_beammom_runAll.root -crw ../mc_proton_beamxy_beammom_bmrw_by_kefit.root -o plots_beamxy_bmrw_evtbyevt_corr
 
-#python plotDataMC_KE.py -d /dune/data2/users/hyliao/protonana/v09_39_01/KEFit/proton_beamxy_beammom_runAll.root -c ../mc_proton_beamxy_beammom_bmrw_by_kefit_new.root -drw /dune/data2/users/hyliao/protonana/v09_39_01/KEFit/proton_beamxy_beammom_runAll.root -crw ../mc_proton_beamxy_beammom_bmrw_by_kefit_new.root -o plots_beamxy_bmrw_evtbyevt_corr
+#python plotDataMC_KE.py -d /dune/data2/users/hyliao/protonana/v09_39_01/KEFit/proton_beamxy_beammom_runAll.root -c ../mc_proton_beamxy_beammom_bmrw_by_kefit.root -drw /dune/data2/users/hyliao/protonana/v09_39_01/KEFit/proton_beamxy_beammom_runAll.root -crw ../mc_proton_beamxy_beammom_bmrw_by_kefit.root -o plots_beamxy_bmrw_evtbyevt_corr
+
+#python plotDataMC_KE.py -d /dune/data2/users/hyliao/protonana/v09_39_01/KEFit/proton_beamxy_beammom_runAll.root -c ../mc_proton_beamxy_beammom_bmrw3s_by_kefit.root -drw /dune/data2/users/hyliao/protonana/v09_39_01/KEFit/proton_beamxy_beammom_runAll.root -crw ../mc_proton_beamxy_beammom_bmrw3s_by_kefit.root -o plots_beamxy_bmrw3s_evtbyevt_corr
 
 #KEff_use_const E-loss
 #python plotDataMC_KE.py -d /dune/data2/users/hyliao/protonana/v09_39_01/KEHY/proton_beamxy_beammom_runAll.root -c ../mc_proton_beamxy_beammom_nobmrw_noRcorr.root -drw /dune/data2/users/hyliao/protonana/v09_39_01/KEHY/proton_beamxy_beammom_runAll.root -crw ../mc_proton_beamxy_beammom_bmrw_by_kebeamff.root -o plots_beamxy_bmrw_evtbyevt_corr
@@ -1801,7 +1803,7 @@ r1_el_rw.Print(args.o+'/ratio_ff_el_rw.eps')
 c1_inel_rw=RT.TCanvas("c1_inel_rw","",1200,900)
 c1_inel_rw.Divide(1,1)
 c1_inel_rw.cd(1)
-c1_inel_rw.cd(1).SetLogy()
+#c1_inel_rw.cd(1).SetLogy()
 
 #f2d_keff_inel_rw=RT.TH2D("f2d_keff_inel_rw","", 370, 220, 600, 600, 0, keffbeam_inel_data_rw.GetBinContent(keffbeam_inel_data_rw.GetMaximumBin())+1400) #const E-loss
 f2d_keff_inel_rw=RT.TH2D("f2d_keff_inel_rw","", 800, -100, 700, 600, 0, keffbeam_inel_data_rw.GetBinContent(keffbeam_inel_data_rw.GetMaximumBin())+1400) #KEff=KEfit

@@ -36,6 +36,8 @@ class BetheBloch {
 
   double KEFromRangeSpline(double range);
 
+  double Best_Chi2=-1;
+
   double KEAtLength(double KE0, double tracklength);
 
   void CreateSplineAtKE(int iKE);
@@ -373,6 +375,8 @@ double BetheBloch::Fit_dEdx_Residual_Length(const vector<double> dEdx, const vec
       best_additional_res_length = this_additional_res_length;
       i_bestfit = i;
     }
+    Best_Chi2=best_chi2;
+
     if(save_graph){
       // == Save vectors for graphes
       chi2_vector.push_back(this_chi2);

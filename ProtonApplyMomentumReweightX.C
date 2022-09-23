@@ -175,8 +175,8 @@ void ProtonApplyMomentumReweight::Loop() {
 	//double mu_denom_data=411.05145837595467; //new with event-by-event R corr (const E-loss using stopping protons)
 	//double sg_denom_data=47.48714821962207; //new with event-by-event R corr (const E-loss using stopping protons)
 
-	double mu_denom_data=411.06645442311424; //new with event-by-event R corr (KEHY(fit) using stopping protons)
-	double sg_denom_data=47.076122305960645; //new with event-by-event R corr (KEHY(fit) using stopping protons)
+	double mu_denom_data=411.06645442311424; //new with event-by-event (KEHY(fit) using stopping protons)
+	double sg_denom_data=47.076122305960645; //new with event-by-event (KEHY(fit) using stopping protons)
 
 	//Data //
 	//i= 0  m= 411.05145837595467 s= 47.48714821962207 [kebeam-dE]*R (R~1)
@@ -207,8 +207,10 @@ void ProtonApplyMomentumReweight::Loop() {
 	//ke cut range	
 	//double mu_kemin=mu_nom_mc-3.*sg_nom_mc;
 	//double mu_kemax=mu_nom_mc+3.*sg_nom_mc;
-	double mu_kemin=mu_nom_mc-5.*sg_nom_mc;
-	double mu_kemax=mu_nom_mc+5.*sg_nom_mc;
+	//double mu_kemin=mu_nom_mc-5.*sg_nom_mc;
+	//double mu_kemax=mu_nom_mc+5.*sg_nom_mc;
+	double mu_kemin=mu_nom_mc-6.*sg_nom_mc;
+	double mu_kemax=mu_nom_mc+6.*sg_nom_mc;
 	//------------------------------------------------------------------------//
 
 	//momentum cut range	
@@ -1130,7 +1132,7 @@ void ProtonApplyMomentumReweight::Loop() {
 			double mom_rw_minchi2=1.;
 			//if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=gng[index_minchi2]->Eval(mom_beam_spec*1000.); //old bmrw
 			//if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=kerw->Eval(ke_ffbeam_MeV); //new bmrw (const E-loss)
-			if (ke_ffbeam_MeV>=mu_kemin&&ke_ffbeam_MeV<=mu_kemax) mom_rw_minchi2=kerw->Eval(ke_ffbeam_MeV); //new bmrw (KEHY)
+			//if (ke_ffbeam_MeV>=mu_kemin&&ke_ffbeam_MeV<=mu_kemax) mom_rw_minchi2=kerw->Eval(ke_ffbeam_MeV); //new bmrw (KEHY)
 			//std::cout<<"ke_beam_spec_MeV:"<<ke_beam_spec_MeV<<" ke_ffbeam_MeV:"<<ke_ffbeam_MeV<<" mom_rw_minchi2:"<<mom_rw_minchi2<<std::endl;
 
 			//h1d_keffbeam_el_noxy->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
@@ -1165,6 +1167,10 @@ void ProtonApplyMomentumReweight::Loop() {
 			h2d_trklen_eff_KEconst_KEff_all->Fill(range_reco, r_keconst_keff);
 			h2d_trklen_eff_KEhy_KEff_all->Fill(range_reco, r_kefit_keff);
 			h2d_trklen_eff_KEhy_KEconst_all->Fill(range_reco, r_kefit_keconst);
+
+			if (kel) h2d_trklen_keffit_el->Fill(range_reco, ke_ffbeam_MeV);
+			if (kinel) h2d_trklen_keffit_inel->Fill(range_reco, ke_ffbeam_MeV);
+			if (kMIDp) h2d_trklen_keffit_misidp->Fill(range_reco, ke_ffbeam_MeV);
 
 			//if (IsXY) { //xy
 				//h1d_trklen_XY->Fill(range_reco);
@@ -1551,9 +1557,12 @@ void ProtonApplyMomentumReweight::Loop() {
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_by_kebeamff.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kebeamff.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_by_kefit.root","RECREATE");
+   	TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_studyKEfit.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kefit.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kefit_new.root","RECREATE");
-   	TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kefit.root","RECREATE");
+   	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kefit.root","RECREATE");
+   	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw6s_by_kefit.root","RECREATE");
+   	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw3s_by_kefit.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_by_kefit_new.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_likelihoodfit.root","RECREATE");
 		bm_nmu->Write();
@@ -1788,6 +1797,11 @@ void ProtonApplyMomentumReweight::Loop() {
 
 		h1d_kend_bbtruth_el->Write();
 		h1d_kend_bbtruth_inel->Write();
+
+		h2d_trklen_keffit_el->Write();
+		h2d_trklen_keffit_inel->Write();
+		h2d_trklen_keffit_misidp->Write();
+
 	fout->Close();
 
 
