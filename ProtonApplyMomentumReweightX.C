@@ -600,6 +600,19 @@ void ProtonApplyMomentumReweight::Loop() {
 	TH2D *h2d_trklen_eff_KEhy_KEconst_el=new TH2D("h2d_trklen_eff_KEhy_KEconst_el","", nx__trklen, xmin__trklen, xmax__trklen, ny_eff, ymin_eff, ymax_eff);
 	TH2D *h2d_trklen_eff_KEhy_KEconst_inel=new TH2D("h2d_trklen_eff_KEhy_KEconst_inel","", nx__trklen, xmin__trklen, xmax__trklen, ny_eff, ymin_eff, ymax_eff);
 
+	//2D histograms for KEff study
+	TH2D *h2d_trklen_keffit_el=new TH2D("h2d_trklen_keffit_el","", n_b, b_min, b_max, ny_edept, ymin_edept, ymax_edept);
+	TH2D *h2d_trklen_keffit_inel=new TH2D("h2d_trklen_keffit_inel","", n_b, b_min, b_max, ny_edept, ymin_edept, ymax_edept);
+	TH2D *h2d_trklen_keffit_misidp=new TH2D("h2d_trklen_keffit_misidp","", n_b, b_min, b_max, ny_edept, ymin_edept, ymax_edept);
+
+	TH2D *h2d_trklen_chi2_el=new TH2D("h2d_trklen_chi2_el","", n_b, b_min, b_max, 1020, -2, 100);
+	TH2D *h2d_trklen_chi2_inel=new TH2D("h2d_trklen_chi2_inel","", n_b, b_min, b_max, 1020, -2, 100);
+	TH2D *h2d_trklen_chi2_misidp=new TH2D("h2d_trklen_chi2_misidp","", n_b, b_min, b_max, 1020, -2, 100);
+
+	TH2D *h2d_trklen_dkeff_el=new TH2D("h2d_trklen_dkeff_el","", n_b, b_min, b_max, 1600, -800,800);
+	TH2D *h2d_trklen_dkeff_inel=new TH2D("h2d_trklen_dkeff_inel","", n_b, b_min, b_max, 1600, -800,800);
+	TH2D *h2d_trklen_dkeff_misidp=new TH2D("h2d_trklen_dkeff_misidp","", n_b, b_min, b_max, 1600, -800,800);
+
 	//1D histograms
 	//TH1D *h1d_KEconst_all=new TH1D("h1d_KEconst_all","",nx_trklen, xmin_trklen, xmax_trklen);
 	//TH1D *h1d_KEconst_el=new TH1D("h1d_KEconst_el","",nx_trklen, xmin_trklen, xmax_trklen);
@@ -1080,7 +1093,7 @@ void ProtonApplyMomentumReweight::Loop() {
 		//double ke_ffbeam_MeV=ke_beam_spec_MeV-const_eloss_mc; //const E-loss (our assumption of KE at TPC FF)
 		double slope_kff_keffbeamR=0.859605;
 		//double ke_ffbeam_MeV=(ke_beam_spec_MeV-Eloss_mc_hy_stop); //const E-loss with correction
-		//double ke_ffbeam_MeV=(ke_beam_spec_MeV-Eloss_mc_hy_stop)*R_fit_hy; //const E-loss with correction (R_fit_hy is essentially one)
+		double ke_ffbeam_MeV=(ke_beam_spec_MeV-Eloss_mc_hy_stop)*R_fit_hy; //const E-loss with correction (R_fit_hy is essentially one)
 		//double ke_ffbeam_MeV=(ke_beam_spec_MeV-Eloss_mc_hy_stop)*R_fit_hy*slope_kff_keffbeamR; //const E-loss with correction
 
 		//hypothetical length -------------------------------------------------------------------------------------//
@@ -1090,7 +1103,10 @@ void ProtonApplyMomentumReweight::Loop() {
 		if (tmp_fitted_length>0) fitted_length=tmp_fitted_length;
 		double fitted_KE=-50; 
 		if (fitted_length>0) fitted_KE=BB.KEFromRangeSpline(fitted_length);
-		double ke_ffbeam_MeV=fitted_KE;
+		//double ke_ffbeam_MeV=fitted_KE;
+		double min_chi2=BB.Best_Chi2;
+		//double kefit_minus_keff=fitted_KE-ke_ff;
+		double kefit_minus_keff=ke_ffbeam_MeV-ke_ff;
 	
 		//ke at end point ---------------------------------------------------------------------//
 		//double kebb=-50; if (fitted_KE>0) kebb=BB.KEAtLength(ke_ffbeam_MeV, range_reco);
@@ -1168,10 +1184,21 @@ void ProtonApplyMomentumReweight::Loop() {
 			h2d_trklen_eff_KEhy_KEff_all->Fill(range_reco, r_kefit_keff);
 			h2d_trklen_eff_KEhy_KEconst_all->Fill(range_reco, r_kefit_keconst);
 
-			if (kel) h2d_trklen_keffit_el->Fill(range_reco, ke_ffbeam_MeV);
-			if (kinel) h2d_trklen_keffit_inel->Fill(range_reco, ke_ffbeam_MeV);
-			if (kMIDp) h2d_trklen_keffit_misidp->Fill(range_reco, ke_ffbeam_MeV);
-
+			if (kel) { 
+				h2d_trklen_keffit_el->Fill(range_reco, ke_ffbeam_MeV);
+				h2d_trklen_chi2_el->Fill(range_reco, min_chi2);
+				h2d_trklen_dkeff_el->Fill(range_reco, kefit_minus_keff);
+			}
+			if (kinel) { 
+				h2d_trklen_keffit_inel->Fill(range_reco, ke_ffbeam_MeV);
+				h2d_trklen_chi2_inel->Fill(range_reco, min_chi2);
+				h2d_trklen_dkeff_inel->Fill(range_reco, kefit_minus_keff);
+			}
+			if (kMIDp) {
+				h2d_trklen_keffit_misidp->Fill(range_reco, ke_ffbeam_MeV);
+				h2d_trklen_chi2_misidp->Fill(range_reco, min_chi2);
+				h2d_trklen_dkeff_misidp->Fill(range_reco, kefit_minus_keff);
+			}
 			//if (IsXY) { //xy
 				//h1d_trklen_XY->Fill(range_reco);
 				//h1d_trklen_bmrw_XY->Fill(range_reco, mom_rw_minchi2);
@@ -1557,7 +1584,8 @@ void ProtonApplyMomentumReweight::Loop() {
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_by_kebeamff.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kebeamff.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_by_kefit.root","RECREATE");
-   	TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_studyKEfit.root","RECREATE");
+   	TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_studyKEconst.root","RECREATE");
+   	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_studyKEfit.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kefit.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kefit_new.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kefit.root","RECREATE");
@@ -1801,6 +1829,15 @@ void ProtonApplyMomentumReweight::Loop() {
 		h2d_trklen_keffit_el->Write();
 		h2d_trklen_keffit_inel->Write();
 		h2d_trklen_keffit_misidp->Write();
+
+		h2d_trklen_chi2_el->Write();
+		h2d_trklen_chi2_inel->Write();
+		h2d_trklen_chi2_misidp->Write();
+
+		h2d_trklen_dkeff_el->Write();
+		h2d_trklen_dkeff_inel->Write();
+		h2d_trklen_dkeff_misidp->Write();
+
 
 	fout->Close();
 
