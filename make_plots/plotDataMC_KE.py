@@ -56,8 +56,14 @@ def VNFit(h, pre_mean, n_sigma):
 
 #python plotDataMC_KE.py -d /dune/data2/users/hyliao/protonana/v09_39_01/KEFit/proton_beamxy_beammom_runAll.root -c ../mc_proton_beamxy_beammom_bmrw3s_by_kefit.root -drw /dune/data2/users/hyliao/protonana/v09_39_01/KEFit/proton_beamxy_beammom_runAll.root -crw ../mc_proton_beamxy_beammom_bmrw3s_by_kefit.root -o plots_beamxy_bmrw3s_evtbyevt_corr
 
+#python plotDataMC_KE.py -d /dune/data2/users/hyliao/protonana/v09_39_01/KEFit/proton_beamxy_beammom_runAll.root -c ../mc_proton_beamxy_beammom_bmrw6s_by_kefit.root -drw /dune/data2/users/hyliao/protonana/v09_39_01/KEFit/proton_beamxy_beammom_runAll.root -crw ../mc_proton_beamxy_beammom_bmrw6s_by_kefit.root -o plots_beamxy_bmrw6s_evtbyevt_corr
+
 #KEff_use_const E-loss
 #python plotDataMC_KE.py -d /dune/data2/users/hyliao/protonana/v09_39_01/KEHY/proton_beamxy_beammom_runAll.root -c ../mc_proton_beamxy_beammom_nobmrw_noRcorr.root -drw /dune/data2/users/hyliao/protonana/v09_39_01/KEHY/proton_beamxy_beammom_runAll.root -crw ../mc_proton_beamxy_beammom_bmrw_by_kebeamff.root -o plots_beamxy_bmrw_evtbyevt_corr
+
+#python plotDataMC_KE.py -d /dune/data2/users/hyliao/protonana/v09_39_01/KEffbeam/proton_beamxy_beammom_runAll.root -c ../mc_proton_beamxy_beammom_nobmrw_noRcorr.root -drw /dune/data2/users/hyliao/protonana/v09_39_01/KEffbeam/proton_beamxy_beammom_runAll.root -crw ../mc_proton_beamxy_beammom_bmrw_by_kebeamff_v09_39_01.root -o plots_beamxy_bmrw_evtbyevt_corr_v09_39_01
+
+
 
 #--------------------------------------------------------------------------------------
 parser = ap()
@@ -1065,7 +1071,7 @@ c4.Divide(1,1)
 c4.cd(1)
 
 f2d_kend_calo=RT.TH2D("f2d_kend_calo","", 450, -150, 300, 600, 0, kend_calo_stop_data.GetBinContent(kend_calo_stop_data.GetMaximumBin())+800)
-f2d_kend_calo.SetTitle("Stopping Protons;Proton Kinetic Energy at Track End [MeV];")
+f2d_kend_calo.SetTitle("Stopping Protons;Proton Kinetic Energy at Interaction [MeV];")
 f2d_kend_calo.GetXaxis().CenterTitle()
 f2d_kend_calo.Draw()
 
@@ -1110,7 +1116,7 @@ c4_el.Divide(1,1)
 c4_el.cd(1)
 
 f2d_kend_calo_el=RT.TH2D("f2d_kend_calo_el","", 420, -120, 300, 600, 0, kend_calo_el_data.GetBinContent(kend_calo_el_data.GetMaximumBin())+350)
-f2d_kend_calo_el.SetTitle("Elastic-scattering Proton Candidates;Proton Kinetic Energy at Track End [MeV];")
+f2d_kend_calo_el.SetTitle("Elastic-scattering Proton Candidates;Proton Kinetic Energy at Interaction [MeV];")
 f2d_kend_calo_el.GetXaxis().CenterTitle()
 f2d_kend_calo_el.Draw()
 
@@ -1170,7 +1176,7 @@ c5.Divide(1,1)
 c5.cd(1)
 
 f2d_kend_bb=RT.TH2D("f2d_kend_bb","", 450, -150, 300, 600, 0, kend_bb_stop_data.GetBinContent(kend_bb_stop_data.GetMaximumBin())+800)
-f2d_kend_bb.SetTitle("Stopping Protons;Proton Kinetic Energy at Track End [MeV];")
+f2d_kend_bb.SetTitle("Stopping Protons;Proton Kinetic Energy at Interaction [MeV];")
 f2d_kend_bb.GetXaxis().CenterTitle()
 f2d_kend_bb.Draw()
 
@@ -1211,7 +1217,7 @@ c5_inel.Divide(1,1)
 c5_inel.cd(1)
 
 f2d_kend_bb_inel=RT.TH2D("f2d_kend_bb_inel","", 750, -150, 600, 600, 0, kend_bb_inel_data.GetBinContent(kend_bb_inel_data.GetMaximumBin())+250)
-f2d_kend_bb_inel.SetTitle("Inelastic-scattering Proton Candidates;Proton Kinetic Energy at Track End [MeV];")
+f2d_kend_bb_inel.SetTitle("Inelastic-scattering Proton Candidates;Proton Kinetic Energy at Interaction [MeV];")
 f2d_kend_bb_inel.GetXaxis().CenterTitle()
 f2d_kend_bb_inel.Draw()
 
@@ -1253,7 +1259,7 @@ c5_el.cd(1)
 
 f2d_kend_bb_el=RT.TH2D("f2d_kend_bb_el","", 420, -120, 300, 600, 0, kend_bb_el_data.GetBinContent(kend_bb_el_data.GetMaximumBin())+250)
 #f2d_kend_bb_el.SetTitle("Elastic-scattering Protons;Proton Kinetic Energy at Track End [MeV];")
-f2d_kend_bb_el.SetTitle("Elastic-scattering Proton Candidates;Proton Kinetic Energy at Track End [MeV];")
+f2d_kend_bb_el.SetTitle("Elastic-scattering Proton Candidates;Proton Kinetic Energy at Interaction [MeV];")
 f2d_kend_bb_el.GetXaxis().CenterTitle()
 f2d_kend_bb_el.Draw()
 
@@ -1307,7 +1313,7 @@ c5x_el_.Divide(1,1)
 c5x_el_.cd(1)
 
 f2dx_kend_bb_el=RT.TH2D("f2dx_kend_bb_el","", 420, -110, 600, 600, 0, kend_bb_el_data_rw.GetBinContent(kend_bb_el_data.GetMaximumBin())+700)
-f2dx_kend_bb_el.SetTitle("Elastic-scattering Proton Candidates;Proton Kinetic Energy at Track End [MeV];")
+f2dx_kend_bb_el.SetTitle("Elastic-scattering Proton Candidates;Proton Kinetic Energy at Interaction [MeV];")
 f2dx_kend_bb_el.GetXaxis().CenterTitle()
 f2dx_kend_bb_el.Draw()
 
@@ -1385,6 +1391,15 @@ leg2_el_rw.Draw()
 c5x_el_.Print(args.o+'/kend_bb_el_withMCcomponents_rw.eps')
 
 
+f2dx_kend_bb_el_zoom=RT.TH2D("f2dx_kend_bb_el","", 420, -110, 600, 600, 0, 1000)
+f2dx_kend_bb_el_zoom.SetTitle("Elastic-scattering Proton Candidates;Proton Kinetic Energy at Interaction [MeV];")
+f2dx_kend_bb_el_zoom.GetXaxis().CenterTitle()
+f2dx_kend_bb_el_zoom.Draw()
+hs_kend_bb_el_rw.Draw("hist same")
+kend_bb_el_data_rw.Draw("ep same")
+leg1_el_rw.Draw()
+leg2_el_rw.Draw()
+c5x_el_.Print(args.o+'/kend_bb_el_withMCcomponents_rw_zoom.eps')
 
 
 
