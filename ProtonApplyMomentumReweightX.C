@@ -188,11 +188,11 @@ void ProtonApplyMomentumReweight::Loop() {
 	//double mu_nom_mc=388.560260293186; //for mc(KEbeam-const_from_calo)
 	//double sg_nom_mc=43.13168235197187; //formc
 
-	double mu_nom_mc=416.224743039812; //for mc(KEbeam-const) with R=1 (R=Ratio of KEff(Fit)/(KEbeam-dE))
-	double sg_nom_mc=42.786018962508784; //
+	//double mu_nom_mc=416.224743039812; //for mc(KEbeam-const) with R=1 (R=Ratio of KEff(Fit)/(KEbeam-dE))
+	//double sg_nom_mc=42.786018962508784; //
 
-	//double mu_nom_mc=416.1620092367158; //for mc [KE(Fit)]
-	//double sg_nom_mc=40.48356757740762; //
+	double mu_nom_mc=416.1620092367158; //for mc [KE(Fit)]
+	double sg_nom_mc=40.48356757740762; //
 
 	//i= 0  m= 416.2247430398121 s= 42.786018962508784 [kebeam-dE]*1 (R=1)
 	//i= 1  m= 416.1620092367158 s= 40.48356757740762 [KE(Fit)] 
@@ -1583,7 +1583,9 @@ void ProtonApplyMomentumReweight::Loop() {
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_by_kebeamff_test.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_by_kebeamff.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kebeamff.root","RECREATE");
-   	TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kebeamff_v09_39_01.root","RECREATE");
+   	//
+   	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kebeamff_v09_39_01.root","RECREATE");
+   	TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kebeamff_kefitindenom_v09_39_01.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_by_kefit.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_studyKEconst.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_studyKEfit.root","RECREATE");
