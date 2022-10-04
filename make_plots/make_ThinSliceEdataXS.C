@@ -70,7 +70,9 @@ void make_ThinSliceEdataXS() {
 	//TString outpath="./plots_XS_ThinsliceE_StSlicdID+0.5/";
 	//
 	//TString outpath="./plots_DataXS_ThinsliceE_StSlicdID+0.5/";
-	TString outpath="./plots_XS_ThinsliceE_StSlicdIDp0.5_nobmrw/";
+	//TString outpath="./plots_XS_ThinsliceE_StSlicdIDp0.5_nobmrw/";
+
+	TString outpath="./plots_XS_Eslice/";
 
 	//TString outpath="./plots_XS_ThinsliceE_StSlicdID++/";
 	//TString outpath="./plots_XS_ThinsliceE_plus1/";
@@ -129,8 +131,11 @@ void make_ThinSliceEdataXS() {
         //TString fmc="../prod4areco2_mc_ThinSliceE_dE20MeV_40slcs_bmrw_stslcplus0.5.root";
         //TString fdata="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/realdata/p1gev/code_timedep_trkpos/protodune-sp_runset_5387_reco2/data_run5387_prod4a_eslice_dx20cm_40slcs_stid+0.5.root";
 
-        TString fmc="../prod4areco2_mc_ThinSliceE_dE20MeV_40slcs_nobmrw_stslcplus0.5.root";
-        TString fdata="../prod4areco2_mc_ThinSliceE_dE20MeV_40slcs_nobmrw_stslcplus0.5.root";
+        //TString fmc="../prod4areco2_mc_ThinSliceE_dE20MeV_40slcs_nobmrw_stslcplus0.5.root";
+        //TString fdata="../prod4areco2_mc_ThinSliceE_dE20MeV_40slcs_nobmrw_stslcplus0.5.root";
+
+        TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_v09_39_01.root";
+        TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01.root";
 
 	//reco string pre-fix --------------------------------------//
 	TString str_inc=Form("h_recosliceid_allevts_cuts");
