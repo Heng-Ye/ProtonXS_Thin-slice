@@ -458,6 +458,13 @@ double BetheBloch::Fit_dEdx_Residual_Length(const vector<double> dEdx, const vec
 
 
 double BetheBloch::Landau_xi(double KE, double pitch){
+  double K = 0.307;
+  double rho = 1.396;
+  double Z = 18;
+  double A = 39.948;
+  double I = pow(10,-6)*10.5*18; //MeV
+  double  me = 0.511; //MeV me*c^2
+
   double gamma = (KE/mass)+1.0;
   double beta = TMath::Sqrt(1-(1.0/(gamma*gamma)));
   double xi = rho * pitch * 0.5 * K * (Z / A) * pow(1. / beta, 2);
