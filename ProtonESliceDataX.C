@@ -107,11 +107,6 @@ struct SumDistance2 {
 };
 /////////////////////////////////
 
-//[MC] Energy loss using stopping protons
-double mean_Eloss_upstream=19.3073;
-double err_mean_Eloss_upstream=0.187143;
-double sigma_Eloss_upstream=18.7378;
-double err_sigma_Eloss_upstream=0.140183;
 
 void ProtonESliceData::Loop() {
 	if (fChain == 0) return;
@@ -143,35 +138,97 @@ void ProtonESliceData::Loop() {
 	//MC beam momentum -----------------------//
 	double mm1=1007.1482; //MC prod4a [spec]
 	double ss1=60.703307; //MC prod4a [spec]
-	double mmu_min=mm1-3.*ss1;
-	double mmu_max=mm1+3.*ss1;
+	double mu_min=mm1-3.*ss1;
+	double mu_max=mm1+3.*ss1;
 
 	//Beam momentum reweighting -----------------------------//
 	//MC KE beam Gaussian 
-	double m1=3.89270e+02; //mc, keff with const E-loss
-	double s1=4.49638e+01; //mc, keff with const E-loss
-	double a1=7.06341e+02; //mc, keff with const E-loss
+	//double m1=3.89270e+02; //mc, keff with const E-loss
+	//double s1=4.49638e+01; //mc, keff with const E-loss
+	//double a1=7.06341e+02; //mc, keff with const E-loss
 
-	double m2=3.93027e+02; //data, keff with const E-loss
-	double s2=5.18623e+01; //data, keff with const E-loss
-	double a2=6.09665e+02; //data, keff with const E-loss
+	//double m2=3.93027e+02; //data, keff with const E-loss
+	//double s2=5.18623e+01; //data, keff with const E-loss
+	//double a2=6.09665e+02; //data, keff with const E-loss
 
-	double xmin=0.; //emin [MeV]
-	double xmax=1000.; //emax [MeV]
+	//double xmin=0.; //emin [MeV]
+	//double xmax=1000.; //emax [MeV]
 
-	double mu_min=m1-3.*s1;
-	double mu_max=m1+3.*s1;
+	//double mu_min=m1-3.*s1;
+	//double mu_max=m1+3.*s1;
 
-	TF1 *gng=new TF1(Form("gng"),agovg,xmin,xmax,6);
-	gng->SetParameter(0,m1);
-	gng->SetParameter(1,s1);
-	gng->SetParameter(2,a1);
+	//TF1 *gng=new TF1(Form("gng"),agovg,xmin,xmax,6);
+	//gng->SetParameter(0,m1);
+	//gng->SetParameter(1,s1);
+	//gng->SetParameter(2,a1);
 
-	gng->SetParameter(3,m2);
-	gng->SetParameter(4,s2);
-	gng->SetParameter(5,a2);
+	//gng->SetParameter(3,m2);
+	//gng->SetParameter(4,s2);
+	//gng->SetParameter(5,a2);
 	//-----------------------------------------------------------------//
 
+	//[MC] Energy loss using stopping protons
+	double mean_Eloss_upstream=19.3073;
+	double err_mean_Eloss_upstream=0.187143;
+	double sigma_Eloss_upstream=18.7378;
+	double err_sigma_Eloss_upstream=0.140183;
+
+	//const E-loss using stopping protons ---------
+	double Eloss_mc_hy_stop=19.542/0.998495;
+	//p[0]:19.542;   //err_p[0]:0.126113
+	//p[1]:0.998495; //err_p[1]:0.00549534
+
+	double R_fit_hy=1.0008142352819318;
+	double er_R_fit_hy=0.04629667706788889;
+
+	//const. E-loss assumption ---------------------------------------------------------------------------------------	
+	double const_eloss_mc=47.0058/1.00097; //const E-loss from fit (calo)
+	//#p[0]:47.0058 err_p[0]:0.372157 p[1]:-1.00097 err_p[1]:0.00787403
+
+	//New weighting func (using KEff_fit_stop at TPC FF as a reference) ------//
+	//double mu_denom_data=411.06602388610895; //old
+	//double sg_denom_data=47.075678784947826; //old
+
+	double mu_denom_data=411.05145837595467; //new with event-by-event R corr (const E-loss using stopping protons)
+	double sg_denom_data=47.48714821962207; //new with event-by-event R corr (const E-loss using stopping protons)
+
+	//double mu_denom_data=411.06645442311424; //new with event-by-event (KEHY(fit) using stopping protons)
+	//double sg_denom_data=47.076122305960645; //new with event-by-event (KEHY(fit) using stopping protons)
+
+	//Data //
+	//i= 0  m= 411.05145837595467 s= 47.48714821962207 [kebeam-dE]*R (R~1)
+	//i= 1  m= 411.06645442311424 s= 47.076122305960645 [KE(Fit)]
+
+	//double mu_nom_data=390.81237292943916; //for data (now use event-by-event correction)
+	//double sg_nom_data=47.52091718691363; //for data (now use event-by-event correction)
+
+	//double mu_nom_mc=388.560260293186; //for mc(KEbeam-const_from_calo)
+	//double sg_nom_mc=43.13168235197187; //formc
+
+	//double mu_nom_mc=416.224743039812; //for mc(KEbeam-const) with R=1 (R=Ratio of KEff(Fit)/(KEbeam-dE))
+	//double sg_nom_mc=42.786018962508784; //
+
+	double mu_nom_mc=416.1620092367158; //for mc [KE(Fit)]
+	double sg_nom_mc=40.48356757740762; //
+
+	//i= 0  m= 416.2247430398121 s= 42.786018962508784 [kebeam-dE]*1 (R=1)
+	//i= 1  m= 416.1620092367158 s= 40.48356757740762 [KE(Fit)] 
+
+	//weighting func. (ke) ------------------------
+	TF1 *kerw=new TF1(Form("kerw"),govg,0,800,4);
+	kerw->SetParameter(0, mu_nom_mc);
+	kerw->SetParameter(1, sg_nom_mc);
+	kerw->SetParameter(2, mu_denom_data);
+	kerw->SetParameter(3, sg_denom_data);
+
+	//ke cut range	
+	//double mu_kemin=mu_nom_mc-3.*sg_nom_mc;
+	//double mu_kemax=mu_nom_mc+3.*sg_nom_mc;
+	double mu_kemin=mu_nom_mc-5.*sg_nom_mc;
+	double mu_kemax=mu_nom_mc+5.*sg_nom_mc;
+	//double mu_kemin=mu_nom_mc-6.*sg_nom_mc;
+	//double mu_kemax=mu_nom_mc+6.*sg_nom_mc;
+	//------------------------------------------------------------------------//
 
 	//unfolding config. -------------------------//
 	Unfold uf(nthinslices+2, -1, nthinslices+1);
@@ -190,22 +247,22 @@ void ProtonESliceData::Loop() {
 	//SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_nobmrw_stslcplus1.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_nobmrw_stslcplus0.5.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_bmrw_stslcplus0.5.root", name_thinslicewidth, nthinslices)); //output file name
-	SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_nobmrw_stslcplus0.5.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_nobmrw_stslcplus0.5.root", name_thinslicewidth, nthinslices)); //output file name
+	SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrw_v09_39_01.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_nobmrw_stslcceil.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_bmrw_stslcceil.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_nobmrw_stslcceil.root", name_thinslicewidth, nthinslices)); //output file name
 
 	//Basic configure ------//
-	//BetheBloch BB;
-	//BB.SetPdgCode(pdg);
+	BetheBloch BB;
+	BB.SetPdgCode(pdg);
 
 	//book histograms --//
 	BookHistograms();
 
 	//dump txt files
-	ofstream myfile;
-	myfile.open ("true_ke_gt_800MeV.txt");
-
+	//ofstream myfile;
+	//myfile.open ("true_ke_gt_800MeV.txt");
 
 	Long64_t nentries = fChain->GetEntries();
 	std::cout<<"nentries: "<<nentries<<std::endl;
@@ -244,18 +301,18 @@ void ProtonESliceData::Loop() {
 		if (timeintersection->size()) IsIntersection=true;
 		//----------------------------------------------------------------//
 
-		cout<<"\n"<<endl;
-		cout<<"run/subrun:event:"<<run<<" "<<subrun<<" "<<event<<endl;
-		cout<<"primaryID:"<<primaryID<<endl;
-		cout<<"IsPandoraSlice:"<<IsPandoraSlice<<" | isprimarytrack:"<<isprimarytrack<<" isprimaryshower:"<<isprimaryshower<<endl;
-		cout<<"IsCaloSize:"<<IsCaloSize<<endl;
-		cout<<"primary_truth_EndProcess:"<<primary_truth_EndProcess->c_str()<<endl;
-		cout<<"Isendpoint_outsidetpc:"<<Isendpoint_outsidetpc<<endl;
-		cout<<"IsBeamMatch:"<<IsBeamMatch<<endl;
-		cout<<"primary_truth_byE_origin="<<primary_truth_byE_origin<<""<<endl;
-		cout<<"primary_truth_byE_PDG="<<primary_truth_byE_PDG<<""<<endl;
-		cout<<"primary_truth_Pdg:"<<primary_truth_Pdg<<endl;
-		cout<<"beamtrackPdg:"<<beamtrackPdg<<endl;
+		//cout<<"\n"<<endl;
+		//cout<<"run/subrun:event:"<<run<<" "<<subrun<<" "<<event<<endl;
+		//cout<<"primaryID:"<<primaryID<<endl;
+		//cout<<"IsPandoraSlice:"<<IsPandoraSlice<<" | isprimarytrack:"<<isprimarytrack<<" isprimaryshower:"<<isprimaryshower<<endl;
+		//cout<<"IsCaloSize:"<<IsCaloSize<<endl;
+		//cout<<"primary_truth_EndProcess:"<<primary_truth_EndProcess->c_str()<<endl;
+		//cout<<"Isendpoint_outsidetpc:"<<Isendpoint_outsidetpc<<endl;
+		//cout<<"IsBeamMatch:"<<IsBeamMatch<<endl;
+		//cout<<"primary_truth_byE_origin="<<primary_truth_byE_origin<<""<<endl;
+		//cout<<"primary_truth_byE_PDG="<<primary_truth_byE_PDG<<""<<endl;
+		//cout<<"primary_truth_Pdg:"<<primary_truth_Pdg<<endl;
+		//cout<<"beamtrackPdg:"<<beamtrackPdg<<endl;
 
 		//Truth label of Primarytrack_End ------------------------------------------------------------------------------------------------//
 		bool IsPureInEL=false; //inel
@@ -340,7 +397,7 @@ void ProtonESliceData::Loop() {
 		if (beamtrk_z->size()){
 			for (size_t kk=0; kk<beamtrk_z->size(); ++kk) {  //loop over all beam hits
 				double zpos_beam=beamtrk_z->at(kk);
-				if (1000.*beamtrk_Eng->at(kk)>800.) myfile<<"beamtrk_Eng["<<kk<<"]="<<1000.*beamtrk_Eng->at(kk)<<"\n";	
+				//if (1000.*beamtrk_Eng->at(kk)>800.) myfile<<"beamtrk_Eng["<<kk<<"]="<<1000.*beamtrk_Eng->at(kk)<<"\n";	
 				if (zpos_beam>=0) {
 					key_reach_tpc=(int)kk;
 					break;
@@ -350,7 +407,7 @@ void ProtonESliceData::Loop() {
 			//for (size_t kk=0; kk<beamtrk_z->size(); ++kk) {  //loop over all beam hits
 			//cout<<"["<<kk<<"] beamtrk_z:"<<beamtrk_z->at(kk) <<" beamtrk_Eng:"<<beamtrk_Eng->at(kk)<<endl;
 			//} //loop over all beam hits
-			
+
 			Fill1DHist(KEtrue_Beam, (1000.*beamtrk_Eng->at(0)));
 
 		} 
@@ -378,7 +435,7 @@ void ProtonESliceData::Loop() {
 		double yproj_beam=0; //ini. value
 		double xproj_beam=0; //ini. value
 		int n_fit=3; //num of points used for fitting
-                if (beamtrk_z->size()) {
+		if (beamtrk_z->size()) {
 
 			int key_fit_st=0;
 			int key_fit_ed=-1+(int)beamtrk_z->size();
@@ -396,13 +453,13 @@ void ProtonESliceData::Loop() {
 			//start 3D line fit
 			TGraph2D *gr=new TGraph2D();
 			//cout<<"ck0"<<endl;
-   		  	//for (int N=key_fit_st; N<key_fit_ed; N++) {
-   		  	int nsize_fit=n_fit;
+			//for (int N=key_fit_st; N<key_fit_ed; N++) {
+			int nsize_fit=n_fit;
 			if ((1+(key_fit_ed-key_fit_st))<n_fit) nsize_fit=1+(key_fit_ed-key_fit_st);
 			if ((int)beamtrk_z->size()<=n_fit) nsize_fit=(int)beamtrk_z->size(); //in case really short track
-   		  	for (int N=0; N<nsize_fit; N++) {
+			for (int N=0; N<nsize_fit; N++) {
 				gr->SetPoint(N, beamtrk_x->at(N+key_fit_st), beamtrk_y->at(N+key_fit_st), beamtrk_z->at(N+key_fit_st));
-   		    	}
+			}
 			//cout<<"ck1"<<endl;
 			//Initialization of parameters
 			//int N=(int)Z_RECO.size();
@@ -418,7 +475,7 @@ void ProtonESliceData::Loop() {
 			ROOT::Math::Functor fcn(sdist,4);
 
 			// set the function and the initial parameter values
-  			double pStart[4]={ini_p0, ini_p1, ini_p2, ini_p3};   
+			double pStart[4]={ini_p0, ini_p1, ini_p2, ini_p3};   
 			fitter.SetFCN(fcn,pStart);
 			//cout<<"ck3"<<endl;
 
@@ -432,12 +489,12 @@ void ProtonESliceData::Loop() {
 				//return 1;
 			}
 			//cout<<"ck5"<<endl;
-				
+
 			const ROOT::Fit::FitResult & result = fitter.Result();
 			std::cout << "Total final distance square " << result.MinFcnValue() << std::endl;
 			result.Print(std::cout);
 			//cout<<"ck6"<<endl;
-				
+
 			// get fit parameters
 			const double * parFit = result.GetParams();
 			yproj_beam=result.Parameter(2)+result.Parameter(3)*zproj_beam;
@@ -460,13 +517,13 @@ void ProtonESliceData::Loop() {
 		//true_trklen_accum
 		double range_true=-9999;
 		if (is_beam_at_ff) { //is beam at ff
-		  for (int iz=key_reach_tpc+1; iz<(int)beamtrk_z->size(); iz++) {
-			if (iz == key_reach_tpc+1) range_true = range_true_patch;
-					range_true += sqrt( pow(beamtrk_x->at(iz)-beamtrk_x->at(iz-1), 2)+
+			for (int iz=key_reach_tpc+1; iz<(int)beamtrk_z->size(); iz++) {
+				if (iz == key_reach_tpc+1) range_true = range_true_patch;
+				range_true += sqrt( pow(beamtrk_x->at(iz)-beamtrk_x->at(iz-1), 2)+
 						pow(beamtrk_y->at(iz)-beamtrk_y->at(iz-1), 2)+	
 						pow(beamtrk_z->at(iz)-beamtrk_z->at(iz-1), 2) );						    	
 				true_trklen_accum[iz] = range_true;
-		  }
+			}
 		} //is beam at ff						    	
 
 		//fix on the truth length by adding distance between 1st tpc hit to front face ------------------------------------------------------//
@@ -661,10 +718,6 @@ void ProtonESliceData::Loop() {
 		//}
 		//if ((pow(((x0_tmp-mean_x)/dev_x),2)+pow(((y0_tmp-mean_y)/dev_y),2))<=1.) IsXY=true;
 
-		//beam quality cut --------------//
-		bool IsBQ=false;
-		if (IsCosine&&IsPos) IsBQ=true;
-
 		bool IsMisidpRich=false;
 		if (IsPos&&IsCaloSize&&IsPandoraSlice) {
 			Fill1DHist(reco_cosineTheta_Pos, cosine_beam_spec_primtrk);
@@ -680,7 +733,6 @@ void ProtonESliceData::Loop() {
 			if (cosine_beam_spec_primtrk<=0.9) IsMisidpRich=true;
 		}
 
-
 		//reco calorimetry ---------------------------------------------------------------------------//
 		int index_reco_endz=0;
 		double wid_reco_max=-9999;
@@ -694,9 +746,9 @@ void ProtonESliceData::Loop() {
 		vector<double> DEDX;
 		vector<double> DX;
 		double pid=-99; 
+		vector<double> trkdedx;
+		vector<double> trkres;
 		if (IsCaloSize) { //if calo size not empty
-			vector<double> trkdedx;
-			vector<double> trkres;
 			for (size_t h=0; h<primtrk_dedx->size(); ++h) { //loop over reco hits of a given track
 				double hitx_reco=primtrk_hitx->at(h);
 				double hity_reco=primtrk_hity->at(h);
@@ -758,13 +810,36 @@ void ProtonESliceData::Loop() {
 		bool IsRecoInEL=false;
 		bool IsRecoEL=false;
 		double mom_beam_spec=-99; mom_beam_spec=beamMomentum_spec->at(0);
+		double bx_spec=beamPosx_spec->at(0);
+		double by_spec=beamPosy_spec->at(0);
 		//double range_reco=-99; if (!primtrk_range->empty()) range_reco=primtrk_range->at(0); //reco primary trklen
+
+		//mc p0
+		double btrk_px=-99; btrk_px=beamtrk_Px->at(0);
+		double btrk_py=-99; btrk_py=beamtrk_Py->at(0);
+		double btrk_pz=-99; btrk_pz=beamtrk_Pz->at(0);
+		double btrk_p=sqrt(btrk_px*btrk_px+btrk_py*btrk_py+btrk_pz*btrk_pz);
+		double mom_beam=btrk_p; //GeV/c
+		double mom_beam_MeV=1000.*mom_beam;
+
+		//beam XY cut to remove E-loss events upstream
+		bool IsBeamXY=false;
+		if ((pow(((bx_spec-meanX_mc)/(1.5*rmsX_mc)),2)+pow(((by_spec-meanY_mc)/(1.5*rmsY_mc)),2))<=1.) IsBeamXY=true;
+
+		//beam-mom cut (within 3-sigma)
+		bool IsBeamMom=false;
+		if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) IsBeamMom=true;
+
+		//beam quality cut --------------------------------------------------------------------------------------------------------------//
+		bool IsBQ=false;
+		//if (IsCosine&&IsPos) IsBQ=true;
+		if (IsBeamXY&&IsBeamMom&&IsCosine&&IsPos) IsBQ=true;
 
 		double csda_val_spec=csda_range_vs_mom_sm->Eval(mom_beam_spec);
 
 		if ((range_reco/csda_val_spec)>=min_norm_trklen_csda&&(range_reco/csda_val_spec)<max_norm_trklen_csda) IsRecoStop=true; //old cut
 		//if ((range_reco/csda_val_spec)<min_norm_trklen_csda) IsRecoInEL=true; //old cut
-		
+
 		if ((range_reco/csda_val_spec)<min_norm_trklen_csda) { //inel region
 			if (pid>pid_1) IsRecoInEL=true; 
 			if (pid<=pid_1) IsRecoEL=true; 
@@ -798,25 +873,43 @@ void ProtonESliceData::Loop() {
 			//h2d_R_kE1st->Fill(KE_1st, KE_1st_predict/KE_1st);
 		}
 
+		//KEff (reco) with const E-loss assumption ---------------------------------------------------------------------------------------//
+		//double mean_Elosscalo_stop=(4.95958e+01)/(1.00489e+00); //using fit [no bmrw]
+		//double KE_ff_reco=ke_beam_spec_MeV-mean_Elosscalo_stop;
+		//double KEend_reco=0;
+		//KEend_reco=KE_ff_reco-reco_calo_MeV;
 
-		//KEff (reco) with const E-loss assumption -----------------------------------//
-		double mean_Elosscalo_stop=(4.95958e+01)/(1.00489e+00); //using fit [no bmrw]
-		double KE_ff_reco=ke_beam_spec_MeV-mean_Elosscalo_stop;
-		double KEend_reco=0;
-		KEend_reco=KE_ff_reco-reco_calo_MeV;		
-	
-		//bmrw --------------------------------------------------------------------------------------------------------//
+		double slope_kff_keffbeamR=0.859605;
+		double ke_ffbeam_MeV=(ke_beam_spec_MeV-Eloss_mc_hy_stop)*R_fit_hy; //const E-loss with correction (R_fit_hy is essentially one)
+
+		//Hypothetical length -------------------------------------------------------------------------------------//
+		double fitted_length=-1; 
+		double tmp_fitted_length=BB.Fit_dEdx_Residual_Length(trkdedx, trkres, pdg, false);
+		if (tmp_fitted_length>0) fitted_length=tmp_fitted_length;
+		double fitted_KE=-50; 
+		if (fitted_length>0) fitted_KE=BB.KEFromRangeSpline(fitted_length);
+
+		//Bethe-Bloch ---------------------------------------------------------//
+		double kebb=-9999.; kebb=BB.KEAtLength(ke_ffbeam_MeV, range_reco);
+
+		double KE_ff_reco=ke_ffbeam_MeV;
+		double KEend_reco=kebb;
+
+		//bmrw ----------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 		double mom_rw_minchi2=1; //weight for beam-momentum-reweight
 		//if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) { //beam-mom (within 3-sigma)
-			//mom_rw_minchi2=bmrw_func->Eval(mom_beam_spec*1000.); //bmrw, set weight if beam mom. within 3-sigma
+		//mom_rw_minchi2=bmrw_func->Eval(mom_beam_spec*1000.); //bmrw, set weight if beam mom. within 3-sigma
 		//} //beam-mom (within 3-sigma)
 		//bmrw based on keff [const E-loss]
 		//if ((ke_beam_spec_MeV-mean_Elosscalo_stop)>=mu_min&&(ke_beam_spec_MeV-mean_Elosscalo_stop)<=mu_max) mom_rw_minchi2=gng->Eval(ke_beam_spec_MeV-mean_Elosscalo_stop); //bmrw
 
+		//if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=kerw->Eval(ke_ffbeam_MeV); //new bmrw (const E-loss)
+		if (ke_ff>=mu_kemin&&ke_ff<=mu_kemax) mom_rw_minchi2=kerw->Eval(ke_ff); //new bmrw (using truth)
+
 		//KEend ---------------------------------------------------------------------------//
 		double KEend_true=0;
 		if (beamtrk_Eng->size()) KEend_true=1000.*(beamtrk_Eng->at(-2+beamtrk_Eng->size()));
-	
+
 		//KEs ---------------------------------------------------------------------------------------//
 		//double Eloss_upstream=0; 
 		//if (KE_ff>0) Eloss_upstream=
@@ -1302,7 +1395,7 @@ void ProtonESliceData::Loop() {
 			} //loop over true hits
 		} //if true container not empty
 
-		//thin-slice method ----------------------------------------------------//
+		//Thin-slice method ------------------------------------------------------------------------------------------------------------//
 		//true slice ID
 		//true_sliceID = int(true_endz/thinslicewidth);
 		//true_sliceID = int(range_true/thinslicewidth); //HY:Make sure size of true_trk_len vector is !0, otherwise lost truth info
@@ -1322,7 +1415,7 @@ void ProtonESliceData::Loop() {
 		//true_st_sliceID++;
 		//if (range_true >= 30) true_st_sliceID=int((Emax-KE_ff30)/thinslicewidth);
 		//if (range_true < 30) true_st_sliceID=-1; 
-      		if (true_st_sliceID<0) true_st_sliceID=-1; //KE higher than Emax
+		if (true_st_sliceID<0) true_st_sliceID=-1; //KE higher than Emax
 		if (true_endz < 0) true_st_sliceID=-1; 
 		if (true_st_sliceID >= nthinslices) true_st_sliceID = nthinslices;
 
@@ -1356,7 +1449,7 @@ void ProtonESliceData::Loop() {
 			//reco_st_sliceID++;
 			//if (range_reco>=30.) reco_st_sliceID=int((Emax-KE_reco30)/thinslicewidth);
 			//if (range_reco<30) reco_st_sliceID=-1;
-      			if (reco_st_sliceID<0) reco_st_sliceID=-1; //KE higher than Emax
+			if (reco_st_sliceID<0) reco_st_sliceID=-1; //KE higher than Emax
 			if (reco_endz < 0) reco_st_sliceID = -1; 
 			if (reco_st_sliceID >= nthinslices) reco_st_sliceID = nthinslices;
 
@@ -1419,8 +1512,8 @@ void ProtonESliceData::Loop() {
 				uf.pur_num_st_Inc->Fill(reco_st_sliceID, mom_rw_minchi2);
 
 				uf.response_SliceID_Inc.Fill(reco_sliceID, true_sliceID, mom_rw_minchi2);
-          			uf.response_st_SliceID_Inc.Fill(reco_st_sliceID, true_st_sliceID, mom_rw_minchi2);
-				
+				uf.response_st_SliceID_Inc.Fill(reco_st_sliceID, true_st_sliceID, mom_rw_minchi2);
+
 				uf.res_Inc_reco->Fill(reco_sliceID, mom_rw_minchi2);
 				uf.res_st_Inc_reco->Fill(reco_st_sliceID, mom_rw_minchi2);
 
@@ -1431,7 +1524,7 @@ void ProtonESliceData::Loop() {
 		else { //if NOT passing all cuts
 			if (!isTestSample){
 				uf.response_SliceID_Inc.Miss(true_sliceID, mom_rw_minchi2);
-          			uf.response_st_SliceID_Inc.Miss(true_st_sliceID, mom_rw_minchi2);
+				uf.response_st_SliceID_Inc.Miss(true_st_sliceID, mom_rw_minchi2);
 
 				uf.res_Inc_truth->Fill(true_sliceID, mom_rw_minchi2);
 				uf.res_st_Inc_truth->Fill(true_st_sliceID, mom_rw_minchi2);
@@ -1558,7 +1651,7 @@ void ProtonESliceData::Loop() {
 					//double this_dE=zreco_de[ih].second;
 					double thisZ=primtrk_hitz->at(ih);
 					double thisLen=reco_trklen_accum[ih];
-					
+
 					//int this_sliceID = int(thisLen/thinslicewidth);
 					//ke_reco-=this_dE;
 
@@ -1611,7 +1704,7 @@ void ProtonESliceData::Loop() {
 
 			//truth KEs
 			if (!beamtrk_Eng->empty()) { //if true container not empty
-			//if (!beamtrk_Eng->empty()&&(1000.*beamtrk_Eng->at(0)<600.)) { //if true container not empty
+				//if (!beamtrk_Eng->empty()&&(1000.*beamtrk_Eng->at(0)<600.)) { //if true container not empty
 				std::vector<std::vector<double>> vincE_true(nthinslices);
 				for (int hk=0; hk<(int)beamtrk_Eng->size()-1; ++hk) { //loop over true hits
 					double thisZ=beamtrk_z->at(hk);
@@ -1644,10 +1737,10 @@ void ProtonESliceData::Loop() {
 					//double b=fY1-m*fX1;
 
 					//if (this_incE>(b+m*thisLen)) {
-						//KEtrue_z_inel->Fill(thisZ, this_incE);
-						//KEtrue_range_inel->Fill(thisLen, this_incE);
-						//true_z_range_inel->Fill(thisZ, thisLen);
-						//true_z_range_KEtrue_inel->Fill(thisZ, thisLen, this_incE);
+					//KEtrue_z_inel->Fill(thisZ, this_incE);
+					//KEtrue_range_inel->Fill(thisLen, this_incE);
+					//true_z_range_inel->Fill(thisZ, thisLen);
+					//true_z_range_KEtrue_inel->Fill(thisZ, thisLen, this_incE);
 					//}	
 				}//loop over true hits (last point always has KE = 0)
 
@@ -1662,7 +1755,7 @@ void ProtonESliceData::Loop() {
 				}
 
 				KEtrue_Beam_inel->Fill(1000.*beamtrk_Eng->at(0));
-        			KEtrue_ff_inel->Fill(ke_ff);
+				KEtrue_ff_inel->Fill(ke_ff);
 
 				TVector3 pt0_true(true_stx, true_sty, true_stz);
 				TVector3 pt1_true(true_endx, true_endy, true_endz);
@@ -1670,94 +1763,94 @@ void ProtonESliceData::Loop() {
 				dir_true = dir_true.Unit();
 				true_AngCorr->Fill(dir_true.Z());
 			} //if true container not empty
-		} //if pure inelastic
+			} //if pure inelastic
 
 
-	} //main entry loop
+			} //main entry loop
 
-		//save true inc & int arrays to histograms -------------------------------------//
-		for (int iii = 0; iii<nthinslices+2; ++iii){
-			h_true_incidents->SetBinContent(iii+1, true_incidents[iii]);
-			h_true_st_incidents->SetBinContent(iii+1, true_st_incidents[iii]);
-			h_true_interactions->SetBinContent(iii+1, true_interactions[iii]);
+			//save true inc & int arrays to histograms -------------------------------------//
+			for (int iii = 0; iii<nthinslices+2; ++iii){
+				h_true_incidents->SetBinContent(iii+1, true_incidents[iii]);
+				h_true_st_incidents->SetBinContent(iii+1, true_st_incidents[iii]);
+				h_true_interactions->SetBinContent(iii+1, true_interactions[iii]);
+			}
+
+			//save results -------//
+			uf.SaveHistograms();
+			//CalcXS(uf); //do not need this func
+			SaveHistograms();
+
+			//counting -- summary -----------------------------------------------------//
+			cout<<"\nn_tot:"<<n_tot<<endl;
+			cout<<"n_el:"<<n_el<<endl;
+			cout<<"n_inel:"<<n_inel<<endl;
+			cout<<"n_midcosmic:"<<n_midcosmic<<endl;
+			cout<<"n_midpi:"<<n_midpi<<endl;
+			cout<<"n_midp:"<<n_midp<<endl;
+			cout<<"n_midmu:"<<n_midmu<<endl;
+			cout<<"n_mideg:"<<n_mideg<<endl;
+			cout<<"n_midother"<<n_midother<<endl;
+			cout<<"n_diff:"<<n_tot-(n_el+n_inel+n_midcosmic+n_midpi+n_midp+n_midmu+n_mideg+n_midother)<<endl;
+
+			cout<<"\nn_pan_tot:"<<n_pan_tot<<endl;
+			cout<<"n_el_pan:"<<n_el_pan<<endl;
+			cout<<"n_inel_pan:"<<n_inel_pan<<endl;
+			cout<<"n_midcosmic_pan:"<<n_midcosmic_pan<<endl;
+			cout<<"n_midpi_pan:"<<n_midpi_pan<<endl;
+			cout<<"n_midp_pan:"<<n_midp_pan<<endl;
+			cout<<"n_midmu_pan:"<<n_midmu_pan<<endl;
+			cout<<"n_mideg_pan:"<<n_mideg_pan<<endl;
+			cout<<"n_midother_pan"<<n_midother_pan<<endl;
+			cout<<"n_diff_pan:"<<n_pan_tot-(n_el_pan+n_inel_pan+n_midcosmic_pan+n_midpi_pan+n_midp_pan+n_midmu_pan+n_mideg_pan+n_midother_pan)<<endl;
+
+			cout<<"\nn_calsz_tot:"<<n_calsz_tot<<endl;
+			cout<<"n_el_calsz:"<<n_el_calsz<<endl;
+			cout<<"n_inel_calsz:"<<n_inel_calsz<<endl;
+			cout<<"n_midcosmic_calsz:"<<n_midcosmic_calsz<<endl;
+			cout<<"n_midpi_calsz:"<<n_midpi_calsz<<endl;
+			cout<<"n_midp_calsz:"<<n_midp_calsz<<endl;
+			cout<<"n_midmu_calsz:"<<n_midmu_calsz<<endl;
+			cout<<"n_mideg_calsz:"<<n_mideg_calsz<<endl;
+			cout<<"n_midother_calsz"<<n_midother_calsz<<endl;
+			cout<<"n_diff_calsz:"<<n_calsz_tot-(n_el_calsz+n_inel_calsz+n_midcosmic_calsz+n_midpi_calsz+n_midp_calsz+n_midmu_calsz+n_mideg_calsz+n_midother_calsz)<<endl;
+
+			cout<<"\nn_bq_tot:"<<n_bq_tot<<endl;
+			cout<<"n_el_bq:"<<n_el_bq<<endl;
+			cout<<"n_inel_bq:"<<n_inel_bq<<endl;
+			cout<<"n_midcosmic_bq:"<<n_midcosmic_bq<<endl;
+			cout<<"n_midpi_bq:"<<n_midpi_bq<<endl;
+			cout<<"n_midp_bq:"<<n_midp_bq<<endl;
+			cout<<"n_midmu_bq:"<<n_midmu_bq<<endl;
+			cout<<"n_mideg_bq:"<<n_mideg_bq<<endl;
+			cout<<"n_midother_bq"<<n_midother_bq<<endl;
+			cout<<"n_diff_bq:"<<n_bq_tot-(n_el_bq+n_inel_bq+n_midcosmic_bq+n_midpi_bq+n_midp_bq+n_midmu_bq+n_mideg_bq+n_midother_bq)<<endl;
+
+			cout<<"\nn_recoinel_tot:"<<n_recoinel_tot<<endl;
+			cout<<"n_el_recoinel:"<<n_el_recoinel<<endl;
+			cout<<"n_inel_recoinel:"<<n_inel_recoinel<<endl;
+			cout<<"n_midcosmic_recoinel:"<<n_midcosmic_recoinel<<endl;
+			cout<<"n_midpi_recoinel:"<<n_midpi_recoinel<<endl;
+			cout<<"n_midp_recoinel:"<<n_midp_recoinel<<endl;
+			cout<<"n_midmu_recoinel:"<<n_midmu_recoinel<<endl;
+			cout<<"n_mideg_recoinel:"<<n_mideg_recoinel<<endl;
+			cout<<"n_midother_recoinel"<<n_midother_recoinel<<endl;
+			cout<<"n_diff_recoinel:"<<n_recoinel_tot-(n_el_recoinel+n_inel_recoinel+n_midcosmic_recoinel+n_midpi_recoinel+n_midp_recoinel+n_midmu_recoinel+n_mideg_recoinel+n_midother_recoinel)<<endl;
+
+			cout<<"\nn_recoel_tot:"<<n_recoel_tot<<endl;
+			cout<<"n_el_recoel:"<<n_el_recoel<<endl;
+			cout<<"n_inel_recoel:"<<n_inel_recoel<<endl;
+			cout<<"n_midcosmic_recoel:"<<n_midcosmic_recoel<<endl;
+			cout<<"n_midpi_recoel:"<<n_midpi_recoel<<endl;
+			cout<<"n_midp_recoel:"<<n_midp_recoel<<endl;
+			cout<<"n_midmu_recoel:"<<n_midmu_recoel<<endl;
+			cout<<"n_mideg_recoel:"<<n_mideg_recoel<<endl;
+			cout<<"n_midother_recoel"<<n_midother_recoel<<endl;
+			cout<<"n_diff_recoel:"<<n_recoel_tot-(n_el_recoel+n_inel_recoel+n_midcosmic_recoel+n_midpi_recoel+n_midp_recoel+n_midmu_recoel+n_mideg_recoel+n_midother_recoel)<<endl;
+
+			cout<<"\n\n\n n_test_recoinel:"<<n_test_recoinel<<" n_test_recoinel_sample:"<<n_test_recoinel_sample<<" n_kinel:"<<n_kinel<<" n_kinel2:"<<n_kinel2<<endl;
+
+			//myfile.close();
+
+
+
 		}
-
-		//save results -------//
-		uf.SaveHistograms();
-		//CalcXS(uf); //do not need this func
-		SaveHistograms();
-
-		//counting -- summary -----------------------------------------------------//
-		cout<<"\nn_tot:"<<n_tot<<endl;
-		cout<<"n_el:"<<n_el<<endl;
-		cout<<"n_inel:"<<n_inel<<endl;
-		cout<<"n_midcosmic:"<<n_midcosmic<<endl;
-		cout<<"n_midpi:"<<n_midpi<<endl;
-		cout<<"n_midp:"<<n_midp<<endl;
-		cout<<"n_midmu:"<<n_midmu<<endl;
-		cout<<"n_mideg:"<<n_mideg<<endl;
-		cout<<"n_midother"<<n_midother<<endl;
-		cout<<"n_diff:"<<n_tot-(n_el+n_inel+n_midcosmic+n_midpi+n_midp+n_midmu+n_mideg+n_midother)<<endl;
-
-		cout<<"\nn_pan_tot:"<<n_pan_tot<<endl;
-		cout<<"n_el_pan:"<<n_el_pan<<endl;
-		cout<<"n_inel_pan:"<<n_inel_pan<<endl;
-		cout<<"n_midcosmic_pan:"<<n_midcosmic_pan<<endl;
-		cout<<"n_midpi_pan:"<<n_midpi_pan<<endl;
-		cout<<"n_midp_pan:"<<n_midp_pan<<endl;
-		cout<<"n_midmu_pan:"<<n_midmu_pan<<endl;
-		cout<<"n_mideg_pan:"<<n_mideg_pan<<endl;
-		cout<<"n_midother_pan"<<n_midother_pan<<endl;
-		cout<<"n_diff_pan:"<<n_pan_tot-(n_el_pan+n_inel_pan+n_midcosmic_pan+n_midpi_pan+n_midp_pan+n_midmu_pan+n_mideg_pan+n_midother_pan)<<endl;
-
-		cout<<"\nn_calsz_tot:"<<n_calsz_tot<<endl;
-		cout<<"n_el_calsz:"<<n_el_calsz<<endl;
-		cout<<"n_inel_calsz:"<<n_inel_calsz<<endl;
-		cout<<"n_midcosmic_calsz:"<<n_midcosmic_calsz<<endl;
-		cout<<"n_midpi_calsz:"<<n_midpi_calsz<<endl;
-		cout<<"n_midp_calsz:"<<n_midp_calsz<<endl;
-		cout<<"n_midmu_calsz:"<<n_midmu_calsz<<endl;
-		cout<<"n_mideg_calsz:"<<n_mideg_calsz<<endl;
-		cout<<"n_midother_calsz"<<n_midother_calsz<<endl;
-		cout<<"n_diff_calsz:"<<n_calsz_tot-(n_el_calsz+n_inel_calsz+n_midcosmic_calsz+n_midpi_calsz+n_midp_calsz+n_midmu_calsz+n_mideg_calsz+n_midother_calsz)<<endl;
-
-		cout<<"\nn_bq_tot:"<<n_bq_tot<<endl;
-		cout<<"n_el_bq:"<<n_el_bq<<endl;
-		cout<<"n_inel_bq:"<<n_inel_bq<<endl;
-		cout<<"n_midcosmic_bq:"<<n_midcosmic_bq<<endl;
-		cout<<"n_midpi_bq:"<<n_midpi_bq<<endl;
-		cout<<"n_midp_bq:"<<n_midp_bq<<endl;
-		cout<<"n_midmu_bq:"<<n_midmu_bq<<endl;
-		cout<<"n_mideg_bq:"<<n_mideg_bq<<endl;
-		cout<<"n_midother_bq"<<n_midother_bq<<endl;
-		cout<<"n_diff_bq:"<<n_bq_tot-(n_el_bq+n_inel_bq+n_midcosmic_bq+n_midpi_bq+n_midp_bq+n_midmu_bq+n_mideg_bq+n_midother_bq)<<endl;
-
-		cout<<"\nn_recoinel_tot:"<<n_recoinel_tot<<endl;
-		cout<<"n_el_recoinel:"<<n_el_recoinel<<endl;
-		cout<<"n_inel_recoinel:"<<n_inel_recoinel<<endl;
-		cout<<"n_midcosmic_recoinel:"<<n_midcosmic_recoinel<<endl;
-		cout<<"n_midpi_recoinel:"<<n_midpi_recoinel<<endl;
-		cout<<"n_midp_recoinel:"<<n_midp_recoinel<<endl;
-		cout<<"n_midmu_recoinel:"<<n_midmu_recoinel<<endl;
-		cout<<"n_mideg_recoinel:"<<n_mideg_recoinel<<endl;
-		cout<<"n_midother_recoinel"<<n_midother_recoinel<<endl;
-		cout<<"n_diff_recoinel:"<<n_recoinel_tot-(n_el_recoinel+n_inel_recoinel+n_midcosmic_recoinel+n_midpi_recoinel+n_midp_recoinel+n_midmu_recoinel+n_mideg_recoinel+n_midother_recoinel)<<endl;
-
-		cout<<"\nn_recoel_tot:"<<n_recoel_tot<<endl;
-		cout<<"n_el_recoel:"<<n_el_recoel<<endl;
-		cout<<"n_inel_recoel:"<<n_inel_recoel<<endl;
-		cout<<"n_midcosmic_recoel:"<<n_midcosmic_recoel<<endl;
-		cout<<"n_midpi_recoel:"<<n_midpi_recoel<<endl;
-		cout<<"n_midp_recoel:"<<n_midp_recoel<<endl;
-		cout<<"n_midmu_recoel:"<<n_midmu_recoel<<endl;
-		cout<<"n_mideg_recoel:"<<n_mideg_recoel<<endl;
-		cout<<"n_midother_recoel"<<n_midother_recoel<<endl;
-		cout<<"n_diff_recoel:"<<n_recoel_tot-(n_el_recoel+n_inel_recoel+n_midcosmic_recoel+n_midpi_recoel+n_midp_recoel+n_midmu_recoel+n_mideg_recoel+n_midother_recoel)<<endl;
-
-		cout<<"\n\n\n n_test_recoinel:"<<n_test_recoinel<<" n_test_recoinel_sample:"<<n_test_recoinel_sample<<" n_kinel:"<<n_kinel<<" n_kinel2:"<<n_kinel2<<endl;
-
-		myfile.close();
-		
-
-
-}
