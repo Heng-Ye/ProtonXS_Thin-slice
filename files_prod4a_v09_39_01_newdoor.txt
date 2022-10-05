@@ -1,0 +1,1 @@
+root://fndcadoor.fnal.gov/pnfs/fnal.gov/usr/dune/persistent/users/hyliao/protodune/proton/v09_39_01/PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1_All/MC_sceon_All.root

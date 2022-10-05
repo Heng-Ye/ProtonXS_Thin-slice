@@ -21,7 +21,9 @@
 
 #for e-loss calculation
 #class_name="ProtonBetheBlochKE"
-class_name="ProtonApplyMomentumReweight"
+#class_name="ProtonApplyMomentumReweight"
+#xs
+class_name="ProtonESliceData"
 
 #for KEff study
 #class_name="ProtonKEff"
@@ -55,7 +57,8 @@ g++ makemcprotonnorw_ana.cc `root-config --libs --cflags` -o makeproton_ana
 #./makeproton_ana files_prod4a_new2.txt $class_name
 #./makeproton_ana files_prod4a_new1.txt $class_name
 #./makeproton_ana files_prod4a_new2.txt $class_name
-./makeproton_ana files_prod4a_v09_39_01.txt $class_name
+#./makeproton_ana files_prod4a_v09_39_01.txt $class_name
+./makeproton_ana files_prod4a_v09_39_01_newdoor.txt $class_name
 
 #[4]Fix bugs in the generated makeclass module & create analysis file based on the template
 sed '/Init(tree)\;/i if (tree-\>InheritsFrom(\"TChain\")) ((TChain\*)tree)-\>LoadTree(0);' $class_name".h" > $class_name"_0.h"

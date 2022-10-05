@@ -63,6 +63,7 @@ R__LOAD_LIBRARY(libRooUnfold.so) //load share lib
 #include "../headers/RooUnfoldBayes.h"
 #include "../headers/RooUnfoldResponse.h"
 
+
 void make_ThinSliceEdataXS() {
 
 	//TString outpath="./plots_XS_ThinsliceE/";
@@ -397,7 +398,7 @@ void make_ThinSliceEdataXS() {
 	//data_int_bkgfree->Add(mc_int_mideg, -1);
 	//data_int_bkgfree->Add(mc_int_midother, -1);
 
-	//unfolding ---------------------------------------------------------------------------------------------//
+	//unfolding ----------------------------------------------------------------------------------------------------------------//
 	//response matrix from mc
 	//Response matrix as a 2D-histogram: (x,y)=(measured,truth)
 	RooUnfoldResponse *res_inc=(RooUnfoldResponse*)f_mc->Get("response_SliceID_Inc"); res_inc->SetName("res_inc");
@@ -415,8 +416,9 @@ void make_ThinSliceEdataXS() {
 	std::cout<<"res_inc->GetNbinsTruth():"<<res_inc->GetNbinsTruth()<<std::endl; 
 
 	//Unfolding
-	RooUnfoldBayes uf_inc (res_inc, data_inc_bkgfree, 4); //inc
-	RooUnfoldBayes uf_st_inc (res_st_inc, data_st_inc_bkgfree, 4); //inc
+	int n_iteration=4;
+	RooUnfoldBayes uf_inc (res_inc, data_inc_bkgfree, n_iteration); //inc
+	RooUnfoldBayes uf_st_inc (res_st_inc, data_st_inc_bkgfree, n_iteration); //inc
 
 	//std::cout<<"GetIterations:"<<uf_inc.GetIterations()<<std::endl;
 	//std::cout<<"GetSmoothing:"<<uf_inc.GetSmoothing()<<std::endl;
@@ -427,7 +429,7 @@ void make_ThinSliceEdataXS() {
 	//TH1D* res_Int_truth=(TH1D*)f_mc->Get("res_Int_truth"); res_Int_truth->SetName("res_Int_truth");
 	//RooUnfoldResponse res_int(res_Int_reco, res_Int_truth, res_int);
 	//RooUnfoldResponse *res_int=new RooUnfoldResponse(res_Int_reco, res_Int_truth, "res_int","res_int");
-	RooUnfoldBayes uf_int (res_int, data_int_bkgfree, 4);
+	RooUnfoldBayes uf_int (res_int, data_int_bkgfree, n_iteration);
 
 	//std::cout<<"data_inc_bkgfree x-axis bin:"<<data_inc_bkgfree->GetNbinsX()<<std::endl;
 	//std::cout<<"data_int_bkgfree x-axis bin:"<<data_int_bkgfree->GetNbinsX()<<std::endl;
@@ -1498,10 +1500,26 @@ void make_ThinSliceEdataXS() {
 
         TLegend *leg_xs = new TLegend(0.6,0.6,0.9,0.85);
         leg_xs->SetFillStyle(0);
-        leg_xs->AddEntry(total_inel_KE, "Geant4", "l");
+        leg_xs->AddEntry(gr_recoxs, "Data", "pe");
         leg_xs->AddEntry(gr_truexs, "MC Truth", "pe");
+        leg_xs->AddEntry(total_inel_KE, "Geant4", "l");
         //leg_xs->AddEntry(gr_recoxs, "MC Reco", "pe");
         leg_xs->Draw();
+
+   	//pDUNE Logo
+        float logo_y=ymax+15;
+        TLatex **txt_pdune1=new TLatex*[1];
+        txt_pdune1[0]=new TLatex(xmin, logo_y, Form("#bf{DUNE:ProtoDUNE-SP}"));
+        txt_pdune1[0]->SetTextColor(1);
+        txt_pdune1[0]->Draw();
+        //
+        //Beam Logo
+        TLatex **txt_p1=new TLatex*[1];
+        //txt_p1[0]=new TLatex(xmax-6.3, logo_y, Form("Protons (1 GeV/c)")); //x:0-20
+        txt_p1[0]=new TLatex(xmax-150, logo_y, Form("Protons (1 GeV/c)")); //x:0-40
+        txt_p1[0]->SetTextColor(1);
+        txt_p1[0]->SetTextSize(0.05);
+        txt_p1[0]->Draw();
 
 
 	//c_xs->Print(Form("%sxs_data.eps",outpath.Data()));
