@@ -73,7 +73,6 @@ void make_ThinSliceEdataXS() {
 	//TString outpath="./plots_DataXS_ThinsliceE_StSlicdID+0.5/";
 	//TString outpath="./plots_XS_ThinsliceE_StSlicdIDp0.5_nobmrw/";
 
-	TString outpath="./plots_XS_Eslice/";
 
 	//TString outpath="./plots_XS_ThinsliceE_StSlicdID++/";
 	//TString outpath="./plots_XS_ThinsliceE_plus1/";
@@ -135,8 +134,27 @@ void make_ThinSliceEdataXS() {
         //TString fmc="../prod4areco2_mc_ThinSliceE_dE20MeV_40slcs_nobmrw_stslcplus0.5.root";
         //TString fdata="../prod4areco2_mc_ThinSliceE_dE20MeV_40slcs_nobmrw_stslcplus0.5.root";
 
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw.root";
+        //TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw.root";
+        
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_v09_39_01.root";
+        //TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_v09_39_01.root";
+
+	TString outpath="./plots_XS_Eslice/";
         TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_v09_39_01.root";
         TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01.root";
+
+	//TString outpath="./plots_XS_Eslice_bmrwkebeamff/";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_v09_39_01.root";
+        //TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS/prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrwkebeamff_v09_39_01.root";
+
+	//TString outpath="./plots_XS_Eslice_MC_nobmrw/";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_v09_39_01.root";
+        //TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_v09_39_01.root";
+
+	//TString outpath="./plots_XS_Eslice_MC_bmrw/";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_v09_39_01.root";
+        //TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_v09_39_01.root";
 
 	//reco string pre-fix --------------------------------------//
 	TString str_inc=Form("h_recosliceid_allevts_cuts");
@@ -327,6 +345,15 @@ void make_ThinSliceEdataXS() {
 	cout<<"INT purity (el/all):"<<100.*n_mc_int_el/n_mc_int<<endl;
 	cout<<"INT purity (misidp/all):"<<100.*n_mc_int_midp/n_mc_int<<endl;
 
+	//MC truth ---------------------------------------------------------------------------------------
+	//inc
+	double scale_true=(double)n_data_inc/(double)mc_truesliceID_all->Integral();
+	mc_truesliceID_all->Scale(scale_true);
+	mc_true_st_sliceID_all->Scale(scale_true);
+
+	//int
+	mc_truesliceID_inel->Scale(scale_true);
+	//------------------------------------------------------------------------------------------------
 
 	mc_int_inel->Scale(norm_mc_int);
 	mc_int_el->Scale(norm_mc_int);
@@ -447,6 +474,25 @@ void make_ThinSliceEdataXS() {
 	data_int_uf->SetNameTitle("data_int_uf", "Unfolded interacting protons; Slice ID; Events");
 	//unfold.IncludeSystematics(2); // Default 1, propagates both statistical+systematics, =2 no errors included.
 
+	//draw correlation/response matrix ----------------------------------------------//
+  	TH2D *corr_inc = (TH2D*)res_inc->Hresponse();
+  	TH2D *corr_inc_st = (TH2D*)res_st_inc->Hresponse();
+  	TH2D *corr_int = (TH2D*)res_int->Hresponse();
+  	corr_inc->SetTitle("All Protons; Reco Slice ID (End Point); True Slice ID (End Point)");
+  	corr_inc_st->SetTitle("All Protons; Reco Start Slice ID; True Start Slice ID");
+  	corr_int->SetTitle("Inelastic Scattering Proton Candidates; Reco Slice ID; True Slice ID");
+
+	TCanvas *c_corrmtx_inc=new TCanvas(Form("c_corrmtx_inc"),"",900, 600);
+	corr_inc->Draw("colz");
+	c_corrmtx_inc->Print(Form("%sCorr_matrix_inc.eps",outpath.Data()));
+
+	TCanvas *c_corrmtx_inc_st=new TCanvas(Form("c_corrmtx_inc_st"),"",900, 600);
+	corr_inc_st->Draw("colz");
+	c_corrmtx_inc_st->Print(Form("%sCorr_matrix_inc_st.eps",outpath.Data()));
+
+	TCanvas *c_corrmtx_int=new TCanvas(Form("c_corrmtx_int"),"",900, 600);
+	corr_int->Draw("colz");
+	c_corrmtx_int->Print(Form("%sCorr_matrix_int.eps",outpath.Data()));
 
 	//draw slideID to KE conversion map ----------------------------------------//
 	TCanvas *c_map=new TCanvas(Form("c_map"),"",900, 600);
@@ -695,7 +741,8 @@ void make_ThinSliceEdataXS() {
 
 	TLegend *leg_st_inc = new TLegend(0.2,0.6,0.8,0.9);
 	leg_st_inc->SetFillStyle(0);
-	leg_st_inc->AddEntry(data_inc, "Fake Data", "ep");
+	//leg_st_inc->AddEntry(data_inc, "Fake Data", "ep");
+	leg_st_inc->AddEntry(data_inc, "Data", "ep");
 	leg_st_inc->AddEntry(mc_inc_inel, "Inel","f");
 	leg_st_inc->AddEntry(mc_inc_el, "El","f");
 
@@ -734,7 +781,8 @@ void make_ThinSliceEdataXS() {
 
 	TLegend *leg_inc = new TLegend(0.2,0.6,0.8,0.9);
 	leg_inc->SetFillStyle(0);
-	leg_inc->AddEntry(data_inc, "Fake Data", "ep");
+	//leg_inc->AddEntry(data_inc, "Fake Data", "ep");
+	leg_inc->AddEntry(data_inc, "Data", "ep");
 	leg_inc->AddEntry(mc_inc_inel, "Inel","f");
 	leg_inc->AddEntry(mc_inc_el, "El","f");
 
@@ -848,14 +896,20 @@ void make_ThinSliceEdataXS() {
         data_inc_uf->SetMarkerStyle(21);
 	data_inc_uf->Draw("ep same");
 
-	mc_true_incidents->SetLineColor(2);
-	mc_true_incidents->Draw("hist same");
+	//mc_true_incidents->SetLineColor(2);
+	//mc_true_incidents->Draw("hist same");
 
-	TLegend *leg_inc3 = new TLegend(0.4,0.6,0.9,0.9);
+	mc_truesliceID_all->SetLineColor(2);
+	mc_truesliceID_all->Draw("hist same");
+
+
+	//TLegend *leg_inc3 = new TLegend(0.4,0.6,0.9,0.9);
+	TLegend *leg_inc3 = new TLegend(0.1,0.6,0.6,0.9);
 	leg_inc3->SetFillStyle(0);
 	leg_inc3->AddEntry(data_inc_bkgfree, "Selected+BKG Subtraction","ep");
 	leg_inc3->AddEntry(data_inc_uf, "Unfolding","ep");
-	leg_inc3->AddEntry(mc_true_incidents,"MC Truth","l");
+	//leg_inc3->AddEntry(mc_true_incidents,"MC Truth","l");
+	leg_inc3->AddEntry(mc_truesliceID_all,"MC Truth","l");
 	leg_inc3->Draw();
 	c_inc3->Print(Form("%sdata_recosliceid_uf_inc.eps",outpath.Data()));
 
@@ -882,14 +936,18 @@ void make_ThinSliceEdataXS() {
         data_st_inc_uf->SetMarkerStyle(21);
 	data_st_inc_uf->Draw("ep same");
 
-	mc_true_st_incidents->SetLineColor(2);
-	mc_true_st_incidents->Draw("hist same");
+	//mc_true_st_incidents->SetLineColor(2);
+	//mc_true_st_incidents->Draw("hist same");
+
+	mc_true_st_sliceID_all->SetLineColor(2);
+	mc_true_st_sliceID_all->Draw("hist same");
 
 	TLegend *leg_st_inc3 = new TLegend(0.4,0.6,0.9,0.9);
 	leg_st_inc3->SetFillStyle(0);
 	leg_st_inc3->AddEntry(data_st_inc_bkgfree, "Selected+BKG Subtraction","ep");
 	leg_st_inc3->AddEntry(data_st_inc_uf, "Unfolding","ep");
-	leg_st_inc3->AddEntry(mc_true_st_incidents,"MC Truth","l");
+	//leg_st_inc3->AddEntry(mc_true_st_incidents,"MC Truth","l");
+	leg_st_inc3->AddEntry(mc_true_st_sliceID_all,"MC Truth","l");
 	leg_st_inc3->Draw();
 	c_st_inc3->Print(Form("%sdata_reco_st_sliceid_uf_inc.eps",outpath.Data()));
 
@@ -1085,7 +1143,7 @@ void make_ThinSliceEdataXS() {
 	//ymax_evt=500;
 	ymax_evt=6000;
 	TH2D *f2d_int=new TH2D("f2d_int",Form("%s","Proton Inelastic Scatterings"),nthinslices+1,0,nthinslices+1,80,0,ymax_evt);
-	f2d_int->SetTitle("Proton Inelastic Scatterings; Reco SliceID; Events");
+	f2d_int->SetTitle("Inelastic Scattering Proton Candidates; Reco SliceID; Events");
 	f2d_int->GetYaxis()->SetTitleOffset(1.3);
 	f2d_int->Draw();
 	hs_int->Draw("hist same");
@@ -1094,7 +1152,8 @@ void make_ThinSliceEdataXS() {
 
 	TLegend *leg_int = new TLegend(0.2,0.6,0.8,0.9);
 	leg_int->SetFillStyle(0);
-	leg_int->AddEntry(data_int, "Fake Data", "ep");
+	//leg_int->AddEntry(data_int, "Fake Data", "ep");
+	leg_int->AddEntry(data_int, "Data", "ep");
 	leg_int->AddEntry(mc_int_inel, "Inel","f");
 	leg_int->AddEntry(mc_int_el, "El","f");
 
@@ -1108,7 +1167,7 @@ void make_ThinSliceEdataXS() {
 
 	leg_int->SetNColumns(3);
 	leg_int->Draw();
-	c_int->Print(Form("%sfakedata_recosliceid_int.eps",outpath.Data()));
+	c_int->Print(Form("%sdata_recosliceid_int.eps",outpath.Data()));
 
 
 	//[2]data with bkg subtraction
@@ -1121,11 +1180,15 @@ void make_ThinSliceEdataXS() {
 	c_int2->Divide(1,1);
 	c_int2->cd(1);
 	TH2D *f2d_int2=new TH2D("f2d_int2",Form("%s","INT"),nthinslices+1,0,nthinslices+1,80,0,ymax_evt);
-	f2d_int2->SetTitle("Proton Inelasic Scatterings; Reco SliceID; Events");
+	f2d_int2->SetTitle("Inelasic Scattering Proton Candidates; Reco SliceID; Events");
 	f2d_int2->GetYaxis()->SetTitleOffset(1.3);
 	f2d_int2->Draw();
 	mc_int_inel->SetLineColor(2); //mc 
 	mc_int_inel->Draw("hist same");
+
+	//mc_truesliceID_inel->SetLineColor(2); //mc 
+	//mc_truesliceID_inel->Draw("hist same");
+
 	data_int->Draw("ep same");
 	data_int_bkgfree->SetMarkerColor(1);
 	data_int_bkgfree->SetLineColor(1);
@@ -1164,14 +1227,18 @@ void make_ThinSliceEdataXS() {
         data_int_uf->SetMarkerStyle(21);
 	data_int_uf->Draw("ep same");
 
-	mc_true_interactions->SetLineColor(2);
-	mc_true_interactions->Draw("hist same");
+	//mc_true_interactions->SetLineColor(2);
+	//mc_true_interactions->Draw("hist same");
+
+	mc_truesliceID_inel->SetLineColor(2);
+	mc_truesliceID_inel->Draw("hist same");
 
 	TLegend *leg_int3 = new TLegend(0.2,0.6,0.8,0.9);
 	leg_int3->SetFillStyle(0);
 	leg_int3->AddEntry(data_int_bkgfree, "Selected+BKG Subtraction","ep");
 	leg_int3->AddEntry(data_int_uf, "Unfolding","ep");
-	leg_int3->AddEntry(mc_true_interactions,"MC Truth [Inel]","l");
+	//leg_int3->AddEntry(mc_true_interactions,"MC Truth [Inel]","l");
+	leg_int3->AddEntry(mc_truesliceID_inel,"MC Truth [Inel]","l");
 	//leg_int2->SetNColumns(3);
 	leg_int3->Draw();
 
@@ -1190,7 +1257,7 @@ void make_ThinSliceEdataXS() {
 	float ymax_eff_int=1.2;
 	//TH2D *f2d_int4=new TH2D("f2d_int4",Form("%s",""),22,-1,21,10,0,ymax_eff_int);
 	TH2D *f2d_int4=new TH2D("f2d_int4",Form("%s",""),nthinslices+2,-1,nthinslices+1,10,0,ymax_eff_int);
-	f2d_int4->SetTitle("Proton Inelastic Scatterings; Reco SliceID; Efficiency");
+	f2d_int4->SetTitle("Inelastic Scattering Proton Candidates; Reco SliceID; Efficiency");
 	f2d_int4->Draw("");
 	eff_int->Draw("same");
 
@@ -1455,8 +1522,11 @@ void make_ThinSliceEdataXS() {
 	c_xs->Divide(1,1);
 	c_xs->cd(1);
 
-        float ymax=1200;
-        float xmax=460;
+        //float ymax=1200;
+        float ymax=1400;
+        //float xmax=600;
+        float xmax=400;
+        //float xmax=460;
         //float xmax=620;
         float xmin=0;
 
@@ -1516,15 +1586,31 @@ void make_ThinSliceEdataXS() {
         //Beam Logo
         TLatex **txt_p1=new TLatex*[1];
         //txt_p1[0]=new TLatex(xmax-6.3, logo_y, Form("Protons (1 GeV/c)")); //x:0-20
-        txt_p1[0]=new TLatex(xmax-150, logo_y, Form("Protons (1 GeV/c)")); //x:0-40
+        txt_p1[0]=new TLatex(xmax-120, logo_y, Form("Protons (1 GeV/c)")); //x:0-40
         txt_p1[0]->SetTextColor(1);
         txt_p1[0]->SetTextSize(0.05);
         txt_p1[0]->Draw();
 
 
-	//c_xs->Print(Form("%sxs_data.eps",outpath.Data()));
-	c_xs->Print(Form("%sxs_data_noreco.eps",outpath.Data()));
+	c_xs->Print(Form("%sxs_data.eps",outpath.Data()));
+	//c_xs->Print(Form("%sxs_data_noreco.eps",outpath.Data()));
 
+        TH2D *f2d_xs_ext=new TH2D("f2d_xs_ext","",450,xmin,600,ymax,0,ymax);
+        f2d_xs_ext->GetXaxis()->SetTitle("Proton Kinetic Energy [MeV]");
+        f2d_xs_ext->GetYaxis()->SetTitleOffset(1.3);
+        f2d_xs_ext->GetYaxis()->SetTitle("P-Ar inelastic cross section [mb]");
+	f2d_xs_ext->Draw();
+        total_inel_KE->Draw("c same");
+        gr_truexs->Draw("p same");
+        gr_recoxs->Draw("p same");
+        leg_xs->Draw();
+        txt_pdune1[0]->Draw();
+        TLatex **txt2_p1=new TLatex*[1];
+        txt2_p1[0]=new TLatex(600-120, logo_y, Form("Protons (1 GeV/c)")); //x:0-40
+        txt2_p1[0]->Draw();
+	c_xs->Print(Form("%sxs_data_largerrange.eps",outpath.Data()));
+
+	
 
 	//output files ----------------------------------------------------------------------------------------------//
 	gr_recoxs->SetName("gr_recoxs");
