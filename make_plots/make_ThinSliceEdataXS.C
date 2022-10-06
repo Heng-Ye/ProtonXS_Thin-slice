@@ -140,13 +140,13 @@ void make_ThinSliceEdataXS() {
         //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_v09_39_01.root";
         //TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_v09_39_01.root";
 
-	TString outpath="./plots_XS_Eslice/";
-        TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_v09_39_01.root";
-        TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01.root";
-
-	//TString outpath="./plots_XS_Eslice_bmrwkebeamff/";
+	//TString outpath="./plots_XS_Eslice/";
         //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_v09_39_01.root";
-        //TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS/prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrwkebeamff_v09_39_01.root";
+        //TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01.root";
+
+	//TString outpath="./plots_XS_Eslice_bmrwkebeamffit/";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_v09_39_01.root";
+        //TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01.root";
 
 	//TString outpath="./plots_XS_Eslice_MC_nobmrw/";
         //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_v09_39_01.root";
@@ -155,6 +155,12 @@ void make_ThinSliceEdataXS() {
 	//TString outpath="./plots_XS_Eslice_MC_bmrw/";
         //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_v09_39_01.root";
         //TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_v09_39_01.root";
+
+	//The One that has the best result: BMRW:=(KEBeam-dE)(data)/(KEBeam-dE)(MC)
+	//TString outpath="./plots_XS_Eslice_bmrwkebeamff_subtractMisIDP0.89/";
+	TString outpath="./plots_XS_Eslice_bmrwkebeamff/";
+        TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrwkebeamff_v09_39_01.root";
+        TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01.root";
 
 	//reco string pre-fix --------------------------------------//
 	TString str_inc=Form("h_recosliceid_allevts_cuts");
@@ -401,26 +407,27 @@ void make_ThinSliceEdataXS() {
 	TH1D* data_st_inc_bkgfree=(TH1D *)data_st_inc->Clone("data_st_inc_bkgfree"); data_st_inc_bkgfree->SetName("data_st_inc_bkgfree");	
 	TH1D* data_int_bkgfree=(TH1D *)data_int->Clone("data_int_bkgfree"); data_int_bkgfree->SetName("data_int_bkgfree");	
 
+	double scal_fact_misidp=-1;
 	//inc
 	//data_inc_bkgfree->Add(mc_inc_el, -1);
 	//data_inc_bkgfree->Add(mc_inc_midcosmic, -1);
 	//data_inc_bkgfree->Add(mc_inc_midpi, -1);
-	data_inc_bkgfree->Add(mc_inc_midp, -1);
+	data_inc_bkgfree->Add(mc_inc_midp, scal_fact_misidp);
 	//data_inc_bkgfree->Add(mc_inc_midmu, -1);
 	//data_inc_bkgfree->Add(mc_inc_mideg, -1);
 	//data_inc_bkgfree->Add(mc_inc_midother, -1);
 	//data_inc_bkgfree->Multiply(pur_inc);
 	//
-	data_st_inc_bkgfree->Add(mc_st_inc_midp, -1);
+	data_st_inc_bkgfree->Add(mc_st_inc_midp, scal_fact_misidp);
 
 	//
 	//Note: Numerical value of errorbar after subtraction is correct, i.e. (s-b)+-sqrt(s+b)	
 	
 	//int
-	data_int_bkgfree->Add(mc_int_el, -1);
+	data_int_bkgfree->Add(mc_int_el, scal_fact_misidp);
 	//data_int_bkgfree->Add(mc_int_midcosmic, -1);
 	//data_int_bkgfree->Add(mc_int_midpi, -1);
-	data_int_bkgfree->Add(mc_int_midp, -1);
+	data_int_bkgfree->Add(mc_int_midp, scal_fact_misidp);
 	//data_int_bkgfree->Add(mc_int_midmu, -1);
 	//data_int_bkgfree->Add(mc_int_mideg, -1);
 	//data_int_bkgfree->Add(mc_int_midother, -1);
@@ -1606,7 +1613,7 @@ void make_ThinSliceEdataXS() {
         leg_xs->Draw();
         txt_pdune1[0]->Draw();
         TLatex **txt2_p1=new TLatex*[1];
-        txt2_p1[0]=new TLatex(600-120, logo_y, Form("Protons (1 GeV/c)")); //x:0-40
+        txt2_p1[0]=new TLatex(600-180, logo_y, Form("Protons (1 GeV/c)")); //x:0-40
         txt2_p1[0]->Draw();
 	c_xs->Print(Form("%sxs_data_largerrange.eps",outpath.Data()));
 
