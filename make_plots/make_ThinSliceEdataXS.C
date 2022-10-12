@@ -481,25 +481,119 @@ void make_ThinSliceEdataXS() {
 	data_int_uf->SetNameTitle("data_int_uf", "Unfolded interacting protons; Slice ID; Events");
 	//unfold.IncludeSystematics(2); // Default 1, propagates both statistical+systematics, =2 no errors included.
 
-	//draw correlation/response matrix ----------------------------------------------//
-  	TH2D *corr_inc = (TH2D*)res_inc->Hresponse();
-  	TH2D *corr_inc_st = (TH2D*)res_st_inc->Hresponse();
-  	TH2D *corr_int = (TH2D*)res_int->Hresponse();
-  	corr_inc->SetTitle("All Protons; Reco Slice ID (End Point); True Slice ID (End Point)");
-  	corr_inc_st->SetTitle("All Protons; Reco Start Slice ID; True Start Slice ID");
-  	corr_int->SetTitle("Inelastic Scattering Proton Candidates; Reco Slice ID; True Slice ID");
+	//2d hit matrix of reco and true -------------------------------------------------------------//
+  	TH2D *hit_inc = (TH2D*)res_inc->Hresponse();
+  	TH2D *hit_inc_st = (TH2D*)res_st_inc->Hresponse();
+  	TH2D *hit_int = (TH2D*)res_int->Hresponse();
+  	hit_inc->SetTitle("Incident Protons; Reco Slice ID (End Point); True Slice ID (End Point)");
+  	hit_inc_st->SetTitle("Incident Protons; Reco Start Slice ID; True Start Slice ID");
+  	hit_int->SetTitle("Inelastic Scattering Proton Candidates; Reco Slice ID; True Slice ID");
 
-	TCanvas *c_corrmtx_inc=new TCanvas(Form("c_corrmtx_inc"),"",900, 600);
+	//gStyle->SetPalette(60);
+	gStyle->SetPalette(104);
+
+	TCanvas *c_hit_inc=new TCanvas(Form("c_hit_inc"),"",900, 600);
+	c_hit_inc->SetLogz();
+	hit_inc->Draw("colz");
+	c_hit_inc->Print(Form("%sHit_matrix_inc.eps",outpath.Data()));
+
+	TCanvas *c_hit_inc_st=new TCanvas(Form("c_hit_inc_st"),"",900, 600);
+	hit_inc_st->Draw("colz");
+	c_hit_inc_st->Print(Form("%sHit_matrix_inc_st.eps",outpath.Data()));
+
+	TCanvas *c_hit_int=new TCanvas(Form("c_hit_int"),"",900, 600);
+	hit_int->Draw("colz");
+	c_hit_int->Print(Form("%sHit_matrix_int.eps",outpath.Data()));
+
+	//Covariance matrix (covariance shows you how the two variables differ) ----------------------------------------------------------------//
+	TMatrixD cov_matrix_inc = uf_inc.Ereco();
+	TMatrixD cov_matrix_inc_st = uf_st_inc.Ereco();
+	TMatrixD cov_matrix_int = uf_int.Ereco();
+	TH2D *covariance_inc = new TH2D(cov_matrix_inc);
+	TH2D *covariance_inc_st = new TH2D(cov_matrix_inc_st);
+	TH2D *covariance_int = new TH2D(cov_matrix_int);
+
+	TCanvas *c_cov_inc=new TCanvas(Form("c_cov_inc"),"",900, 600);
+  	covariance_inc->SetTitle("Covariance Matrix of Incident Protons; Reco Slice ID; True Slice ID");
+	covariance_inc->Draw("colz");
+	c_cov_inc->Print(Form("%sCov_inc.eps",outpath.Data()));
+
+	TCanvas *c_cov_inc_st=new TCanvas(Form("c_cov_inc_st"),"",900, 600);
+  	covariance_inc_st->SetTitle("Covariance Matrix of Incident Protons; Reco Start Slice ID; True Start Slice ID");
+	covariance_inc_st->Draw("colz");
+	c_cov_inc_st->Print(Form("%sCov_inc_st.eps",outpath.Data()));
+
+	TCanvas *c_cov_int=new TCanvas(Form("c_cov_int"),"",900, 600);
+  	covariance_int->SetTitle("Covariance Matrix of Inelastic Scattering Proton Candidates; Reco Slice ID; True Slice ID");
+	covariance_int->Draw("colz");
+	c_cov_int->Print(Form("%sCov_int.eps",outpath.Data()));
+
+	//Correlation matrix (correlation shows you how the two variables are related) -----------------------------------------------------------//
+	//correlation matrix, where ρij = cij/σi/σj. cij is the elements of this covariance matrix, and σi=sqrt(cii) is the uncertainty of bin i
+	//σi=sqrt(var(x))
+	//σj=sqrt(var(y))
+	TH2D *corr_inc = (TH2D*)covariance_inc->Clone();
+	TH2D *corr_inc_st = (TH2D*)covariance_inc_st->Clone();
+	TH2D *corr_int = (TH2D*)covariance_int->Clone();
+	vector<double> sigma_inc;
+	vector<double> sigma_inc_st;
+	vector<double> sigma_int;
+	cout<<"covariance_inc->GetNbinsX():"<<covariance_inc->GetNbinsX()<<endl;
+	cout<<"covariance_inc->GetNbinsY():"<<covariance_inc->GetNbinsY()<<endl;
+
+  	for (int i=1; i<=covariance_inc->GetNbinsX(); ++i) {
+    		//for (int j=1; j<=covariance_inc->GetNbinsY(); ++j) {
+			//double tmp_cov_inc=covariance_inc->GetBinContent(i,j);
+    			sigma_inc.push_back(sqrt(covariance_inc->GetBinContent(i,i)));
+    			sigma_inc_st.push_back(sqrt(covariance_inc_st->GetBinContent(i,i)));
+    			sigma_int.push_back(sqrt(covariance_int->GetBinContent(i,i)));
+		        //cout<<"cov_inc["<<i<<"]["<<i<<"]="<<covariance_inc->GetBinContent(i,i)<<" | sqrt:"<<sqrt(covariance_inc->GetBinContent(i,i))<<endl;	
+		//}
+	}
+
+  	for (int i=1; i<=covariance_inc->GetNbinsX(); ++i) {
+    		for (int j=1; j<=covariance_inc->GetNbinsY(); ++j) {
+      			if (covariance_inc->GetBinContent(i,j) == 0) corr_inc->SetBinContent(i, j, 0);
+      			else corr_inc->SetBinContent(i, j, covariance_inc->GetBinContent(i,j)/sigma_inc.at(i-1)/sigma_inc.at(j-1));
+    		}
+  	}
+
+  	for (int i=1; i<=covariance_int->GetNbinsX(); ++i) {
+    		for (int j=1; j<=covariance_int->GetNbinsY(); ++j) {
+      			if (covariance_int->GetBinContent(i,j) == 0) corr_int->SetBinContent(i, j, 0);
+      			else corr_int->SetBinContent(i, j, covariance_int->GetBinContent(i,j)/sigma_int.at(i-1)/sigma_int.at(j-1));
+    		}
+  	}
+
+  	for (int i=1; i<=covariance_inc_st->GetNbinsX(); ++i) {
+    		for (int j=1; j<=covariance_inc_st->GetNbinsY(); ++j) {
+      			if (covariance_inc_st->GetBinContent(i,j) == 0) corr_inc_st->SetBinContent(i, j, 0);
+      			else corr_inc_st->SetBinContent(i, j, covariance_inc_st->GetBinContent(i,j)/sigma_inc_st.at(i-1)/sigma_inc_st.at(j-1));
+    		}
+  	}
+
+
+	TCanvas *c_corr_inc=new TCanvas(Form("c_corr_inc"),"",900, 600);
+  	corr_inc->SetTitle("Correlation Matrix of Incident Protons; Reco Slice ID; True Slice ID");
 	corr_inc->Draw("colz");
-	c_corrmtx_inc->Print(Form("%sCorr_matrix_inc.eps",outpath.Data()));
+	c_corr_inc->Print(Form("%sCorr_inc.eps",outpath.Data()));
 
-	TCanvas *c_corrmtx_inc_st=new TCanvas(Form("c_corrmtx_inc_st"),"",900, 600);
+	TCanvas *c_corr_inc_st=new TCanvas(Form("c_corr_inc_st"),"",900, 600);
+  	corr_inc_st->SetTitle("Correlation Matrix of Incident Protons; Reco Start Slice ID; True Start Slice ID");
 	corr_inc_st->Draw("colz");
-	c_corrmtx_inc_st->Print(Form("%sCorr_matrix_inc_st.eps",outpath.Data()));
+	c_corr_inc_st->Print(Form("%sCorr_inc_st.eps",outpath.Data()));
 
-	TCanvas *c_corrmtx_int=new TCanvas(Form("c_corrmtx_int"),"",900, 600);
+	TCanvas *c_corr_int=new TCanvas(Form("c_corr_int"),"",900, 600);
+  	corr_int->SetTitle("Correlation Matrix of Inelastic Scattering Proton Candidates; Reco Slice ID; True Slice ID");
 	corr_int->Draw("colz");
-	c_corrmtx_int->Print(Form("%sCorr_matrix_int.eps",outpath.Data()));
+	c_corr_int->Print(Form("%sCorr_int.eps",outpath.Data()));
+
+
+
+
+
+
+
 
 	//draw slideID to KE conversion map ----------------------------------------//
 	TCanvas *c_map=new TCanvas(Form("c_map"),"",900, 600);
@@ -739,8 +833,8 @@ void make_ThinSliceEdataXS() {
 	c_st_inc->Divide(1,1);
 	c_st_inc->cd(1);
 	float ymax_st_evt=20000;
-	TH2D *f2d_st_inc=new TH2D("f2d_st_inc",Form("%s","All Protons"),nthinslices+2,-1,nthinslices+1,100,0,ymax_st_evt);
-	f2d_st_inc->SetTitle("All Protons; Reco Start SliceID ; Events");
+	TH2D *f2d_st_inc=new TH2D("f2d_st_inc",Form("%s","Incident Protons"),nthinslices+2,-1,nthinslices+1,100,0,ymax_st_evt);
+	f2d_st_inc->SetTitle("Incident Protons; Reco Start SliceID ; Events");
 	f2d_st_inc->GetYaxis()->SetTitleOffset(1.3);
 	f2d_st_inc->Draw();
 	hs_st_inc->Draw("hist same");
@@ -765,6 +859,12 @@ void make_ThinSliceEdataXS() {
 	leg_st_inc->Draw();
 	c_st_inc->Print(Form("%sdata_reco_st_sliceid_inc.eps",outpath.Data()));
 
+	c_st_inc->cd(1)->SetLogy();
+	hs_st_inc->Draw("hist same");
+	data_st_inc->Draw("ep same");
+	leg_st_inc->Draw();
+	c_st_inc->Print(Form("%sdata_reco_st_sliceid_inc_logy.eps",outpath.Data()));
+
 
 
 	//[1]data with mc components
@@ -779,8 +879,8 @@ void make_ThinSliceEdataXS() {
 	float ymax_evt=6000; //mc
 	//float ymax_evt=2500; //data, run5387
 	//TH2D *f2d_inc=new TH2D("f2d_inc",Form("%s","All Protons"),22,-1,21,80,0,ymax_evt);
-	TH2D *f2d_inc=new TH2D("f2d_inc",Form("%s","All Protons"),nthinslices+2,-1,nthinslices+1,80,0,ymax_evt);
-	f2d_inc->SetTitle("All Protons; Reco SliceID (End point); Events");
+	TH2D *f2d_inc=new TH2D("f2d_inc",Form("%s","Incident Protons"),nthinslices+2,-1,nthinslices+1,80,0,ymax_evt);
+	f2d_inc->SetTitle("Incident Protons; Reco SliceID (End point); Events");
 	f2d_inc->GetYaxis()->SetTitleOffset(1.3);
 	f2d_inc->Draw();
 	hs_inc->Draw("hist same");
@@ -893,7 +993,7 @@ void make_ThinSliceEdataXS() {
 	c_inc3->cd(1);
 	//TH2D *f2d_inc3=new TH2D("f2d_inc3",Form("%s","All protons"),22,-1,21,100,0,ymax_evt);
 	TH2D *f2d_inc3=new TH2D("f2d_inc3",Form("%s","All protons"),nthinslices+2,-1,nthinslices+1,100,0,ymax_evt);
-	f2d_inc3->SetTitle("All Protons; True SliceID (End point); Events");
+	f2d_inc3->SetTitle("Incident Protons; True SliceID (End point); Events");
 	f2d_inc3->GetYaxis()->SetTitleOffset(1.3);
 	f2d_inc3->Draw();
 	data_inc_bkgfree->Draw("ep same");
@@ -933,7 +1033,7 @@ void make_ThinSliceEdataXS() {
 	c_st_inc3->cd(1);
 	//TH2D *f2d_inc3=new TH2D("f2d_inc3",Form("%s","All protons"),22,-1,21,100,0,ymax_evt);
 	TH2D *f2d_st_inc3=new TH2D("f2d_st_inc3",Form("%s","All protons"),nthinslices+2,-1,nthinslices+1,100,0,ymax_st_evt);
-	f2d_st_inc3->SetTitle("All Protons; True Start SliceID; Events");
+	f2d_st_inc3->SetTitle("Incident Protons; True Start SliceID; Events");
 	f2d_st_inc3->GetYaxis()->SetTitleOffset(1.3);
 	f2d_st_inc3->Draw();
 	data_st_inc_bkgfree->Draw("ep same");
@@ -1391,7 +1491,7 @@ void make_ThinSliceEdataXS() {
         leg_idke->AddEntry(gr_sliceid_trueincE, "KE Truth", "pe");
         leg_idke->AddEntry(gr_sliceid_recoincE, "KE Reco", "pe");
         leg_idke->Draw();
-	c_id_ke->Print("%strue_recoKE_sliceID.eps",outpath.Data());
+	c_id_ke->Print(Form("%strue_recoKE_sliceID.eps",outpath.Data()));
 
 	//reco KE - true KE ----------------------------------------------//
         gStyle->SetPadRightMargin(0.0);
@@ -1408,7 +1508,7 @@ void make_ThinSliceEdataXS() {
 	gr_sliceid_recotrueincE->SetMarkerColor(2);
 	gr_sliceid_recotrueincE->SetLineColor(2);
 	gr_sliceid_recotrueincE->Draw("p same");
-	c_dke->Print("%sdKE_sliceID.eps",outpath.Data());
+	c_dke->Print(Form("%sdKE_sliceID.eps",outpath.Data()));
 	
 
 /*
