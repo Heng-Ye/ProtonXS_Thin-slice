@@ -1089,14 +1089,18 @@ void ProtonApplyMomentumReweight::Loop() {
 			if (pid<=pid_2) IsRecoEL=true;
 		}
 		
-		//Const E-loss ------------------------------------------------------------------------------------------//
+		//Const E-loss --------------------------------------------------------------------------------------------------------------------//
 		//double ke_ffbeam_MeV=ke_beam_spec_MeV-const_eloss_mc; //const E-loss (our assumption of KE at TPC FF)
 		double slope_kff_keffbeamR=0.859605;
 		//double ke_ffbeam_MeV=(ke_beam_spec_MeV-Eloss_mc_hy_stop); //const E-loss with correction
-		double ke_ffbeam_MeV=(ke_beam_spec_MeV-Eloss_mc_hy_stop)*R_fit_hy; //const E-loss with correction (R_fit_hy is essentially one)
+
+		//double ke_ffbeam_MeV=(ke_beam_spec_MeV-Eloss_mc_hy_stop)*R_fit_hy; //const E-loss with correction (R_fit_hy is essentially one)
+		double ke_ffbeam_MeV=Convert_Proton_KE_Spectrometer_to_KE_ff(ke_beam_spec_MeV, "ElasFitted",0); //Sungbin's E-dept assumption
+
+		//double ke_ffbeam_MeV=ke_ff; //keff(truth)
 		//double ke_ffbeam_MeV=(ke_beam_spec_MeV-Eloss_mc_hy_stop)*R_fit_hy*slope_kff_keffbeamR; //const E-loss with correction
 
-		//hypothetical length -------------------------------------------------------------------------------------//
+		//hypothetical length -------------------------------------------------------------------------------------------------------------//
 		double fitted_length=-1; 
 		double tmp_fitted_length=BB.Fit_dEdx_Residual_Length(trkdedx, trkres, pdg, false);
 		//double tmp_fitted_length=BB.Fit_Proton_Residual_Length_Likelihood(trkdedx, trkres, pdg, false);
@@ -1147,7 +1151,7 @@ void ProtonApplyMomentumReweight::Loop() {
 		if (IsBeamXY&&IsBeamMom&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
 			double mom_rw_minchi2=1.;
 			//if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=gng[index_minchi2]->Eval(mom_beam_spec*1000.); //old bmrw
-			if (ke_ff>=mu_kemin&&ke_ff<=mu_kemax) mom_rw_minchi2=kerw->Eval(ke_ff); //new bmrw (using truth)
+			//if (ke_ff>=mu_kemin&&ke_ff<=mu_kemax) mom_rw_minchi2=kerw->Eval(ke_ff); //new bmrw (using truth)
 			//if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=kerw->Eval(ke_ffbeam_MeV); //new bmrw (const E-loss)
 			//if (ke_ffbeam_MeV>=mu_kemin&&ke_ffbeam_MeV<=mu_kemax) mom_rw_minchi2=kerw->Eval(ke_ffbeam_MeV); //new bmrw (KEHY)
 			//std::cout<<"ke_beam_spec_MeV:"<<ke_beam_spec_MeV<<" ke_ffbeam_MeV:"<<ke_ffbeam_MeV<<" mom_rw_minchi2:"<<mom_rw_minchi2<<std::endl;
@@ -1586,7 +1590,8 @@ void ProtonApplyMomentumReweight::Loop() {
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kebeamff.root","RECREATE");
    	//
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kebeamff_v09_39_01.root","RECREATE");
-   	TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kebeamff_kefitindenom_v09_39_01.root","RECREATE");
+   	TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_ElasFitted_v09_39_01.root","RECREATE");
+   	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kebeamff_kefitindenom_v09_39_01.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_by_kefit.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_studyKEconst.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_studyKEfit.root","RECREATE");
