@@ -568,7 +568,10 @@ void make_ThinSliceEdataXS() {
   	for (int i=1; i<=covariance_inc_st->GetNbinsX(); ++i) {
     		for (int j=1; j<=covariance_inc_st->GetNbinsY(); ++j) {
       			if (covariance_inc_st->GetBinContent(i,j) == 0) corr_inc_st->SetBinContent(i, j, 0);
-      			else corr_inc_st->SetBinContent(i, j, covariance_inc_st->GetBinContent(i,j)/sigma_inc_st.at(i-1)/sigma_inc_st.at(j-1));
+      			else { 
+				corr_inc_st->SetBinContent(i, j, covariance_inc_st->GetBinContent(i,j)/sigma_inc_st.at(i-1)/sigma_inc_st.at(j-1));
+		               cout<<"cov_inc_st["<<i<<"]["<<j<<"]="<<covariance_inc_st->GetBinContent(i,j)<<" | sqrtx:"<<sigma_inc_st.at(i-1)<<" sqrty:"<<sigma_inc_st.at(j-1)<<" | corr:"<<covariance_inc_st->GetBinContent(i,j)/sigma_inc_st.at(i-1)/sigma_inc_st.at(j-1)<<endl;	
+			}
     		}
   	}
 
@@ -1618,8 +1621,30 @@ void make_ThinSliceEdataXS() {
 
 
 	//xs result -------------------------------------------------------------------------------------//
+        //Geant4
         TFile f_xs("/dune/data2/users/hyliao/GeantReweight/xs_cascade/proton_cross_section.root");
         TGraph *total_inel_KE = (TGraph*)f_xs.Get("inel_KE");
+
+	//Neutrino Gen
+        TFile f_other("/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/mcdata/sce/MC_PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1/xs_thinslice/make_plots/model_prediction_screen_grab/model_pred_screengrab.root");
+        TGraph *xs_GENIE_ha2018 = (TGraph*)f_other.Get("xs_GENIE_ha2018");
+        TGraph *xs_NEUT_2019 = (TGraph*)f_other.Get("xs_NEUT_2019");
+        TGraph *xs_NuWRO_2019 = (TGraph*)f_other.Get("xs_NuWRO_2019");
+        TGraph *xs_GENIE_hN2018 = (TGraph*)f_other.Get("xs_GENIE_hN2018");
+        TGraph *xs_GENIE_INCL_pp = (TGraph*)f_other.Get("xs_GENIE_INCL_pp");
+        
+	xs_GENIE_ha2018->SetMarkerColor(1); xs_GENIE_ha2018->SetLineColor(1); 
+	xs_NEUT_2019->SetMarkerColor(7); xs_NEUT_2019->SetLineColor(7);
+	xs_GENIE_INCL_pp->SetMarkerColor(6); xs_GENIE_INCL_pp->SetLineColor(6);
+	xs_GENIE_hN2018->SetMarkerColor(48); xs_GENIE_hN2018->SetLineColor(48);
+	xs_NuWRO_2019->SetMarkerColor(4); xs_NuWRO_2019->SetLineColor(4);	
+
+	xs_GENIE_ha2018->SetLineStyle(2);
+	xs_NEUT_2019->SetLineStyle(2);
+	xs_GENIE_INCL_pp->SetLineStyle(2);
+	xs_GENIE_hN2018->SetLineStyle(2);
+	xs_NuWRO_2019->SetLineStyle(2);
+
 
         //gStyle->SetPadLeftMargin(0.13);
         gStyle->SetPadRightMargin(0.0);
@@ -1645,6 +1670,14 @@ void make_ThinSliceEdataXS() {
 
         total_inel_KE->SetLineColor(2);
         total_inel_KE->Draw("c same");
+
+	xs_GENIE_ha2018->Draw("c same");
+	xs_NEUT_2019->Draw("c same");
+	xs_GENIE_INCL_pp->Draw("c same");
+	xs_GENIE_hN2018->Draw("c same");
+	xs_NuWRO_2019->Draw("c same");
+
+
         gr_truexs->SetLineWidth(2);
         gr_truexs->SetMarkerColor(3);
         gr_truexs->SetLineColor(3);
@@ -1677,9 +1710,16 @@ void make_ThinSliceEdataXS() {
 
         TLegend *leg_xs = new TLegend(0.6,0.6,0.9,0.85);
         leg_xs->SetFillStyle(0);
+	leg->SetNColumns(2);
         leg_xs->AddEntry(gr_recoxs, "Data", "pe");
         leg_xs->AddEntry(gr_truexs, "MC Truth", "pe");
         leg_xs->AddEntry(total_inel_KE, "Geant4", "l");
+        leg_xs->AddEntry(xs_GENIE_ha2018, "GENIE hA2018", "l");
+        leg_xs->AddEntry(xs_GENIE_hN2018, "GENIE hN2018", "l");
+        leg_xs->AddEntry(xs_NEUT_2019, "NEUT 2019", "l");
+        leg_xs->AddEntry(xs_NuWRO_2019, "NuWRO 2019", "l");
+        leg_xs->AddEntry(xs_GENIE_INCL_pp, "GENIE INCL++", "l");
+	
         //leg_xs->AddEntry(gr_recoxs, "MC Reco", "pe");
         leg_xs->Draw();
 
