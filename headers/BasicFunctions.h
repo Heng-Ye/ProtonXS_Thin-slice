@@ -508,3 +508,69 @@ double Convert_Proton_KE_Spectrometer_to_KE_ff(double KE_RecoBeam, TString key, 
 	return out - delta_E;
 
 }
+
+//chi^2 functions ------------------------------------------------------------------------------------------------------//
+//neyman_chi2
+double neyman_chi2_data_mc(vector<double> D /*data*/, vector<double> er_D, vector<double> E, vector<double> er_E) {
+	double chi2=0.;
+	for (int i=0; i<(int)D.size(); i++) {
+		double nom=pow(D.at(i)-E.at(i),2);
+		double denom=pow(er_D.at(i),2);	
+
+		if (denom) chi2+=nom/denom;	
+	} 
+	return chi2;
+}
+
+//pearson_chi2
+double pearson_chi2_data_mc(vector<double> D /*data*/, vector<double> er_D, vector<double> E, vector<double> er_E) {
+	double chi2=0.;
+	for (int i=0; i<(int)D.size(); i++) {
+		double nom=pow(D.at(i)-E.at(i),2);
+		double denom=pow(er_E.at(i),2);	
+
+		if (denom) chi2+=nom/denom;	
+	} 
+	return chi2;
+}
+
+double ml_data_mc(vector<double> D /*data*/, vector<double> er_D, vector<double> E /*MC*/, vector<double> er_E) {
+	double ml=0.;
+	for (int i=0; i<(int)D.size(); i++) { //sum over all bins
+		double mui=E.at(i);
+		double ni=D.at(i);
+
+		double first=mui-ni;
+		double second=0.;	
+
+		if (ni>0&&mui>0) { 	
+			second=ni*TMath::Log(ni/mui);
+		}
+		else { 	
+			second=0;
+		}
+		ml+=first+second;
+	} //sum over all bins
+
+	return 2.*ml;
+}
+
+//Covariance matrix =========================================================================================//
+//Matrix element calculation using Combined Neyman-Pearson(CNP)
+double cov_cnp(double m /*data(measurement)*/, double p /*prediction from mc*/) {
+	double cnp=0;
+	if(m!=0&&p!=0) { 
+		cnp=3.*m*p/(p+2.*m);
+	}
+	if (m==0&&p!=0) { //measurement bin=0
+		cnp=p/2.; //Poisson approx.
+	}
+	if (p==0&&m!=0) { //prediction from mc=0
+		cnp=m; //Neyman approx.
+	}
+	//if m=p=0, no info, set to zero
+
+	return cnp;
+}
+
+
