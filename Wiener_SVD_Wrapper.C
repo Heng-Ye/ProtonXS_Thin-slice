@@ -67,6 +67,11 @@ void Wiener_SVD_Wrapper() {
         TString fout_inc_st=outpath+"input_wiener_svd_inc_st.root";
         TString fout_int=outpath+"input_wiener_svd_int.root";
 
+	//Output files2 -------------------------------------------//
+        TString fout2_inc=outpath+"uf_wiener_svd_inc.root";
+        TString fout2_inc_st=outpath+"uf_wiener_svd_inc_st.root";
+        TString fout2_int=outpath+"uf_wiener_svd_int.root";
+
 	//reco string pre-fix --------------------------------------//
 	TString str_inc=Form("h_recosliceid_allevts_cuts");
 	TString str_st_inc=Form("h_reco_st_sliceid_allevts_cuts");
@@ -502,7 +507,6 @@ void Wiener_SVD_Wrapper() {
 		} //y
 	} //x
 
-
         for (size_t i=1; i<=res_inc->GetNbinsMeasured(); ++i) { //x
 		//double norm_inc=1;
 		double norm_sg_inc=h2d_sg_inc->GetBinContent(i);
@@ -575,13 +579,15 @@ void Wiener_SVD_Wrapper() {
 		cov_inc=cov_cnp(m_inc, p_inc);
 		cov_inc_st=cov_cnp(m_st_inc, p_st_inc);
 		cov_int=cov_cnp(m_int, p_int);
-				
-		h2d_cov_inc->Fill(i, i, cov_inc);
-		h2d_cov_inc_st->Fill(i, i, cov_inc_st);
-		h2d_cov_int->Fill(i, i, cov_int);
-				//h2d_cov_inc->Fill(i, j, 0);
-				//h2d_cov_inc_st->Fill(i, j, 0);
-				//h2d_cov_int->Fill(i, j, 0);
+			
+		//CNP approach	
+		//h2d_cov_inc->Fill(i, i, cov_inc);
+		//h2d_cov_inc_st->Fill(i, i, cov_inc_st);
+		//h2d_cov_int->Fill(i, i, cov_int);
+
+		h2d_cov_inc->Fill(i, i, pow(data_inc_bkgfree->GetBinError(i),2));
+		h2d_cov_inc_st->Fill(i, i, pow(data_st_inc_bkgfree->GetBinError(i),2));
+		h2d_cov_int->Fill(i, i, pow(data_int_bkgfree->GetBinError(i),2));
 	} //x
 	//---------------------------------------------------------------------------------------------------------//
 
@@ -591,7 +597,6 @@ void Wiener_SVD_Wrapper() {
 	//TH2D hcov_tot; covariance matrix of measured spectrum uncertainty
 	//TH2D hR; resposne matrix (X-axis: measured, Y-axis: true)
 
-
 	//inc
 	TFile *f_out_inc = new TFile(fout_inc.Data(),"RECREATE");
 		mc_inc_true_bkgfree->Write("htrue_signal");
@@ -600,7 +605,6 @@ void Wiener_SVD_Wrapper() {
 		h2d_hR_inc->Write("hR");
 		h2d_cov_inc->Write("hcov_tot");
 	f_out_inc->Close();
-
 
 	//inc_st
 	TFile *f_out_inc_st = new TFile(fout_inc_st.Data(),"RECREATE");
@@ -614,12 +618,38 @@ void Wiener_SVD_Wrapper() {
 	//int
 	TFile *f_out_int = new TFile(fout_int.Data(),"RECREATE");
 		mc_int_true_bkgfree->Write("htrue_signal");
-		data_int->Write("hmeas_before_bkgsub");
 		data_int_bkgfree->Write("hmeas");
 		h2d_hR_int->Write("hR");
 		h2d_cov_int->Write("hcov_tot");
+		data_int->Write("hmeas_before_bkgsub");
 	f_out_int->Close();
 	//---------------------------------------------------------------------//
+
+	//Output files2 -------------------------------------------------------------------------------------------------//
+	TString str_uf_inc=Form("./Wiener-SVD-Unfolding/Example %s %s 2 0", fout_inc.Data(), fout2_inc.Data());
+	TString str_uf_inc_st=Form("./Wiener-SVD-Unfolding/Example %s %s 2 0", fout_inc_st.Data(), fout2_inc_st.Data());
+	TString str_uf_int=Form("./Wiener-SVD-Unfolding/Example %s %s 2 0", fout_int.Data(), fout2_int.Data());
+
+	std::cout<<"\n"<<std::endl;
+	std::cout<<str_uf_inc<<std::endl;
+	gSystem->Exec(str_uf_inc.Data());
+
+	std::cout<<str_uf_inc_st<<std::endl;
+	gSystem->Exec(str_uf_inc_st.Data());
+
+	std::cout<<str_uf_int<<std::endl;
+	gSystem->Exec(str_uf_int.Data());
+	//----------------------------------------------------------------------------------------------------------------//
+
+
+
+
+
+
+
+
+
+
 
        //inputfile = argv[1];
         //outputfile = argv[2];
