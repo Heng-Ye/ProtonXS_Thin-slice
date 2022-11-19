@@ -471,7 +471,6 @@ void Wiener_SVD_Wrapper() {
 	TH2D *h2d_sg_int=(TH2D*)res_int->Htruth();
 	TH2D *h2d_sg_st_inc=(TH2D*)res_st_inc->Htruth();
 
-
 	//sansity check on the response matrix
 	std::cout<<"res_inc->GetDimensionMeasured():"<<res_inc->GetDimensionMeasured()<<std::endl;
 	std::cout<<"res_inc->GetDimensionTruth():"<<res_inc->GetDimensionTruth()<<std::endl;
