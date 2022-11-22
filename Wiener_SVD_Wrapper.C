@@ -378,12 +378,11 @@ void Wiener_SVD_Wrapper() {
 	//data_inc_bkgfree->Add(mc_inc_el, -1);
 	//data_inc_bkgfree->Add(mc_inc_midcosmic, -1);
 	//data_inc_bkgfree->Add(mc_inc_midpi, -1);
-	data_inc_bkgfree->Add(mc_inc_midp, scal_fact_misidp);
 	//data_inc_bkgfree->Add(mc_inc_midmu, -1);
 	//data_inc_bkgfree->Add(mc_inc_mideg, -1);
 	//data_inc_bkgfree->Add(mc_inc_midother, -1);
 	//data_inc_bkgfree->Multiply(pur_inc);
-	//
+	//data_inc_bkgfree->Add(mc_inc_midp, scal_fact_misidp);
 	data_st_inc_bkgfree->Add(mc_st_inc_midp, scal_fact_misidp);
 
 	//
@@ -391,9 +390,9 @@ void Wiener_SVD_Wrapper() {
 	
 	//int
 	data_int_bkgfree->Add(mc_int_el, scal_fact_misidp);
+	data_int_bkgfree->Add(mc_int_midp, scal_fact_misidp);
 	//data_int_bkgfree->Add(mc_int_midcosmic, -1);
 	//data_int_bkgfree->Add(mc_int_midpi, -1);
-	data_int_bkgfree->Add(mc_int_midp, scal_fact_misidp);
 	//data_int_bkgfree->Add(mc_int_midmu, -1);
 	//data_int_bkgfree->Add(mc_int_mideg, -1);
 	//data_int_bkgfree->Add(mc_int_midother, -1);
@@ -471,14 +470,50 @@ void Wiener_SVD_Wrapper() {
 	TH2D *h2d_sg_int=(TH2D*)res_int->Htruth();
 	TH2D *h2d_sg_st_inc=(TH2D*)res_st_inc->Htruth();
 
+	TH1D *h1d_sg_inc=(TH1D*)res_inc->Htruth();
+	TH1D *h1d_sg_int=(TH1D*)res_int->Htruth();
+	TH1D *h1d_sg_st_inc=(TH1D*)res_st_inc->Htruth();
+
 	//sansity check on the response matrix
-	std::cout<<"res_inc->GetDimensionMeasured():"<<res_inc->GetDimensionMeasured()<<std::endl;
+	std::cout<<"\nres_inc->GetDimensionMeasured():"<<res_inc->GetDimensionMeasured()<<std::endl;
 	std::cout<<"res_inc->GetDimensionTruth():"<<res_inc->GetDimensionTruth()<<std::endl;
-	std::cout<<"res_int->GetDimensionTruth():"<<res_int->GetDimensionTruth()<<std::endl;
+	std::cout<<"res_int->GetDimensionTruth():"<<res_int->GetDimensionTruth()<<"\n"<<std::endl;
 
 	std::cout<<"res_inc->GetNbinsMeasured():"<<res_inc->GetNbinsMeasured()<<std::endl; //x
 	std::cout<<"res_inc->GetNbinsTruth():"<<res_inc->GetNbinsTruth()<<std::endl;  //y
 
+	std::cout<<"\nh2d_res_inc->GetNbinsX():"<<h2d_res_inc->GetNbinsX()<<std::endl;
+	std::cout<<"h2d_res_inc->GetNbinsY():"<<h2d_res_inc->GetNbinsY()<<"\n"<<std::endl;
+
+	std::cout<<"h1d_sg_int->GetNbinsX():"<<h1d_sg_int->GetNbinsX()<<std::endl;
+	std::cout<<"h1d_sg_int->GetNbinsY():"<<h1d_sg_int->GetNbinsY()<<"\n"<<std::endl;
+
+
+/*
+        TH1D *h1d_sg_inc=new TH1D("h1d_sg_inc","", nb_res, xlo_res, xhi_res);
+        TH1D *h1d_sg_st_inc=new TH1D("h1d_sg_st_inc","",nb_res, xlo_res, xhi_res);
+        TH1D *h1d_sg_int=new TH1D("h1d_sg_int","",nb_res, xlo_res, xhi_res);
+
+	int key=1;
+        for (size_t i=1; i<=res_inc->GetNbinsMeasured(); ++i) { //x
+        	for (size_t j=1; j<=res_inc->GetNbinsTruth(); ++j) { //y
+			h1d_sg_inc->SetBinContent(key, h2d_sg_inc->GetBinContent(i,j));
+			h1d_sg_inc->SetBinError(key, h2d_sg_inc->GetBinError(i,j));
+
+			h1d_sg_st_inc->SetBinContent(key, h2d_sg_st_inc->GetBinContent(i,j));
+			h1d_sg_st_inc->SetBinError(key, h2d_sg_st_inc->GetBinError(i,j));
+
+			h1d_sg_int->SetBinContent(key, h2d_sg_int->GetBinContent(i,j));
+			h1d_sg_int->SetBinError(key, h2d_sg_int->GetBinError(i,j));
+
+			++key;
+		} //y
+	} //x
+	std::cout<<"\nres_inc->GetNbinsMeasured()="<<res_inc->GetNbinsMeasured()<<std::endl;
+	std::cout<<"key:"<<key<<"\n"<<std::endl;
+*/
+
+	//Response Matrix for Wiener SVD --------------------------------------------------------------------------------------------------//
 	//M=R*S: S:truth; M:reco
 	Int_t nb_res=h2d_res_inc->GetNbinsX();
 	Double_t xlo_res=h2d_res_inc->GetXaxis()->GetXmin(), xhi_res=h2d_res_inc->GetXaxis()->GetXmax(), xb_res=(xhi_res-xlo_res)/nb_res;
@@ -486,43 +521,27 @@ void Wiener_SVD_Wrapper() {
 	TH2D *h2d_hR_st_inc=new TH2D("h2d_hR_st_inc","",nb_res, xlo_res, xhi_res,nb_res, xlo_res, xhi_res);
 	TH2D *h2d_hR_int=new TH2D("h2d_hR_int","",nb_res, xlo_res, xhi_res,nb_res, xlo_res, xhi_res);
 
-        TH1D *h1d_sg_inc=new TH1D("h1d_sg_inc","",nb_res, xlo_res, xhi_res);
-        TH1D *h1d_sg_st_inc=new TH1D("h1d_sg_st_inc","",nb_res, xlo_res, xhi_res);
-        TH1D *h1d_sg_int=new TH1D("h1d_sg_int","",nb_res, xlo_res, xhi_res);
-
-	int idx=1;
-        for (size_t i=1; i<=res_inc->GetNbinsMeasured(); ++i) { //x
-        	for (size_t j=1; j<=res_inc->GetNbinsTruth(); ++j) { //y
-			h1d_sg_inc->SetBinContent(idx, h2d_sg_inc->GetBinContent(i,j));
-			h1d_sg_inc->SetBinError(idx, h2d_sg_inc->GetBinError(i,j));
-
-			h1d_sg_st_inc->SetBinContent(idx, h2d_sg_st_inc->GetBinContent(i,j));
-			h1d_sg_st_inc->SetBinError(idx, h2d_sg_st_inc->GetBinError(i,j));
-
-			h1d_sg_int->SetBinContent(idx, h2d_sg_int->GetBinContent(i,j));
-			h1d_sg_int->SetBinError(idx, h2d_sg_int->GetBinError(i,j));
-
-			++idx;
-		} //y
-	} //x
-
         for (size_t i=1; i<=res_inc->GetNbinsMeasured(); ++i) { //x
 		//double norm_inc=1;
-		double norm_sg_inc=h2d_sg_inc->GetBinContent(i);
-		double norm_sg_st_inc=h2d_sg_st_inc->GetBinContent(i);
-		double norm_sg_int=h2d_sg_int->GetBinContent(i);
+		double norm_sg_inc=h1d_sg_inc->GetBinContent(i);
+		double norm_sg_st_inc=h1d_sg_st_inc->GetBinContent(i);
+		double norm_sg_int=h1d_sg_int->GetBinContent(i);
 
         	for (size_t j=1; j<=res_inc->GetNbinsTruth(); ++j) { //y
-			double res_inc=h2d_res_inc->GetBinContent(i,j);
-			double res_st_inc=h2d_res_st_inc->GetBinContent(i,j);
-			double res_int=h2d_res_int->GetBinContent(i,j);
+			double res_inc=h2d_res_inc->GetBinContent(j,i);
+			double res_st_inc=h2d_res_st_inc->GetBinContent(j,i);
+			double res_int=h2d_res_int->GetBinContent(j,i);
 
 			//response matrix rotation
-			if (norm_sg_inc!=0) h2d_hR_inc->SetBinContent(j,i,res_inc/norm_sg_inc);
-			if (norm_sg_st_inc!=0) h2d_hR_st_inc->SetBinContent(j,i,res_st_inc/norm_sg_st_inc);
-			if (norm_sg_int!=0)  h2d_hR_int->SetBinContent(j,i,res_int/norm_sg_int);
+			if (norm_sg_inc!=0) h2d_hR_inc->SetBinContent(j,i, res_inc/norm_sg_inc);
+			if (norm_sg_st_inc!=0) h2d_hR_st_inc->SetBinContent(j,i, res_st_inc/norm_sg_st_inc);
+			if (norm_sg_int!=0)  h2d_hR_int->SetBinContent(j,i, res_int/norm_sg_int);
 		} //y
 	} //x
+	//---------------------------------------------------------------------------------------------------------------------------------//
+
+
+
 
 /*
         for (size_t i=0; i<h2d_hR_inc->GetNbinsX(); ++i) { //X
@@ -545,6 +564,8 @@ void Wiener_SVD_Wrapper() {
 
 	} //X
 */
+
+
 
 	//Construct covariance matrix -----------------------------------------------------------------------------//
 	Int_t nb=data_inc->GetNbinsX();
@@ -580,13 +601,13 @@ void Wiener_SVD_Wrapper() {
 		cov_int=cov_cnp(m_int, p_int);
 			
 		//CNP approach	
-		//h2d_cov_inc->Fill(i, i, cov_inc);
-		//h2d_cov_inc_st->Fill(i, i, cov_inc_st);
-		//h2d_cov_int->Fill(i, i, cov_int);
+		h2d_cov_inc->Fill(i, i, cov_inc);
+		h2d_cov_inc_st->Fill(i, i, cov_inc_st);
+		h2d_cov_int->Fill(i, i, cov_int);
 
-		h2d_cov_inc->Fill(i, i, pow(data_inc_bkgfree->GetBinError(i),2));
-		h2d_cov_inc_st->Fill(i, i, pow(data_st_inc_bkgfree->GetBinError(i),2));
-		h2d_cov_int->Fill(i, i, pow(data_int_bkgfree->GetBinError(i),2));
+		//h2d_cov_inc->Fill(i, i, pow(data_inc_bkgfree->GetBinError(i),2));
+		//h2d_cov_inc_st->Fill(i, i, pow(data_st_inc_bkgfree->GetBinError(i),2));
+		//h2d_cov_int->Fill(i, i, pow(data_int_bkgfree->GetBinError(i),2));
 	} //x
 	//---------------------------------------------------------------------------------------------------------//
 
@@ -640,35 +661,28 @@ void Wiener_SVD_Wrapper() {
 	gSystem->Exec(str_uf_int.Data());
 	//----------------------------------------------------------------------------------------------------------------//
 
+/*
+INSTRUCTION
 
+Input:
+    true/expected signal spectrum (models);
+    measured spectrum;
+    covariance matrix of the uncertainty of the measured spectrum;
+    response matrix from signal (corresponding to matrix column, TH2D Y-axis) to measurement (corresponding to matrix row, TH2D X-axis), M = R*S;
+    Choice of addional matrix for smoothness, e.g. 2nd derivative matrix.
 
+Output:
+    Unfolded spectrum
+    Additional smearing matrix
+    Wiener filter
+    Covariance matrix of the unfolded spectrum
 
-
-
-
-
-
-
-
-       //inputfile = argv[1];
-        //outputfile = argv[2];
-        //C_type = atoi(argv[3]); //Options of  matrix for smoothness, 0 (unitary matrix), 1 (1st derivative matrix), 2 (2nd derivative matrix), else (3rd derivative matrix)
-        //Norm_type = atof(argv[4]); //hy:1
-	//argv[5]=Float_t flag_WienerFilter = 1.0; //default
-
-    // For addtion of smoothness matrix, e.g. 2nd derivative C
-    //TMatrixD C0(n, n);
-    //C0 = Matrix_C(n, C_type);
-    //TMatrixD normsig(n, n);
-    //for(int i=0; i<n; i++) {
-        //for(int j=0; j<n; j++) {
-            //normsig(i, j) = 0;
-            //if(i==j) normsig(i, j) = 1./TMath::Power(Signal(i), Norm_type);
-        //}
-    //}
-    //C0 = C0*normsig;
-
-        //if(argc==6) flag_WienerFilter = atof(argv[5]);
+An example of application can be found in Example.C
+Usage:
+make clean;
+make;
+Example input.root output.root 2 0 (2 means: 2nd derivative matrix; 0 means the number of measured events in each bin normalized by m(i)^0)
+*/
 
 
 }
