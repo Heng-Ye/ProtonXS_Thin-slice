@@ -62,7 +62,9 @@ void RooUnfold_Wrapper() {
         TString fdata="./prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01.root";
 
 	//Output files -------------------------------------------//
-	TString outpath="./RooUnfold_files/MC_nobmrw/";
+	//TString outpath="./RooUnfold_files/MC_nobmrw/";
+	TString outpath="./RooUnfold_files/MC_nobmrw/SVD/";
+
         TString fout_inc=outpath+"input_uf_roounfold_inc.root";
         TString fout_inc_st=outpath+"input_uf_roounfold_inc_st.root";
         TString fout_int=outpath+"input_uf_roounfold_int.root";
@@ -459,9 +461,14 @@ void RooUnfold_Wrapper() {
 	RooUnfoldResponse *res_int=(RooUnfoldResponse*)f_mc->Get("response_SliceID_Int"); res_int->SetName("res_int");
 
 	//Bayesian Unfolding
-	RooUnfoldBayes uf_inc (res_inc, data_inc_bkgfree, 4); //inc
-	RooUnfoldBayes uf_st_inc (res_st_inc, data_st_inc_bkgfree, 4); //st_inc
-	RooUnfoldBayes uf_int (res_int, data_int_bkgfree, 4); //int
+	//RooUnfoldBayes uf_inc (res_inc, data_inc_bkgfree, 4); //inc
+	//RooUnfoldBayes uf_st_inc (res_st_inc, data_st_inc_bkgfree, 4); //st_inc
+	//RooUnfoldBayes uf_int (res_int, data_int_bkgfree, 4); //int
+
+	//SVD Unfolding
+	RooUnfoldSvd uf_inc (res_inc, data_inc_bkgfree); //inc
+	RooUnfoldSvd uf_st_inc (res_st_inc, data_st_inc_bkgfree); //st_inc
+	RooUnfoldSvd uf_int (res_int, data_int_bkgfree); //int
 	
 	//unfolding
   	TH1D *data_inc_uf;
