@@ -35,9 +35,13 @@ arg_uf_inc=path_uf+'uf_wiener_svd_inc.root'
 arg_uf_inc_st=path_uf+'uf_wiener_svd_inc_st.root'
 
 #uf using Bayesian unfold
-arg_uf_roo_int='../RooUnfold_files/MC_nobmrw/input_uf_roounfold_int.root'
-arg_uf_roo_inc='../RooUnfold_files/MC_nobmrw/input_uf_roounfold_inc.root'
-arg_uf_roo_inc_st='../RooUnfold_files/MC_nobmrw/input_uf_roounfold_inc_st.root'
+#arg_uf_roo_int='../RooUnfold_files/MC_nobmrw/input_uf_roounfold_int.root'
+#arg_uf_roo_inc='../RooUnfold_files/MC_nobmrw/input_uf_roounfold_inc.root'
+#arg_uf_roo_inc_st='../RooUnfold_files/MC_nobmrw/input_uf_roounfold_inc_st.root'
+
+arg_uf_roo_int='../RooUnfold_files/MC_nobmrw/SVD/input_uf_roounfold_int.root'
+arg_uf_roo_inc='../RooUnfold_files/MC_nobmrw/SVD/input_uf_roounfold_inc.root'
+arg_uf_roo_inc_st='../RooUnfold_files/MC_nobmrw/SVD/input_uf_roounfold_inc_st.root'
 
 #plot output
 plot_out='./plots_Wiener_SVD/'
@@ -190,7 +194,8 @@ leg_int.SetFillStyle(0)
 leg_int.AddEntry(true_int, 'Truth (Validation set)', "l")
 #leg_int.AddEntry(reco_int, 'Reco before unfolding (Test set)', "ep")
 leg_int.AddEntry(unf_int, 'Reco after Wiener SVD unfolding (Test set)', "ep")
-leg_int.AddEntry(uf_bayes_int, 'Reco after Bayesian unfolding (Test set)', "ep")
+#leg_int.AddEntry(uf_bayes_int, 'Reco after Bayesian unfolding (Test set)', "ep")
+leg_int.AddEntry(uf_bayes_int, 'Reco after SVD unfolding (Test set)', "ep")
 leg_int.Draw()
 c0_int.Print(plot_out+'spec_int.eps')
 
@@ -214,7 +219,8 @@ leg_inc.SetFillStyle(0)
 leg_inc.AddEntry(true_inc, 'Truth (Validation Set)', "l")
 #leg_inc.AddEntry(reco_inc, 'Reco (before unfolding)', "l")
 leg_inc.AddEntry(unf_inc, 'Reco after Wiener SVD Unfolding (Test set)', "ep")
-leg_inc.AddEntry(uf_bayes_inc, 'Reco after Bayesian Unfolding (Test set)', "ep")
+#leg_inc.AddEntry(uf_bayes_inc, 'Reco after Bayesian Unfolding (Test set)', "ep")
+leg_inc.AddEntry(uf_bayes_inc, 'Reco after SVD Unfolding (Test set)', "ep")
 leg_inc.Draw()
 c0_inc.Print(plot_out+'spec_inc.eps')
 
@@ -238,7 +244,8 @@ leg_inc_st.SetFillStyle(0)
 leg_inc_st.AddEntry(true_inc, 'Truth (Validation Set)', "l")
 #leg_inc_st.AddEntry(reco_inc, 'Reco (before unfolding)', "l")
 leg_inc_st.AddEntry(unf_inc, 'Reco after Weiner SVD unfolding (Test set)', "ep")
-leg_inc_st.AddEntry(uf_bayes_inc_st, 'Reco after Bayesian unfolding (Test set)', "ep")
+#leg_inc_st.AddEntry(uf_bayes_inc_st, 'Reco after Bayesian unfolding (Test set)', "ep")
+leg_inc_st.AddEntry(uf_bayes_inc_st, 'Reco after SVD unfolding (Test set)', "ep")
 leg_inc_st.Draw()
 c0_inc_st.Print(plot_out+'spec_inc_st.eps')
 
