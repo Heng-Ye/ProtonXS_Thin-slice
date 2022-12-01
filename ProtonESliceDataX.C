@@ -250,7 +250,8 @@ void ProtonESliceData::Loop() {
 	//SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_nobmrw_stslcplus0.5.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrwkebeamff_v09_39_01.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrw_v09_39_01.root", name_thinslicewidth, nthinslices)); //output file name
-	SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01.root", name_thinslicewidth, nthinslices)); //output file name
+	SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_valid_only.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_v09_39_01.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrw.root", name_thinslicewidth, nthinslices)); //output file name
@@ -282,6 +283,7 @@ void ProtonESliceData::Loop() {
 		nb = fChain->GetEntry(jentry);   nbytes += nb;
 
 		isTestSample = true;
+		//isTestSample = false; //validation only
 		if (ientry%2 == 0) isTestSample = false; //Divide MC sample by 2 parts: test+ufold
 		//if (isTestSample) continue; //only validate sample
 		//if (!isTestSample) continue; //only test sample
@@ -913,7 +915,8 @@ void ProtonESliceData::Loop() {
 		//if (ke_ff>=mu_kemin&&ke_ff<=mu_kemax) mom_rw_minchi2=kerw->Eval(ke_ff); //new bmrw (using truth)
 
 		//KEend ---------------------------------------------------------------------------//
-		double KEend_true=0;
+		//double KEend_true=0;
+		double KEend_true=-1;
 		if (beamtrk_Eng->size()) KEend_true=1000.*(beamtrk_Eng->at(-2+beamtrk_Eng->size()));
 
 		//KEs ---------------------------------------------------------------------------------------//
@@ -1545,6 +1548,9 @@ void ProtonESliceData::Loop() {
 
 			if (isTestSample){
 				h_truesliceid_inelastic_all->Fill(true_sliceID, mom_rw_minchi2);
+				//if (true_sliceID<=0) {
+					//std::cout<<"WRONG WRONG!!:: true_sliceID of IsPureInEL="<<true_sliceID<<" | KEend_true="<<KEend_true<<" | is_beam_at_ff="<<is_beam_at_ff<<" | true_endz="<<true_endz<<std::endl;
+				//}
 			}
 			else{ //NOT test sample for unfolding
 				uf.eff_den_Int->Fill(true_sliceID, mom_rw_minchi2);

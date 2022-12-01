@@ -58,8 +58,10 @@ void Wiener_SVD_Wrapper() {
 	//Input files ----------------------------------------------------------------------------------------------------------------//
         //TString fmc="./prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrwkebeamff_v09_39_01.root";
         //TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01.root";
-        TString fmc="./prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01.root";
-        TString fdata="./prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01.root";
+        //TString fmc="./prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01.root";
+        //TString fdata="./prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01.root";
+        TString fmc="./prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_valid_only.root";
+        TString fdata="./prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_valid_only.root";
 
 	//Output files -------------------------------------------//
 	TString outpath="./Wiener_SVD_files/MC_nobmrw/";
