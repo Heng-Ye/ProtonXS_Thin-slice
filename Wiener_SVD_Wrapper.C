@@ -460,13 +460,9 @@ void Wiener_SVD_Wrapper() {
 
 	//bkg subtraction ---------------------------------------------------------------------------------------------------------------//
 	//data
-	TH1D* data_inc_bkgfree=(TH1D *)h1d_mea_inc->Clone("data_inc_bkgfree"); data_inc_bkgfree->SetName("data_inc_bkgfree");	
-	TH1D* data_st_inc_bkgfree=(TH1D *)h1d_mea_st_inc->Clone("data_st_inc_bkgfree"); data_st_inc_bkgfree->SetName("data_st_inc_bkgfree");	
-	TH1D* data_int_bkgfree=(TH1D *)h1d_mea_int->Clone("data_int_bkgfree"); data_int_bkgfree->SetName("data_int_bkgfree");	
-
-	//TH1D* data_inc_bkgfree=(TH1D *)data_inc->Clone("data_inc_bkgfree"); data_inc_bkgfree->SetName("data_inc_bkgfree");	
-	//TH1D* data_st_inc_bkgfree=(TH1D *)data_st_inc->Clone("data_st_inc_bkgfree"); data_st_inc_bkgfree->SetName("data_st_inc_bkgfree");	
-	//TH1D* data_int_bkgfree=(TH1D *)data_int->Clone("data_int_bkgfree"); data_int_bkgfree->SetName("data_int_bkgfree");	
+	TH1D* data_inc_bkgfree=(TH1D *)data_inc->Clone("data_inc_bkgfree"); data_inc_bkgfree->SetName("data_inc_bkgfree");	
+	TH1D* data_st_inc_bkgfree=(TH1D *)data_st_inc->Clone("data_st_inc_bkgfree"); data_st_inc_bkgfree->SetName("data_st_inc_bkgfree");	
+	TH1D* data_int_bkgfree=(TH1D *)data_int->Clone("data_int_bkgfree"); data_int_bkgfree->SetName("data_int_bkgfree");	
 
 	double scal_fact_misidp=-1;
 	//inc
@@ -477,15 +473,14 @@ void Wiener_SVD_Wrapper() {
 	//data_inc_bkgfree->Add(mc_inc_mideg, -1);
 	//data_inc_bkgfree->Add(mc_inc_midother, -1);
 	//data_inc_bkgfree->Multiply(pur_inc);
-	//data_inc_bkgfree->Add(mc_inc_midp, scal_fact_misidp);
-	//data_st_inc_bkgfree->Add(mc_st_inc_midp, scal_fact_misidp);
+	data_inc_bkgfree->Add(mc_inc_midp, scal_fact_misidp);
+	data_st_inc_bkgfree->Add(mc_st_inc_midp, scal_fact_misidp);
 
-	//
 	//Note: Numerical value of errorbar after subtraction is correct, i.e. (s-b)+-sqrt(s+b)	
 	
 	//int
-	//data_int_bkgfree->Add(mc_int_el, scal_fact_misidp);
-	//data_int_bkgfree->Add(mc_int_midp, scal_fact_misidp);
+	data_int_bkgfree->Add(mc_int_el, scal_fact_misidp);
+	data_int_bkgfree->Add(mc_int_midp, scal_fact_misidp);
 	//data_int_bkgfree->Add(mc_int_midcosmic, -1);
 	//data_int_bkgfree->Add(mc_int_midpi, -1);
 	//data_int_bkgfree->Add(mc_int_midmu, -1);
@@ -612,9 +607,9 @@ void Wiener_SVD_Wrapper() {
 		double cov_int=0;
 
 		//Data:recoslice with bkg subtraction -------------------------//
-		double m_inc=data_inc_bkgfree->GetBinContent(i); //inc
-		double m_st_inc=data_st_inc_bkgfree->GetBinContent(i); //inc_st
-		double m_int=data_int_bkgfree->GetBinContent(i); //int
+		//double m_inc=data_inc_bkgfree->GetBinContent(i); //inc
+		//double m_st_inc=data_st_inc_bkgfree->GetBinContent(i); //inc_st
+		//double m_int=data_int_bkgfree->GetBinContent(i); //int
 
 		//MC:recoslice ---------------------------------------------------------//
 		//double p_inc=mc_inc_bkgfree->GetBinContent(i); //inc
@@ -635,9 +630,9 @@ void Wiener_SVD_Wrapper() {
 		//h2d_cov_inc_st->Fill(i, i, pow(h1d_mea_st_inc->GetBinError(i),2));
 		//h2d_cov_int->Fill(i, i, pow(h1d_mea_int->GetBinError(i),2));
 
-		h2d_cov_inc->Fill(i, i, pow(data_inc_bkgfree->GetBinError(i),2));
-		h2d_cov_inc_st->Fill(i, i, pow(data_st_inc_bkgfree->GetBinError(i),2));
-		h2d_cov_int->Fill(i, i, pow(data_int_bkgfree->GetBinError(i),2));
+		h2d_cov_inc->Fill(i, i, pow(h1d_mea_inc->GetBinError(i),2));
+		h2d_cov_inc_st->Fill(i, i, pow(h1d_mea_st_inc->GetBinError(i),2));
+		h2d_cov_int->Fill(i, i, pow(h1d_mea_int->GetBinError(i),2));
 
 		//h2d_cov_inc->Fill(i, i, pow(mc_inc_bkgfree->GetBinError(i),2));
 		//h2d_cov_inc_st->Fill(i, i, pow(mc_st_inc_bkgfree->GetBinError(i),2));
@@ -654,31 +649,37 @@ void Wiener_SVD_Wrapper() {
 	//inc
 	TFile *f_out_inc = new TFile(fout_inc.Data(),"RECREATE");
 		mc_inc_true_bkgfree->Write("htrue_signal");
-		data_inc->Write("hmeas_before_bkgsub");
-		data_inc_bkgfree->Write("hmeas");
+		h1d_mea_inc->Write("hmeas");
 		//h1d_mea_inc->Write("hmeas"); //fake measure
 		h2d_hR_inc->Write("hR");
 		h2d_cov_inc->Write("hcov_tot");
+
+		data_inc->Write("data_inc");
+		data_inc_bkgfree->Write("data_inc_bkgfree");
 	f_out_inc->Close();
 
 	//inc_st
 	TFile *f_out_inc_st = new TFile(fout_inc_st.Data(),"RECREATE");
 		mc_st_inc_true_bkgfree->Write("htrue_signal");
-		data_st_inc->Write("hmeas_before_bkgsub");
-		data_st_inc_bkgfree->Write("hmeas");
+		h1d_mea_st_inc->Write("hmeas");
 		//h1d_mea_st_inc->Write("hmeas"); //fake measure
 		h2d_hR_st_inc->Write("hR");
 		h2d_cov_inc_st->Write("hcov_tot");
+
+		data_st_inc->Write("data_st_inc");
+		data_st_inc_bkgfree->Write("data_st_inc_bkgfree");
 	f_out_inc_st->Close();
 
 	//int
 	TFile *f_out_int = new TFile(fout_int.Data(),"RECREATE");
 		mc_int_true_bkgfree->Write("htrue_signal");
-		data_int_bkgfree->Write("hmeas");
+		h1d_mea_int->Write("hmeas");
 		//h1d_mea_int->Write("hmeas"); //fake measure
 		h2d_hR_int->Write("hR");
 		h2d_cov_int->Write("hcov_tot");
-		data_int->Write("hmeas_before_bkgsub");
+
+		data_int->Write("data_int");
+		data_int_bkgfree->Write("data_int_bkgfree");
 	f_out_int->Close();
 	//---------------------------------------------------------------------//
 
