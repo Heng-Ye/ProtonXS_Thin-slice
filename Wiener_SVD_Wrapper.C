@@ -94,7 +94,6 @@ void Wiener_SVD_Wrapper() {
 	TFile *f_data = TFile::Open(fdata.Data());
 	TH1D *data_inc=(TH1D*)f_data->Get(str_inc.Data()); //recosliceID after beam quality cuts
 	TH1D *data_st_inc=(TH1D*)f_data->Get(str_st_inc.Data()); //reco_st_sliceID after beam quality cuts
-	//TH1D *data_int=(TH1D*)f_data->Get("h_recosliceid_inelastic_cuts"); //h_recosliceid_inelastic_cuts
 	TH1D *data_int=(TH1D*)f_data->Get(str_int.Data()); //h_recosliceid_inelastic_cuts
 	data_inc->SetName("data_inc");	
 	data_st_inc->SetName("data_st_inc");	
@@ -103,21 +102,50 @@ void Wiener_SVD_Wrapper() {
 	int n_data_inc=data_inc->Integral();
 	int n_data_st_inc=data_st_inc->Integral();
 	int n_data_int=data_int->Integral();
+	std::cout<<"n_data_inc="<<n_data_inc<<std::endl;
+	std::cout<<"n_data_st_inc="<<n_data_st_inc<<std::endl;
+	std::cout<<"n_data_int="<<n_data_int<<std::endl;
 
 	//read mc [after bmrw] ------------------------------------------------------------------------------//
 	TFile *f_mc = TFile::Open(fmc.Data());
 
-	//get truth inc & int
+	//get truth inc & int (counting exp)
 	TH1D *mc_true_incidents=(TH1D *)f_mc->Get("h_true_incidents");
 	TH1D *mc_true_st_incidents=(TH1D *)f_mc->Get("h_true_st_incidents");
 	TH1D *mc_true_interactions=(TH1D *)f_mc->Get("h_true_interactions");
 
-	//get truesliceID of int &inc
-	TH1D *mc_truesliceID_inel=(TH1D *)f_mc->Get("h_truesliceid_inelastic_all"); //IsPureInEL
+	int n_mc_true_incidents=mc_true_incidents->Integral();
+	int n_mc_true_st_incidents=mc_true_st_incidents->Integral();
+	int n_mc_true_interactions=mc_true_interactions->Integral();
+	//std::cout<<"n_mc_true_incidents:"<<n_mc_true_incidents<<std::endl;
+	//std::cout<<"n_mc_true_st_incidents:"<<n_mc_true_st_incidents<<std::endl;
+	//std::cout<<"n_mc_true_interactions:"<<n_mc_true_interactions<<std::endl;
+
+	//mc_true_incidents->Scale((double)n_data_inc/(double)n_mc_true_incidents);
+	//mc_true_st_incidents->Scale((double)n_data_st_inc/(double)n_mc_true_st_incidents);
+	//mc_true_interactions->Scale((double)n_data_int/(double)n_mc_true_interactions);
+	//std::cout<<"  mc_true_incidents->Integral()="<<mc_true_incidents->Integral()<<std::endl;
+	//std::cout<<"  mc_true_st_incidents->Integral()="<<mc_true_st_incidents->Integral()<<std::endl;
+	//std::cout<<"  mc_true_interactions->Integral()="<<mc_true_interactions->Integral()<<std::endl;
+
+	//get truesliceID of int &inc from validation sample --------------------------------------//
 	TH1D *mc_truesliceID_all=(TH1D *)f_mc->Get("h_truesliceid_all"); //all protons
 	TH1D *mc_true_st_sliceID_all=(TH1D *)f_mc->Get("h_true_st_sliceid_all"); //all protons
+	TH1D *mc_truesliceID_inel=(TH1D *)f_mc->Get("h_truesliceid_inelastic_all"); //IsPureInEL
 
-	//get mc reco slice IDs
+	int n_mc_truesliceID_all=mc_truesliceID_all->Integral();
+	int n_mc_true_st_sliceID_all=mc_true_st_sliceID_all->Integral();
+	int n_mc_truesliceID_inel=mc_truesliceID_inel->Integral();
+
+	std::cout<<"n_mc_truesliceID_all:"<<n_mc_truesliceID_all<<std::endl;
+	std::cout<<"n_mc_true_st_sliceID_all:"<<n_mc_true_st_sliceID_all<<std::endl;
+	std::cout<<"n_mc_truesliceID_inel:"<<n_mc_truesliceID_inel<<std::endl;
+	//mc_truesliceID_all->Scale((double)n_data_inc/(double)n_mc_truesliceID_all);
+	//mc_true_st_sliceID_all->Scale((double)n_data_st_inc/(double)n_mc_true_st_sliceID_all);
+	//mc_truesliceID_inel->Scale((double)n_data_int/(double)n_mc_truesliceID_inel);
+
+
+	//get mc reco slice IDs ----------------------------------------------------------//
 	//inc
 	TH1D* mc_inc_all=(TH1D*)f_mc->Get(Form("%s",str_inc.Data()));
 	TH1D* mc_inc_inel=(TH1D*)f_mc->Get(Form("%s_inel",str_inc.Data()));
@@ -153,6 +181,7 @@ void Wiener_SVD_Wrapper() {
 
 
 	//get mc true slice IDs ---------------------------------------------------------------------//
+/*
 	//inc
 	TH1D* mc_inc_true_all=(TH1D*)f_mc->Get(Form("%s",str_inc_true.Data()));
 	TH1D* mc_inc_true_inel=(TH1D*)f_mc->Get(Form("%s_inel",str_inc_true.Data()));
@@ -218,7 +247,7 @@ void Wiener_SVD_Wrapper() {
 	int n_mc_int_true_midother=mc_int_true_midother->Integral();
 	int n_mc_int_true=n_mc_int_true_inel+n_mc_int_true_el+n_mc_int_true_midcosmic+n_mc_int_true_midpi+n_mc_int_true_midp+n_mc_int_true_midmu+n_mc_int_true_mideg+n_mc_int_true_midother;
 	double norm_mc_int_true=(double)n_data_int/(double)n_mc_int_true;
-
+*/
 	//-----------------------------------------------------------------------------------//
 
 	mc_inc_inel->SetFillColor(2); mc_inc_inel->SetLineColor(2);
@@ -288,27 +317,6 @@ void Wiener_SVD_Wrapper() {
 	mc_st_inc_midmu->Scale(norm_mc_st_inc);
 	mc_st_inc_mideg->Scale(norm_mc_st_inc);
 	mc_st_inc_midother->Scale(norm_mc_st_inc);
-	
-
-	mc_inc_true_inel->Scale(norm_mc_inc_true);
-	mc_inc_true_el->Scale(norm_mc_inc_true);
-	mc_inc_true_midcosmic->Scale(norm_mc_inc_true);
-	mc_inc_true_midpi->Scale(norm_mc_inc_true);
-	mc_inc_true_midp->Scale(norm_mc_inc_true);
-	mc_inc_true_midmu->Scale(norm_mc_inc_true);
-	mc_inc_true_mideg->Scale(norm_mc_inc_true);
-	mc_inc_true_midother->Scale(norm_mc_inc_true);
-
-	mc_st_inc_true_inel->Scale(norm_mc_st_inc_true);
-	mc_st_inc_true_el->Scale(norm_mc_st_inc_true);
-	mc_st_inc_true_midcosmic->Scale(norm_mc_st_inc_true);
-	mc_st_inc_true_midpi->Scale(norm_mc_st_inc_true);
-	mc_st_inc_true_midp->Scale(norm_mc_st_inc_true);
-	mc_st_inc_true_midmu->Scale(norm_mc_st_inc_true);
-	mc_st_inc_true_mideg->Scale(norm_mc_st_inc_true);
-	mc_st_inc_true_midother->Scale(norm_mc_st_inc_true);
-
-
 
 	mc_int_inel->SetFillColor(2); mc_int_inel->SetLineColor(2);
 	//mc_int_el->SetFillColor(4); mc_int_el->SetLineColor(4);
@@ -342,7 +350,26 @@ void Wiener_SVD_Wrapper() {
 	mc_int_midmu->Scale(norm_mc_int);
 	mc_int_mideg->Scale(norm_mc_int);
 	mc_int_midother->Scale(norm_mc_int);
+	
 
+/*
+	mc_inc_true_inel->Scale(norm_mc_inc_true);
+	mc_inc_true_el->Scale(norm_mc_inc_true);
+	mc_inc_true_midcosmic->Scale(norm_mc_inc_true);
+	mc_inc_true_midpi->Scale(norm_mc_inc_true);
+	mc_inc_true_midp->Scale(norm_mc_inc_true);
+	mc_inc_true_midmu->Scale(norm_mc_inc_true);
+	mc_inc_true_mideg->Scale(norm_mc_inc_true);
+	mc_inc_true_midother->Scale(norm_mc_inc_true);
+
+	mc_st_inc_true_inel->Scale(norm_mc_st_inc_true);
+	mc_st_inc_true_el->Scale(norm_mc_st_inc_true);
+	mc_st_inc_true_midcosmic->Scale(norm_mc_st_inc_true);
+	mc_st_inc_true_midpi->Scale(norm_mc_st_inc_true);
+	mc_st_inc_true_midp->Scale(norm_mc_st_inc_true);
+	mc_st_inc_true_midmu->Scale(norm_mc_st_inc_true);
+	mc_st_inc_true_mideg->Scale(norm_mc_st_inc_true);
+	mc_st_inc_true_midother->Scale(norm_mc_st_inc_true);
 
 	mc_int_true_inel->Scale(norm_mc_int_true);
 	mc_int_true_el->Scale(norm_mc_int_true);
@@ -352,52 +379,24 @@ void Wiener_SVD_Wrapper() {
 	mc_int_true_midmu->Scale(norm_mc_int_true);
 	mc_int_true_mideg->Scale(norm_mc_int_true);
 	mc_int_true_midother->Scale(norm_mc_int_true);
+*/
 
 	//Note: Numerical value of errorbar after scaling is correct, i.e. s*sqrt(n)	
 
 	//MC truth ---------------------------------------------------------------------------------------
 	//inc
-	double scale_true=(double)n_data_inc/(double)mc_truesliceID_all->Integral();
-	mc_truesliceID_all->Scale(scale_true);
-	mc_true_st_sliceID_all->Scale(scale_true);
+	//double scale_true=(double)n_data_inc/(double)mc_truesliceID_all->Integral();
+	//mc_truesliceID_all->Scale(scale_true);
+	//mc_true_st_sliceID_all->Scale(scale_true);
 
 	//int
-	mc_truesliceID_inel->Scale(scale_true);
+	//mc_truesliceID_inel->Scale(scale_true);
 	//------------------------------------------------------------------------------------------------
 
 
 	
-	//bkg subtraction ---------------------------------------------------------------------------------------------------------------//
-	//data
-	TH1D* data_inc_bkgfree=(TH1D *)data_inc->Clone("data_inc_bkgfree"); data_inc_bkgfree->SetName("data_inc_bkgfree");	
-	TH1D* data_st_inc_bkgfree=(TH1D *)data_st_inc->Clone("data_st_inc_bkgfree"); data_st_inc_bkgfree->SetName("data_st_inc_bkgfree");	
-	TH1D* data_int_bkgfree=(TH1D *)data_int->Clone("data_int_bkgfree"); data_int_bkgfree->SetName("data_int_bkgfree");	
-
-	double scal_fact_misidp=-1;
-	//inc
-	//data_inc_bkgfree->Add(mc_inc_el, -1);
-	//data_inc_bkgfree->Add(mc_inc_midcosmic, -1);
-	//data_inc_bkgfree->Add(mc_inc_midpi, -1);
-	//data_inc_bkgfree->Add(mc_inc_midmu, -1);
-	//data_inc_bkgfree->Add(mc_inc_mideg, -1);
-	//data_inc_bkgfree->Add(mc_inc_midother, -1);
-	//data_inc_bkgfree->Multiply(pur_inc);
-	//data_inc_bkgfree->Add(mc_inc_midp, scal_fact_misidp);
-	data_st_inc_bkgfree->Add(mc_st_inc_midp, scal_fact_misidp);
-
-	//
-	//Note: Numerical value of errorbar after subtraction is correct, i.e. (s-b)+-sqrt(s+b)	
-	
-	//int
-	data_int_bkgfree->Add(mc_int_el, scal_fact_misidp);
-	data_int_bkgfree->Add(mc_int_midp, scal_fact_misidp);
-	//data_int_bkgfree->Add(mc_int_midcosmic, -1);
-	//data_int_bkgfree->Add(mc_int_midpi, -1);
-	//data_int_bkgfree->Add(mc_int_midmu, -1);
-	//data_int_bkgfree->Add(mc_int_mideg, -1);
-	//data_int_bkgfree->Add(mc_int_midother, -1);
-	
 	//MC ------------------------------------------------------------------------------------------------------------------------//
+/*
 	//reco
 	//inc
 	TH1D* mc_inc_bkgfree=(TH1D *)mc_inc_inel->Clone("mc_inc_bkgfree"); mc_inc_bkgfree->SetName("mc_inc_bkgfree");
@@ -425,36 +424,7 @@ void Wiener_SVD_Wrapper() {
 	mc_int_bkgfree->Add(mc_int_midmu, 1);
 	mc_int_bkgfree->Add(mc_int_mideg, 1);
 	mc_int_bkgfree->Add(mc_int_midother, 1);
-
-	//truth
-	//inc
-	TH1D* mc_inc_true_bkgfree=(TH1D *)mc_inc_true_inel->Clone("mc_inc_true_bkgfree"); mc_inc_true_bkgfree->SetName("mc_inc_true_bkgfree");
-        mc_inc_true_bkgfree->Add(mc_inc_true_el, 1);
-	mc_inc_true_bkgfree->Add(mc_inc_true_midcosmic, 1);
-	mc_inc_true_bkgfree->Add(mc_inc_true_midpi, 1);
-	mc_inc_true_bkgfree->Add(mc_inc_true_midmu, 1);
-	mc_inc_true_bkgfree->Add(mc_inc_true_mideg, 1);
-	mc_inc_true_bkgfree->Add(mc_inc_true_midother, 1);
-	
-	//inc_st
-	TH1D* mc_st_inc_true_bkgfree=(TH1D *)mc_st_inc_true_inel->Clone("mc_st_inc_true_bkgfree"); mc_st_inc_true_bkgfree->SetName("mc_st_inc_true_bkgfree");
-        mc_st_inc_true_bkgfree->Add(mc_st_inc_true_el, 1);
-	mc_st_inc_true_bkgfree->Add(mc_st_inc_true_midcosmic, 1);
-	mc_st_inc_true_bkgfree->Add(mc_st_inc_true_midpi, 1);
-	mc_st_inc_true_bkgfree->Add(mc_st_inc_true_midmu, 1);
-	mc_st_inc_true_bkgfree->Add(mc_st_inc_true_mideg, 1);
-	mc_st_inc_true_bkgfree->Add(mc_st_inc_true_midother, 1);
-	
-	//int
-	TH1D* mc_int_true_bkgfree=(TH1D *)mc_int_true_inel->Clone("mc_int_true_bkgfree"); mc_int_true_bkgfree->SetName("mc_int_true_bkgfree");
-        mc_int_true_bkgfree->Add(mc_int_true_el, 1);
-	mc_int_true_bkgfree->Add(mc_int_true_midcosmic, 1);
-	mc_int_true_bkgfree->Add(mc_int_true_midpi, 1);
-	mc_int_true_bkgfree->Add(mc_int_true_midmu, 1);
-	mc_int_true_bkgfree->Add(mc_int_true_mideg, 1);
-	mc_int_true_bkgfree->Add(mc_int_true_midother, 1);
-
-
+*/
 	//response matrix from mc --------------------------------------------------------------------------------------------------//
 	//Response matrix as a 2D-histogram: (x,y)=(measured,truth)
 	RooUnfoldResponse *res_inc=(RooUnfoldResponse*)f_mc->Get("response_SliceID_Inc"); res_inc->SetName("res_inc");
@@ -488,6 +458,77 @@ void Wiener_SVD_Wrapper() {
 	std::cout<<"h1d_sg_int->GetNbinsX():"<<h1d_sg_int->GetNbinsX()<<std::endl;
 	std::cout<<"h1d_sg_int->GetNbinsY():"<<h1d_sg_int->GetNbinsY()<<"\n"<<std::endl;
 
+	//bkg subtraction ---------------------------------------------------------------------------------------------------------------//
+	//data
+	TH1D* data_inc_bkgfree=(TH1D *)h1d_mea_inc->Clone("data_inc_bkgfree"); data_inc_bkgfree->SetName("data_inc_bkgfree");	
+	TH1D* data_st_inc_bkgfree=(TH1D *)h1d_mea_st_inc->Clone("data_st_inc_bkgfree"); data_st_inc_bkgfree->SetName("data_st_inc_bkgfree");	
+	TH1D* data_int_bkgfree=(TH1D *)h1d_mea_int->Clone("data_int_bkgfree"); data_int_bkgfree->SetName("data_int_bkgfree");	
+
+	//TH1D* data_inc_bkgfree=(TH1D *)data_inc->Clone("data_inc_bkgfree"); data_inc_bkgfree->SetName("data_inc_bkgfree");	
+	//TH1D* data_st_inc_bkgfree=(TH1D *)data_st_inc->Clone("data_st_inc_bkgfree"); data_st_inc_bkgfree->SetName("data_st_inc_bkgfree");	
+	//TH1D* data_int_bkgfree=(TH1D *)data_int->Clone("data_int_bkgfree"); data_int_bkgfree->SetName("data_int_bkgfree");	
+
+	double scal_fact_misidp=-1;
+	//inc
+	//data_inc_bkgfree->Add(mc_inc_el, -1);
+	//data_inc_bkgfree->Add(mc_inc_midcosmic, -1);
+	//data_inc_bkgfree->Add(mc_inc_midpi, -1);
+	//data_inc_bkgfree->Add(mc_inc_midmu, -1);
+	//data_inc_bkgfree->Add(mc_inc_mideg, -1);
+	//data_inc_bkgfree->Add(mc_inc_midother, -1);
+	//data_inc_bkgfree->Multiply(pur_inc);
+	//data_inc_bkgfree->Add(mc_inc_midp, scal_fact_misidp);
+	//data_st_inc_bkgfree->Add(mc_st_inc_midp, scal_fact_misidp);
+
+	//
+	//Note: Numerical value of errorbar after subtraction is correct, i.e. (s-b)+-sqrt(s+b)	
+	
+	//int
+	//data_int_bkgfree->Add(mc_int_el, scal_fact_misidp);
+	//data_int_bkgfree->Add(mc_int_midp, scal_fact_misidp);
+	//data_int_bkgfree->Add(mc_int_midcosmic, -1);
+	//data_int_bkgfree->Add(mc_int_midpi, -1);
+	//data_int_bkgfree->Add(mc_int_midmu, -1);
+	//data_int_bkgfree->Add(mc_int_mideg, -1);
+	//data_int_bkgfree->Add(mc_int_midother, -1);
+	
+
+
+	//truth info from validation set ----------------------------------------------------------------------------------------------------------------//
+	//FIXME::Whys valid same has a scaling factor ~ 2.3? Do the normalization here
+	//mc_truesliceID_all->Scale((double)data_inc_bkgfree->Integral()/(double)n_mc_truesliceID_all);
+	//mc_true_st_sliceID_all->Scale((double)data_st_inc_bkgfree->Integral()/(double)n_mc_true_st_sliceID_all);
+	//mc_truesliceID_inel->Scale((double)data_int_bkgfree->Integral()/(double)n_mc_truesliceID_inel);
+
+	//inc
+	TH1D* mc_inc_true_bkgfree=(TH1D *)h1d_sg_inc->Clone("mc_inc_true_bkgfree"); mc_inc_true_bkgfree->SetName("mc_inc_true_bkgfree");
+	//TH1D* mc_inc_true_bkgfree=(TH1D *)mc_inc_true_inel->Clone("mc_inc_true_bkgfree");
+        //mc_inc_true_bkgfree->Add(mc_inc_true_el, 1);
+	//mc_inc_true_bkgfree->Add(mc_inc_true_midcosmic, 1);
+	//mc_inc_true_bkgfree->Add(mc_inc_true_midpi, 1);
+	//mc_inc_true_bkgfree->Add(mc_inc_true_midmu, 1);
+	//mc_inc_true_bkgfree->Add(mc_inc_true_mideg, 1);
+	//mc_inc_true_bkgfree->Add(mc_inc_true_midother, 1);
+	
+	//inc_st
+	TH1D* mc_st_inc_true_bkgfree=(TH1D *)h1d_sg_st_inc->Clone("mc_st_inc_true_bkgfree"); mc_st_inc_true_bkgfree->SetName("mc_st_inc_true_bkgfree");
+	//TH1D* mc_st_inc_true_bkgfree=(TH1D *)mc_st_inc_true_inel->Clone("mc_st_inc_true_bkgfree"); 
+        //mc_st_inc_true_bkgfree->Add(mc_st_inc_true_el, 1);
+	//mc_st_inc_true_bkgfree->Add(mc_st_inc_true_midcosmic, 1);
+	//mc_st_inc_true_bkgfree->Add(mc_st_inc_true_midpi, 1);
+	//mc_st_inc_true_bkgfree->Add(mc_st_inc_true_midmu, 1);
+	//mc_st_inc_true_bkgfree->Add(mc_st_inc_true_mideg, 1);
+	//mc_st_inc_true_bkgfree->Add(mc_st_inc_true_midother, 1);
+	
+	//int
+	TH1D* mc_int_true_bkgfree=(TH1D *)h1d_sg_int->Clone("mc_int_true_bkgfree"); mc_int_true_bkgfree->SetName("mc_int_true_bkgfree");
+	//TH1D* mc_int_true_bkgfree=(TH1D *)mc_int_true_inel->Clone("mc_int_true_bkgfree"); 
+        //mc_int_true_bkgfree->Add(mc_int_true_el, 1);
+	//mc_int_true_bkgfree->Add(mc_int_true_midcosmic, 1);
+	//mc_int_true_bkgfree->Add(mc_int_true_midpi, 1);
+	//mc_int_true_bkgfree->Add(mc_int_true_midmu, 1);
+	//mc_int_true_bkgfree->Add(mc_int_true_mideg, 1);
+	//mc_int_true_bkgfree->Add(mc_int_true_midother, 1);
 
 	//Response Matrix for Wiener SVD --------------------------------------------------------------------------------------------------//
 	//M=R*S: S:truth; M:reco
@@ -511,17 +552,17 @@ void Wiener_SVD_Wrapper() {
 		        double hr_st_inc=999999999999;
 			double hr_int=999999999999;
 
-			if (norm_sg_inc!=0) hr_inc=res_inc/norm_sg_inc;
-			if (norm_sg_int!=0) hr_int=res_int/norm_sg_int;
-			if (norm_sg_st_inc!=0) hr_st_inc=res_st_inc/norm_sg_st_inc;
+			//if (norm_sg_inc!=0) hr_inc=res_inc/norm_sg_inc;
+			//if (norm_sg_int!=0) hr_int=res_int/norm_sg_int;
+			//if (norm_sg_st_inc!=0) hr_st_inc=res_st_inc/norm_sg_st_inc;
 
 			//response matrix rotation
-			//if (norm_sg_inc!=0&&res_inc!=0) h2d_hR_inc->SetBinContent(j,i,res_inc/norm_sg_inc);
-			//if (norm_sg_st_inc!=0&&res_st_inc!=0) h2d_hR_st_inc->SetBinContent(j,i, res_st_inc/norm_sg_st_inc);
-			//if (norm_sg_int!=0&&res_int!=0)  h2d_hR_int->SetBinContent(j,i, res_int/norm_sg_int);
-			h2d_hR_inc->SetBinContent(j, i, hr_inc);
-			h2d_hR_st_inc->SetBinContent(j, i, hr_st_inc);
-			h2d_hR_int->SetBinContent(j, i, hr_int);
+			if (norm_sg_inc!=0&&res_inc!=0) h2d_hR_inc->SetBinContent(j,i,res_inc/norm_sg_inc);
+			if (norm_sg_st_inc!=0&&res_st_inc!=0) h2d_hR_st_inc->SetBinContent(j,i, res_st_inc/norm_sg_st_inc);
+			if (norm_sg_int!=0&&res_int!=0)  h2d_hR_int->SetBinContent(j,i, res_int/norm_sg_int);
+			//h2d_hR_inc->SetBinContent(j, i, hr_inc);
+			//h2d_hR_st_inc->SetBinContent(j, i, hr_st_inc);
+			//h2d_hR_int->SetBinContent(j, i, hr_int);
 		} //y
 	} //x
 	//---------------------------------------------------------------------------------------------------------------------------------//
@@ -551,8 +592,6 @@ void Wiener_SVD_Wrapper() {
 	} //X
 */
 
-
-
 	//Construct covariance matrix -----------------------------------------------------------------------------//
 	Int_t nb=data_inc->GetNbinsX();
 	Double_t xlo=data_inc->GetXaxis()->GetXmin(), xhi= data_inc->GetXaxis()->GetXmax(), xb= (xhi-xlo)/nb;
@@ -578,13 +617,13 @@ void Wiener_SVD_Wrapper() {
 		double m_int=data_int_bkgfree->GetBinContent(i); //int
 
 		//MC:recoslice ---------------------------------------------------------//
-		double p_inc=mc_inc_bkgfree->GetBinContent(i); //inc
-		double p_st_inc=mc_st_inc_bkgfree->GetBinContent(i); //inc_st
-		double p_int=mc_int_bkgfree->GetBinContent(i); //int
+		//double p_inc=mc_inc_bkgfree->GetBinContent(i); //inc
+		//double p_st_inc=mc_st_inc_bkgfree->GetBinContent(i); //inc_st
+		//double p_int=mc_int_bkgfree->GetBinContent(i); //int
 		
-		cov_inc=cov_cnp(m_inc, p_inc);
-		cov_inc_st=cov_cnp(m_st_inc, p_st_inc);
-		cov_int=cov_cnp(m_int, p_int);
+		//cov_inc=cov_cnp(m_inc, p_inc);
+		//cov_inc_st=cov_cnp(m_st_inc, p_st_inc);
+		//cov_int=cov_cnp(m_int, p_int);
 			
 		//CNP approach	
 		//h2d_cov_inc->Fill(i, i, cov_inc);
@@ -592,13 +631,13 @@ void Wiener_SVD_Wrapper() {
 		//h2d_cov_int->Fill(i, i, cov_int);
 
 		//fake
-		h2d_cov_inc->Fill(i, i, pow(h1d_mea_inc->GetBinError(i),2));
-		h2d_cov_inc_st->Fill(i, i, pow(h1d_mea_st_inc->GetBinError(i),2));
-		h2d_cov_int->Fill(i, i, pow(h1d_mea_int->GetBinError(i),2));
+		//h2d_cov_inc->Fill(i, i, pow(h1d_mea_inc->GetBinError(i),2));
+		//h2d_cov_inc_st->Fill(i, i, pow(h1d_mea_st_inc->GetBinError(i),2));
+		//h2d_cov_int->Fill(i, i, pow(h1d_mea_int->GetBinError(i),2));
 
-		//h2d_cov_inc->Fill(i, i, pow(data_inc_bkgfree->GetBinError(i),2));
-		//h2d_cov_inc_st->Fill(i, i, pow(data_st_inc_bkgfree->GetBinError(i),2));
-		//h2d_cov_int->Fill(i, i, pow(data_int_bkgfree->GetBinError(i),2));
+		h2d_cov_inc->Fill(i, i, pow(data_inc_bkgfree->GetBinError(i),2));
+		h2d_cov_inc_st->Fill(i, i, pow(data_st_inc_bkgfree->GetBinError(i),2));
+		h2d_cov_int->Fill(i, i, pow(data_int_bkgfree->GetBinError(i),2));
 
 		//h2d_cov_inc->Fill(i, i, pow(mc_inc_bkgfree->GetBinError(i),2));
 		//h2d_cov_inc_st->Fill(i, i, pow(mc_st_inc_bkgfree->GetBinError(i),2));
@@ -647,6 +686,10 @@ void Wiener_SVD_Wrapper() {
 	TString str_uf_inc=Form("./Wiener-SVD-Unfolding/Example %s %s 0 0", fout_inc.Data(), fout2_inc.Data());
 	TString str_uf_inc_st=Form("./Wiener-SVD-Unfolding/Example %s %s 0 0", fout_inc_st.Data(), fout2_inc_st.Data());
 	TString str_uf_int=Form("./Wiener-SVD-Unfolding/Example %s %s 0 0", fout_int.Data(), fout2_int.Data());
+
+	//TString str_uf_inc=Form("./Wiener-SVD-Unfolding/Example %s %s 1 0", fout_inc.Data(), fout2_inc.Data());
+	//TString str_uf_inc_st=Form("./Wiener-SVD-Unfolding/Example %s %s 1 0", fout_inc_st.Data(), fout2_inc_st.Data());
+	//TString str_uf_int=Form("./Wiener-SVD-Unfolding/Example %s %s 1 0", fout_int.Data(), fout2_int.Data());
 
 	//TString str_uf_inc=Form("./Wiener-SVD-Unfolding/Example %s %s 2 0", fout_inc.Data(), fout2_inc.Data());
 	//TString str_uf_inc_st=Form("./Wiener-SVD-Unfolding/Example %s %s 2 0", fout_inc_st.Data(), fout2_inc_st.Data());
