@@ -509,6 +509,26 @@ double Convert_Proton_KE_Spectrometer_to_KE_ff(double KE_RecoBeam, TString key, 
 
 }
 
+//beam systematics function ---------------------------//
+double Pbeam_sys(double p, double frac, int syst) {
+   double p_sys=0;
+
+   if (syst==0) {
+      p_sys=p;
+   }
+   if (syst==1) {
+      p_sys=p*(1+frac);
+   }
+   if (syst==-1) {
+      p_sys=p*(1-frac);      
+   }
+
+   return p_sys;
+}
+
+
+
+
 //chi^2 functions ------------------------------------------------------------------------------------------------------//
 //neyman_chi2
 double neyman_chi2_data_mc(vector<double> D /*data*/, vector<double> er_D, vector<double> E, vector<double> er_E) {
