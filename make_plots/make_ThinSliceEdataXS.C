@@ -162,6 +162,16 @@ void make_ThinSliceEdataXS() {
         TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrwkebeamff_v09_39_01.root";
         TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01.root";
 
+	//MC nobmrw ---------------------------------------------------------------------------------------------------
+	//TString outpath="./plots_XS_Eslice_nobmrwkebeamff/";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01.root";
+        //TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01.root";
+	//Test cell strat sliceID and floor end sliceID
+	//TString outpath="./plots_XS_Eslice_nobmrwkebeamff_newsliceIDdef/";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_newslideIDdef_v09_39_01.root";
+        //TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_newslideIDdef_v09_39_01.root";
+
+
 	//reco string pre-fix --------------------------------------//
 	TString str_inc=Form("h_recosliceid_allevts_cuts");
 	TString str_st_inc=Form("h_reco_st_sliceid_allevts_cuts");
@@ -1636,7 +1646,7 @@ void make_ThinSliceEdataXS() {
 	xs_GENIE_ha2018->SetMarkerColor(1); xs_GENIE_ha2018->SetLineColor(1); 
 	xs_NEUT_2019->SetMarkerColor(7); xs_NEUT_2019->SetLineColor(7);
 	xs_GENIE_INCL_pp->SetMarkerColor(6); xs_GENIE_INCL_pp->SetLineColor(6);
-	xs_GENIE_hN2018->SetMarkerColor(48); xs_GENIE_hN2018->SetLineColor(48);
+	xs_GENIE_hN2018->SetMarkerColor(kOrange-3); xs_GENIE_hN2018->SetLineColor(kOrange-3);
 	xs_NuWRO_2019->SetMarkerColor(4); xs_NuWRO_2019->SetLineColor(4);	
 
 	xs_GENIE_ha2018->SetLineStyle(2);
@@ -1644,7 +1654,6 @@ void make_ThinSliceEdataXS() {
 	xs_GENIE_INCL_pp->SetLineStyle(2);
 	xs_GENIE_hN2018->SetLineStyle(2);
 	xs_NuWRO_2019->SetLineStyle(2);
-
 
         //gStyle->SetPadLeftMargin(0.13);
         gStyle->SetPadRightMargin(0.0);
@@ -1657,7 +1666,8 @@ void make_ThinSliceEdataXS() {
         //float ymax=1200;
         float ymax=1400;
         //float xmax=600;
-        float xmax=400;
+        float xmax=200;
+        //float xmax=400;
         //float xmax=460;
         //float xmax=620;
         float xmin=0;
@@ -1683,7 +1693,7 @@ void make_ThinSliceEdataXS() {
         gr_truexs->SetLineColor(3);
         gr_truexs->SetMarkerStyle(21);
         gr_truexs->SetMarkerSize(1.5);
-        gr_truexs->Draw("p same");
+        //gr_truexs->Draw("p same");
 
         gr_recoxs->SetLineWidth(2);
         gr_recoxs->SetMarkerColor(1);
@@ -1708,11 +1718,12 @@ void make_ThinSliceEdataXS() {
 	//l_left.Draw("same");
 	//l_right.Draw("same");
 
-        TLegend *leg_xs = new TLegend(0.6,0.6,0.9,0.85);
+        //TLegend *leg_xs = new TLegend(0.6,0.6,0.9,0.85);
+        TLegend *leg_xs = new TLegend(0.4,0.6,0.9,0.85);
         leg_xs->SetFillStyle(0);
-	leg->SetNColumns(2);
+	leg_xs->SetNColumns(2);
         leg_xs->AddEntry(gr_recoxs, "Data", "pe");
-        leg_xs->AddEntry(gr_truexs, "MC Truth", "pe");
+        //leg_xs->AddEntry(gr_truexs, "MC Truth", "pe");
         leg_xs->AddEntry(total_inel_KE, "Geant4", "l");
         leg_xs->AddEntry(xs_GENIE_ha2018, "GENIE hA2018", "l");
         leg_xs->AddEntry(xs_GENIE_hN2018, "GENIE hN2018", "l");
@@ -1733,7 +1744,8 @@ void make_ThinSliceEdataXS() {
         //Beam Logo
         TLatex **txt_p1=new TLatex*[1];
         //txt_p1[0]=new TLatex(xmax-6.3, logo_y, Form("Protons (1 GeV/c)")); //x:0-20
-        txt_p1[0]=new TLatex(xmax-120, logo_y, Form("Protons (1 GeV/c)")); //x:0-40
+        //txt_p1[0]=new TLatex(xmax-120, logo_y, Form("Protons (1 GeV/c)")); //x:0-40
+        txt_p1[0]=new TLatex(142, logo_y, Form("Protons (1 GeV/c)")); //x:0-40
         txt_p1[0]->SetTextColor(1);
         txt_p1[0]->SetTextSize(0.05);
         txt_p1[0]->Draw();
