@@ -249,7 +249,7 @@ void ProtonESliceData3D::Loop() {
 	//SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_bmrw_stslcplus0.5.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_nobmrw_stslcplus0.5.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrwkebeamff_v09_39_01.root", name_thinslicewidth, nthinslices)); //output file name
-	SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrw_v09_39_01.root", name_thinslicewidth, nthinslices)); //output file name
+	SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_3dunfold_beamxy_bmrw_v09_39_01.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_v09_39_01.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrw.root", name_thinslicewidth, nthinslices)); //output file name
@@ -1492,6 +1492,7 @@ void ProtonESliceData3D::Loop() {
 		else { //if NOT test sample
 			uf.eff_den_Inc->Fill(true_sliceID, mom_rw_minchi2);
 			uf.eff_den_st_Inc->Fill(true_st_sliceID, mom_rw_minchi2);
+
 			//for (int ij=true_st_sliceID; ij<=true_sliceID; ++ij){
 			//if (true_sliceID < nthinslices && true_sliceID>=0){
 			//for (int ij=0; ij<=true_sliceID+1; ++ij){
