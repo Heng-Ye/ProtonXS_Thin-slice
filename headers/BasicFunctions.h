@@ -594,3 +594,11 @@ double cov_cnp(double m /*data(measurement)*/, double p /*prediction from mc*/) 
 }
 
 
+//Read Beam RW Sys File -------------------------------------------------------------------------------------------------------------------------------------------------//
+TString bmrw_path="/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/mcdata/sce/MC_PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1/xs_thinslice/systematics/";
+TFile *f_bmrw=new TFile(Form("%sbmrw_sys.root", bmrw_path.Data()));
+TF1 *kerw_cen=(TF1 *)f_bmrw->Get("kerw_cen");
+TF1 *kerw_max=(TF1 *)f_bmrw->Get("kerw_max");
+TF1 *kerw_min=(TF1 *)f_bmrw->Get("kerw_min");
+
+
