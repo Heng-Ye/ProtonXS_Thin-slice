@@ -142,7 +142,7 @@ void make_SYSdataXS() {
 		err_XS_ALL_DN.push_back(err_all_dn);
 
 		//Uncertainties due to fiber position shift --------------------------------------------------------------------------//
-		double err_pbeam_fiber_pos_shift=0.3/100.; //in percentage
+		double err_pbeam_fiber_pos_shift=1.3/100.; //in percentage
 		double dke_up=1000.*p2ke(Pbeam_sys(ke2p(ke[i]/1000.), err_pbeam_fiber_pos_shift, 1))-ke[i]; //up value
 		double dke_dn=ke[i]-1000.*p2ke(Pbeam_sys(ke2p(ke[i]/1000.), err_pbeam_fiber_pos_shift, -1)); //dn value
 
