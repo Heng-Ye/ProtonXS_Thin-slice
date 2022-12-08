@@ -91,11 +91,27 @@ oout<<"ke:"<<ke<<endl;
 
 void make_ESlicedataXS() {
 
-	TString outpath="./plots_XS_Eslice_bmrwkebeamff_sys/";
-        TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01.root";
         //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrwkebeamff_v09_39_01.root";
-        TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Test.root"; //for reco
-        TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Valid.root"; //for truth and response matrix
+	TString fout_path="./xs_files/";
+	//TString outpath="./plots_XS_Eslice_bmrwkebeamff_sys/";
+        //TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Test.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Valid.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_bmrwup_data.root");
+
+	//TString outpath="./plots_XS_Eslice_bmrwkebeamff_sys_up/";
+        //TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_BMRW_UP.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_BMRW_UP.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_bmrwup_data.root");
+
+	TString outpath="./plots_XS_Eslice_bmrwkebeamff_sys_dn/";
+        TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01.root";
+        TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_BMRW_DN.root"; //for reco
+        TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_BMRW_DN.root"; //for truth and response matrix
+	TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_bmrwdn_data.root");
+
+
 
 	//MC nobmrw ---------------------------------------------------------------------------------------------------
 	//TString outpath="./plots_XS_Eslice_nobmrwkebeamff/";
@@ -396,6 +412,7 @@ void make_ESlicedataXS() {
 	std::cout<<"res_inc->GetNbinsTruth():"<<res_inc->GetNbinsTruth()<<std::endl; 
 
 	//Unfolding
+	//int n_iteration=4;
 	int n_iteration=4;
 	RooUnfoldBayes uf_inc (res_inc, data_inc_bkgfree, n_iteration); //inc
 	RooUnfoldBayes uf_st_inc (res_st_inc, data_st_inc_bkgfree, n_iteration); //inc
@@ -1706,20 +1723,17 @@ void make_ESlicedataXS() {
 	c_xs->Print(Form("%sxs_data_largerrange.eps",outpath.Data()));
 
 	
+	//output files ---------------------------------------------------------------------------------------------------//
+	//gr_recoxs->SetName("gr_recoxs");
+	//gr_truexs->SetName("gr_truexs");
 
-	//output files ----------------------------------------------------------------------------------------------//
-	gr_recoxs->SetName("gr_recoxs");
-	gr_truexs->SetName("gr_truexs");
-
-
-/*
 	//TFile *fout_xs = new TFile("./xs_rootfiles/xs_Eslice_dE20MeV_40slcs_nobmrw_stslcplus0.5.root","recreate");
-	TFile *fout_xs = new TFile("./xs_rootfiles/xs_Eslice_dE20MeV_40slcs_nobmrw_stslcplus0.5_new.root","recreate");
-	gr_recoxs->Write();
-	gr_truexs->Write();
+	//TFile *fout_xs = new TFile("./xs_rootfiles/xs_Eslice_dE20MeV_40slcs_nobmrw_stslcplus0.5_new.root","recreate");
+	TFile *fout_xs = new TFile(Form("%s",fout.Data()),"recreate");
+	  gr_recoxs->Write("gr_recoxs");
+	  gr_truexs->Write("gr_truexs");
 	fout_xs->Close();
-*/
-
+	//----------------------------------------------------------------------------------------------------------------//
 
 
 /*

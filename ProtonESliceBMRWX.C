@@ -898,7 +898,7 @@ void ProtonESliceBMRW::Loop() {
 
 		//if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=kerw->Eval(ke_ffbeam_MeV); //new bmrw (const E-loss)
 		if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=kerw_max->Eval(ke_ffbeam_MeV); //new bmrw (const E-loss)
-		cout<<"\n\n\nmom_rw_minchi2:"<<mom_rw_minchi2<<"\n\n\n"<<endl;
+		//cout<<"\n\n\nmom_rw_minchi2:"<<mom_rw_minchi2<<"\n\n\n"<<endl;
 		//if (ke_ff>=mu_kemin&&ke_ff<=mu_kemax) mom_rw_minchi2=kerw->Eval(ke_ff); //new bmrw (using truth)
 
 		//KEend ---------------------------------------------------------------------------//
