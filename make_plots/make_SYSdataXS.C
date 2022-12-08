@@ -42,6 +42,9 @@
 #include <string>
 #include <algorithm>
 
+#include "../headers/BasicParameters.h"
+#include "../headers/BasicFunctions.h"
+
 void make_SYSdataXS() {
 	//read xs files -----------------------------------------------------------------------//
         TString str_cen="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrw_data_cen.root"; //xs_central
@@ -81,6 +84,12 @@ void make_SYSdataXS() {
 	vector<double> err_XS_SYS_DN;
 	vector<double> err_XS_ALL_UP;
 	vector<double> err_XS_ALL_DN;
+
+	vector<double> err_SYS_KE_UP;
+	vector<double> err_SYS_KE_DN;
+	vector<double> err_ALL_KE_UP;
+	vector<double> err_ALL_KE_DN;
+
 
 	int n=tr_xs_cen->GetN();
 	for (int i=0; i<n; i++) { 
@@ -132,11 +141,22 @@ void make_SYSdataXS() {
 		err_XS_ALL_UP.push_back(err_all_up);
 		err_XS_ALL_DN.push_back(err_all_dn);
 
+		//Uncertainties due to fiber position shift --------------------------------------------------------------------------//
+		double err_pbeam_fiber_pos_shift=0.3/100.; //in percentage
+		double dke_up=1000.*p2ke(Pbeam_sys(ke2p(ke[i]/1000.), err_pbeam_fiber_pos_shift, 1))-ke[i]; //up value
+		double dke_dn=ke[i]-1000.*p2ke(Pbeam_sys(ke2p(ke[i]/1000.), err_pbeam_fiber_pos_shift, -1)); //dn value
+
+		err_SYS_KE_UP.push_back(dke_up);
+		err_SYS_KE_DN.push_back(dke_dn);
+
+		err_ALL_KE_UP.push_back(sqrt(pow(dke_up,2)+pow(err_ke[i],2)));
+		err_ALL_KE_DN.push_back(sqrt(pow(dke_dn,2)+pow(err_ke[i],2)));
 	}
 
-	//output the combined xs results ------------------------------------------------------------------------------------------------------------------------------//
-	TGraphAsymmErrors* reco_xs_sysonly=new TGraphAsymmErrors(n, &KE.at(0), &XS.at(0), &err_KE.at(0), &err_KE.at(0), &err_XS_SYS_DN.at(0), &err_XS_SYS_UP.at(0));	
-	TGraphAsymmErrors* reco_xs_all=new TGraphAsymmErrors(n, &KE.at(0), &XS.at(0), &err_KE.at(0), &err_KE.at(0), &err_XS_ALL_DN.at(0), &err_XS_ALL_UP.at(0));	
+	//output the combined xs results -------------------------------------------------------------------------------------------------------------------------------------------//
+	TGraphAsymmErrors* reco_xs_sysonly=new TGraphAsymmErrors(n, &KE.at(0), &XS.at(0), &err_SYS_KE_DN.at(0), &err_SYS_KE_UP.at(0), &err_XS_SYS_DN.at(0), &err_XS_SYS_UP.at(0));	
+	TGraphAsymmErrors* reco_xs_all=new TGraphAsymmErrors(n, &KE.at(0), &XS.at(0), &err_ALL_KE_DN.at(0), &err_ALL_KE_UP.at(0), &err_XS_ALL_DN.at(0), &err_XS_ALL_UP.at(0));
+	//auto gr = new TGraphAsymmErrors(n,x,y,exl,exh,eyl,eyh);	
 
 	TFile *fout=new TFile(Form("%s",str_output.Data()),"recreate");	
 		reco_xs_sysonly->Write("reco_xs_sysonly");
