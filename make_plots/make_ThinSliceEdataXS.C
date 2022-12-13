@@ -158,13 +158,14 @@ void make_ThinSliceEdataXS() {
 
 	//The One that has the best result: BMRW:=(KEBeam-dE)(data)/(KEBeam-dE)(MC)
 	//TString outpath="./plots_XS_Eslice_bmrwkebeamff_subtractMisIDP0.89/";
-	//TString outpath="./plots_XS_Eslice_bmrwkebeamff/";
-        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrwkebeamff_v09_39_01.root";
-        //TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01.root";
+	TString outpath="./plots_XS_Eslice_bmrwkebeamff/";
+        TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrwkebeamff_v09_39_01.root";
+        TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01.root";
 
-	TString outpath="./plots_XS_Eslice_nobmrw/";
-        TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All.root";
-        TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All.root";
+	//MC No BMRW -- use all MC for unfolding 
+	//TString outpath="./plots_XS_Eslice_nobmrw/";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All.root";
+        //TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All.root";
 
 	//MC nobmrw ---------------------------------------------------------------------------------------------------
 	//TString outpath="./plots_XS_Eslice_nobmrwkebeamff/";
