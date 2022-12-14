@@ -7,7 +7,7 @@
 
 #include "Math/VavilovAccurate.h"
 
-ROOT::Math::VavilovAccurate vav;
+ROOT::Math::VavilovAccurate vavv;
 
 using namespace std;
 
@@ -175,7 +175,7 @@ double BetheBloch_SYS_I::MPVdEdx(double KE, double pitch){
   double rho = 1.396;
   double Z = 18;
   double A = 39.948;
-  double I = pow(10,-6)*10.5*18; //MeV
+  double I = pow(10,-6)*205; //MeV
   double  me = 0.511; //MeV me*c^2
 
   double gamma = (KE + mass) / mass;
@@ -462,7 +462,7 @@ double BetheBloch_SYS_I::Landau_xi(double KE, double pitch){
   double rho = 1.396;
   double Z = 18;
   double A = 39.948;
-  double I = pow(10,-6)*10.5*18; //MeV
+  double I = pow(10,-6)*205; //MeV
   double  me = 0.511; //MeV me*c^2
 
   double gamma = (KE/mass)+1.0;
@@ -495,12 +495,12 @@ double dEdx_PDF_fuction(double *x, double *par){
     this_vav =  this_vav / a;
   }
   else if(par[0] > 10.){ // == Gaussian
-    double mu = vav.Mean(par[0], par[1]);
-    double sigma = sqrt(vav.Variance(par[0], par[1]));
+    double mu = vavv.Mean(par[0], par[1]);
+    double sigma = sqrt(vavv.Variance(par[0], par[1]));
     this_vav =  TMath::Gaus(y, mu, sigma);
   }
   else{ // == Vavilov
-    this_vav =  vav.Pdf(y, par[0], par[1]);
+    this_vav =  vavv.Pdf(y, par[0], par[1]);
     this_vav =  this_vav / a;
   }
 
