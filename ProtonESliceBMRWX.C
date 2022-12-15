@@ -49,6 +49,7 @@
 #include "./headers/util.h"
 #include "./headers/ESlice.h"
 #include "./headers/BetheBloch.h"
+#include "./headers/BetheBloch_SYS_I.h"
 
 using namespace std;
 using namespace ROOT::Math;
@@ -241,10 +242,14 @@ void ProtonESliceBMRW::Loop() {
 	Unfold uf(nthinslices+2, -1, nthinslices+1);
 
 	//ThinSlice config. --------------------------------------------------------------------------------------------------------------------------------------------------------//
-	SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_BMRW_UP.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_BMRW_UP.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_BMRW_DN.root", name_thinslicewidth, nthinslices)); //output file name
+	SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_BMRW_SYS_BB.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_All.root", name_thinslicewidth, nthinslices)); //output file name
 
 	//Basic configure ------//
-	BetheBloch BB;
+	//BetheBloch BB; //theory
+	BetheBloch_SYS_I BB; //sys
 	BB.SetPdgCode(pdg);
 
 	//book histograms --//
@@ -896,8 +901,9 @@ void ProtonESliceBMRW::Loop() {
 		//bmrw based on keff [const E-loss]
 		//if ((ke_beam_spec_MeV-mean_Elosscalo_stop)>=mu_min&&(ke_beam_spec_MeV-mean_Elosscalo_stop)<=mu_max) mom_rw_minchi2=gng->Eval(ke_beam_spec_MeV-mean_Elosscalo_stop); //bmrw
 
-		//if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=kerw->Eval(ke_ffbeam_MeV); //new bmrw (const E-loss)
-		if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=kerw_max->Eval(ke_ffbeam_MeV); //new bmrw (const E-loss)
+		if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=kerw->Eval(ke_ffbeam_MeV); //new bmrw (const E-loss)
+		//if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=kerw_max->Eval(ke_ffbeam_MeV); //new bmrw (const E-loss)
+		//if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=kerw_min->Eval(ke_ffbeam_MeV); //new bmrw (const E-loss)
 		//cout<<"\n\n\nmom_rw_minchi2:"<<mom_rw_minchi2<<"\n\n\n"<<endl;
 		//if (ke_ff>=mu_kemin&&ke_ff<=mu_kemax) mom_rw_minchi2=kerw->Eval(ke_ff); //new bmrw (using truth)
 
