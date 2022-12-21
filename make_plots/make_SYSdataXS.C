@@ -48,9 +48,22 @@
 void make_SYSdataXS() {
 	//read xs files -----------------------------------------------------------------------//
         TString str_cen="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrw_data_cen.root"; //xs_central
-        TString str_up="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrwup_data.root"; //xs_up
-        TString str_dn="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrwdn_data.root"; //xs_dn
-        TString str_output="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrw_data_cen_sysbmrw.root"; //xs_dn
+
+	//Systematic uncertainty due to the shift of KE at TPC FF (shift is due to error propagation of fitting)
+        //TString str_up="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrwup_data.root"; //xs_up
+        //TString str_dn="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrwdn_data.root"; //xs_dn
+        //TString str_output="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrw_data_cen_sysbmrw.root"; //xs_dn
+
+	//These upstream E-loss is over-counting the contribution, neglect the contribution
+        //TString str_up="./xs_files/xs_Eslice_dE20MeV_40slcs_elossup_data.root"; //xs_up
+        //TString str_dn="./xs_files/xs_Eslice_dE20MeV_40slcs_elossdn_data.root"; //xs_dn
+        //TString str_output="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrw_data_cen_sysbeloss.root"; //xs_dn
+
+        //TString str_up="./xs_files/xs_Eslice_dE20MeV_40slcs_elossup_data.root"; //xs_up
+        //TString str_dn="./xs_files/xs_Eslice_dE20MeV_40slcs_elossdn_data.root"; //xs_dn
+        //TString str_output="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrw_data_cen_sysbeloss.root"; //xs_dn
+
+
 
         //plot style --------------------------------------------------------------------//
         gROOT->LoadMacro(" ~/protoDUNEStyle.C"); //load pDUNE style

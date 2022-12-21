@@ -1,0 +1,21 @@
+[step 1] Create the XS file based on an item changes in tems of the systematic uncertainties
+-Generate reco XS file using 'make_ESlicedataXS.C'
+ +Change the following items:
+ +Output paths for xs file and xs plot: outpath, fout_path
+ +Input data/MC reco sliceID files: fdata and fmc
+ #Input MC validation files: fmc_valid
+ #Output file name: fout
+ **important xs histogram: gr_recoxs (reco xs produced given condition changes by systematic uncertainty items)
+
+
+execute as: root -b -q make_ESlicedataXS.C
+
+[step 2] Generate XS histograms w/o systematic uncertainties
+-Simply edit I/O files
+execute as: root -b -q make_SYSdataXS.C
+
+[step3]
+plot xs resuts w/o systematic uncertainties
+execute as: root -b -q plot_xs_sys_uncertainties.C
+
+

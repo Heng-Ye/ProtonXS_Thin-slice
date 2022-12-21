@@ -105,12 +105,35 @@ void make_ESlicedataXS() {
         //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_BMRW_UP.root"; //for truth and response matrix
 	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_bmrwup_data.root");
 
-	TString outpath="./plots_XS_Eslice_bmrwkebeamff_sys_dn/";
-        TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01.root";
-        TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_BMRW_DN.root"; //for reco
-        TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_BMRW_DN.root"; //for truth and response matrix
-	TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_bmrwdn_data.root");
+	//TString outpath="./plots_XS_Eslice_bmrwkebeamff_sys_dn/";
+        //TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_BMRW_DN.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_BMRW_DN.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_bmrwdn_data.root");
 
+	//TString outpath="./plots_XS_Eslice_bmrwkebeamff_sys_bethebloch_onlymc/";
+        //TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_BMRW_SYS_BB.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_BMRW_SYS_BB.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_bmrwbb_mc_mc.root");
+
+	//TString outpath="./plots_XS_Eslice_eloss_sys_dn/";
+        //TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_ELOSS_DN.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_ELOSS_DN.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_elossdn_data.root");
+
+	//TString outpath="./plots_XS_Eslice_eloss_sys_up/";
+        //TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_ELOSS_UP.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_ELOSS_UP.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_elossup_data.root");
+
+	TString outpath="./plots_XS_Eslice_BetheBloch/";
+        TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS_BetheBlochI/prod4a_Eslice_BBI_dE20MeV_40slcs_beamxy_runAll_v09_39_01.root";
+        TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_BMRW_SYS_BB.root"; //for reco
+        TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_BMRW_SYS_BB.root"; //for truth and response matrix
+	TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_elossup_data.root");
 
 
 	//MC nobmrw ---------------------------------------------------------------------------------------------------
@@ -121,7 +144,6 @@ void make_ESlicedataXS() {
 	//TString outpath="./plots_XS_Eslice_nobmrwkebeamff_newsliceIDdef/";
         //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_newslideIDdef_v09_39_01.root";
         //TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_newslideIDdef_v09_39_01.root";
-
 
 	//reco string pre-fix --------------------------------------//
 	TString str_inc=Form("h_recosliceid_allevts_cuts");
