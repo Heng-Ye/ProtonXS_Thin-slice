@@ -6,6 +6,9 @@
 
 void plot_error_fraction() {
 
+	//Outputfig -------------------------------------------------------------------------//
+	TString out_fig=Form("./plots_sys_percentage/");
+
 	//load xs histograms ----------------------------------------------------------------------------//
 	//statistical uncertainty only
 	TString str_cen="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrw_data_cen.root"; //stat. only file
@@ -60,17 +63,17 @@ void plot_error_fraction() {
 		//systematic u
 		double erry_h_cen=err_cen_xs[i];
 		double erry_l_cen=erry_h_cen;
-		double erry_cen=sqrt(pow(erry_h_cen,2)+pow(erry_l_cen,2));
+		double erry_cen=pow(erry_h_cen,2)+pow(erry_l_cen,2);
 
 		//sys: bmrw
 		double erry_h_sys_bmrw=err_h_sys_bmrw[i];
 		double erry_l_sys_bmrw=err_l_sys_bmrw[i];
-		double erry_bmrw=sqrt(pow(erry_h_sys_bmrw,2)+pow(erry_l_sys_bmrw,2));
+		double erry_bmrw=pow(erry_h_sys_bmrw,2)+pow(erry_l_sys_bmrw,2);
 
 		//sys: bb
 		double erry_h_sys_bb=err_h_sys_bb[i];
 		double erry_l_sys_bb=err_l_sys_bb[i];
-		double erry_bb=sqrt(pow(erry_h_sys_bb,2)+pow(erry_l_sys_bb,2));
+		double erry_bb=pow(erry_h_sys_bb,2)+pow(erry_l_sys_bb,2);
 
 		//total
 		double erry_all=erry_cen+erry_bmrw+erry_bb;
@@ -96,9 +99,9 @@ void plot_error_fraction() {
 
 	TCanvas *c_=new TCanvas(Form("c_"),"",900, 600);
 	c_->Divide(1,1);
-	erry_CEN->SetFillColor(4);
+	erry_CEN->SetFillColor(kAzure+1);
 	erry_SYS_BMRW->SetFillColor(3);
-	erry_SYS_BB->SetFillColor(2);
+	erry_SYS_BB->SetFillColor(6);
 
 	THStack* hs=new THStack("hs","");
 	hs->Add(erry_CEN);
@@ -120,10 +123,7 @@ void plot_error_fraction() {
 	leg->SetNColumns(3);
 	leg->Draw();
 
-
-
-
-
+	c_->Print(Form("%ssys_percentage.eps",out_fig.Data()));
 
 
 	/*
