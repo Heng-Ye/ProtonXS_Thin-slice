@@ -393,6 +393,27 @@ void ProtonApplyMomentumReweight::Loop() {
 	h1d_keffbeam_inel_mideg->Sumw2();
 	h1d_keffbeam_inel_midother->Sumw2();
 
+	//MisID:P
+	TH1D *h1d_keffbeam_misidp=new TH1D("h1d_keffbeam_misidp","",ny_edept,ymin_edept,ymax_edept);
+	TH1D *h1d_keffbeam_misidp_inel=new TH1D("h1d_keffbeam_misidp_inel","",ny_edept,ymin_edept,ymax_edept); 
+	TH1D *h1d_keffbeam_misidp_el=new TH1D("h1d_keffbeam_misidp_el","",ny_edept,ymin_edept,ymax_edept); 
+	TH1D *h1d_keffbeam_misidp_midcosmic=new TH1D("h1d_keffbeam_misidp_midcosmic","",ny_edept,ymin_edept,ymax_edept); 
+	TH1D *h1d_keffbeam_misidp_midpi=new TH1D("h1d_keffbeam_misidp_midpi","",ny_edept,ymin_edept,ymax_edept); 
+	TH1D *h1d_keffbeam_misidp_midp=new TH1D("h1d_keffbeam_misidp_midp","",ny_edept,ymin_edept,ymax_edept); 
+	TH1D *h1d_keffbeam_misidp_midmu=new TH1D("h1d_keffbeam_misidp_midmu","",ny_edept,ymin_edept,ymax_edept); 
+	TH1D *h1d_keffbeam_misidp_mideg=new TH1D("h1d_keffbeam_misidp_mideg","",ny_edept,ymin_edept,ymax_edept); 
+	TH1D *h1d_keffbeam_misidp_midother=new TH1D("h1d_keffbeam_misidp_midother","",ny_edept,ymin_edept,ymax_edept); 
+	h1d_keffbeam_misidp->Sumw2();
+	h1d_keffbeam_misidp_inel->Sumw2();
+	h1d_keffbeam_misidp_el->Sumw2();
+	h1d_keffbeam_misidp_midcosmic->Sumw2();
+	h1d_keffbeam_misidp_midpi->Sumw2();
+	h1d_keffbeam_misidp_midp->Sumw2();
+	h1d_keffbeam_misidp_midmu->Sumw2();
+	h1d_keffbeam_misidp_mideg->Sumw2();
+	h1d_keffbeam_misidp_midother->Sumw2();
+
+
 	TH1D *h1d_kerange_stop=new TH1D("h1d_kerange_stop","", ny_edept, ymin_edept, ymax_edept);
 	TH1D *h1d_kecalo_stop=new TH1D("h1d_kecalo_stop","", ny_edept, ymin_edept, ymax_edept);
 	h1d_kerange_stop->Sumw2();
@@ -459,6 +480,28 @@ void ProtonApplyMomentumReweight::Loop() {
 	h1d_kend_bb_el_midmu->Sumw2();
 	h1d_kend_bb_el_mideg->Sumw2();
 	h1d_kend_bb_el_midother->Sumw2();
+
+	//MIsID:P
+	TH1D *h1d_kend_bb_misidp=new TH1D("h1d_kend_bb_misidp","", ny_edept, ymin_edept, ymax_edept);
+	TH1D *h1d_kend_bb_misidp_inel=new TH1D("h1d_kend_bb_misidp_inel","",ny_edept,ymin_edept,ymax_edept); 
+	TH1D *h1d_kend_bb_misidp_el=new TH1D("h1d_kend_bb_misidp_el","",ny_edept,ymin_edept,ymax_edept); 
+	TH1D *h1d_kend_bb_misidp_midcosmic=new TH1D("h1d_kend_bb_misidp_midcosmic","",ny_edept,ymin_edept,ymax_edept); 
+	TH1D *h1d_kend_bb_misidp_midpi=new TH1D("h1d_kend_bb_misidp_midpi","",ny_edept,ymin_edept,ymax_edept); 
+	TH1D *h1d_kend_bb_misidp_midp=new TH1D("h1d_kend_bb_misidp_midp","",ny_edept,ymin_edept,ymax_edept); 
+	TH1D *h1d_kend_bb_misidp_midmu=new TH1D("h1d_kend_bb_misidp_midmu","",ny_edept,ymin_edept,ymax_edept); 
+	TH1D *h1d_kend_bb_misidp_mideg=new TH1D("h1d_kend_bb_misidp_mideg","",ny_edept,ymin_edept,ymax_edept); 
+	TH1D *h1d_kend_bb_misidp_midother=new TH1D("h1d_kend_bb_misidp_midother","",ny_edept,ymin_edept,ymax_edept); 
+	h1d_kend_bb_misidp->Sumw2();
+	h1d_kend_bb_misidp_inel->Sumw2();
+	h1d_kend_bb_misidp_el->Sumw2();
+	h1d_kend_bb_misidp_midcosmic->Sumw2();
+	h1d_kend_bb_misidp_midpi->Sumw2();
+	h1d_kend_bb_misidp_midp->Sumw2();
+	h1d_kend_bb_misidp_midmu->Sumw2();
+	h1d_kend_bb_misidp_mideg->Sumw2();
+	h1d_kend_bb_misidp_midother->Sumw2();
+
+
 
 	TH1D *h1d_kend_bbtruth_el=new TH1D("h1d_kend_bbtruth_el","", ny_edept, ymin_edept, ymax_edept);
 	TH1D *h1d_kend_bbtruth_inel=new TH1D("h1d_kend_bbtruth_inel","", ny_edept, ymin_edept, ymax_edept);
@@ -921,17 +964,6 @@ void ProtonApplyMomentumReweight::Loop() {
 		}
 
 
-
-
-
-
-
-
-
-
-
-
-
 		//beam quality cut
 		bool IsBQ=false;
 		if (IsCosine&&IsPos) IsBQ=true;
@@ -1088,14 +1120,21 @@ void ProtonApplyMomentumReweight::Loop() {
 			if (pid>pid_2) IsRecoInEL=true;
 			if (pid<=pid_2) IsRecoEL=true;
 		}
+
+		//MisID:P Cut ---------------------------------------------//
+		bool IsMisIDP=false;
+		if (IsPos&&cosine_beam_spec_primtrk<0.9) { IsMisIDP=true; }		
 		
 		//Const E-loss --------------------------------------------------------------------------------------------------------------------//
 		//double ke_ffbeam_MeV=ke_beam_spec_MeV-const_eloss_mc; //const E-loss (our assumption of KE at TPC FF)
 		double slope_kff_keffbeamR=0.859605;
 		//double ke_ffbeam_MeV=(ke_beam_spec_MeV-Eloss_mc_hy_stop); //const E-loss with correction
 
-		//double ke_ffbeam_MeV=(ke_beam_spec_MeV-Eloss_mc_hy_stop)*R_fit_hy; //const E-loss with correction (R_fit_hy is essentially one)
-		double ke_ffbeam_MeV=Convert_Proton_KE_Spectrometer_to_KE_ff(ke_beam_spec_MeV, "ElasFitted",0); //Sungbin's E-dept assumption
+		double ke_ffbeam_MeV=(ke_beam_spec_MeV-Eloss_mc_hy_stop)*R_fit_hy; //const E-loss with correction (R_fit_hy is essentially one)
+		//double ke_ffbeam_MeV=Convert_Proton_KE_Spectrometer_to_KE_ff(ke_beam_spec_MeV, "ElasFitted",0); //Sungbin's E-dept assumption
+		//double ke_ffbeam_MeV=Convert_Proton_KE_Spectrometer_to_KE_ff(ke_beam_spec_MeV, "ElasTrue",0); //Sungbin's E-dept assumption
+		//double ke_ffbeam_MeV=Convert_Proton_KE_Spectrometer_to_KE_ff(ke_beam_spec_MeV, "AllFitted",0); //Sungbin's E-dept assumption
+		//double ke_ffbeam_MeV=Convert_Proton_KE_Spectrometer_to_KE_ff(ke_beam_spec_MeV, "AllTrue",0); //Sungbin's E-dept assumption
 
 		//double ke_ffbeam_MeV=ke_ff; //keff(truth)
 		//double ke_ffbeam_MeV=(ke_beam_spec_MeV-Eloss_mc_hy_stop)*R_fit_hy*slope_kff_keffbeamR; //const E-loss with correction
@@ -1139,10 +1178,45 @@ void ProtonApplyMomentumReweight::Loop() {
 		double r_hy_range=fitted_length/range_reco;
 
 
-		//if (IsBeamMom&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
-			//if (IsRecoEL) { //reco el
-			//}
-		//}
+		if (IsMisIDP&&IsBeamXY&&IsBeamMom&&IsPandoraSlice&&IsCaloSize) { //MisID:P
+			double mom_rw_minchi2=1.;
+			if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=kerw->Eval(ke_ffbeam_MeV); //new bmrw (const E-loss)
+				Fill1DWHist(h1d_keffbeam_misidp, ke_ffbeam_MeV, mom_rw_minchi2);
+				Fill1DWHist(h1d_kend_bb_misidp, kebb, mom_rw_minchi2);
+
+				if (kinel) { //inel
+					Fill1DWHist(h1d_keffbeam_misidp_inel, ke_ffbeam_MeV, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_bb_misidp_inel, kebb, mom_rw_minchi2);
+				} //inel
+				if (kel) { 
+					Fill1DWHist(h1d_keffbeam_misidp_el, ke_ffbeam_MeV, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_bb_misidp_el, kebb, mom_rw_minchi2);
+				}
+				if (kMIDcosmic) {
+					Fill1DWHist(h1d_keffbeam_misidp_midcosmic, ke_ffbeam_MeV, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_bb_misidp_midcosmic, kebb, mom_rw_minchi2);
+				}
+				if (kMIDpi) { 
+					Fill1DWHist(h1d_keffbeam_misidp_midpi, ke_ffbeam_MeV, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_bb_misidp_midpi, kebb, mom_rw_minchi2);
+				}
+				if (kMIDp) {
+					Fill1DWHist(h1d_keffbeam_misidp_midp,ke_ffbeam_MeV, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_bb_misidp_midp, kebb, mom_rw_minchi2);
+				}
+				if (kMIDmu) { 
+					Fill1DWHist(h1d_keffbeam_misidp_midmu, ke_ffbeam_MeV, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_bb_misidp_midmu, kebb, mom_rw_minchi2);
+				}
+				if (kMIDeg) { 
+					Fill1DWHist(h1d_keffbeam_misidp_mideg, ke_ffbeam_MeV, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_bb_misidp_mideg, kebb, mom_rw_minchi2);
+				}
+				if (kMIDother) { 
+					Fill1DWHist(h1d_keffbeam_misidp_midother, ke_ffbeam_MeV, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_bb_misidp_midother, kebb, mom_rw_minchi2);
+				}
+		} //MisID:P
 
 		//if (IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
 		//if (IsBeamXY&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
@@ -1152,7 +1226,7 @@ void ProtonApplyMomentumReweight::Loop() {
 			double mom_rw_minchi2=1.;
 			//if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=gng[index_minchi2]->Eval(mom_beam_spec*1000.); //old bmrw
 			//if (ke_ff>=mu_kemin&&ke_ff<=mu_kemax) mom_rw_minchi2=kerw->Eval(ke_ff); //new bmrw (using truth)
-			//if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=kerw->Eval(ke_ffbeam_MeV); //new bmrw (const E-loss)
+			if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=kerw->Eval(ke_ffbeam_MeV); //new bmrw (const E-loss)
 			//if (ke_ffbeam_MeV>=mu_kemin&&ke_ffbeam_MeV<=mu_kemax) mom_rw_minchi2=kerw->Eval(ke_ffbeam_MeV); //new bmrw (KEHY)
 			//std::cout<<"ke_beam_spec_MeV:"<<ke_beam_spec_MeV<<" ke_ffbeam_MeV:"<<ke_ffbeam_MeV<<" mom_rw_minchi2:"<<mom_rw_minchi2<<std::endl;
 
@@ -1588,9 +1662,15 @@ void ProtonApplyMomentumReweight::Loop() {
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_by_kebeamff_test.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_by_kebeamff.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kebeamff.root","RECREATE");
-   	//
+   	TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kebeamff_bkg.root","RECREATE");
+   	
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kebeamff_v09_39_01.root","RECREATE");
-   	TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_ElasFitted_v09_39_01.root","RECREATE");
+   	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_AllTrue_v09_39_01.root","RECREATE");
+   	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_AllTrue_v09_39_01_testingtesting.root","RECREATE");
+   	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_AllFitted_v09_39_01.root","RECREATE");
+   	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_ElasTrue_v09_39_01.root","RECREATE");
+   	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_ElasFitted_v09_39_01.root","RECREATE");
+   	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_constE_v09_39_01.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kebeamff_kefitindenom_v09_39_01.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_by_kefit.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_studyKEconst.root","RECREATE");
@@ -1696,6 +1776,16 @@ void ProtonApplyMomentumReweight::Loop() {
 		h1d_keffbeam_el_mideg->Write();
 		h1d_keffbeam_el_midother->Write();
 
+		h1d_keffbeam_misidp->Write();
+		h1d_keffbeam_misidp_inel->Write();
+		h1d_keffbeam_misidp_el->Write();
+		h1d_keffbeam_misidp_midcosmic->Write();
+		h1d_keffbeam_misidp_midpi->Write();
+		h1d_keffbeam_misidp_midp->Write();
+		h1d_keffbeam_misidp_midmu->Write();
+		h1d_keffbeam_misidp_mideg->Write();
+		h1d_keffbeam_misidp_midother->Write();
+
 
 		h1d_kehy_stop->Write();
 		h1d_kehy_inel->Write();
@@ -1747,6 +1837,17 @@ void ProtonApplyMomentumReweight::Loop() {
 		h1d_kend_bb_inel_midmu->Write();
 		h1d_kend_bb_inel_mideg->Write();
 		h1d_kend_bb_inel_midother->Write();
+
+
+		h1d_kend_bb_misidp->Write();
+		h1d_kend_bb_misidp_inel->Write();
+		h1d_kend_bb_misidp_el->Write();
+		h1d_kend_bb_misidp_midcosmic->Write();
+		h1d_kend_bb_misidp_midpi->Write();
+		h1d_kend_bb_misidp_midp->Write();
+		h1d_kend_bb_misidp_midmu->Write();
+		h1d_kend_bb_misidp_mideg->Write();
+		h1d_kend_bb_misidp_midother->Write();
 
 
 		h1d_kend_true_el->Write();

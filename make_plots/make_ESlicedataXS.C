@@ -129,12 +129,12 @@ void make_ESlicedataXS() {
         //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_ELOSS_UP.root"; //for truth and response matrix
 	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_elossup_data.root");
 
+	//reco xs due to changes of mean excitation energy
 	TString outpath="./plots_XS_Eslice_BetheBloch/";
         TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS_BetheBlochI/prod4a_Eslice_BBI_dE20MeV_40slcs_beamxy_runAll_v09_39_01.root";
         TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_BMRW_SYS_BB.root"; //for reco
         TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_BMRW_SYS_BB.root"; //for truth and response matrix
-	TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_elossup_data.root");
-
+	TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_BB_data.root");
 
 	//MC nobmrw ---------------------------------------------------------------------------------------------------
 	//TString outpath="./plots_XS_Eslice_nobmrwkebeamff/";
