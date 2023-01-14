@@ -205,14 +205,21 @@ void ProtonESliceData::Loop() {
 	//double mu_nom_mc=388.560260293186; //for mc(KEbeam-const_from_calo)
 	//double sg_nom_mc=43.13168235197187; //formc
 
-	//double mu_nom_mc=416.224743039812; //for mc(KEbeam-const) with R=1 (R=Ratio of KEff(Fit)/(KEbeam-dE))
-	//double sg_nom_mc=42.786018962508784; //
+	double mu_nom_mc=416.224743039812; //for mc(KEbeam-const) with R=1 (R=Ratio of KEff(Fit)/(KEbeam-dE))
+	double sg_nom_mc=42.786018962508784; //
 
-	double mu_nom_mc=416.1620092367158; //for mc [KE(Fit)]
-	double sg_nom_mc=40.48356757740762; //
+	//double mu_nom_mc=416.1620092367158; //for mc [KE(Fit)]
+	//double sg_nom_mc=40.48356757740762; //
 
 	//i= 0  m= 416.2247430398121 s= 42.786018962508784 [kebeam-dE]*1 (R=1)
 	//i= 1  m= 416.1620092367158 s= 40.48356757740762 [KE(Fit)] 
+
+	//reference of error of perv. calc
+   	//p0           4.16231e+02   2.81061e-01  -3.22787e-05   3.06053e-05
+   	//p1           4.34283e+01   1.97065e-01   1.96200e-04  -1.35452e-04
+
+
+
 
 	//weighting func. (ke) ------------------------
 	TF1 *kerw=new TF1(Form("kerw"),govg,0,800,4);
@@ -252,7 +259,16 @@ void ProtonESliceData::Loop() {
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrw_v09_39_01.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_valid_only.root", name_thinslicewidth, nthinslices)); //output file name
-	SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_test_only.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrw_kebeamff_v09_39_01_All_Test.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrw_kebeamff_v09_39_01_All_Valid.root", name_thinslicewidth, nthinslices)); //output file name
+	//
+	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrw_kebeamff_v09_39_01_All_Valid_newslcid.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrw_kebeamff_v09_39_01_All_Test_newslcid.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_All_Test_newslcid.root", name_thinslicewidth, nthinslices)); //output file name
+	SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_All_Valid_newslcid.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_newslideIDdef_v09_39_01.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_v09_39_01.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrw.root", name_thinslicewidth, nthinslices)); //output file name
@@ -283,9 +299,10 @@ void ProtonESliceData::Loop() {
 		if (ientry < 0) break;
 		nb = fChain->GetEntry(jentry);   nbytes += nb;
 
-		isTestSample = true;
-		//isTestSample = false; //validation only
-		if (ientry%2 == 0) isTestSample = false; //Divide MC sample by 2 parts: test+ufold
+		//isTestSample = true;
+		isTestSample = false; //validation only
+		//isTestSample = true; //test only
+		//if (ientry%2 == 0) isTestSample = false; //Divide MC sample by 2 parts: test+ufold
 		//if (isTestSample) continue; //only validate sample
 		//if (!isTestSample) continue; //only test sample
 
@@ -912,7 +929,7 @@ void ProtonESliceData::Loop() {
 		//bmrw based on keff [const E-loss]
 		//if ((ke_beam_spec_MeV-mean_Elosscalo_stop)>=mu_min&&(ke_beam_spec_MeV-mean_Elosscalo_stop)<=mu_max) mom_rw_minchi2=gng->Eval(ke_beam_spec_MeV-mean_Elosscalo_stop); //bmrw
 
-		//if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=kerw->Eval(ke_ffbeam_MeV); //new bmrw (const E-loss)
+		//if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=kerw->Eval(ke_ffbeam_MeV); //new bmrw (const E-loss) [use me]
 		//if (ke_ff>=mu_kemin&&ke_ff<=mu_kemax) mom_rw_minchi2=kerw->Eval(ke_ff); //new bmrw (using truth)
 
 		//KEend ---------------------------------------------------------------------------//
@@ -1418,7 +1435,8 @@ void ProtonESliceData::Loop() {
 		//true_st_sliceID=int((Emax-KE_ff)/thinslicewidth+0.5);
 		//true_st_sliceID=int((Emax-KE_ff)/thinslicewidth+1);
 		//true_st_sliceID=int((Emax-KE_ff)/thinslicewidth);
-		true_st_sliceID=int((Emax-KE_ff)/thinslicewidth+0.5);
+		//true_st_sliceID=int((Emax-KE_ff)/thinslicewidth+0.5);
+		true_st_sliceID=int(ceil((Emax-KE_ff)/thinslicewidth));
 		//true_st_sliceID=int(ceil((Emax-KE_ff)/thinslicewidth));
 		//--true_st_sliceID;
 		//true_st_sliceID++;
@@ -1431,7 +1449,8 @@ void ProtonESliceData::Loop() {
 
 		//double KE_true=BB.KEAtLength(KE_ff, range_true);
 		double KE_true=KEend_true;
-		true_sliceID = int((Emax-KE_true)/thinslicewidth);
+		//true_sliceID = int((Emax-KE_true)/thinslicewidth);
+		true_sliceID = int(floor((Emax-KE_true)/thinslicewidth));
 		if (true_sliceID < 0) true_sliceID = -1;
 		if (true_endz < 0) true_sliceID = -1; //hy added
 		//if (range_true < 30) true_sliceID=-1; 
@@ -1453,7 +1472,8 @@ void ProtonESliceData::Loop() {
 			//reco_st_sliceID=int((Emax-keff_reco)/thinslicewidth+1);
 			//reco_st_sliceID=int((Emax-keff_reco)/thinslicewidth+1);
 			//reco_st_sliceID=int((Emax-keff_reco)/thinslicewidth);
-			reco_st_sliceID=int((Emax-KE_ff_reco)/thinslicewidth+0.5);
+			//reco_st_sliceID=int((Emax-KE_ff_reco)/thinslicewidth+0.5);
+			reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth));
 			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth));
 			//--reco_st_sliceID;
 			//reco_st_sliceID++;
@@ -1464,7 +1484,9 @@ void ProtonESliceData::Loop() {
 			if (reco_st_sliceID >= nthinslices) reco_st_sliceID = nthinslices;
 
 			//double KE_reco=BB.KEAtLength(keff_reco, range_reco);
-			reco_sliceID = int((Emax-KEend_reco)/thinslicewidth);
+			//reco_sliceID = int((Emax-KEend_reco)/thinslicewidth);
+			reco_sliceID = int(floor((Emax-KEend_reco)/thinslicewidth));
+
 			if (reco_sliceID < 0) reco_sliceID = -1;
 			//if (range_reco<30) reco_sliceID=-1;
 			if (reco_endz<0) reco_sliceID = -1;
