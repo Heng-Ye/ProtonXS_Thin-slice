@@ -92,7 +92,9 @@ oout<<"ke:"<<ke<<endl;
 void make_ESlicedataXS() {
 
         //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrwkebeamff_v09_39_01.root";
-	TString fout_path="./xs_files/";
+	//TString fout_path="./xs_files/";
+	TString fout_path="./xs_files_newslcid/";
+
 	//TString outpath="./plots_XS_Eslice_bmrwkebeamff_sys/";
         //TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01.root";
         //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Test.root"; //for reco
@@ -130,11 +132,77 @@ void make_ESlicedataXS() {
 	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_elossup_data.root");
 
 	//reco xs due to changes of mean excitation energy
-	TString outpath="./plots_XS_Eslice_BetheBloch/";
-        TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS_BetheBlochI/prod4a_Eslice_BBI_dE20MeV_40slcs_beamxy_runAll_v09_39_01.root";
-        TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_BMRW_SYS_BB.root"; //for reco
-        TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_BMRW_SYS_BB.root"; //for truth and response matrix
-	TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_BB_data.root");
+	//TString outpath="./plots_XS_Eslice_BetheBloch/";
+        //TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS_BetheBlochI/prod4a_Eslice_BBI_dE20MeV_40slcs_beamxy_runAll_v09_39_01.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_BMRW_SYS_BB.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_BMRW_SYS_BB.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_BB_data.root");
+
+	//xs without bkg subtraction
+	//TString outpath="./plots_XS_Eslice_NoBKG_Subtraction/";
+        //TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Test.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Valid.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_nobkgsubtraction_data.root");
+
+	//fake data to preove that reco agree with G4 prediction
+	//TString outpath="./plots_XS_Eslice_fakedata/";
+        //TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_Test_newslcid.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_Test_newslcid.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_Valid_newslcid.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_fakedata_newslcid.root");
+
+	//New sliceIDs:(st=ceil, end=floor) ------------------------------------------------------------------------------------------------------------
+	//xs central
+	//TString outpath="./plots_XS_Eslice_bmrwkebeamff_cen_newslcid/";
+        //TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS_newslcid/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01_newslcid.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Test_newslcid.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Valid_newslcid.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_data_cen_newslcid.root");
+
+	//xs using different I-value
+	//TString outpath="./plots_XS_Eslice_bmrwkebeamff_BetheBlochI_newslcid/";
+        //TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS_BetheBlochI_newslcid/prod4a_Eslice_BBI_dE20MeV_40slcs_beamxy_runAll_v09_39_01.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_BMRW_SYS_BB_newslcid.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_BMRW_SYS_BB_newslcid.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_data_BBI_newslcid.root");
+
+	//bmrw-dn
+	//TString outpath="./plots_XS_Eslice_eloss_sys_dn_newslcid/";
+        //TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS_newslcid/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01_newslcid.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_ELOSS_DN_newslcid.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_ELOSS_DN_newslcid.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_elossdn_data_newslcid.root");
+
+	//bmrw-up
+	//TString outpath="./plots_XS_Eslice_eloss_sys_up_newslcid/";
+        //TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS_newslcid/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01_newslcid.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_ELOSS_UP_newslcid.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_SYS_ELOSS_UP_newslcid.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_elossup_data_newslcid.root");
+
+	//assume use nobmrw for unfolding
+	//TString outpath="./plots_XS_Eslice_bmrwkebeamff_usenobmrw_newslcid/";
+        //TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS_newslcid/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01_newslcid.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_Test_newslcid.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_Valid_newslcid.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_data_usenobmrw_newslcid.root");
+
+	//some bkg subtraction testing
+	//no misidp subtraction
+	//TString outpath="./plots_XS_Eslice_bmrwkebeamff_nomisidp_subtraction_newslcid/";
+        //TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS_newslcid/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01_newslcid.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Test_newslcid.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Valid_newslcid.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_data_assumenomisidpsubtraction_newslcid.root");
+
+	//no misidp+no el subtraction 
+	TString outpath="./plots_XS_Eslice_bmrwkebeamff_nomisidpnoel_subtraction_newslcid/";
+        TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS_newslcid/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01_newslcid.root";
+        TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Test_newslcid.root"; //for reco
+        TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Valid_newslcid.root"; //for truth and response matrix
+	TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_data_assumenomisidpnoelsubtraction_newslcid.root");
+
 
 	//MC nobmrw ---------------------------------------------------------------------------------------------------
 	//TString outpath="./plots_XS_Eslice_nobmrwkebeamff/";
@@ -386,32 +454,63 @@ void make_ESlicedataXS() {
 	TH1D* pur_int=(TH1D* )f_mc->Get("pur_Int"); //int
 	TH1D *eff_int=(TH1D* )f_mc->Get("eff_Int"); //int
 
-	//bkg subtraction --------------------------------------------------------------------------//
+	//bkg subtraction ----------------------------------------------------------------------------------------------------------------//
 	TH1D* data_inc_bkgfree=(TH1D *)data_inc->Clone("data_inc_bkgfree"); data_inc_bkgfree->SetName("data_inc_bkgfree");	
 	TH1D* data_st_inc_bkgfree=(TH1D *)data_st_inc->Clone("data_st_inc_bkgfree"); data_st_inc_bkgfree->SetName("data_st_inc_bkgfree");	
 	TH1D* data_int_bkgfree=(TH1D *)data_int->Clone("data_int_bkgfree"); data_int_bkgfree->SetName("data_int_bkgfree");	
 
-	double scal_fact_misidp=-1;
+        //Best-fit ===============================================================
+        //KEend_bb ------------
+        //[1]misid:p protons (costheta<0.9):
+        //Best fit = 0.998892 error = 0.0696991
+        //-----------------------------------------------------------------------
+        //[2]el protons:
+        //Best fit = 0.999491 error = 0.0166378
+        //------------------------------------------------------------------------
+        //[3]inel protons:
+        //Best fit = 0.999526 error = 0.012693
+        //========================================================================
+        //KEff=KEbeam-constE--------------
+        //[1]inel
+        //Best fit = 0.996384 error = 0.0126871
+        //-------------------------------------------------------------------------
+        //[2]el
+        //Best fit = 0.923894 error = 0.094605
+        //-------------------------------------------------------------------------
+        //[3]misid:p (costheta<0.9)
+        //Best fit = 1.24328 error = 0.500595
+	//========================================================================
+
+	//double scal_misidp=-0.998892;
+	//double scal_st_misidp=-1.24328;
+	//double scal_int_el=-0.999491;
+
+	double scal_misidp=-1;
+	double scal_st_misidp=-1;
+	double scal_int_el=-1;
+
 	//inc
+	data_inc_bkgfree->Add(mc_inc_midp, scal_misidp);
 	//data_inc_bkgfree->Add(mc_inc_el, -1);
 	//data_inc_bkgfree->Add(mc_inc_midcosmic, -1);
 	//data_inc_bkgfree->Add(mc_inc_midpi, -1);
-	data_inc_bkgfree->Add(mc_inc_midp, scal_fact_misidp);
 	//data_inc_bkgfree->Add(mc_inc_midmu, -1);
 	//data_inc_bkgfree->Add(mc_inc_mideg, -1);
 	//data_inc_bkgfree->Add(mc_inc_midother, -1);
 	//data_inc_bkgfree->Multiply(pur_inc);
-	//
-	data_st_inc_bkgfree->Add(mc_st_inc_midp, scal_fact_misidp);
+
+	//inc_st
+	data_st_inc_bkgfree->Add(mc_st_inc_midp, scal_st_misidp);
 
 	//
 	//Note: Numerical value of errorbar after subtraction is correct, i.e. (s-b)+-sqrt(s+b)	
 	
 	//int
-	data_int_bkgfree->Add(mc_int_el, scal_fact_misidp);
+	data_int_bkgfree->Add(mc_int_el, scal_int_el);
+	//data_int_bkgfree->Add(mc_int_el, -1.);
+	data_int_bkgfree->Add(mc_int_midp, scal_misidp);
 	//data_int_bkgfree->Add(mc_int_midcosmic, -1);
 	//data_int_bkgfree->Add(mc_int_midpi, -1);
-	data_int_bkgfree->Add(mc_int_midp, scal_fact_misidp);
 	//data_int_bkgfree->Add(mc_int_midmu, -1);
 	//data_int_bkgfree->Add(mc_int_mideg, -1);
 	//data_int_bkgfree->Add(mc_int_midother, -1);
@@ -1730,17 +1829,26 @@ void make_ESlicedataXS() {
 	//c_xs->Print(Form("%sxs_data_noreco.eps",outpath.Data()));
 
         TH2D *f2d_xs_ext=new TH2D("f2d_xs_ext","",450,xmin,600,ymax,0,ymax);
+        //TH2D *f2d_xs_ext=new TH2D("f2d_xs_ext","",450,xmin,340,ymax,0,ymax);
         f2d_xs_ext->GetXaxis()->SetTitle("Proton Kinetic Energy [MeV]");
         f2d_xs_ext->GetYaxis()->SetTitleOffset(1.3);
         f2d_xs_ext->GetYaxis()->SetTitle("P-Ar inelastic cross section [mb]");
 	f2d_xs_ext->Draw();
         total_inel_KE->Draw("c same");
-        gr_truexs->Draw("p same");
+        //gr_truexs->Draw("p same");
         gr_recoxs->Draw("p same");
-        leg_xs->Draw();
+
+        TLegend *leg_xs2 = new TLegend(0.7,0.7,0.94,0.85);
+        leg_xs2->SetFillStyle(0);
+	leg_xs2->SetNColumns(2);
+        leg_xs2->AddEntry(gr_recoxs, "Data Reco", "pe");
+
+        leg_xs2->Draw();
+        //leg_xs->Draw();
         txt_pdune1[0]->Draw();
         TLatex **txt2_p1=new TLatex*[1];
         txt2_p1[0]=new TLatex(600-180, logo_y, Form("Protons (1 GeV/c)")); //x:0-40
+        //txt2_p1[0]=new TLatex(400-180, logo_y, Form("MC Protons (1 GeV/c)")); //x:0-40
         txt2_p1[0]->Draw();
 	c_xs->Print(Form("%sxs_data_largerrange.eps",outpath.Data()));
 
