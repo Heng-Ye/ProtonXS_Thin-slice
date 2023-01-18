@@ -92,14 +92,13 @@ void plot_dataXS_withSys() {
 	//construct individual error histogram -------------------------------------------//
 	for (int i=n-1; i>=0; --i) {
 		int j=n-i;
-		cout<<"i="<<i<<" j="<<j<<endl;
+		//cout<<"i="<<i<<" j="<<j<<endl;
 
 		//ke
 		double errx_cen=err_ke[i];
 		double errx_h_ke=err_h_ke[i];
 		double errx_l_ke=err_l_ke[i];
 
-		//std::cout<<"["<<i<<"] "<<"ke:"<<ke[i]<<" +- "<<err_ke[i]<<std::endl;
 		//stat.
 		double erry_h_cen=err_cen_xs[i];
 		double erry_l_cen=erry_h_cen;
@@ -142,10 +141,12 @@ void plot_dataXS_withSys() {
 		double erry_l_xs_tot=sqrt(0+pow(erry_l_sys_bmrw,2)+pow(erry_l_sys_bb,2)+pow(erry_l_sys_el,2));
 
 		if (erry_all>0) {
+			std::cout<<ke[i]-err_ke[i]<<"-"<<ke[i]+err_ke[i]<<" & "<<cen_xs[i]<<" & \\pm"<<erry_h_cen<<" & $^{+"<<erry_h_sys_bmrw<<"}_{-"<<erry_l_sys_bmrw<<"}$ & $^{+"<<erry_h_sys_bb<<"}_{-"<<erry_l_sys_bb<<"}$ & $^{+"<<erry_h_sys_el<<"}_{-"<<erry_l_sys_el<<"}$ \\\\"<<endl;
+
 			//erry_CEN->SetBinContent(j, frac_cen);
 			//erry_SYS_BMRW->SetBinContent(j, frac_erry_bmrw);
 			//erry_SYS_BB->SetBinContent(j, frac_erry_bb);
-			std::cout<<frac_cen<<" | "<<frac_erry_bmrw<<" | "<<frac_erry_bb<<std::endl;
+			//std::cout<<frac_cen<<" | "<<frac_erry_bmrw<<" | "<<frac_erry_bb<<std::endl;
 
 			KE_CEN.push_back(ke[i]);
 			err_KE_CEN.push_back(err_ke[i]);

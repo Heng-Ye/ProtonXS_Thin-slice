@@ -133,7 +133,7 @@ void plot_error_fraction() {
 	hs->Add(erry_SYS_BB);
 	hs->Add(erry_SYS_EL);
 
-	TH2D *f2d=new TH2D("f2d","",400,0,400,130,0,130);
+	TH2D *f2d=new TH2D("f2d","",440,0,340,130,0,130);
 	f2d->SetTitle("; Proton Kinetic Energy [MeV]; Systematic Percentage [%]");
 	f2d->Draw();
 	hs->Draw("same");
@@ -150,6 +150,13 @@ void plot_error_fraction() {
 	leg->AddEntry(erry_SYS_EL, "Sys. Elastic-Scatt. Bkg.","f");
 	leg->SetNColumns(3);
 	leg->Draw();
+
+	//Preliminary
+        TLatex **txt_preliminary=new TLatex*[1];
+        txt_preliminary[0]=new TLatex(150, 40, Form("Preliminary"));
+        txt_preliminary[0]->SetTextColor(0);
+        txt_preliminary[0]->SetTextSize(0.09);
+        txt_preliminary[0]->Draw();
 
 	c_->Print(Form("%ssys_percentage.eps",out_fig.Data()));
 
