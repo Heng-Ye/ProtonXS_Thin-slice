@@ -47,21 +47,37 @@
 
 void make_SYSdataXS() {
 	//read xs files -----------------------------------------------------------------------//
-        TString str_cen="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrw_data_cen.root"; //xs_central
+        //TString str_cen="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrw_data_cen.root"; //xs_central
 
 	//Systematic uncertainty due to the shift of KE at TPC FF (shift is due to error propagation of fitting)
         //TString str_up="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrwup_data.root"; //xs_up
         //TString str_dn="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrwdn_data.root"; //xs_dn
-        //TString str_output="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrw_data_cen_sysbmrw.root"; //xs_dn
+        //TString str_output="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrw_data_cen_sysbmrw.root"; //out
 
 	//These upstream E-loss is over-counting the contribution, neglect the contribution
         //TString str_up="./xs_files/xs_Eslice_dE20MeV_40slcs_elossup_data.root"; //xs_up
         //TString str_dn="./xs_files/xs_Eslice_dE20MeV_40slcs_elossdn_data.root"; //xs_dn
-        //TString str_output="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrw_data_cen_sysbeloss.root"; //xs_dn
+        //TString str_output="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrw_data_cen_sysbeloss.root"; //out
 
-        //TString str_up="./xs_files/xs_Eslice_dE20MeV_40slcs_elossup_data.root"; //xs_up
-        //TString str_dn="./xs_files/xs_Eslice_dE20MeV_40slcs_elossdn_data.root"; //xs_dn
-        //TString str_output="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrw_data_cen_sysbeloss.root"; //xs_dn
+        //TString str_up="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrw_data_cen.root"; //xs_up
+        //TString str_dn="./xs_files/xs_Eslice_dE20MeV_40slcs_BB_data.root"; //xs_dn
+        //TString str_output="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrw_data_cen_sysBB.root"; //out
+
+	//New sliceIDs:(st=ceil, end=floor) ------------------------------------------------------------------------------------------------------------
+        TString str_cen="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_data_cen_newslcid.root"; //xs_central
+	
+	//BB
+        //TString str_up="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_data_cen_newslcid.root"; //xs_up
+        //TString str_dn="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_data_BBI_newslcid.root"; //xs_dn
+        //TString str_output="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_BB_newslcid.root"; //out
+
+	//BMRW-fit
+        TString str_up="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_elossup_data_newslcid.root"; //xs_up
+        TString str_dn="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_elossdn_data_newslcid.root"; //xs_dn
+        TString str_output="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_BMRW_newslcid.root"; //out
+
+
+
 
 
 
@@ -102,7 +118,6 @@ void make_SYSdataXS() {
 	vector<double> err_SYS_KE_DN;
 	vector<double> err_ALL_KE_UP;
 	vector<double> err_ALL_KE_DN;
-
 
 	int n=tr_xs_cen->GetN();
 	for (int i=0; i<n; i++) { 
