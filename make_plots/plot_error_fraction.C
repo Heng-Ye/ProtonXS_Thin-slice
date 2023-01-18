@@ -11,20 +11,28 @@ void plot_error_fraction() {
 
 	//load xs histograms ----------------------------------------------------------------------------//
 	//statistical uncertainty only
-	TString str_cen="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrw_data_cen.root"; //stat. only file
+	//TString str_cen="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrw_data_cen.root"; //stat. only file
+	TString str_cen="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_data_cen_newslcid.root"; //stat. only file
 	TFile *f_cen = TFile::Open(str_cen.Data()); //xs_central
 	TGraphErrors* xs_cen=(TGraphErrors* )f_cen->Get("gr_recoxs"); //xs_central
 
 	//sys1(xs shift due to keff shift)
-	TString str_bmrw="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrw_data_cen_sysbmrw.root"; //sys only
+	//TString str_bmrw="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrw_data_cen_sysbmrw.root"; //sys only
+	TString str_bmrw="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_BMRW_newslcid.root"; //sys only
 	TFile *f_bmrw = TFile::Open(str_bmrw.Data()); //bmrw only
 	TGraphAsymmErrors* xs_sys_bmrw=(TGraphAsymmErrors* )f_bmrw->Get("reco_xs_sysonly"); //sys_only
 
 	//sys2(xs shiftt due to KE theory)
-	TString str_bb="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrw_data_cen_sysBB.root"; //sys only
+	//TString str_bb="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrw_data_cen_sysBB.root"; //sys only
+	TString str_bb="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_BB_newslcid.root"; //sys only
 	TFile *f_bb = TFile::Open(str_bb.Data()); //bb only
 	TGraphAsymmErrors* xs_sys_bb=(TGraphAsymmErrors* )f_bb->Get("reco_xs_sysonly"); //sys_only
 
+	//sys3(El-bks:simple scaling from bkg-rich channel)
+	TString str_el="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_ElScale_newslcid.root"; //sys only
+	TFile *f_el = TFile::Open(str_el.Data()); //el-scale only
+	TGraphAsymmErrors* xs_sys_el=(TGraphAsymmErrors* )f_el->Get("reco_xs_sysonly"); //sys_only
+	
 	//sys3(xs shift due to Bayesian unfolding process) 
 
 
@@ -45,6 +53,10 @@ void plot_error_fraction() {
 	Double_t *err_h_sys_bb=xs_sys_bb->GetEYhigh();
 	Double_t *err_l_sys_bb=xs_sys_bb->GetEYlow();
 
+	//sys3(xs shiftt due to el-scaling)
+	Double_t *err_h_sys_el=xs_sys_el->GetEYhigh();
+	Double_t *err_l_sys_el=xs_sys_el->GetEYlow();
+
 	int n=xs_cen->GetN();
 	int n_bin=err_ke[0]; //+-10 MeV, bin_size=20 MeV
 	double ke_min=ke[n-1]-(double)n_bin;
@@ -53,6 +65,7 @@ void plot_error_fraction() {
 	TH1D* erry_CEN=new TH1D("erry_CEN","", n, ke_min, ke_max); erry_CEN->Sumw2();
 	TH1D* erry_SYS_BMRW=new TH1D("erry_SYS_BMRW","", n, ke_min, ke_max); erry_SYS_BMRW->Sumw2();
 	TH1D* erry_SYS_BB=new TH1D("erry_SYS_BB","", n, ke_min, ke_max); erry_SYS_BB->Sumw2();
+	TH1D* erry_SYS_EL=new TH1D("erry_SYS_EL","", n, ke_min, ke_max); erry_SYS_EL->Sumw2();
 
 	//construct individual error histogram -------------------------------------------//
 	for (int i=n-1; i>=0; --i) {
@@ -75,16 +88,25 @@ void plot_error_fraction() {
 		double erry_l_sys_bb=err_l_sys_bb[i];
 		double erry_bb=pow(erry_h_sys_bb,2)+pow(erry_l_sys_bb,2);
 
+		//sys: el
+		double erry_h_sys_el=err_h_sys_el[i];
+		double erry_l_sys_el=err_l_sys_el[i];
+		double erry_el=pow(erry_h_sys_el,2)+pow(erry_l_sys_el,2);
+
 		//total
-		double erry_all=erry_cen+erry_bmrw+erry_bb;
+		//double erry_all=erry_cen+erry_bmrw+erry_bb;
+		double erry_all=erry_cen+erry_bmrw+erry_bb+erry_el;
 		double frac_cen=100.*erry_cen/erry_all;
 		double frac_erry_bmrw=100.*erry_bmrw/erry_all;
 		double frac_erry_bb=100.*erry_bb/erry_all;
+		double frac_erry_el=100.*erry_el/erry_all;
 
 		if (erry_all>0) {
 			erry_CEN->SetBinContent(j, frac_cen);
 			erry_SYS_BMRW->SetBinContent(j, frac_erry_bmrw);
 			erry_SYS_BB->SetBinContent(j, frac_erry_bb);
+			erry_SYS_EL->SetBinContent(j, frac_erry_el);
+
 			std::cout<<frac_cen<<" | "<<frac_erry_bmrw<<" | "<<frac_erry_bb<<std::endl;
 		}	
 	}
@@ -102,11 +124,14 @@ void plot_error_fraction() {
 	erry_CEN->SetFillColor(kAzure+1);
 	erry_SYS_BMRW->SetFillColor(3);
 	erry_SYS_BB->SetFillColor(6);
+	erry_SYS_EL->SetFillColor(kOrange-3);
+
 
 	THStack* hs=new THStack("hs","");
 	hs->Add(erry_CEN);
 	hs->Add(erry_SYS_BMRW);
 	hs->Add(erry_SYS_BB);
+	hs->Add(erry_SYS_EL);
 
 	TH2D *f2d=new TH2D("f2d","",400,0,400,130,0,130);
 	f2d->SetTitle("; Proton Kinetic Energy [MeV]; Systematic Percentage [%]");
@@ -114,12 +139,15 @@ void plot_error_fraction() {
 	hs->Draw("same");
 
 	//TLegend
-	TLegend *leg = new TLegend(0.1,0.8,0.85,0.9);
+	TLegend *leg = new TLegend(0.12,0.75,0.86,0.9);
 	leg->SetFillStyle(0);
 	leg->SetFillColor(0);
 	leg->AddEntry(erry_CEN, "Stat.","f");
-	leg->AddEntry(erry_SYS_BMRW, "KE_{ff} Sys.","f");
-	leg->AddEntry(erry_SYS_BB, "KE Theory Sys.","f");
+	leg->AddEntry(erry_SYS_BMRW, "Sys. KE_{ff} ","f");
+	leg->AddEntry(erry_SYS_BB, "Sys. KE (Bethe-Bloch)","f");
+        leg->AddEntry((TObject*)0, "", "");
+        leg->AddEntry((TObject*)0, "", "");
+	leg->AddEntry(erry_SYS_EL, "Sys. Elastic-Scatt. Bkg.","f");
 	leg->SetNColumns(3);
 	leg->Draw();
 
