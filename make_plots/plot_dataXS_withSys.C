@@ -46,6 +46,11 @@ void plot_dataXS_withSys() {
 	TFile *f_el = TFile::Open(str_el.Data()); //el-scale only
 	TGraphAsymmErrors* xs_sys_el=(TGraphAsymmErrors* )f_el->Get("reco_xs_sysonly"); //sys_only
 
+	//sys4(MisIDP-bks:simple scaling from bkg-rich channel)
+	TString str_misidp="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_MisIDPScale_newslcid.root"; //sys only
+	TFile *f_misidp = TFile::Open(str_misidp.Data()); //misidp-scale only
+	TGraphAsymmErrors* xs_sys_misidp=(TGraphAsymmErrors* )f_misidp->Get("reco_xs_sysonly"); //sys_only
+
 	//sys3(xs shift due to Bayesian unfolding process) 
 
 	//Fill error composition histogram --------------------------------------------------//
@@ -68,6 +73,10 @@ void plot_dataXS_withSys() {
 	//sys3(xs shiftt due to el-scaling)
 	Double_t *err_h_sys_el=xs_sys_el->GetEYhigh();
 	Double_t *err_l_sys_el=xs_sys_el->GetEYlow();
+
+	//sys4(xs shiftt due to misidp-scaling)
+	Double_t *err_h_sys_misidp=xs_sys_misidp->GetEYhigh();
+	Double_t *err_l_sys_misidp=xs_sys_misidp->GetEYlow();
 
 	vector<double> KE_CEN;
 	vector<double> err_KE_CEN;
@@ -119,13 +128,22 @@ void plot_dataXS_withSys() {
 		double erry_l_sys_el=err_l_sys_el[i];
 		double erry_el=pow(erry_h_sys_el,2)+pow(erry_l_sys_el,2);
 
+		//sys: misid:p
+		double erry_h_sys_misidp=err_h_sys_misidp[i];
+		double erry_l_sys_misidp=err_l_sys_misidp[i];
+		double erry_misidp=pow(erry_h_sys_misidp,2)+pow(erry_l_sys_misidp,2);
+
 		//total
 		//double erry_all=erry_cen+erry_bmrw+erry_bb;
-		double erry_all=erry_cen+erry_bmrw+erry_bb+erry_el;
+		//double erry_all=erry_cen+erry_bmrw+erry_bb+erry_el;
+		double erry_all=erry_cen+erry_bmrw+erry_bb+erry_el+erry_misidp;
+
 		double frac_cen=100.*erry_cen/erry_all;
 		double frac_erry_bmrw=100.*erry_bmrw/erry_all;
 		double frac_erry_bb=100.*erry_bb/erry_all;
 		double frac_erry_el=100.*erry_el/erry_all;
+		double frac_erry_misidp=100.*erry_misidp/erry_all;
+
 
 		//double errx_h_ke_tot=sqrt(pow(errx_cen,2)+pow(errx_h_ke,2));
 		//double errx_l_ke_tot=sqrt(pow(errx_cen,2)+pow(errx_l_ke,2));
@@ -137,11 +155,14 @@ void plot_dataXS_withSys() {
 		double errx_l_ke_tot=sqrt(0+pow(errx_l_ke,2));
 		//double erry_h_xs_tot=sqrt(0+pow(erry_h_sys_bmrw,2)+pow(erry_h_sys_bb,2));
 		//double erry_l_xs_tot=sqrt(0+pow(erry_l_sys_bmrw,2)+pow(erry_l_sys_bb,2));
-		double erry_h_xs_tot=sqrt(0+pow(erry_h_sys_bmrw,2)+pow(erry_h_sys_bb,2)+pow(erry_h_sys_el,2));
-		double erry_l_xs_tot=sqrt(0+pow(erry_l_sys_bmrw,2)+pow(erry_l_sys_bb,2)+pow(erry_l_sys_el,2));
+		//double erry_h_xs_tot=sqrt(0+pow(erry_h_sys_bmrw,2)+pow(erry_h_sys_bb,2)+pow(erry_h_sys_el,2));
+		//double erry_l_xs_tot=sqrt(0+pow(erry_l_sys_bmrw,2)+pow(erry_l_sys_bb,2)+pow(erry_l_sys_el,2));
+		double erry_h_xs_tot=sqrt(0+pow(erry_h_sys_bmrw,2)+pow(erry_h_sys_bb,2)+pow(erry_h_sys_el,2)+pow(erry_h_sys_misidp,2));
+		double erry_l_xs_tot=sqrt(0+pow(erry_l_sys_bmrw,2)+pow(erry_l_sys_bb,2)+pow(erry_l_sys_el,2)+pow(erry_l_sys_misidp,2));
+
 
 		if (erry_all>0) {
-			std::cout<<ke[i]-err_ke[i]<<"-"<<ke[i]+err_ke[i]<<" & "<<cen_xs[i]<<" & \\pm"<<erry_h_cen<<" & $^{+"<<erry_h_sys_bmrw<<"}_{-"<<erry_l_sys_bmrw<<"}$ & $^{+"<<erry_h_sys_bb<<"}_{-"<<erry_l_sys_bb<<"}$ & $^{+"<<erry_h_sys_el<<"}_{-"<<erry_l_sys_el<<"}$ \\\\"<<endl;
+			std::cout<<ke[i]-err_ke[i]<<"-"<<ke[i]+err_ke[i]<<" & "<<cen_xs[i]<<" & \\pm"<<erry_h_cen<<" & $^{+"<<erry_h_sys_bmrw<<"}_{-"<<erry_l_sys_bmrw<<"}$ & $^{+"<<erry_h_sys_bb<<"}_{-"<<erry_l_sys_bb<<"}$ & $^{+"<<erry_h_sys_el<<"}_{-"<<erry_l_sys_el<<"}$ & $^{+"<<erry_h_sys_misidp<<"}_{-"<<erry_l_sys_misidp<<"}$ \\\\"<<endl;
 
 			//erry_CEN->SetBinContent(j, frac_cen);
 			//erry_SYS_BMRW->SetBinContent(j, frac_erry_bmrw);

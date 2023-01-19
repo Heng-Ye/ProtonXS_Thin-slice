@@ -29,9 +29,14 @@ void plot_error_fraction() {
 	TGraphAsymmErrors* xs_sys_bb=(TGraphAsymmErrors* )f_bb->Get("reco_xs_sysonly"); //sys_only
 
 	//sys3(El-bks:simple scaling from bkg-rich channel)
-	//TString str_el="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_ElScale_newslcid.root"; //sys only
-	//TFile *f_el = TFile::Open(str_el.Data()); //el-scale only
-	//TGraphAsymmErrors* xs_sys_el=(TGraphAsymmErrors* )f_el->Get("reco_xs_sysonly"); //sys_only
+	TString str_el="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_ElScale_newslcid.root"; //sys only
+	TFile *f_el = TFile::Open(str_el.Data()); //el-scale only
+	TGraphAsymmErrors* xs_sys_el=(TGraphAsymmErrors* )f_el->Get("reco_xs_sysonly"); //sys_only
+
+	//sys4(MisIDP-bks:simple scaling from bkg-rich channel)
+	TString str_misidp="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_MisIDPScale_newslcid.root"; //sys only
+	TFile *f_misidp = TFile::Open(str_misidp.Data()); //misidp-scale only
+	TGraphAsymmErrors* xs_sys_misidp=(TGraphAsymmErrors* )f_misidp->Get("reco_xs_sysonly"); //sys_only
 	
 	//sys3(xs shift due to Bayesian unfolding process) 
 
@@ -54,8 +59,12 @@ void plot_error_fraction() {
 	Double_t *err_l_sys_bb=xs_sys_bb->GetEYlow();
 
 	//sys3(xs shiftt due to el-scaling)
-	//Double_t *err_h_sys_el=xs_sys_el->GetEYhigh();
-	//Double_t *err_l_sys_el=xs_sys_el->GetEYlow();
+	Double_t *err_h_sys_el=xs_sys_el->GetEYhigh();
+	Double_t *err_l_sys_el=xs_sys_el->GetEYlow();
+
+	//sys4(xs shiftt due to misidp-scaling)
+	Double_t *err_h_sys_misidp=xs_sys_misidp->GetEYhigh();
+	Double_t *err_l_sys_misidp=xs_sys_misidp->GetEYlow();
 
 	int n=xs_cen->GetN();
 	int n_bin=err_ke[0]; //+-10 MeV, bin_size=20 MeV
@@ -65,7 +74,8 @@ void plot_error_fraction() {
 	TH1D* erry_CEN=new TH1D("erry_CEN","", n, ke_min, ke_max); erry_CEN->Sumw2();
 	TH1D* erry_SYS_BMRW=new TH1D("erry_SYS_BMRW","", n, ke_min, ke_max); erry_SYS_BMRW->Sumw2();
 	TH1D* erry_SYS_BB=new TH1D("erry_SYS_BB","", n, ke_min, ke_max); erry_SYS_BB->Sumw2();
-	//TH1D* erry_SYS_EL=new TH1D("erry_SYS_EL","", n, ke_min, ke_max); erry_SYS_EL->Sumw2();
+	TH1D* erry_SYS_EL=new TH1D("erry_SYS_EL","", n, ke_min, ke_max); erry_SYS_EL->Sumw2();
+	TH1D* erry_SYS_MID=new TH1D("erry_SYS_MID","", n, ke_min, ke_max); erry_SYS_MID->Sumw2();
 
 	//construct individual error histogram -------------------------------------------//
 	for (int i=n-1; i>=0; --i) {
@@ -89,23 +99,32 @@ void plot_error_fraction() {
 		double erry_bb=pow(erry_h_sys_bb,2)+pow(erry_l_sys_bb,2);
 
 		//sys: el
-		//double erry_h_sys_el=err_h_sys_el[i];
-		//double erry_l_sys_el=err_l_sys_el[i];
-		//double erry_el=pow(erry_h_sys_el,2)+pow(erry_l_sys_el,2);
+		double erry_h_sys_el=err_h_sys_el[i];
+		double erry_l_sys_el=err_l_sys_el[i];
+		double erry_el=pow(erry_h_sys_el,2)+pow(erry_l_sys_el,2);
+
+		//sys: misid:p
+		double erry_h_sys_misidp=err_h_sys_misidp[i];
+		double erry_l_sys_misidp=err_l_sys_misidp[i];
+		double erry_misidp=pow(erry_h_sys_misidp,2)+pow(erry_l_sys_misidp,2);
 
 		//total
-		double erry_all=erry_cen+erry_bmrw+erry_bb;
+		//double erry_all=erry_cen+erry_bmrw+erry_bb;
 		//double erry_all=erry_cen+erry_bmrw+erry_bb+erry_el;
+		double erry_all=erry_cen+erry_bmrw+erry_bb+erry_el+erry_misidp;
+
 		double frac_cen=100.*erry_cen/erry_all;
 		double frac_erry_bmrw=100.*erry_bmrw/erry_all;
 		double frac_erry_bb=100.*erry_bb/erry_all;
 		double frac_erry_el=100.*erry_el/erry_all;
+		double frac_erry_misidp=100.*erry_misidp/erry_all;
 
 		if (erry_all>0) {
 			erry_CEN->SetBinContent(j, frac_cen);
 			erry_SYS_BMRW->SetBinContent(j, frac_erry_bmrw);
 			erry_SYS_BB->SetBinContent(j, frac_erry_bb);
-			//erry_SYS_EL->SetBinContent(j, frac_erry_el);
+			erry_SYS_EL->SetBinContent(j, frac_erry_el);
+			erry_SYS_MID->SetBinContent(j, frac_erry_misidp);
 
 			std::cout<<frac_cen<<" | "<<frac_erry_bmrw<<" | "<<frac_erry_bb<<std::endl;
 		}	
@@ -125,6 +144,7 @@ void plot_error_fraction() {
 	erry_SYS_BMRW->SetFillColor(3);
 	erry_SYS_BB->SetFillColor(6);
 	erry_SYS_EL->SetFillColor(kOrange-3);
+	erry_SYS_MID->SetFillColor(5);
 
 
 	THStack* hs=new THStack("hs","");
@@ -132,6 +152,7 @@ void plot_error_fraction() {
 	hs->Add(erry_SYS_BMRW);
 	hs->Add(erry_SYS_BB);
 	hs->Add(erry_SYS_EL);
+	hs->Add(erry_SYS_MID);
 
 	TH2D *f2d=new TH2D("f2d","",440,0,340,130,0,130);
 	f2d->SetTitle("; Proton Kinetic Energy [MeV]; Systematic Percentage [%]");
@@ -146,8 +167,10 @@ void plot_error_fraction() {
 	leg->AddEntry(erry_SYS_BMRW, "Sys. KE_{ff} ","f");
 	leg->AddEntry(erry_SYS_BB, "Sys. KE (Bethe-Bloch)","f");
         //leg->AddEntry((TObject*)0, "", "");
-        //leg->AddEntry((TObject*)0, "", "");
-	//leg->AddEntry(erry_SYS_EL, "Sys. Elastic-Scatt. Bkg.","f");
+        leg->AddEntry((TObject*)0, "", "");
+	leg->AddEntry(erry_SYS_EL, "Sys. Elastic-Scatt. Bkg.","f");
+	leg->AddEntry(erry_SYS_MID, "Sys. MisID:P Bkg.","f");
+
 	leg->SetNColumns(3);
 	leg->Draw();
 

@@ -229,8 +229,10 @@ void make_ESlicedataXS() {
         TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS_newslcid/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01_newslcid.root";
         TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Test_newslcid.root"; //for reco
         TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Valid_newslcid.root"; //for truth and response matrix
-	TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_data_MisIDPbkgScalingsubtraction_up_newslcid.root");
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_data_MisIDPbkgScalingsubtraction_up_newslcid.root");
 
+	//incase of wrong execution
+	TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_dummy.root");
 
 	//MC nobmrw ---------------------------------------------------------------------------------------------------
 	//TString outpath="./plots_XS_Eslice_nobmrwkebeamff/";

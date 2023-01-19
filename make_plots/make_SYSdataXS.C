@@ -160,6 +160,9 @@ void make_SYSdataXS() {
 		else {
 			err_sys_up2=-cen_minus_dn_xs;
 		}
+		cout<<ke[i]<<" cen_xs:"<<cen_xs[i]<<endl;
+		cout<<ke[i]<<" err_sys_up1:"<<err_sys_up1<<" err_sys_up2:"<<err_sys_up2<<endl;
+		cout<<ke[i]<<" err_sys_dn1:"<<err_sys_dn1<<" err_sys_dn2:"<<err_sys_dn2<<"\n"<<endl;
 
 		//combine -----------------------------------------------------//
 		double err_sys_up=sqrt(pow(err_sys_up1,2)+pow(err_sys_up2,2));
