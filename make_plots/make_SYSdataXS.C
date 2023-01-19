@@ -72,14 +72,19 @@ void make_SYSdataXS() {
         //TString str_output="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_BB_newslcid.root"; //out
 
 	//BMRW-fit
-        TString str_up="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_elossup_data_newslcid.root"; //xs_up
-        TString str_dn="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_elossdn_data_newslcid.root"; //xs_dn
-        TString str_output="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_BMRW_newslcid.root"; //out
+        //TString str_up="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_elossup_data_newslcid.root"; //xs_up
+        //TString str_dn="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_elossdn_data_newslcid.root"; //xs_dn
+        //TString str_output="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_BMRW_newslcid.root"; //out
 
+	//El-scale
+        //TString str_up="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_data_ElbkgScalingsubtraction_up_newslcid.root"; //xs_up
+        //TString str_dn="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_data_ElbkgScalingsubtraction_dn_newslcid.root"; //xs_dn
+        //TString str_output="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_ElScale_newslcid.root"; //out
 
-
-
-
+	//MisIDP-scale
+        TString str_up="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_data_MisIDPbkgScalingsubtraction_up_newslcid.root"; //xs_up
+        TString str_dn="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_data_MisIDPbkgScalingsubtraction_dn_newslcid.root"; //xs_dn
+        TString str_output="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_MisIDPScale_newslcid.root"; //out
 
         //plot style --------------------------------------------------------------------//
         gROOT->LoadMacro(" ~/protoDUNEStyle.C"); //load pDUNE style
