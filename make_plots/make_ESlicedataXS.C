@@ -197,11 +197,39 @@ void make_ESlicedataXS() {
 	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_data_assumenomisidpsubtraction_newslcid.root");
 
 	//no misidp+no el subtraction 
-	TString outpath="./plots_XS_Eslice_bmrwkebeamff_nomisidpnoel_subtraction_newslcid/";
+	//TString outpath="./plots_XS_Eslice_bmrwkebeamff_nomisidpnoel_subtraction_newslcid/";
+        //TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS_newslcid/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01_newslcid.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Test_newslcid.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Valid_newslcid.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_data_assumenomisidpnoelsubtraction_newslcid.root");
+
+	//el subtraction with scaling (xs dn) 
+	//TString outpath="./plots_XS_Eslice_bmrwkebeamff_elscaling_dn_subtraction_newslcid/";
+        //TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS_newslcid/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01_newslcid.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Test_newslcid.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Valid_newslcid.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_data_ElbkgScalingsubtraction_dn_newslcid.root");
+
+	//el subtraction with scaling (xs up) 
+	//TString outpath="./plots_XS_Eslice_bmrwkebeamff_elscaling_up_subtraction_newslcid/";
+        //TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS_newslcid/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01_newslcid.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Test_newslcid.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Valid_newslcid.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_data_ElbkgScalingsubtraction_up_newslcid.root");
+
+	//misidp subtraction with scaling (xs dn) 
+	//TString outpath="./plots_XS_Eslice_bmrwkebeamff_misidpscaling_dn_subtraction_newslcid/";
+        //TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS_newslcid/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01_newslcid.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Test_newslcid.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Valid_newslcid.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_data_MisIDPbkgScalingsubtraction_dn_newslcid.root");
+
+	//misidp subtraction with scaling (xs up) 
+	TString outpath="./plots_XS_Eslice_bmrwkebeamff_misidpscaling_up_subtraction_newslcid/";
         TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS_newslcid/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01_newslcid.root";
         TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Test_newslcid.root"; //for reco
         TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Valid_newslcid.root"; //for truth and response matrix
-	TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_data_assumenomisidpnoelsubtraction_newslcid.root");
+	TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_data_MisIDPbkgScalingsubtraction_up_newslcid.root");
 
 
 	//MC nobmrw ---------------------------------------------------------------------------------------------------
@@ -486,7 +514,12 @@ void make_ESlicedataXS() {
 	//double scal_int_el=-0.999491;
 
 	double scal_misidp=-1;
+	//double scal_misidp=-0.998892-0.0696991;
+	//double scal_misidp=-0.998892+0.0696991;
+
 	double scal_st_misidp=-1;
+	//double scal_int_el=-0.999491-0.0166378;
+	//double scal_int_el=-0.999491+0.0166378;
 	double scal_int_el=-1;
 
 	//inc
