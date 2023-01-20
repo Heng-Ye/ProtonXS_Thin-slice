@@ -162,7 +162,9 @@ void plot_dataXS_withSys() {
 
 
 		if (erry_all>0) {
-			std::cout<<ke[i]-err_ke[i]<<"-"<<ke[i]+err_ke[i]<<" & "<<cen_xs[i]<<" & \\pm"<<erry_h_cen<<" & $^{+"<<erry_h_sys_bmrw<<"}_{-"<<erry_l_sys_bmrw<<"}$ & $^{+"<<erry_h_sys_bb<<"}_{-"<<erry_l_sys_bb<<"}$ & $^{+"<<erry_h_sys_el<<"}_{-"<<erry_l_sys_el<<"}$ & $^{+"<<erry_h_sys_misidp<<"}_{-"<<erry_l_sys_misidp<<"}$ \\\\"<<endl;
+			//std::cout<<ke[i]-err_ke[i]<<"-"<<ke[i]+err_ke[i]<<" & "<<cen_xs[i]<<" & \\pm"<<erry_h_cen<<" & $^{+"<<erry_h_sys_bmrw<<"}_{-"<<erry_l_sys_bmrw<<"}$ & $^{+"<<erry_h_sys_bb<<"}_{-"<<erry_l_sys_bb<<"}$ & $^{+"<<erry_h_sys_el<<"}_{-"<<erry_l_sys_el<<"}$ & $^{+"<<erry_h_sys_misidp<<"}_{-"<<erry_l_sys_misidp<<"}$ \\\\"<<endl;
+			
+			printf("%.0f-%.0f & %.1f & $\\pm$%.1f(%.1f\\,\\\%) & $^{+%.1f(%.1f\\,\\\%)}_{-%.1f(%.1f\\,\\\%)}$ & $^{+%.1f(%.1f\\,\\\%)}_{-%.1f(%.1f\\,\\\%)}$ & $^{+%.1f(%.1f\\,\\\%)}_{-%.1f(%.1f\\,\\\%)}$ & $^{+%.1f(%.1f\\,\\\%)}_{-%.1f(%.1f\\,\\\%)}$ \\\\ \n",ke[i]-err_ke[i],ke[i]+err_ke[i],cen_xs[i],erry_h_cen,100.*erry_h_cen/cen_xs[i],erry_h_sys_bmrw,100.*erry_h_sys_bmrw/cen_xs[i], erry_l_sys_bmrw, 100.*erry_l_sys_bmrw/cen_xs[i],erry_h_sys_bb,100.*erry_h_sys_bb/cen_xs[i],erry_l_sys_bb,100.*erry_l_sys_bb/cen_xs[i],erry_h_sys_el,100.*erry_h_sys_el/cen_xs[i],erry_l_sys_el,100.*erry_l_sys_el/cen_xs[i],erry_h_sys_misidp,100.*erry_h_sys_misidp/cen_xs[i],erry_l_sys_misidp,100.*erry_l_sys_misidp/cen_xs[i]);
 
 			//erry_CEN->SetBinContent(j, frac_cen);
 			//erry_SYS_BMRW->SetBinContent(j, frac_erry_bmrw);
