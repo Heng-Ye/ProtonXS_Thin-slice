@@ -67,9 +67,9 @@ void make_SYSdataXS() {
         TString str_cen="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_data_cen_newslcid.root"; //xs_central
 	
 	//BB
-        //TString str_up="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_data_cen_newslcid.root"; //xs_up
-        //TString str_dn="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_data_BBI_newslcid.root"; //xs_dn
-        //TString str_output="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_BB_newslcid.root"; //out
+        TString str_up="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_data_cen_newslcid.root"; //xs_up
+        TString str_dn="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_data_BBI_newslcid.root"; //xs_dn
+        TString str_output="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_BB_newslcid.root"; //out
 
 	//BMRW-fit
         //TString str_up="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_elossup_data_newslcid.root"; //xs_up
@@ -82,9 +82,9 @@ void make_SYSdataXS() {
         //TString str_output="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_ElScale_newslcid.root"; //out
 
 	//MisIDP-scale
-        TString str_up="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_data_MisIDPbkgScalingsubtraction_up_newslcid.root"; //xs_up
-        TString str_dn="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_data_MisIDPbkgScalingsubtraction_dn_newslcid.root"; //xs_dn
-        TString str_output="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_MisIDPScale_newslcid.root"; //out
+        //TString str_up="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_data_MisIDPbkgScalingsubtraction_up_newslcid.root"; //xs_up
+        //TString str_dn="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_data_MisIDPbkgScalingsubtraction_dn_newslcid.root"; //xs_dn
+        //TString str_output="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_MisIDPScale_newslcid.root"; //out
 
         //plot style --------------------------------------------------------------------//
         gROOT->LoadMacro(" ~/protoDUNEStyle.C"); //load pDUNE style
@@ -114,15 +114,11 @@ void make_SYSdataXS() {
 	vector<double> err_KE;
 	vector<double> XS;
 	vector<double> err_XS_CEN;
-	vector<double> err_XS_SYS_UP;
-	vector<double> err_XS_SYS_DN;
-	vector<double> err_XS_ALL_UP;
-	vector<double> err_XS_ALL_DN;
+	vector<double> err_XS_SYS;
+	vector<double> err_XS_ALL;
 
-	vector<double> err_SYS_KE_UP;
-	vector<double> err_SYS_KE_DN;
-	vector<double> err_ALL_KE_UP;
-	vector<double> err_ALL_KE_DN;
+	vector<double> err_SYS_KE;
+	vector<double> err_ALL_KE;
 
 	int n=tr_xs_cen->GetN();
 	for (int i=0; i<n; i++) { 
@@ -136,62 +132,38 @@ void make_SYSdataXS() {
 		double up_minus_cen_xs=up_xs[i]-cen_xs[i];
 		double cen_minus_dn_xs=cen_xs[i]-dn_xs[i];
 
-		//up_xs case -----------------------------//
-		double err_sys_up1=0;
-		double err_sys_dn1=0;
-		if (up_minus_cen_xs>0) { //up_xs>cen_xs
-			err_sys_up1=up_minus_cen_xs;
-		} //up_xs>cen_xs
-		else if (up_minus_cen_xs==0) {
-			//do nothing
-		} 
-		else {
-			err_sys_dn1=-up_minus_cen_xs;
-		}
+		//find max among 3 values -------------------
+		double up_max_xs=max(up_xs[i], cen_xs[i]);
+		up_max_xs=max(up_max_xs, dn_xs[i]);
 
-		//dn xs case -----------------------------//
-		double err_sys_dn2=0;
-		double err_sys_up2=0;
-		if (cen_minus_dn_xs>0) { //cen_xs>dn_xs
-			err_sys_dn2=cen_minus_dn_xs;
-		} //cen_xs>dn_xs
-		else if (cen_minus_dn_xs==0) {
-		}
-		else {
-			err_sys_up2=-cen_minus_dn_xs;
-		}
-		cout<<ke[i]<<" cen_xs:"<<cen_xs[i]<<endl;
-		cout<<ke[i]<<" err_sys_up1:"<<err_sys_up1<<" err_sys_up2:"<<err_sys_up2<<endl;
-		cout<<ke[i]<<" err_sys_dn1:"<<err_sys_dn1<<" err_sys_dn2:"<<err_sys_dn2<<"\n"<<endl;
+		//find min among 3 values -------------------
+		double dn_min_xs=min(up_xs[i], cen_xs[i]);
+		dn_min_xs=min(dn_min_xs, dn_xs[i]);
+	
+		double err_sys=(up_max_xs-dn_min_xs)/2.;
+
+		cout<<ke[i]<<" cen_xs:"<<cen_xs[i]<<" err_sys:"<<err_sys<<" | up_max_xs:"<<up_max_xs<<" | dn_min_xs:"<<dn_min_xs<<" :: "<<up_xs[i]<<" "<<cen_xs[i]<<" "<<dn_xs[i]<<endl;
 
 		//combine -----------------------------------------------------//
-		double err_sys_up=sqrt(pow(err_sys_up1,2)+pow(err_sys_up2,2));
-		double err_sys_dn=sqrt(pow(err_sys_dn1,2)+pow(err_sys_dn2,2));
-
 		err_XS_CEN.push_back(err_cen_xs[i]);
-		err_XS_SYS_UP.push_back(err_sys_up);
-		err_XS_SYS_DN.push_back(err_sys_dn);
+		err_XS_SYS.push_back(err_sys);
 
-		double err_all_up=sqrt(pow(err_sys_up,2)+pow(err_cen_xs[i],2));
-		double err_all_dn=sqrt(pow(err_sys_dn,2)+pow(err_cen_xs[i],2));
-		err_XS_ALL_UP.push_back(err_all_up);
-		err_XS_ALL_DN.push_back(err_all_dn);
+		double err_all=sqrt(pow(err_sys,2)+pow(err_cen_xs[i],2));
+		err_XS_ALL.push_back(err_all);
 
 		//Uncertainties due to fiber position shift --------------------------------------------------------------------------//
 		double err_pbeam_fiber_pos_shift=1.3/100.; //in percentage
 		double dke_up=1000.*p2ke(Pbeam_sys(ke2p(ke[i]/1000.), err_pbeam_fiber_pos_shift, 1))-ke[i]; //up value
 		double dke_dn=ke[i]-1000.*p2ke(Pbeam_sys(ke2p(ke[i]/1000.), err_pbeam_fiber_pos_shift, -1)); //dn value
+		double dke=dke_up; if (dke_up<0) dke_up=-1.*dke_up;
 
-		err_SYS_KE_UP.push_back(dke_up);
-		err_SYS_KE_DN.push_back(dke_dn);
-
-		err_ALL_KE_UP.push_back(sqrt(pow(dke_up,2)+pow(err_ke[i],2)));
-		err_ALL_KE_DN.push_back(sqrt(pow(dke_dn,2)+pow(err_ke[i],2)));
+		err_SYS_KE.push_back(dke);
+		err_ALL_KE.push_back(sqrt(pow(dke,2)+pow(err_ke[i],2)));
 	}
 
 	//output the combined xs results -------------------------------------------------------------------------------------------------------------------------------------------//
-	TGraphAsymmErrors* reco_xs_sysonly=new TGraphAsymmErrors(n, &KE.at(0), &XS.at(0), &err_SYS_KE_DN.at(0), &err_SYS_KE_UP.at(0), &err_XS_SYS_DN.at(0), &err_XS_SYS_UP.at(0));	
-	TGraphAsymmErrors* reco_xs_all=new TGraphAsymmErrors(n, &KE.at(0), &XS.at(0), &err_ALL_KE_DN.at(0), &err_ALL_KE_UP.at(0), &err_XS_ALL_DN.at(0), &err_XS_ALL_UP.at(0));
+	TGraphErrors* reco_xs_sysonly=new TGraphErrors(n, &KE.at(0), &XS.at(0), &err_SYS_KE.at(0), &err_XS_SYS.at(0));	
+	TGraphErrors* reco_xs_all=new TGraphErrors(n, &KE.at(0), &XS.at(0), &err_ALL_KE.at(0), &err_XS_ALL.at(0));
 	//auto gr = new TGraphAsymmErrors(n,x,y,exl,exh,eyl,eyh);	
 
 	TFile *fout=new TFile(Form("%s",str_output.Data()),"recreate");	
