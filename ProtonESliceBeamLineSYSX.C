@@ -874,8 +874,8 @@ void ProtonESliceBeamLineSYS::Loop() {
 
 		double slope_kff_keffbeamR=0.859605;
 		double err_pbeam_fiber_pos_shift=1.3/100.; //in percentage
-		double ke_beam_spec_MeV_up=1000.*p2ke(Pbeam_sys((ke_beam_spec_MeV/1000.), err_pbeam_fiber_pos_shift, 1); //up value
-		//double ke_beam_spec_MeV_dn=1000.*p2ke(Pbeam_sys((ke_beam_spec_MeV/1000.), err_pbeam_fiber_pos_shift, -1); //dn value
+		double ke_beam_spec_MeV_up=1000.*p2ke(Pbeam_sys((ke_beam_spec_MeV/1000.), err_pbeam_fiber_pos_shift, 1)); //up value
+		//double ke_beam_spec_MeV_dn=1000.*p2ke(Pbeam_sys((ke_beam_spec_MeV/1000.), err_pbeam_fiber_pos_shift, -1)); //dn value
 
 		double ke_ffbeam_MeV=(ke_beam_spec_MeV_up-Eloss_mc_hy_stop)*R_fit_hy; //const E-loss with correction (R_fit_hy is essentially one)
 		//double ke_ffbeam_MeV=(ke_beam_spec_MeV-Eloss_mc_hy_stop)*R_fit_hy; //const E-loss with correction (R_fit_hy is essentially one)
