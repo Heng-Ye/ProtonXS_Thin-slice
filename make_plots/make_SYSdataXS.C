@@ -67,9 +67,9 @@ void make_SYSdataXS() {
         TString str_cen="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_data_cen_newslcid.root"; //xs_central
 	
 	//BB
-        TString str_up="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_data_cen_newslcid.root"; //xs_up
-        TString str_dn="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_data_BBI_newslcid.root"; //xs_dn
-        TString str_output="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_BB_newslcid.root"; //out
+        //TString str_up="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_data_cen_newslcid.root"; //xs_up
+        //TString str_dn="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_data_BBI_newslcid.root"; //xs_dn
+        //TString str_output="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_BB_newslcid.root"; //out
 
 	//BMRW-fit
         //TString str_up="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_elossup_data_newslcid.root"; //xs_up
@@ -85,6 +85,12 @@ void make_SYSdataXS() {
         //TString str_up="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_data_MisIDPbkgScalingsubtraction_up_newslcid.root"; //xs_up
         //TString str_dn="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_data_MisIDPbkgScalingsubtraction_dn_newslcid.root"; //xs_dn
         //TString str_output="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_MisIDPScale_newslcid.root"; //out
+
+	//Beamline inst.
+        TString str_up="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_data_beamline_up_newslcid.root"; //xs_up
+        TString str_dn="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_data_beamline_dn_newslcid.root"; //xs_dn
+        TString str_output="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_beamline_newslcid.root"; //out
+
 
         //plot style --------------------------------------------------------------------//
         gROOT->LoadMacro(" ~/protoDUNEStyle.C"); //load pDUNE style

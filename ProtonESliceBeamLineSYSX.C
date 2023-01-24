@@ -220,8 +220,6 @@ void ProtonESliceBeamLineSYS::Loop() {
    	//p1           4.34283e+01   1.97065e-01   1.96200e-04  -1.35452e-04
 
 
-
-
 	//weighting func. (ke) ------------------------
 	TF1 *kerw=new TF1(Form("kerw"),govg,0,800,4);
 	kerw->SetParameter(0, mu_nom_mc);
@@ -242,8 +240,8 @@ void ProtonESliceBeamLineSYS::Loop() {
 	Unfold uf(nthinslices+2, -1, nthinslices+1);
 
 	//ThinSlice config. ---------------------------------------------------------------------------------------------------//
-	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrw_kebeamff_v09_39_01_All_BeamlineSYS_up_newslcid.root", name_thinslicewidth, nthinslices)); //output file name
-	SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrw_kebeamff_v09_39_01_All_BeamlineSYS_dn_newslcid.root", name_thinslicewidth, nthinslices)); //output file name
+	SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrw_kebeamff_v09_39_01_All_Test_BeamlineSYS_dn_newslcid.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrw_kebeamff_v09_39_01_All_Test_BeamlineSYS_up_newslcid.root", name_thinslicewidth, nthinslices)); //output file name
 
 	//Basic configure ------//
 	BetheBloch BB;
@@ -269,8 +267,8 @@ void ProtonESliceBeamLineSYS::Loop() {
 		nb = fChain->GetEntry(jentry);   nbytes += nb;
 
 		//isTestSample = true;
-		isTestSample = false; //validation only
-		//isTestSample = true; //test only
+		//isTestSample = false; //validation only
+		isTestSample = true; //test only
 		//if (ientry%2 == 0) isTestSample = false; //Divide MC sample by 2 parts: test+ufold
 		//if (isTestSample) continue; //only validate sample
 		//if (!isTestSample) continue; //only test sample
@@ -278,7 +276,7 @@ void ProtonESliceBeamLineSYS::Loop() {
 		true_sliceID = -1;
 		reco_sliceID = -1;
 
-		//only select protons	
+		//only select protons
 		//if (primary_truth_Pdg!=pdg) continue; //only interested in protons
 		if (beamtrackPdg!=pdg) continue; //only interested in protons
 		//std::cout<<"beamtrackPdg:"<<beamtrackPdg<<std::endl;
@@ -874,9 +872,9 @@ void ProtonESliceBeamLineSYS::Loop() {
 		//KEend_reco=KE_ff_reco-reco_calo_MeV;
 
 		double slope_kff_keffbeamR=0.859605;
-		double err_pbeam_fiber_pos_shift=1.3/100.; //in percentage
-		//double ke_beam_spec_MeV_up=1000.*p2ke(Pbeam_sys((ke_beam_spec_MeV/1000.), err_pbeam_fiber_pos_shift, 1)); //up value
-		double ke_beam_spec_MeV_dn=1000.*p2ke(Pbeam_sys((ke_beam_spec_MeV/1000.), err_pbeam_fiber_pos_shift, -1)); //dn value
+		double err_pbeam=1.3/100.; //in percentage
+		//double ke_beam_spec_MeV_up=1000.*p2ke(Pbeam_sys(mom_beam_spec, err_pbeam, 1)); //up value
+		double ke_beam_spec_MeV_dn=1000.*p2ke(Pbeam_sys(mom_beam_spec, err_pbeam, -1)); //dn value
 
 		//double ke_ffbeam_MeV=(ke_beam_spec_MeV_up-Eloss_mc_hy_stop)*R_fit_hy; //const E-loss with correction (R_fit_hy is essentially one)
 		double ke_ffbeam_MeV=(ke_beam_spec_MeV_dn-Eloss_mc_hy_stop)*R_fit_hy; //const E-loss with correction (R_fit_hy is essentially one)

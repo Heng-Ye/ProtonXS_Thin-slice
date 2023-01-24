@@ -20,23 +20,23 @@ void plot_error_fraction() {
 	//TString str_bmrw="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrw_data_cen_sysbmrw.root"; //sys only
 	TString str_bmrw="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_BMRW_newslcid.root"; //sys only
 	TFile *f_bmrw = TFile::Open(str_bmrw.Data()); //bmrw only
-	TGraphAsymmErrors* xs_sys_bmrw=(TGraphAsymmErrors* )f_bmrw->Get("reco_xs_sysonly"); //sys_only
+	TGraphErrors* xs_sys_bmrw=(TGraphErrors* )f_bmrw->Get("reco_xs_sysonly"); //sys_only
 
 	//sys2(xs shiftt due to KE theory)
 	//TString str_bb="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrw_data_cen_sysBB.root"; //sys only
 	TString str_bb="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_BB_newslcid.root"; //sys only
 	TFile *f_bb = TFile::Open(str_bb.Data()); //bb only
-	TGraphAsymmErrors* xs_sys_bb=(TGraphAsymmErrors* )f_bb->Get("reco_xs_sysonly"); //sys_only
+	TGraphErrors* xs_sys_bb=(TGraphErrors* )f_bb->Get("reco_xs_sysonly"); //sys_only
 
 	//sys3(El-bks:simple scaling from bkg-rich channel)
 	TString str_el="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_ElScale_newslcid.root"; //sys only
 	TFile *f_el = TFile::Open(str_el.Data()); //el-scale only
-	TGraphAsymmErrors* xs_sys_el=(TGraphAsymmErrors* )f_el->Get("reco_xs_sysonly"); //sys_only
+	TGraphErrors* xs_sys_el=(TGraphErrors* )f_el->Get("reco_xs_sysonly"); //sys_only
 
 	//sys4(MisIDP-bks:simple scaling from bkg-rich channel)
 	TString str_misidp="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_MisIDPScale_newslcid.root"; //sys only
 	TFile *f_misidp = TFile::Open(str_misidp.Data()); //misidp-scale only
-	TGraphAsymmErrors* xs_sys_misidp=(TGraphAsymmErrors* )f_misidp->Get("reco_xs_sysonly"); //sys_only
+	TGraphErrors* xs_sys_misidp=(TGraphErrors* )f_misidp->Get("reco_xs_sysonly"); //sys_only
 	
 	//sys3(xs shift due to Bayesian unfolding process) 
 
@@ -49,22 +49,16 @@ void plot_error_fraction() {
 	Double_t *err_cen_xs=xs_cen->GetEY();
 
 	//sys1(xs shift due to keff shift)
-	Double_t *err_h_ke=xs_sys_bmrw->GetEXhigh();
-	Double_t *err_l_ke=xs_sys_bmrw->GetEXlow();
-	Double_t *err_h_sys_bmrw=xs_sys_bmrw->GetEYhigh();
-	Double_t *err_l_sys_bmrw=xs_sys_bmrw->GetEYlow();
+	Double_t *err_sys_bmrw=xs_sys_bmrw->GetEY();
 
 	//sys2(xs shiftt due to KE theory)
-	Double_t *err_h_sys_bb=xs_sys_bb->GetEYhigh();
-	Double_t *err_l_sys_bb=xs_sys_bb->GetEYlow();
+	Double_t *err_sys_bb=xs_sys_bb->GetEY();
 
 	//sys3(xs shiftt due to el-scaling)
-	Double_t *err_h_sys_el=xs_sys_el->GetEYhigh();
-	Double_t *err_l_sys_el=xs_sys_el->GetEYlow();
+	Double_t *err_sys_el=xs_sys_el->GetEY();
 
 	//sys4(xs shiftt due to misidp-scaling)
-	Double_t *err_h_sys_misidp=xs_sys_misidp->GetEYhigh();
-	Double_t *err_l_sys_misidp=xs_sys_misidp->GetEYlow();
+	Double_t *err_sys_misidp=xs_sys_misidp->GetEY();
 
 	int n=xs_cen->GetN();
 	int n_bin=err_ke[0]; //+-10 MeV, bin_size=20 MeV
@@ -83,35 +77,23 @@ void plot_error_fraction() {
 		cout<<"i="<<i<<" j="<<j<<endl;
 
 		//std::cout<<"["<<i<<"] "<<"ke:"<<ke[i]<<" +- "<<err_ke[i]<<std::endl;
-		//systematic u
-		double erry_h_cen=err_cen_xs[i];
-		double erry_l_cen=erry_h_cen;
-		double erry_cen=pow(erry_h_cen,2)+pow(erry_l_cen,2);
+		//stat
+		double erry_cen=err_cen_xs[i];
 
 		//sys: bmrw
-		double erry_h_sys_bmrw=err_h_sys_bmrw[i];
-		double erry_l_sys_bmrw=err_l_sys_bmrw[i];
-		double erry_bmrw=pow(erry_h_sys_bmrw,2)+pow(erry_l_sys_bmrw,2);
+		double erry_bmrw=err_sys_bmrw[i];
 
 		//sys: bb
-		double erry_h_sys_bb=err_h_sys_bb[i];
-		double erry_l_sys_bb=err_l_sys_bb[i];
-		double erry_bb=pow(erry_h_sys_bb,2)+pow(erry_l_sys_bb,2);
+		double erry_bb=err_sys_bb[i];
 
 		//sys: el
-		double erry_h_sys_el=err_h_sys_el[i];
-		double erry_l_sys_el=err_l_sys_el[i];
-		double erry_el=pow(erry_h_sys_el,2)+pow(erry_l_sys_el,2);
+		double erry_el=err_sys_el[i];
 
 		//sys: misid:p
-		double erry_h_sys_misidp=err_h_sys_misidp[i];
-		double erry_l_sys_misidp=err_l_sys_misidp[i];
-		double erry_misidp=pow(erry_h_sys_misidp,2)+pow(erry_l_sys_misidp,2);
+		double erry_misidp=err_sys_misidp[i];
 
 		//total
-		//double erry_all=erry_cen+erry_bmrw+erry_bb;
-		//double erry_all=erry_cen+erry_bmrw+erry_bb+erry_el;
-		double erry_all=erry_cen+erry_bmrw+erry_bb+erry_el+erry_misidp;
+		double erry_all=sqrt(pow(erry_cen,2)+pow(erry_bmrw,2)+pow(erry_bb,2)+pow(erry_el,2)+pow(erry_misidp,2));
 
 		double frac_cen=100.*erry_cen/erry_all;
 		double frac_erry_bmrw=100.*erry_bmrw/erry_all;
