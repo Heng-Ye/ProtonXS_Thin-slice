@@ -33,23 +33,28 @@ void plot_dataXS_withSys() {
 	TString str_bmrw="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_BMRW_newslcid.root"; //sys only
 
 	TFile *f_bmrw = TFile::Open(str_bmrw.Data()); //bmrw only
-	TGraphAsymmErrors* xs_sys_bmrw=(TGraphAsymmErrors* )f_bmrw->Get("reco_xs_sysonly"); //sys_only
+	TGraphErrors* xs_sys_bmrw=(TGraphErrors* )f_bmrw->Get("reco_xs_sysonly"); //sys_only
 
 	//sys2(xs shiftt due to KE theory)
 	//TString str_bb="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrw_data_cen_sysBB.root"; //sys only
 	TString str_bb="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_BB_newslcid.root"; //sys only
 	TFile *f_bb = TFile::Open(str_bb.Data()); //bb only
-	TGraphAsymmErrors* xs_sys_bb=(TGraphAsymmErrors* )f_bb->Get("reco_xs_sysonly"); //sys_only
+	TGraphErrors* xs_sys_bb=(TGraphErrors* )f_bb->Get("reco_xs_sysonly"); //sys_only
 
 	//sys3(El-bks:simple scaling from bkg-rich channel)
 	TString str_el="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_ElScale_newslcid.root"; //sys only
 	TFile *f_el = TFile::Open(str_el.Data()); //el-scale only
-	TGraphAsymmErrors* xs_sys_el=(TGraphAsymmErrors* )f_el->Get("reco_xs_sysonly"); //sys_only
+	TGraphErrors* xs_sys_el=(TGraphErrors* )f_el->Get("reco_xs_sysonly"); //sys_only
 
 	//sys4(MisIDP-bks:simple scaling from bkg-rich channel)
 	TString str_misidp="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_MisIDPScale_newslcid.root"; //sys only
 	TFile *f_misidp = TFile::Open(str_misidp.Data()); //misidp-scale only
-	TGraphAsymmErrors* xs_sys_misidp=(TGraphAsymmErrors* )f_misidp->Get("reco_xs_sysonly"); //sys_only
+	TGraphErrors* xs_sys_misidp=(TGraphErrors* )f_misidp->Get("reco_xs_sysonly"); //sys_only
+
+	//sys5(Beamline inst.)
+	TString str_bl="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_beamline_newslcid.root"; //sys only
+	TFile *f_bl = TFile::Open(str_bl.Data()); //beamline_inst only
+	TGraphErrors* xs_sys_bl=(TGraphErrors* )f_bl->Get("reco_xs_sysonly"); //sys_only
 
 	//sys3(xs shift due to Bayesian unfolding process) 
 
@@ -61,36 +66,33 @@ void plot_dataXS_withSys() {
 	Double_t *err_cen_xs=xs_cen->GetEY();
 
 	//sys1(xs shift due to keff shift)
-	Double_t *err_h_ke=xs_sys_bmrw->GetEXhigh();
-	Double_t *err_l_ke=xs_sys_bmrw->GetEXlow();
-	Double_t *err_h_sys_bmrw=xs_sys_bmrw->GetEYhigh();
-	Double_t *err_l_sys_bmrw=xs_sys_bmrw->GetEYlow();
+	Double_t *err_sys_ke=xs_sys_bmrw->GetEX();
+	Double_t *err_sys_bmrw=xs_sys_bmrw->GetEY();
 
 	//sys2(xs shiftt due to KE theory)
-	Double_t *err_h_sys_bb=xs_sys_bb->GetEYhigh();
-	Double_t *err_l_sys_bb=xs_sys_bb->GetEYlow();
+	Double_t *err_sys_bb=xs_sys_bb->GetEY();
 
 	//sys3(xs shiftt due to el-scaling)
-	Double_t *err_h_sys_el=xs_sys_el->GetEYhigh();
-	Double_t *err_l_sys_el=xs_sys_el->GetEYlow();
+	Double_t *err_sys_el=xs_sys_el->GetEY();
 
 	//sys4(xs shiftt due to misidp-scaling)
-	Double_t *err_h_sys_misidp=xs_sys_misidp->GetEYhigh();
-	Double_t *err_l_sys_misidp=xs_sys_misidp->GetEYlow();
+	Double_t *err_sys_misidp=xs_sys_misidp->GetEY();
+
+	//sys5(xs shiftt due to beamline measurement)
+	Double_t *err_sys_bl=xs_sys_bl->GetEY();
 
 	vector<double> KE_CEN;
 	vector<double> err_KE_CEN;
 
 	vector<double> KE_SYS;
-	vector<double> err_h_KE_SYS;
-	vector<double> err_l_KE_SYS;
+	vector<double> err_KE_SYS;
 
 	vector<double> XS_CEN;
 	vector<double> err_XS_CEN;
 
 	//vector<double> XS_SYS;
-	vector<double> err_h_XS_SYS;
-	vector<double> err_l_XS_SYS;
+	vector<double> err_XS_SYS;
+	vector<double> err_XS_ALL;
 
 
 	int n=xs_cen->GetN();
@@ -99,95 +101,75 @@ void plot_dataXS_withSys() {
 	double ke_max=ke[0]+(double)n_bin;
 
 	//construct individual error histogram -------------------------------------------//
+	int cnt_col=0;
 	for (int i=n-1; i>=0; --i) {
 		int j=n-i;
 		//cout<<"i="<<i<<" j="<<j<<endl;
 
 		//ke
 		double errx_cen=err_ke[i];
-		double errx_h_ke=err_h_ke[i];
-		double errx_l_ke=err_l_ke[i];
+		double errx_sys=err_sys_ke[i];
+		double errx_all=sqrt(pow(err_ke[i],2)+pow(err_sys_ke[i],2));
 
-		//stat.
-		double erry_h_cen=err_cen_xs[i];
-		double erry_l_cen=erry_h_cen;
-		double erry_cen=pow(erry_h_cen,2)+pow(erry_l_cen,2);
+		//xs stat.
+		double erry_cen=err_cen_xs[i];
 
-		//sys: bmrw
-		double erry_h_sys_bmrw=err_h_sys_bmrw[i];
-		double erry_l_sys_bmrw=err_l_sys_bmrw[i];
-		double erry_bmrw=pow(erry_h_sys_bmrw,2)+pow(erry_l_sys_bmrw,2);
+		//xs sys: bmrw
+		double erry_bmrw=err_sys_bmrw[i];
 
-		//sys: bb
-		double erry_h_sys_bb=err_h_sys_bb[i];
-		double erry_l_sys_bb=err_l_sys_bb[i];
-		double erry_bb=pow(erry_h_sys_bb,2)+pow(erry_l_sys_bb,2);
+		//xs sys: bb
+		double erry_bb=err_sys_bb[i];
 
-		//sys: el
-		double erry_h_sys_el=err_h_sys_el[i];
-		double erry_l_sys_el=err_l_sys_el[i];
-		double erry_el=pow(erry_h_sys_el,2)+pow(erry_l_sys_el,2);
+		//xs sys: el
+		double erry_el=err_sys_el[i];
 
-		//sys: misid:p
-		double erry_h_sys_misidp=err_h_sys_misidp[i];
-		double erry_l_sys_misidp=err_l_sys_misidp[i];
-		double erry_misidp=pow(erry_h_sys_misidp,2)+pow(erry_l_sys_misidp,2);
+		//xs sys: misid:p
+		double erry_misidp=err_sys_misidp[i];
 
-		//total
-		//double erry_all=erry_cen+erry_bmrw+erry_bb;
-		//double erry_all=erry_cen+erry_bmrw+erry_bb+erry_el;
-		double erry_all=erry_cen+erry_bmrw+erry_bb+erry_el+erry_misidp;
+		//sys: bl(might be wrong, need investigation)
+		double erry_bl=err_sys_bl[i];
 
-		double frac_cen=100.*erry_cen/erry_all;
-		double frac_erry_bmrw=100.*erry_bmrw/erry_all;
-		double frac_erry_bb=100.*erry_bb/erry_all;
-		double frac_erry_el=100.*erry_el/erry_all;
-		double frac_erry_misidp=100.*erry_misidp/erry_all;
+		//xs sys 
+		//double erry_sys=sqrt(pow(erry_bmrw,2)+pow(erry_bb,2)+pow(erry_el,2)+pow(erry_misidp,2)+pow(erry_bl,2));
+		double erry_sys=sqrt(pow(erry_bmrw,2)+pow(erry_bb,2)+pow(erry_el,2)+pow(erry_misidp,2));
 
-
-		//double errx_h_ke_tot=sqrt(pow(errx_cen,2)+pow(errx_h_ke,2));
-		//double errx_l_ke_tot=sqrt(pow(errx_cen,2)+pow(errx_l_ke,2));
-		//double erry_h_xs_tot=sqrt(pow(erry_h_cen,2)+pow(erry_h_sys_bmrw,2)+pow(erry_h_sys_bb,2));
-		//double erry_l_xs_tot=sqrt(pow(erry_l_cen,2)+pow(erry_l_sys_bmrw,2)+pow(erry_l_sys_bb,2));
+		//xs total
+		double erry_all=sqrt(pow(erry_cen,2)+pow(erry_sys,2));
 
 		//only sys errors
-		double errx_h_ke_tot=sqrt(0+pow(errx_h_ke,2));
-		double errx_l_ke_tot=sqrt(0+pow(errx_l_ke,2));
-		//double erry_h_xs_tot=sqrt(0+pow(erry_h_sys_bmrw,2)+pow(erry_h_sys_bb,2));
-		//double erry_l_xs_tot=sqrt(0+pow(erry_l_sys_bmrw,2)+pow(erry_l_sys_bb,2));
-		//double erry_h_xs_tot=sqrt(0+pow(erry_h_sys_bmrw,2)+pow(erry_h_sys_bb,2)+pow(erry_h_sys_el,2));
-		//double erry_l_xs_tot=sqrt(0+pow(erry_l_sys_bmrw,2)+pow(erry_l_sys_bb,2)+pow(erry_l_sys_el,2));
-		double erry_h_xs_tot=sqrt(0+pow(erry_h_sys_bmrw,2)+pow(erry_h_sys_bb,2)+pow(erry_h_sys_el,2)+pow(erry_h_sys_misidp,2));
-		double erry_l_xs_tot=sqrt(0+pow(erry_l_sys_bmrw,2)+pow(erry_l_sys_bb,2)+pow(erry_l_sys_el,2)+pow(erry_l_sys_misidp,2));
-
+		//double errx_ke_tot=sqrt(0+pow(errx_sys,2));
+		//double erry_xs_tot=sqrt(pow(errx_cen,2)+pow(errx_ke,2));
 
 		if (erry_all>0) {
 			//std::cout<<ke[i]-err_ke[i]<<"-"<<ke[i]+err_ke[i]<<" & "<<cen_xs[i]<<" & \\pm"<<erry_h_cen<<" & $^{+"<<erry_h_sys_bmrw<<"}_{-"<<erry_l_sys_bmrw<<"}$ & $^{+"<<erry_h_sys_bb<<"}_{-"<<erry_l_sys_bb<<"}$ & $^{+"<<erry_h_sys_el<<"}_{-"<<erry_l_sys_el<<"}$ & $^{+"<<erry_h_sys_misidp<<"}_{-"<<erry_l_sys_misidp<<"}$ \\\\"<<endl;
 			
-			printf("%.0f-%.0f & %.1f & $\\pm$%.1f(%.1f\\,\\\%) & $^{+%.1f(%.1f\\,\\\%)}_{-%.1f(%.1f\\,\\\%)}$ & $^{+%.1f(%.1f\\,\\\%)}_{-%.1f(%.1f\\,\\\%)}$ & $^{+%.1f(%.1f\\,\\\%)}_{-%.1f(%.1f\\,\\\%)}$ & $^{+%.1f(%.1f\\,\\\%)}_{-%.1f(%.1f\\,\\\%)}$ \\\\ \n",ke[i]-err_ke[i],ke[i]+err_ke[i],cen_xs[i],erry_h_cen,100.*erry_h_cen/cen_xs[i],erry_h_sys_bmrw,100.*erry_h_sys_bmrw/cen_xs[i], erry_l_sys_bmrw, 100.*erry_l_sys_bmrw/cen_xs[i],erry_h_sys_bb,100.*erry_h_sys_bb/cen_xs[i],erry_l_sys_bb,100.*erry_l_sys_bb/cen_xs[i],erry_h_sys_el,100.*erry_h_sys_el/cen_xs[i],erry_l_sys_el,100.*erry_l_sys_el/cen_xs[i],erry_h_sys_misidp,100.*erry_h_sys_misidp/cen_xs[i],erry_l_sys_misidp,100.*erry_l_sys_misidp/cen_xs[i]);
-
-			//erry_CEN->SetBinContent(j, frac_cen);
-			//erry_SYS_BMRW->SetBinContent(j, frac_erry_bmrw);
-			//erry_SYS_BB->SetBinContent(j, frac_erry_bb);
-			//std::cout<<frac_cen<<" | "<<frac_erry_bmrw<<" | "<<frac_erry_bb<<std::endl;
+			bool is_bkg_col=0;
+			//TString table=Form("%.0f-%.0f & %.1f & $\\pm$%.1f(%.1f\\,\\\%) & $\\pm$%.1f(%.1f\\,\\\%) & $\\pm$%.1f(%.1f\\,\\\%) & $\\pm$%.1f(%.1f\\,\\\%) & $\\pm$%.1f(%.1f\\,\\\%)  & $\\pm$%.1f(%.1f\\,\\\%) \\\\ \n", ke[i]-err_ke[i], ke[i]+err_ke[i], cen_xs[i], erry_cen, 100.*erry_cen/cen_xs[i], erry_bl, 100.*erry_bl/cen_xs[i], erry_bmrw, 100.*erry_bmrw/cen_xs[i], erry_bb, 100.*erry_bb/cen_xs[i],erry_el,100.*erry_el/cen_xs[i],erry_misidp, 100.*erry_misidp/cen_xs[i]);
+			TString table=Form("%.0f-%.0f & %.1f & $\\pm$%.1f(%.1f\\,\\\%) & $\\pm$%.1f(%.1f\\,\\\%) & $\\pm$%.1f(%.1f\\,\\\%) & $\\pm$%.1f(%.1f\\,\\\%) & $\\pm$%.1f(%.1f\\,\\\%) & $\\pm$%.1f(%.1f\\,\\\%) \\\\ \n", ke[i]-err_ke[i], ke[i]+err_ke[i], cen_xs[i], erry_cen, 100.*erry_cen/cen_xs[i], erry_bmrw, 100.*erry_bmrw/cen_xs[i], erry_bb, 100.*erry_bb/cen_xs[i], erry_el, 100.*erry_el/cen_xs[i], erry_misidp, 100.*erry_misidp/cen_xs[i], erry_all, 100.*erry_all/cen_xs[i]);
+			if (cnt_col%2==0) {
+				TString aadd_color_table=Form("\\rowcolor{Gray} ")+table;
+				printf("%s", aadd_color_table.Data());
+			}
+			else {
+				//printf("%.0f-%.0f & %.1f & $\\pm$%.1f(%.1f\\,\\\%) & $\\pm$%.1f(%.1f\\,\\\%) & $\\pm$%.1f(%.1f\\,\\\%) & $\\pm$%.1f(%.1f\\,\\\%)  & $\\pm$%.1f(%.1f\\,\\\%) \\\\ \n", ke[i]-err_ke[i], ke[i]+err_ke[i], cen_xs[i], erry_cen, 100.*erry_cen/cen_xs[i], erry_bmrw, 100.*erry_bmrw/cen_xs[i], erry_bb, 100.*erry_bb/cen_xs[i],erry_el,100.*erry_el/cen_xs[i],erry_misidp, 100.*erry_misidp/cen_xs[i]);
+				printf("%s", table.Data());
+			}
 
 			KE_CEN.push_back(ke[i]);
 			err_KE_CEN.push_back(err_ke[i]);
-
-			err_h_KE_SYS.push_back(errx_h_ke_tot);
-			err_l_KE_SYS.push_back(errx_l_ke_tot);
+			err_KE_SYS.push_back(0);
 
 			XS_CEN.push_back(cen_xs[i]);
 			err_XS_CEN.push_back(err_cen_xs[i]);
 
-			err_h_XS_SYS.push_back(erry_h_xs_tot);
-			err_l_XS_SYS.push_back(erry_l_xs_tot);
+			err_XS_SYS.push_back(erry_sys);
+			cnt_col++;
 
 			//cout<<"KE_CEN:"<<ke[i]<<" "
 		}	
 	}
 	TGraphErrors* xs_reco_stat=new TGraphErrors(KE_CEN.size(), &KE_CEN.at(0), &XS_CEN.at(0), &err_KE_CEN.at(0), &err_XS_CEN.at(0));
-	TGraphAsymmErrors* xs_reco_sys=new TGraphAsymmErrors(KE_CEN.size(), &KE_CEN.at(0), &XS_CEN.at(0), &err_l_KE_SYS.at(0), &err_h_KE_SYS.at(0), &err_l_XS_SYS.at(0), &err_h_XS_SYS.at(0));
+	TGraphErrors* xs_reco_sys=new TGraphErrors(KE_CEN.size(), &KE_CEN.at(0), &XS_CEN.at(0), &err_KE_SYS.at(0), &err_XS_SYS.at(0));
 
 	//Load other xs models
         //Geant4 -------------------------------------------------------------------------------------//

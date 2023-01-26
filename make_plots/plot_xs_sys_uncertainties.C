@@ -47,7 +47,8 @@ void plot_xs_sys_uncertainties() {
 	//TString str_fig_out="./plot_xs_comparison/";
 	//TString str_fig_out="./plot_xs_comparison_BB/";
 	//TString str_fig_out="./plot_xs_comparison_BMRW/";
-	TString str_fig_out="./plot_xs_comparison_El/";
+	//TString str_fig_out="./plot_xs_comparison_El/";
+	TString str_fig_out="./plot_xs_comparison_BeamlineInst/";
 	//TString str_fig_out="./plot_xs_comparison_MisIDP/";
 
 	//Load XS files ----------------------------------------------------------------------------------------------------//
@@ -57,11 +58,12 @@ void plot_xs_sys_uncertainties() {
         //TString str="./xs_files/xs_Eslice_dE20MeV_40slcs_bmrw_data_cen_sysBB.root";
 
         //TString str="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_BB_newslcid.root";
-        TString str="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_ElScale_newslcid.root";
+        //TString str="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_ElScale_newslcid.root";
+        TString str="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_beamline_newslcid.root";
         //TString str="./xs_files_newslcid/xs_Eslice_dE20MeV_40slcs_SYS_MisIDPScale_newslcid.root";
 	TFile *f_in = TFile::Open(str.Data()); //xs
 	TGraphErrors *reco_xs=(TGraphErrors *)f_in->Get("reco_xs"); //xs, stat
-	TGraphAsymmErrors *reco_xs_all=(TGraphAsymmErrors *)f_in->Get("reco_xs_all"); //xs, err_bmrw, err_fiberpos
+	TGraphErrors *reco_xs_all=(TGraphErrors *)f_in->Get("reco_xs_all"); //xs, err_bmrw, err_fiberpos
 
         //Geant4 -------------------------------------------------------------------------------------//
         TFile f_xs("/dune/data2/users/hyliao/GeantReweight/xs_cascade/proton_cross_section.root");
