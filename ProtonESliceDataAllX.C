@@ -50,6 +50,10 @@
 #include "./headers/ESlice.h"
 #include "./headers/BetheBloch.h"
 
+#include <chrono>
+#include <ratio>
+#include <thread>
+
 using namespace std;
 using namespace ROOT::Math;
 
@@ -98,7 +102,7 @@ struct SumDistance2 {
 			sum += d;
 		}
 		if (first) {
-			std::cout << "Total Initial distance square = " << sum << std::endl;
+			//std::cout << "Total Initial distance square = " << sum << std::endl;
 		}
 		first = false;
 		return sum;
@@ -110,6 +114,9 @@ struct SumDistance2 {
 
 void ProtonESliceDataAll::Loop() {
 	if (fChain == 0) return;
+
+	//time_start
+	auto t_st = std::chrono::high_resolution_clock::now();	
 
 	//various counters ---------------------------------------------------------------------------------------------------------------------------------------------------//
 	int n_processmap_error=0; //sansity check: processmap
@@ -275,7 +282,9 @@ void ProtonESliceDataAll::Loop() {
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrw_kebeamff_v09_39_01_All_Test_newslcid_plusone.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_KE1st.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_All_Test_KE1st.root", name_thinslicewidth, nthinslices)); //output file name
-	SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_All_KE1st.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_All_KE1st.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_All_KE1st_minus1.root", name_thinslicewidth, nthinslices)); //output file name
+	SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_All_KE1st_plus1.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_newslideIDdef_v09_39_01.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw.root", name_thinslicewidth, nthinslices)); //output file name
@@ -416,13 +425,13 @@ void ProtonESliceDataAll::Loop() {
 		if (true_endz<0.) {
 			IsTrueEndOutside=true;
 		}
-		cout<<"trueEnd z/y/x:"<<true_endz<<"/"<<true_endy<<"/"<<true_endx<<endl;
-		cout<<"trueSt z/y/x:"<<true_stz<<"/"<<true_sty<<"/"<<true_stx<<endl;
+		//cout<<"trueEnd z/y/x:"<<true_endz<<"/"<<true_endy<<"/"<<true_endx<<endl;
+		//cout<<"trueSt z/y/x:"<<true_stz<<"/"<<true_sty<<"/"<<true_stx<<endl;
 		//cout<<"InEL EL MCS:"<<IsPureInEL<<" "<<IsPureEL<<" "<<IsPureMCS<<endl;
-		cout<<"InEL EL:"<<IsPureInEL<<" "<<IsPureEL<<" "<<endl;
-		cout<<"IsTrueEndOutside:"<<IsTrueEndOutside<<endl;
-		if (IsPureInEL==1) cout<<"Summary(TrueEnd, Endoutside, Bm, Orig, EPDG):("<<1<<", "<<IsTrueEndOutside<<", "<<IsBeamMatch<<", "<<primary_truth_byE_origin<<", "<<primary_truth_byE_PDG<<")"<<endl;	
-		if (IsPureEL==1) cout<<"Summary(TrueEnd, Endoutside, Bm, Orig, EPDG):("<<2<<", "<<IsTrueEndOutside<<", "<<IsBeamMatch<<", "<<primary_truth_byE_origin<<", "<<primary_truth_byE_PDG<<")"<<endl;	
+		//cout<<"InEL EL:"<<IsPureInEL<<" "<<IsPureEL<<" "<<endl;
+		//cout<<"IsTrueEndOutside:"<<IsTrueEndOutside<<endl;
+		//if (IsPureInEL==1) cout<<"Summary(TrueEnd, Endoutside, Bm, Orig, EPDG):("<<1<<", "<<IsTrueEndOutside<<", "<<IsBeamMatch<<", "<<primary_truth_byE_origin<<", "<<primary_truth_byE_PDG<<")"<<endl;	
+		//if (IsPureEL==1) cout<<"Summary(TrueEnd, Endoutside, Bm, Orig, EPDG):("<<2<<", "<<IsTrueEndOutside<<", "<<IsBeamMatch<<", "<<primary_truth_byE_origin<<", "<<primary_truth_byE_PDG<<")"<<endl;	
 		//if (IsPureMCS==1) cout<<"Summary(TrueEnd, Endoutside, Bm, Orig, EPDG):("<<3<<", "<<IsTrueEndOutside<<", "<<IsBeamMatch<<", "<<primary_truth_byE_origin<<", "<<primary_truth_byE_PDG<<")"<<endl;	
 
 		//First point of MCParticle entering TPC ------------------------------------------------------------------------//
@@ -446,8 +455,8 @@ void ProtonESliceDataAll::Loop() {
 
 		} 
 		if (key_reach_tpc!=-99) { is_beam_at_ff=true; }
-		cout<<"key_reach_tpc:"<<key_reach_tpc<<endl;	
-		cout<<"is_beam_at_ff:"<<is_beam_at_ff<<endl;
+		//cout<<"key_reach_tpc:"<<key_reach_tpc<<endl;	
+		//cout<<"is_beam_at_ff:"<<is_beam_at_ff<<endl;
 
 		//Get true trklen ---------------------------------------------------------------------------------------//
 		int key_st = 0;
@@ -480,9 +489,9 @@ void ProtonESliceDataAll::Loop() {
 			if (key_fit_st<0) key_fit_st=0;
 			if (key_fit_ed>(-1+(int)beamtrk_z->size())) key_fit_ed=-1+(int)beamtrk_z->size();	
 
-			cout<<"beamtrk_z->size():"<<beamtrk_z->size()<<endl;
-			cout<<"key_reach_tpc:"<<key_reach_tpc<<endl;
-			std::cout<<"key_fit_st-ed:"<<key_fit_st<<"-"<<key_fit_ed<<std::endl;
+			//cout<<"beamtrk_z->size():"<<beamtrk_z->size()<<endl;
+			//cout<<"key_reach_tpc:"<<key_reach_tpc<<endl;
+			//std::cout<<"key_fit_st-ed:"<<key_fit_st<<"-"<<key_fit_ed<<std::endl;
 
 			//start 3D line fit
 			TGraph2D *gr=new TGraph2D();
@@ -518,10 +527,10 @@ void ProtonESliceDataAll::Loop() {
 			//cout<<"ck4"<<endl;
 
 			bool ok = fitter.FitFCN();
-			if (!ok) {
-				Error("line3Dfit","Line3D Fit failed");
+			//if (!ok) {
+				//Error("line3Dfit","Line3D Fit failed");
 				//return 1;
-			}
+			//}
 			//cout<<"ck5"<<endl;
 
 			const ROOT::Fit::FitResult & result = fitter.Result();
@@ -606,7 +615,7 @@ void ProtonESliceDataAll::Loop() {
 				kMIDother=true;
 			}
 		} //!beam-match	
-		cout<<"kMIDcosmic:"<<kMIDcosmic<<endl;
+		//cout<<"kMIDcosmic:"<<kMIDcosmic<<endl;
 		//Evt Classification =====================================================================//
 
 		//reco pos info & cut -----------------------------------------------------------------//
@@ -1447,7 +1456,9 @@ void ProtonESliceDataAll::Loop() {
 		//true_st_sliceID=int((Emax-KE_ff)/thinslicewidth+0.5);
 		//true_st_sliceID=int(ceil((Emax-KE_ff)/thinslicewidth))-1;
 		//true_st_sliceID=int(ceil((Emax-KE_ff)/thinslicewidth))+1;
-		true_st_sliceID=int(ceil((Emax-KE_1st)/thinslicewidth));
+		//true_st_sliceID=int(ceil((Emax-KE_1st)/thinslicewidth));
+		//true_st_sliceID=int(ceil((Emax-KE_1st)/thinslicewidth)-1);
+		true_st_sliceID=int(ceil((Emax-KE_1st)/thinslicewidth)+1);
 		//true_st_sliceID=int(ceil((Emax-KE_ff)/thinslicewidth));
 		//--true_st_sliceID;
 		//true_st_sliceID++;
@@ -1485,7 +1496,9 @@ void ProtonESliceDataAll::Loop() {
 			//reco_st_sliceID=int((Emax-keff_reco)/thinslicewidth);
 			//reco_st_sliceID=int((Emax-KE_ff_reco)/thinslicewidth+0.5);
 			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth))-1;
-			reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth));
+			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth));
+			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth)-1);
+			reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth)+1);
 			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth));
 			//--reco_st_sliceID;
 			//reco_st_sliceID++;
@@ -1950,6 +1963,23 @@ void ProtonESliceDataAll::Loop() {
 
 			//myfile.close();
 
+			//end_time
+			auto t_end = std::chrono::high_resolution_clock::now();
+
+    			// floating-point duration: no duration_cast needed
+    			std::chrono::duration<double, std::milli> fp_ms = t_st - t_end;
+ 
+    			// integral duration: requires duration_cast
+    			auto int_ms = std::chrono::duration_cast<std::chrono::milliseconds>(t_end - t_st);
+ 
+    			// converting integral duration to integral duration of shorter divisible time unit:
+    			// no duration_cast needed
+    			std::chrono::duration<long, std::micro> int_usec = int_ms;
+ 
+    			std::cout << "\n\nf() took " << fp_ms.count() << " ms, "
+              		<< "or " << int_ms.count() << " whole milliseconds "
+              		<< "(which is " << int_usec.count() << " whole microseconds)" << std::endl;
+			std::cout<<"\n Execution time:"<<(int_ms/1000.)/60.<<" (min.)"<<std::endl;
 
 
 		}
