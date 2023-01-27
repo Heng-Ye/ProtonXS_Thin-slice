@@ -232,11 +232,11 @@ void make_ESlicedataXS() {
 	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_data_MisIDPbkgScalingsubtraction_up_newslcid.root");
 
 	//beamline inst. (up)
-	TString outpath="./plots_XS_Eslice_bmrwkebeamff_beamline_up_subtraction_newslcid/";
-        TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS_newslcid/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01_newslcid.root";
-        TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Test_BeamlineSYS_up_newslcid.root"; //for reco
-        TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Valid_BeamlineSYS_up_newslcid.root"; //for truth and response matrix
-	TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_data_beamline_up_newslcid.root");
+	//TString outpath="./plots_XS_Eslice_bmrwkebeamff_beamline_up_subtraction_newslcid/";
+        //TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS_newslcid/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01_newslcid.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Test_BeamlineSYS_up_newslcid.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Valid_BeamlineSYS_up_newslcid.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_data_beamline_up_newslcid.root");
 
 	//beamline inst. (dn)
 	//TString outpath="./plots_XS_Eslice_bmrwkebeamff_beamline_dn_subtraction_newslcid/";
@@ -252,6 +252,28 @@ void make_ESlicedataXS() {
         //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_Valid_newslcid.root"; //for reco
         //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_Valid_newslcid.root"; //for truth and response matrix
 	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_fakedata2_newslcid.root");
+
+	//fake data:sliceID study
+	//TString outpath="./plots_XS_Eslice_fakedata_idplus1/";
+        //TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Test_newslcid_plusone.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Test_newslcid_plusone.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Valid_newslcid_plusone.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_fakedata3_newslcid_plusone.root");
+	
+
+	//fake data:sliceID study
+	//TString outpath="./plots_XS_Eslice_fakedata_idminus1/";
+        //TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Test_newslcid_minusone.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Test_newslcid_minusone.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_v09_39_01_All_Valid_newslcid_minusone.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_fakedata3_newslcid_plusone.root");
+
+	//fake data:sliceID study
+	TString outpath="./plots_XS_Eslice_fakedata_ke1st/";
+        TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_KE1st.root";
+        TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_KE1st.root"; //for reco
+        TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_KE1st.root"; //for truth and response matrix
+	TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_fakedata5_newslcid_keff1st.root");
 
 	//incase of wrong execution
 	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_dummy.root");
