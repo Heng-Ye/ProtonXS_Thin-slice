@@ -284,7 +284,8 @@ void ProtonESliceDataAll::Loop() {
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_All_Test_KE1st.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_All_KE1st.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_All_KE1st_minus1.root", name_thinslicewidth, nthinslices)); //output file name
-	SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_All_KE1st_plus1.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_All_KE1st_plus1.root", name_thinslicewidth, nthinslices)); //output file name
+	SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_newslideIDdef_v09_39_01.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw.root", name_thinslicewidth, nthinslices)); //output file name
@@ -1454,11 +1455,11 @@ void ProtonESliceDataAll::Loop() {
 		//true_st_sliceID=int((Emax-KE_ff)/thinslicewidth+1);
 		//true_st_sliceID=int((Emax-KE_ff)/thinslicewidth);
 		//true_st_sliceID=int((Emax-KE_ff)/thinslicewidth+0.5);
-		//true_st_sliceID=int(ceil((Emax-KE_ff)/thinslicewidth))-1;
+		true_st_sliceID=int(ceil((Emax-KE_ff)/thinslicewidth));
 		//true_st_sliceID=int(ceil((Emax-KE_ff)/thinslicewidth))+1;
 		//true_st_sliceID=int(ceil((Emax-KE_1st)/thinslicewidth));
 		//true_st_sliceID=int(ceil((Emax-KE_1st)/thinslicewidth)-1);
-		true_st_sliceID=int(ceil((Emax-KE_1st)/thinslicewidth)+1);
+		//true_st_sliceID=int(ceil((Emax-KE_1st)/thinslicewidth)+1);
 		//true_st_sliceID=int(ceil((Emax-KE_ff)/thinslicewidth));
 		//--true_st_sliceID;
 		//true_st_sliceID++;
@@ -1466,7 +1467,8 @@ void ProtonESliceDataAll::Loop() {
 		//if (range_true >= 30) true_st_sliceID=int((Emax-KE_ff30)/thinslicewidth);
 		//if (range_true < 30) true_st_sliceID=-1; 
 		if (true_st_sliceID<0) true_st_sliceID=-1; //KE higher than Emax
-		if (true_endz < 0) true_st_sliceID=-1; 
+		//if (true_endz < 0) true_st_sliceID=-1; 
+		if (true_endz < 0) true_st_sliceID=nthinslices; 
 		if (true_st_sliceID >= nthinslices) true_st_sliceID = nthinslices;
 
 		//double KE_true=BB.KEAtLength(KE_ff, range_true);
@@ -1496,16 +1498,16 @@ void ProtonESliceDataAll::Loop() {
 			//reco_st_sliceID=int((Emax-keff_reco)/thinslicewidth);
 			//reco_st_sliceID=int((Emax-KE_ff_reco)/thinslicewidth+0.5);
 			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth))-1;
-			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth));
+			reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth));
 			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth)-1);
-			reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth)+1);
+			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth)+1);
 			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth));
 			//--reco_st_sliceID;
 			//reco_st_sliceID++;
 			//if (range_reco>=30.) reco_st_sliceID=int((Emax-KE_reco30)/thinslicewidth);
 			//if (range_reco<30) reco_st_sliceID=-1;
 			if (reco_st_sliceID<0) reco_st_sliceID=-1; //KE higher than Emax
-			if (reco_endz < 0) reco_st_sliceID = -1; 
+			if (reco_endz < 0) reco_st_sliceID = nthinslices; 
 			if (reco_st_sliceID >= nthinslices) reco_st_sliceID = nthinslices;
 
 			//double KE_reco=BB.KEAtLength(keff_reco, range_reco);
@@ -1979,7 +1981,7 @@ void ProtonESliceDataAll::Loop() {
     			std::cout << "\n\nf() took " << fp_ms.count() << " ms, "
               		<< "or " << int_ms.count() << " whole milliseconds "
               		<< "(which is " << int_usec.count() << " whole microseconds)" << std::endl;
-			std::cout<<"\n Execution time:"<<(int_ms/1000.)/60.<<" (min.)"<<std::endl;
+			std::cout<<"\n Execution time:"<<(int_ms.count()/1000.)/60.<<" (min.)"<<std::endl;
 
 
 		}
