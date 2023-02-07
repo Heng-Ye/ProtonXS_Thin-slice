@@ -260,10 +260,10 @@ void ProtonMomentumReweight::Loop() {
 		double edept_min=-20;
 		double edept_max=100;
 		
-		TH1D **diff_kebeam_kefit_stop=new TF1*[n_kebeam_slice];
-		TH1D **diff_kebeam_kefit_el=new TF1*[n_kebeam_slice];
-		TH1D **diff_kebeam_keff_stop=new TF1*[n_kebeam_slice];
-		TH1D **diff_kebeam_keff_el=new TF1*[n_kebeam_slice];
+		TH1D **diff_kebeam_kefit_stop=new TH1D*[n_kebeam_slice];
+		TH1D **diff_kebeam_kefit_el=new TH1D*[n_kebeam_slice];
+		TH1D **diff_kebeam_keff_stop=new TH1D*[n_kebeam_slice];
+		TH1D **diff_kebeam_keff_el=new TH1D*[n_kebeam_slice];
 		for (int ii=0; ii<n_kebeam_slice; ++ii) {
 			diff_kebeam_kefit_stop[ii]=new TH1D(Form("diff_kebeam_kefit_stop_%d",ii),Form("#Delta(KE_{beam}-KE_{fit})=%d-%d MeV",kebeam_min,kebeam_min+d_kebeam),n_edept,edept_min,edept_max);
 			diff_kebeam_kefit_el[ii]=new TH1D(Form("diff_kebeam_kefit_el_%d",ii),Form("#Delta(KE_{beam}-KE_{fit})=%d-%d MeV",kebeam_min,kebeam_min+d_kebeam),n_edept,edept_min,edept_max);
@@ -1093,8 +1093,8 @@ void ProtonMomentumReweight::Loop() {
 			for (int ii=0; ii<(int)KEbeam_slice.size(); ++ii) {
 				diff_kebeam_kefit_stop[ii]->Write();
 				diff_kebeam_keff_stop[ii]->Write();
-				diff_kebeam_kefit_el[ii]->->Write();
-				diff_kebeam_keff_el[ii]->->Write();
+				diff_kebeam_kefit_el[ii]->Write();
+				diff_kebeam_keff_el[ii]->Write();
 			}
 
 
