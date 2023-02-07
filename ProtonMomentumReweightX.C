@@ -248,6 +248,34 @@ void ProtonMomentumReweight::Loop() {
 		TH1D *h1d_zend_bmrw_XY = new TH1D("h1d_zend_bmrw_XY", "reco_bmrw+BQ+XY", dz, z_st, z_end);
 		//Weighted Gaussians & Weighting function ----------------------------------------------------------------------------------------------------------------------------------------------//
 
+		//Energy-dependent E-loss upstream ------------------------------------------------------------------------------------------------------------------------------------------------------//
+		const int n_kebeam_slice=14; //14 energy slicing in total
+		int d_kebeam=50; //50 MeV Slice
+		int kebeam_min=0;
+		vector<int> KEbeam_slice;
+		KEbeam_slice.push_back(kebeam_min);
+
+		//per histogram
+		int n_edept=60;
+		double edept_min=-20;
+		double edept_max=100;
+		
+		TH1D **diff_kebeam_kefit_stop=new TF1*[n_kebeam_slice];
+		TH1D **diff_kebeam_kefit_el=new TF1*[n_kebeam_slice];
+		TH1D **diff_kebeam_keff_stop=new TF1*[n_kebeam_slice];
+		TH1D **diff_kebeam_keff_el=new TF1*[n_kebeam_slice];
+		for (int ii=0; ii<n_kebeam_slice; ++ii) {
+			diff_kebeam_kefit_stop[ii]=new TH1D(Form("diff_kebeam_kefit_stop_%d",ii),Form("#Delta(KE_{beam}-KE_{fit})=%d-%d MeV",kebeam_min,kebeam_min+d_kebeam),n_edept,edept_min,edept_max);
+			diff_kebeam_kefit_el[ii]=new TH1D(Form("diff_kebeam_kefit_el_%d",ii),Form("#Delta(KE_{beam}-KE_{fit})=%d-%d MeV",kebeam_min,kebeam_min+d_kebeam),n_edept,edept_min,edept_max);
+
+			diff_kebeam_keff_stop[ii]=new TH1D(Form("diff_kebeam_keff_stop_%d",ii),Form("#Delta(KE_{beam}-KE_{fit})=%d-%d MeV",kebeam_min,kebeam_min+d_kebeam),n_edept,edept_min,edept_max);
+			diff_kebeam_keff_el[ii]=new TH1D(Form("diff_kebeam_keff_el_%d",ii),Form("#Delta(KE_{beam}-KE_{fit})=%d-%d MeV",kebeam_min,kebeam_min+d_kebeam),n_edept,edept_min,edept_max);
+
+			kebeam_min+=d_kebeam;
+			KEbeam_slice.push_back(kebeam_min);
+		}
+		//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+
 
 		//KEs ---------------------------------------------------------------------------------------------------------------------------------//
 		int nx_trklen=150;
@@ -259,6 +287,8 @@ void ProtonMomentumReweight::Loop() {
 
 		TH1D *h1d_ke0=new TH1D("h1d_ke0","",ny_edept,ymin_edept,ymax_edept);
 		TH1D *h1d_ke0_stop=new TH1D("h1d_ke0_stop","",ny_edept,ymin_edept,ymax_edept);
+		TH1D *h1d_ke0_el=new TH1D("h1d_ke0_el","",ny_edept,ymin_edept,ymax_edept);
+		TH1D *h1d_ke0_inel=new TH1D("h1d_ke0_inel","",ny_edept,ymin_edept,ymax_edept);
 
 		TH1D *h1d_kebeam=new TH1D("h1d_kebeam","",ny_edept,ymin_edept,ymax_edept);
 		TH1D *h1d_kebeam_stop=new TH1D("h1d_kebeam_stop","",ny_edept,ymin_edept,ymax_edept);
@@ -796,10 +826,10 @@ void ProtonMomentumReweight::Loop() {
 			//cout<<"ke_ff:"<<ke_ff<<endl;
 			//}
 
+			//if (IsIntersection==false&&IsBeamMom&&IsBeamXY&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
 			//if (IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
 			//if (IsBeamXY&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
 			if (IsBeamMom&&IsBeamXY&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
-			//if (IsIntersection==false&&IsBeamMom&&IsBeamXY&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
 				h1d_ke0->Fill(ke_beam_MeV);
 				h1d_p0->Fill(mom_beam_MeV);
 
@@ -830,7 +860,31 @@ void ProtonMomentumReweight::Loop() {
 				//h1d_zend_bmrw_XY->Fill(reco_endz, mom_rw_minchi2);
 				//} //xy
 
+				//E-dept Eloss --------------------------------------------------------------------------------------//
+				double diff_kebeam_kefit=ke_beam_spec_MeV-fitted_KE;
+				double diff_kebeam_keff=ke_beam_spec_MeV-ke_ff;
+
+				for (int ii=0; ii<(int)KEbeam_slice.size()-1; ++ii) {
+					//kebeam: slicing range
+					double keslc_min=(double)KEbeam_slice.at(ii);
+					double keslc_max=(double)KEbeam_slice.at(ii+1);
+
+					if (ke_beam_spec_MeV>=keslc_min&&ke_beam_spec_MeV<keslc_max) {
+						if (IsRecoStop) { //reco stop 
+							diff_kebeam_kefit_stop[ii]->Fill(diff_kebeam_kefit);
+							diff_kebeam_keff_stop[ii]->Fill(diff_kebeam_keff);
+						} //reco stop
+						if (IsRecoEL) { //reco el
+							diff_kebeam_kefit_el[ii]->Fill(diff_kebeam_kefit);
+							diff_kebeam_keff_el[ii]->Fill(diff_kebeam_keff);
+						} //reco el
+					}
+
+				}
+				//---------------------------------------------------------------------------------------------------//
+
 				if (IsRecoEL) { //reco el
+					h1d_ke0_el->Fill(ke_beam_MeV);
 					h1d_keff_el->Fill(ke_ff);
 					h1d_kehy_el->Fill(fitted_KE);      	   h1d_phy_stop->Fill(1000.*ke2p(fitted_KE/1000.));
 					h1d_keffbeam_el->Fill(ke_ffbeam_MeV);
@@ -841,6 +895,7 @@ void ProtonMomentumReweight::Loop() {
 				} //reco el
 
 				if (IsRecoInEL) { //reco inel
+					h1d_ke0_inel->Fill(ke_beam_MeV);
 					h1d_keffbeam_inel->Fill(ke_ffbeam_MeV);
 					h1d_keff_inel->Fill(ke_ff);
 					h1d_kehy_inel->Fill(fitted_KE);
@@ -931,7 +986,8 @@ void ProtonMomentumReweight::Loop() {
 			//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_rmxtrack_hyper_stepsz0.15.root","RECREATE");
 			//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_rmxtrack_hyper_stepsz0.105.root","RECREATE");
 			//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_rmxtrack_hyper.root","RECREATE");
-			TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_hyper.root","RECREATE");
+			//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_hyper.root","RECREATE");
+			TFile *fout = new TFile("mc_proton_beamxy_beammom_edept_elossupstream.root","RECREATE");
 			bm_nmu->Write();
 			bm_dmu->Write();
 			bm_mu_st->Write();
@@ -944,6 +1000,8 @@ void ProtonMomentumReweight::Loop() {
 			gr_predict_dedx_resrange->Write();
 
 			h1d_ke0->Write();
+			h1d_ke0_el->Write();
+			h1d_ke0_inel->Write();
 			h1d_ke0_stop->Write();
 			h1d_p0->Write();
 			h1d_p0_stop->Write();
@@ -1032,6 +1090,12 @@ void ProtonMomentumReweight::Loop() {
 			h1d_kend_true_el->Write();
 			h1d_kend_true_inel->Write();
 
+			for (int ii=0; ii<(int)KEbeam_slice.size(); ++ii) {
+				diff_kebeam_kefit_stop[ii]->Write();
+				diff_kebeam_keff_stop[ii]->Write();
+				diff_kebeam_kefit_el[ii]->->Write();
+				diff_kebeam_keff_el[ii]->->Write();
+			}
 
 
 			fout->Close();
