@@ -99,7 +99,7 @@ struct SumDistance2 {
 			sum += d;
 		}
 		if (first) {
-			std::cout << "Total Initial distance square = " << sum << std::endl;
+			//std::cout << "Total Initial distance square = " << sum << std::endl;
 		}
 		first = false;
 		return sum;
@@ -155,6 +155,17 @@ void ProtonApplyMomentumReweight::Loop() {
 	double s1=54.4602; //MC prod4a [truth]
 
 
+	//E-dept E-loss --------------------------------//
+	//mc
+	double p0_edept_stop=1.97726e+01;
+	double p1_edept_stop=-1.37827e-01;
+	double p2_edept_stop=3.16264e-04;
+	
+	double err_p0_edept_stop=3.30157e+01;
+	double err_p1_edept_stop=1.63940e-01;
+	double err_p2_edept_stop=2.00009e-04;
+
+	
 	//const E-loss using stopping protons ---------
 	double Eloss_mc_hy_stop=19.542/0.998495;
 	//p[0]:19.542;   //err_p[0]:0.126113
@@ -1130,7 +1141,8 @@ void ProtonApplyMomentumReweight::Loop() {
 		double slope_kff_keffbeamR=0.859605;
 		//double ke_ffbeam_MeV=(ke_beam_spec_MeV-Eloss_mc_hy_stop); //const E-loss with correction
 
-		double ke_ffbeam_MeV=(ke_beam_spec_MeV-Eloss_mc_hy_stop)*R_fit_hy; //const E-loss with correction (R_fit_hy is essentially one)
+		double ke_ffbeam_MeV=ke_beam_spec_MeV-(p0_edept_stop+p1_edept_stop*ke_beam_spec_MeV+p2_edept_stop*pow(ke_beam_spec_MeV,2)); //E-dept E-loss (latest version!)
+		//double ke_ffbeam_MeV=(ke_beam_spec_MeV-Eloss_mc_hy_stop)*R_fit_hy; //const E-loss with correction (R_fit_hy is essentially one)
 		//double ke_ffbeam_MeV=Convert_Proton_KE_Spectrometer_to_KE_ff(ke_beam_spec_MeV, "ElasFitted",0); //Sungbin's E-dept assumption
 		//double ke_ffbeam_MeV=Convert_Proton_KE_Spectrometer_to_KE_ff(ke_beam_spec_MeV, "ElasTrue",0); //Sungbin's E-dept assumption
 		//double ke_ffbeam_MeV=Convert_Proton_KE_Spectrometer_to_KE_ff(ke_beam_spec_MeV, "AllFitted",0); //Sungbin's E-dept assumption
@@ -1180,7 +1192,7 @@ void ProtonApplyMomentumReweight::Loop() {
 
 		if (IsMisIDP&&IsBeamXY&&IsBeamMom&&IsPandoraSlice&&IsCaloSize) { //MisID:P
 			double mom_rw_minchi2=1.;
-			if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=kerw->Eval(ke_ffbeam_MeV); //new bmrw (const E-loss)
+			//if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=kerw->Eval(ke_ffbeam_MeV); //new bmrw (const E-loss)
 				Fill1DWHist(h1d_keffbeam_misidp, ke_ffbeam_MeV, mom_rw_minchi2);
 				Fill1DWHist(h1d_kend_bb_misidp, kebb, mom_rw_minchi2);
 
@@ -1224,9 +1236,9 @@ void ProtonApplyMomentumReweight::Loop() {
 		//if (IsBeamMom&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
 		if (IsBeamXY&&IsBeamMom&&IsPandoraSlice&&IsBQ&&IsCaloSize) { //basic cuts
 			double mom_rw_minchi2=1.;
+			//if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=kerw->Eval(ke_ffbeam_MeV); //new bmrw (const E-loss)
 			//if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=gng[index_minchi2]->Eval(mom_beam_spec*1000.); //old bmrw
 			//if (ke_ff>=mu_kemin&&ke_ff<=mu_kemax) mom_rw_minchi2=kerw->Eval(ke_ff); //new bmrw (using truth)
-			if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=kerw->Eval(ke_ffbeam_MeV); //new bmrw (const E-loss)
 			//if (ke_ffbeam_MeV>=mu_kemin&&ke_ffbeam_MeV<=mu_kemax) mom_rw_minchi2=kerw->Eval(ke_ffbeam_MeV); //new bmrw (KEHY)
 			//std::cout<<"ke_beam_spec_MeV:"<<ke_beam_spec_MeV<<" ke_ffbeam_MeV:"<<ke_ffbeam_MeV<<" mom_rw_minchi2:"<<mom_rw_minchi2<<std::endl;
 
@@ -1662,7 +1674,8 @@ void ProtonApplyMomentumReweight::Loop() {
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_by_kebeamff_test.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_by_kebeamff.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kebeamff.root","RECREATE");
-   	TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kebeamff_bkg.root","RECREATE");
+   	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kebeamff_bkg.root","RECREATE");
+   	TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_edepteloss.root","RECREATE");
    	
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kebeamff_v09_39_01.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_AllTrue_v09_39_01.root","RECREATE");
