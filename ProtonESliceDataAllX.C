@@ -225,6 +225,16 @@ void ProtonESliceDataAll::Loop() {
    	//p0           4.16231e+02   2.81061e-01  -3.22787e-05   3.06053e-05
    	//p1           4.34283e+01   1.97065e-01   1.96200e-04  -1.35452e-04
 
+	//E-dept E-loss --------------------------------//
+	//mc
+	double p0_edept_stop=1.97726e+01;
+	double p1_edept_stop=-1.37827e-01;
+	double p2_edept_stop=3.16264e-04;
+	
+	double err_p0_edept_stop=3.30157e+01;
+	double err_p1_edept_stop=1.63940e-01;
+	double err_p2_edept_stop=2.00009e-04;
+
 	//weighting func. (ke) ------------------------
 	TF1 *kerw=new TF1(Form("kerw"),govg,0,800,4);
 	kerw->SetParameter(0, mu_nom_mc);
