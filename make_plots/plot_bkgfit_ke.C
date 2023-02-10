@@ -3,6 +3,8 @@
 #include <iostream>
 #include "../headers/SliceParams.h"
 #include "../headers/TemplateFitter.h"
+#include "RooFit.h"
+#include "RooBifurGauss.h"
 
 Double_t Quintic(Double_t *x, Double_t *par) {
         return par[0] + par[1]*x[0] + par[2]*x[0]*x[0]+par[3]*pow(x[0],3)+par[4]*pow(x[0],4)+par[5]*pow(x[0],5);
@@ -21,49 +23,118 @@ Double_t Rayleigh(Double_t *x, Double_t *par) {
         return g;
 }
 
+Double_t Weibull(Double_t *x, Double_t *par) {
+        double a=par[0]; //scale parameter, or characteristic life
+        double b=par[1]; //shape parameter (or slope)
+        double c=par[2]; //location parameter (or failure free life)
+
+	double g=b/a*pow((x[0]-c)/a,b-1)*TMath::Exp(-pow((x[0]-c)/a,b));
+        return g;
+}
+
+Double_t ExtremeVal(Double_t *x, Double_t *par) {
+        double a=par[0];
+        double b=par[1];
+
+	double g=1./b*TMath::Exp(((a-x[0])/b)-TMath::Exp((a-x[0])/b));
+        return g;
+}
+
+Double_t fdistribution_pdf(Double_t *x, Double_t *par) {
+    double n=par[0];
+    double m=par[1];
+    double x0=par[2];
+
+    // Inlined to enable clad-auto-derivation for this function.
+    // function is defined only for both n and m > 0
+    if (n < 0 || m < 0)
+      return std::numeric_limits<double>::quiet_NaN();
+    if ((x[0]-x0) < 0)
+      return 0.0;
+ 
+    return std::exp((n/2) * std::log(n) + (m/2) * std::log(m) + ROOT::Math::lgamma((n+m)/2) - ROOT::Math::lgamma(n/2) - ROOT::Math::lgamma(m/2)
+                    + (n/2 -1) * std::log(x[0]-x0) - ((n+m)/2) * std::log(m +  n*(x[0]-x0)) );
+ 
+}
+
+TF1* MIDP_SHAPE_FDistPDF(TH1D* h, float xmin, float xmax) {
+	TF1 *f0= new TF1("f0",fdistribution_pdf,xmin,xmax,3);
+	f0->SetParameter(2, 350);
+	h->Fit("f0","remn");
+
+	const int n_iter=20;
+	TF1 **fx=new TF1*[n_iter];	
+	for (int i=0; i<n_iter; ++i) {
+		fx[i] = new TF1(Form("fx_%d",i),fdistribution_pdf,xmin,xmax,3);
+		if (i>0) for (int k=0; k<2; ++k) { fx[i]->SetParameter(k, fx[i-1]->GetParameter(k)); }
+		else for (int k=0; k<4; ++k) { fx[i]->SetParameter(k, f0->GetParameter(k)); }
+		h->Fit(fx[i],"remn");
+	}
+
+	return fx[n_iter-1];
+}
 
 
+TF1* MIDP_SHAPE_Weibull(TH1D* h, float xmin, float xmax) {
+	//TF1 * f0 = new TF1("f0",ExtremeVal,xmin,xmax, 2);
+	//f0->SetParameter(0,-350);
+	
+	TF1 *f0= new TF1("f0","ROOT::Math::fdistribution_pdf(x,[0],[1])",xmin,xmax);
+	h->Fit("f0","remn");
+
+	const int n_iter=20;
+	TF1 **fx=new TF1*[n_iter];	
+	for (int i=0; i<n_iter; ++i) {
+		fx[i] = new TF1(Form("fx_%d",i),ExtremeVal,xmin,xmax,2);
+		if (i>0) for (int k=0; k<2; ++k) { fx[i]->SetParameter(k, fx[i-1]->GetParameter(k)); }
+		else for (int k=0; k<4; ++k) { fx[i]->SetParameter(k, f0->GetParameter(k)); }
+		h->Fit(fx[i],"remn");
+	}
+
+	return fx[n_iter-1];
+
+/*
+	f0->SetParameter(2,350);
+	f0->SetParameter(0,80);
+	//f0->SetParameter(1,0.15);
+	f0->SetParLimits(0,0,999999999999);
+	f0->SetParLimits(1,0,999999999999);
+	h->Fit("f0","remn");
+
+	TF1 * f1 = new TF1("f1",Weibull,xmin,xmax,3);
+	for (int i=0; i<3; ++i) {
+		f1->SetParameter(i, f0->GetParameter(i));
+	}
+	h->Fit("f1","remn");
+	
+	TF1 * f2 = new TF1("f2",Weibull,xmin,xmax,3);
+	for (int i=0; i<3; ++i) {
+		f2->SetParameter(i, f1->GetParameter(i));
+	}
+	h->Fit("f2","remn");
+
+	return f2;
+*/
+
+}
 
 
-//Quintic regression --------------------------------------------------------------------------------//
+//Quintic regression ------------------------------------------------------------------------------------------------------//
 TF1* MIDP_SHAPE(TH1D* h, float xmin, float xmax) {
 	TF1 * f0 = new TF1("f0","2.*gaus(x,[0],[1],[2])*ROOT::Math::normal_cdf([3]*x,1,0)",xmin,xmax);
 	f0->SetParameters(3.89529e+01,3.35908e+02,7.42532e+01,1.67572e+02);
 	h->Fit("f0","remn");
 
-	//1st fitting ---------------------------------
-	//TF1 *sh0=new TF1("sh0", MSE, xmin, xmax, 6);
-	//TF1 *sh0=new TF1("sh0", Rayleigh, xmin, xmax, 3);
-	//sh0->SetParameter(0, h->GetMean());
-	//sh0->SetParameter(2, h->GetBinContent(h->GetMaximumBin()));
+	const int n_iter=100;
+	TF1 **fx=new TF1*[n_iter];	
+	for (int i=0; i<n_iter; ++i) {
+		fx[i] = new TF1(Form("fx_%d",i),"2.*gaus(x,[0],[1],[2])*ROOT::Math::normal_cdf([3]*x,1,0)",xmin,xmax);
+		if (i>0) for (int k=0; k<4; ++k) { fx[i]->SetParameter(k, fx[i-1]->GetParameter(k)); }
+		else for (int k=0; k<4; ++k) { fx[i]->SetParameter(k, f0->GetParameter(k)); }
+		h->Fit(fx[i],"remn");
+	}
 
-	//h->Fit("sh0","remn");
-
-	//2nd fitting ---------------------------------
-	TF1 * f = new TF1("f","2.*gaus(x,[0],[1],[2])*ROOT::Math::normal_cdf([3]*x,1,0)",xmin,xmax);
-	f->SetParameter(0, f0->GetParameter(0));
-	f->SetParameter(1, f0->GetParameter(1));
-	f->SetParameter(2, f0->GetParameter(2));
-	f->SetParameter(3, f0->GetParameter(3));
-
-	//2nd fitting ---------------------------------
-	TF1 * f2 = new TF1("f2","2.*gaus(x,[0],[1],[2])*ROOT::Math::normal_cdf([3]*x,1,0)",xmin,xmax);
-	f2->SetParameter(0, f->GetParameter(0));
-	f2->SetParameter(1, f->GetParameter(1));
-	f2->SetParameter(2, f->GetParameter(2));
-	f2->SetParameter(3, f->GetParameter(3));
-
-	//TF1 *sh=new TF1("sh", MSE, xmin, xmax, 6);
-	//TF1 *sh=new TF1("sh", Rayleigh, xmin, xmax, 3);
-	//sh->SetParameter(0, sh0->GetParameter(0));
-	//sh->SetParameter(1, sh0->GetParameter(1));
-	//sh->SetParameter(2, sh0->GetParameter(2));
-	//sh->SetParameter(3, sh0->GetParameter(3));
-	//sh->SetParameter(4, sh0->GetParameter(4));
-	//sh->SetParameter(5, sh0->GetParameter(5));
-
-	h->Fit("f2","remn");
-	return f2;
+	return fx[n_iter-1];
 }	
 
 void plot_bkgfit_ke() {
@@ -342,14 +413,14 @@ void plot_bkgfit_ke() {
 	hs->Draw("same hist");
 	h_data->Draw("ep same");
 
-	TF1 *misidp_shape_data=MIDP_SHAPE(h_data, -50, 550);
+	TF1 *misidp_shape_data=MIDP_SHAPE_FDistPDF(h_data, -50, 550);
 	misidp_shape_data->SetLineStyle(2);
 	misidp_shape_data->SetLineColor(1);
 	misidp_shape_data->Draw("same");
 	
 	//h_mc->SetLineColor(1);
 	//h_mc->Draw("same hist");
-	TF1 *misidp_shape_mc=MIDP_SHAPE(h_mc, -50, 550);
+	TF1 *misidp_shape_mc=MIDP_SHAPE_FDistPDF(h_mc, -50, 550);
 	misidp_shape_mc->SetLineColor(4);
 	misidp_shape_mc->SetLineStyle(2);
 	misidp_shape_mc->Draw("same");
