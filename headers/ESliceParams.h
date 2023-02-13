@@ -17,9 +17,9 @@
         //const double Emin=0; //emin
         //const double Emax=800; //emax
 
-        const int nthinslices=24; //total # of slices
-        const double thinslicewidth=25; //MeV
-        const int name_thinslicewidth=24; //MeV
+        const int nthinslices=30; //total # of slices
+        const double thinslicewidth=20; //MeV
+        const int name_thinslicewidth=20; //MeV
         const double Emin=0; //emin
         const double Emax=600; //emax
 
