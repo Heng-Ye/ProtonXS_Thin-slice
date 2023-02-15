@@ -269,11 +269,82 @@ void make_ESlicedataXS() {
 	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_fakedata3_newslcid_plusone.root");
 
 	//fake data:sliceID study
-	TString outpath="./plots_XS_Eslice_fakedata_ke1st/";
-        TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_KE1st.root";
-        TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_KE1st.root"; //for reco
-        TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_KE1st.root"; //for truth and response matrix
-	TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_fakedata5_newslcid_keff1st.root");
+	//TString outpath="./plots_XS_Eslice_fakedata_ke1st/";
+        //TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_KE1st.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_KE1st.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_KE1st.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_fakedata5_newslcid_keff1st.root");
+
+	//fake data:sliceID study
+	//TString outpath="./plots_XS_SliceID_Study/";
+        //TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_fakedata6_endZ.root");
+
+	//fake data:sliceID study
+	//TString outpath="./plots_XS_SliceID_Study_plusone/";
+        //TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_plusONE.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_plusONE.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_plusONE.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_fakedata7_plusone.root");
+
+	//fake data:sliceID study
+	//TString outpath="./plots_XS_SliceID_Study_minusone/";
+        //TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_minusONE.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_minusONE.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_minusONE.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_fakedata8_minusone.root");
+
+	//fake data:sliceID study
+	//TString outpath="./plots_XS_SliceID_Study_plus0.5/";
+        //TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_plus0.5.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_plus0.5.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_plus0.5.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_fakedata9_plus0.5.root");
+
+	//fake data:sliceID study
+	//TString outpath="./plots_XS_SliceID_Study_minus0.5/";
+        //TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_minus0.5.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_minus0.5.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_minus0.5.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_fakedata9_plus0.5.root");
+
+	//fake data:sliceID study
+	//TString outpath="./plots_XS_SliceID_Study_orig_minus0.5/";
+        //TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_orig_minus0.5.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_orig_minus0.5.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_orig_minus0.5.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_fakedata11_orig_minus0.5.root");
+
+	//fake data:sliceID study
+	//TString outpath="./plots_XS_SliceID_Study_ceil/";
+        //TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_edept_v09_39_01_All_sliceIDStudy.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_edept_v09_39_01_All_sliceIDStudy.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_edept_v09_39_01_All_sliceIDStudy.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_fakedata12_ceil.root");
+
+	//fake data:sliceID study
+	//TString outpath="./plots_XS_SliceID_Study_ceil_keff1st/";
+        //TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_edept_v09_39_01_All_sliceIDStudy_KEff_1st.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_edept_v09_39_01_All_sliceIDStudy_KEff_1st.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_edept_v09_39_01_All_sliceIDStudy_KEff_1st.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_fakedata13_ceil_keff1st.root");
+
+	//fake data:sliceID study
+	//TString outpath="./plots_XS_SliceID_Study_ceil_keff_24slices/";
+        //TString fdata="../prod4areco2_mc_ESliceE_dE24MeV_24slcs_beamxy_nobmrw_kebeamff_edept_v09_39_01_All_sliceIDStudy.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE24MeV_24slcs_beamxy_nobmrw_kebeamff_edept_v09_39_01_All_sliceIDStudy.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE24MeV_24slcs_beamxy_nobmrw_kebeamff_edept_v09_39_01_All_sliceIDStudy.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE25MeV_24slcs_fakedata14_ceil_keff.root");
+
+	//fake data:sliceID study
+	TString outpath="./plots_XS_SliceID_Study_ceil_keff_12slices/";
+        TString fdata="../prod4areco2_mc_ESliceE_dE50MeV_12slcs_beamxy_nobmrw_kebeamff_edept_v09_39_01_All_sliceIDStudy.root";
+        TString fmc="../prod4areco2_mc_ESliceE_dE50MeV_12slcs_beamxy_nobmrw_kebeamff_edept_v09_39_01_All_sliceIDStudy.root"; //for reco
+        TString fmc_valid="../prod4areco2_mc_ESliceE_dE50MeV_12slcs_beamxy_nobmrw_kebeamff_edept_v09_39_01_All_sliceIDStudy.root"; //for truth and response matrix
+	TString fout=fout_path+Form("xs_Eslice_dE25MeV_12slcs_fakedata15_ceil_keff.root");
+
 
 	//incase of wrong execution
 	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_dummy.root");
@@ -1846,7 +1917,7 @@ void make_ESlicedataXS() {
         gr_truexs->SetLineColor(3);
         gr_truexs->SetMarkerStyle(21);
         gr_truexs->SetMarkerSize(1.5);
-        //gr_truexs->Draw("p same");
+        gr_truexs->Draw("p same");
 
         gr_recoxs->SetLineWidth(2);
         gr_recoxs->SetMarkerColor(1);
@@ -1876,7 +1947,7 @@ void make_ESlicedataXS() {
         leg_xs->SetFillStyle(0);
 	leg_xs->SetNColumns(2);
         leg_xs->AddEntry(gr_recoxs, "Data", "pe");
-        //leg_xs->AddEntry(gr_truexs, "MC Truth", "pe");
+        leg_xs->AddEntry(gr_truexs, "MC Truth", "pe");
         leg_xs->AddEntry(total_inel_KE, "Geant4", "l");
         leg_xs->AddEntry(xs_GENIE_ha2018, "GENIE hA2018", "l");
         leg_xs->AddEntry(xs_GENIE_hN2018, "GENIE hN2018", "l");
@@ -1914,7 +1985,7 @@ void make_ESlicedataXS() {
         f2d_xs_ext->GetYaxis()->SetTitle("P-Ar inelastic cross section [mb]");
 	f2d_xs_ext->Draw();
         total_inel_KE->Draw("c same");
-        //gr_truexs->Draw("p same");
+        gr_truexs->Draw("p same");
         gr_recoxs->Draw("p same");
 
         TLegend *leg_xs2 = new TLegend(0.7,0.7,0.94,0.85);

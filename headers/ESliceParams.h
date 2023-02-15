@@ -17,11 +17,24 @@
         //const double Emin=0; //emin
         //const double Emax=800; //emax
 
-        const int nthinslices=30; //total # of slices
-        const double thinslicewidth=20; //MeV
-        const int name_thinslicewidth=20; //MeV
+	//Best config
+        //const int nthinslices=30; //total # of slices
+        //const double thinslicewidth=20; //MeV
+        //const int name_thinslicewidth=20; //MeV
+        //const double Emin=0; //emin
+        //const double Emax=600; //emax
+
+        const int nthinslices=24; //total # of slices
+        const double thinslicewidth=25; //MeV
+        const int name_thinslicewidth=25; //MeV
         const double Emin=0; //emin
         const double Emax=600; //emax
+
+        //const int nthinslices=12; //total # of slices
+        //const double thinslicewidth=50; //MeV
+        //const int name_thinslicewidth=50; //MeV
+        //const double Emin=0; //emin
+        //const double Emax=600; //emax
 
 
         //const int nthinslices=10; //total # of slices

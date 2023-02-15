@@ -7,7 +7,7 @@
 #include "RooBifurGauss.h"
 
 Double_t Quintic(Double_t *x, Double_t *par) {
-        return par[0] + par[1]*x[0] + par[2]*x[0]*x[0]+par[3]*pow(x[0],3)+par[4]*pow(x[0],4)+par[5]*pow(x[0],5);
+	return par[0] + par[1]*x[0] + par[2]*x[0]*x[0]+par[3]*pow(x[0],3)+par[4]*pow(x[0],4)+par[5]*pow(x[0],5);
 }
 
 Double_t MSE(Double_t *x, Double_t *par) {
@@ -15,58 +15,94 @@ Double_t MSE(Double_t *x, Double_t *par) {
 }
 
 Double_t Rayleigh(Double_t *x, Double_t *par) {
-        double m=par[0];
-        double s=par[1];
-        double n=par[2];
+	double m=par[0];
+	double s=par[1];
+	double n=par[2];
 
-        double g=n*TMath::Exp(-(x[0]-m)*(x[0]-m)/(2*s*s))*(x[0]/pow(s,2));
-        return g;
+	double g=n*TMath::Exp(-(x[0]-m)*(x[0]-m)/(2*s*s))*(x[0]/pow(s,2));
+	return g;
 }
 
 Double_t Weibull(Double_t *x, Double_t *par) {
-        double a=par[0]; //scale parameter, or characteristic life
-        double b=par[1]; //shape parameter (or slope)
-        double c=par[2]; //location parameter (or failure free life)
+	double a=par[0]; //scale parameter, or characteristic life
+	double b=par[1]; //shape parameter (or slope)
+	double c=par[2]; //location parameter (or failure free life)
 
 	double g=b/a*pow((x[0]-c)/a,b-1)*TMath::Exp(-pow((x[0]-c)/a,b));
-        return g;
+	return g;
 }
 
 Double_t ExtremeVal(Double_t *x, Double_t *par) {
-        double a=par[0];
-        double b=par[1];
+	double a=par[0];
+	double b=par[1];
 
 	double g=1./b*TMath::Exp(((a-x[0])/b)-TMath::Exp((a-x[0])/b));
-        return g;
+	return g;
 }
 
 Double_t fdistribution_pdf(Double_t *x, Double_t *par) {
-    double n=par[0];
-    double m=par[1];
-    double x0=par[2];
+	double n=par[0];
+	double m=par[1];
+	double x0=par[2];
 
-    // Inlined to enable clad-auto-derivation for this function.
-    // function is defined only for both n and m > 0
-    if (n < 0 || m < 0)
-      return std::numeric_limits<double>::quiet_NaN();
-    if ((x[0]-x0) < 0)
-      return 0.0;
- 
-    return std::exp((n/2) * std::log(n) + (m/2) * std::log(m) + ROOT::Math::lgamma((n+m)/2) - ROOT::Math::lgamma(n/2) - ROOT::Math::lgamma(m/2)
-                    + (n/2 -1) * std::log(x[0]-x0) - ((n+m)/2) * std::log(m +  n*(x[0]-x0)) );
- 
+	// Inlined to enable clad-auto-derivation for this function.
+	// function is defined only for both n and m > 0
+	if (n < 0 || m < 0)
+		return std::numeric_limits<double>::quiet_NaN();
+	if ((x[0]-x0) < 0)
+		return 0.0;
+
+	return std::exp((n/2) * std::log(n) + (m/2) * std::log(m) + ROOT::Math::lgamma((n+m)/2) - ROOT::Math::lgamma(n/2) - ROOT::Math::lgamma(m/2)
+			+ (n/2 -1) * std::log(x[0]-x0) - ((n+m)/2) * std::log(m +  n*(x[0]-x0)) );
+
 }
 
-TF1* MIDP_SHAPE_FDistPDF(TH1D* h, float xmin, float xmax) {
-	TF1 *f0= new TF1("f0",fdistribution_pdf,xmin,xmax,3);
-	f0->SetParameter(2, 350);
+Double_t ReversedLognormal(Double_t *x, Double_t *par) {
+	double delta=par[0];
+	double eta=par[1];
+	double gamma=par[2];
+	return delta/((eta-x[0])*sqrt(2.*TMath::Pi()))*std::exp(-0.5*pow(gamma+delta*TMath::Log(eta-x[0]),2));
+}
+
+
+TF1* MIDP_SHAPE_LOGNORM(TH1D* h, float xmin, float xmax) {
+	TF1 * f0 = new TF1("f0","[0]*ROOT::Math::lognormal_pdf(x,[1],[2],[3])",xmin,xmax);
+	
+	//set initial parameters
+	double p[4];
+	p[0]=h->GetEntries()*h->GetXaxis()->GetBinWidth(1); //area of hist
+		
+   	// find median of histogram 
+   	double prob[] = {0.8}; 
+   	double q[1]; 
+   	h->GetQuantiles(1,q,prob);
+   	double median = q[0];
+   	// find mode of histogram 
+   	double  mode = h->GetBinCenter( h->GetMaximumBin());
+	std::cout << "histogram mode is " << mode  << " median is " << median << std::endl;
+   	if (median < 0) { 
+		median=-median;
+      		//Error("lognormal","not valid histogram median");
+      		//return;
+   	}
+
+   	// m is log(median)
+   	p[1] = std::log(median); 
+
+   	// s2 is  log(median) - log(mode) 
+   	p[2] = std::sqrt( std::log(median/mode) ); 
+
+	p[3] = 330;
+
+   	f0->SetParameters(p); 	
 	h->Fit("f0","remn");
 
 	const int n_iter=20;
 	TF1 **fx=new TF1*[n_iter];	
 	for (int i=0; i<n_iter; ++i) {
-		fx[i] = new TF1(Form("fx_%d",i),fdistribution_pdf,xmin,xmax,3);
-		if (i>0) for (int k=0; k<2; ++k) { fx[i]->SetParameter(k, fx[i-1]->GetParameter(k)); }
+		//fx[i] = new TF1(Form("fx_%d",i),ReversedLognormal,xmin,xmax,3);
+		fx[i] = new TF1(Form("fx_%d",i),"[0]*ROOT::Math::lognormal_pdf(x,[1],[2],[3])",xmin,xmax); 
+		if (i>0) for (int k=0; k<4; ++k) { fx[i]->SetParameter(k, fx[i-1]->GetParameter(k)); }
 		else for (int k=0; k<4; ++k) { fx[i]->SetParameter(k, f0->GetParameter(k)); }
 		h->Fit(fx[i],"remn");
 	}
@@ -78,7 +114,7 @@ TF1* MIDP_SHAPE_FDistPDF(TH1D* h, float xmin, float xmax) {
 TF1* MIDP_SHAPE_Weibull(TH1D* h, float xmin, float xmax) {
 	//TF1 * f0 = new TF1("f0",ExtremeVal,xmin,xmax, 2);
 	//f0->SetParameter(0,-350);
-	
+
 	TF1 *f0= new TF1("f0","ROOT::Math::fdistribution_pdf(x,[0],[1])",xmin,xmax);
 	h->Fit("f0","remn");
 
@@ -93,9 +129,9 @@ TF1* MIDP_SHAPE_Weibull(TH1D* h, float xmin, float xmax) {
 
 	return fx[n_iter-1];
 
-/*
-	f0->SetParameter(2,350);
-	f0->SetParameter(0,80);
+	/*
+	   f0->SetParameter(2,350);
+	   f0->SetParameter(0,80);
 	//f0->SetParameter(1,0.15);
 	f0->SetParLimits(0,0,999999999999);
 	f0->SetParLimits(1,0,999999999999);
@@ -103,18 +139,18 @@ TF1* MIDP_SHAPE_Weibull(TH1D* h, float xmin, float xmax) {
 
 	TF1 * f1 = new TF1("f1",Weibull,xmin,xmax,3);
 	for (int i=0; i<3; ++i) {
-		f1->SetParameter(i, f0->GetParameter(i));
+	f1->SetParameter(i, f0->GetParameter(i));
 	}
 	h->Fit("f1","remn");
-	
+
 	TF1 * f2 = new TF1("f2",Weibull,xmin,xmax,3);
 	for (int i=0; i<3; ++i) {
-		f2->SetParameter(i, f1->GetParameter(i));
+	f2->SetParameter(i, f1->GetParameter(i));
 	}
 	h->Fit("f2","remn");
 
 	return f2;
-*/
+	*/
 
 }
 
@@ -125,7 +161,7 @@ TF1* MIDP_SHAPE(TH1D* h, float xmin, float xmax) {
 	f0->SetParameters(3.89529e+01,3.35908e+02,7.42532e+01,1.67572e+02);
 	h->Fit("f0","remn");
 
-	const int n_iter=100;
+	const int n_iter=5;
 	TF1 **fx=new TF1*[n_iter];	
 	for (int i=0; i<n_iter; ++i) {
 		fx[i] = new TF1(Form("fx_%d",i),"2.*gaus(x,[0],[1],[2])*ROOT::Math::normal_cdf([3]*x,1,0)",xmin,xmax);
@@ -333,7 +369,7 @@ void plot_bkgfit_ke() {
 	h_mc_midother->Scale(norm_mc);
 
 	//for (int i=0; i<h_data->GetNbinsX(); ++i) {
-		//cout<<h_data->GetBinCenter(i)<<" "<<h_data->GetBinContent(i)<<endl;
+	//cout<<h_data->GetBinCenter(i)<<" "<<h_data->GetBinContent(i)<<endl;
 	//}
 
 	//Prepare MCs to be fitted ----------------------------- 
@@ -413,14 +449,14 @@ void plot_bkgfit_ke() {
 	hs->Draw("same hist");
 	h_data->Draw("ep same");
 
-	TF1 *misidp_shape_data=MIDP_SHAPE_FDistPDF(h_data, -50, 550);
-	misidp_shape_data->SetLineStyle(2);
+	TF1 *misidp_shape_data=MIDP_SHAPE_LOGNORM(h_data, 0, 540);
 	misidp_shape_data->SetLineColor(1);
+	misidp_shape_data->SetLineStyle(2);
 	misidp_shape_data->Draw("same");
-	
+
 	//h_mc->SetLineColor(1);
 	//h_mc->Draw("same hist");
-	TF1 *misidp_shape_mc=MIDP_SHAPE_FDistPDF(h_mc, -50, 550);
+	TF1 *misidp_shape_mc=MIDP_SHAPE_LOGNORM(h_mc, 0, 540);
 	misidp_shape_mc->SetLineColor(4);
 	misidp_shape_mc->SetLineStyle(2);
 	misidp_shape_mc->Draw("same");
@@ -602,7 +638,7 @@ void plot_bkgfit_ke() {
 	//=========================================================================
 
 
-		c_->Print(Form("%s",fout_path.Data()));
+	c_->Print(Form("%s",fout_path.Data()));
 
 
 }
