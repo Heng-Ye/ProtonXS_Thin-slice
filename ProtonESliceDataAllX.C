@@ -1580,9 +1580,9 @@ void ProtonESliceDataAll::Loop() {
 			//reco_st_sliceID=int((Emax-keff_reco)/thinslicewidth+1);
 			//reco_st_sliceID=int((Emax-keff_reco)/thinslicewidth+1);
 			//reco_st_sliceID=int((Emax-keff_reco)/thinslicewidth);
-			reco_st_sliceID=int((Emax-KE_ff_reco)/thinslicewidth-0.5);
+			//reco_st_sliceID=int((Emax-KE_ff_reco)/thinslicewidth-0.5);
 			//reco_st_sliceID=int((Emax-KE_ff_reco)/thinslicewidth+0.5);
-			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth));
+			reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth));
 			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth)+1);
 			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth)-1);
 			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth-0.5));
