@@ -222,15 +222,15 @@ void ProtonESliceDataAll::Loop() {
 	//i= 1  m= 416.1620092367158 s= 40.48356757740762 [KE(Fit)] 
 
 	//reference of error of perv. calc
-   	//p0           4.16231e+02   2.81061e-01  -3.22787e-05   3.06053e-05
-   	//p1           4.34283e+01   1.97065e-01   1.96200e-04  -1.35452e-04
+	//p0           4.16231e+02   2.81061e-01  -3.22787e-05   3.06053e-05
+	//p1           4.34283e+01   1.97065e-01   1.96200e-04  -1.35452e-04
 
 	//E-dept E-loss --------------------------------//
 	//mc
 	double p0_edept_stop=1.97726e+01;
 	double p1_edept_stop=-1.37827e-01;
 	double p2_edept_stop=3.16264e-04;
-	
+
 	double err_p0_edept_stop=3.30157e+01;
 	double err_p1_edept_stop=1.63940e-01;
 	double err_p2_edept_stop=2.00009e-04;
@@ -258,19 +258,40 @@ void ProtonESliceDataAll::Loop() {
 	kerw_edept->SetParameter(1, 3.72018e+01); //sigma of keffbeam_stop_mc
 	kerw_edept->SetParameter(2, 4.09837e+02); //mu of keffbeam_stop_data
 	kerw_edept->SetParameter(3, 4.28448e+01); //sigma of keffbeam_stop_data
-	
+
 	//keffbeam_stop_data
-   	//1  p0           4.09837e+02   2.93549e-01  -6.91597e-05   2.09147e-05
-   	//2  p1           4.28448e+01   2.02807e-01   1.95520e-04  -1.15037e-04
-   	//3  p2           4.11054e+02   3.35511e+00   3.35511e+00   4.19084e-05
+	//1  p0           4.09837e+02   2.93549e-01  -6.91597e-05   2.09147e-05
+	//2  p1           4.28448e+01   2.02807e-01   1.95520e-04  -1.15037e-04
+	//3  p2           4.11054e+02   3.35511e+00   3.35511e+00   4.19084e-05
 	//keff_stop_mc
-   	//1  p0           4.15916e+02   2.41791e-01  -2.65188e-06   1.04777e-06
-   	//2  p1           3.99959e+01   1.55280e-01   9.25748e-05  -5.88385e-05
-   	//3  p2           4.38820e+02   3.09842e+00   3.09842e+00   3.72791e-05
+	//1  p0           4.15916e+02   2.41791e-01  -2.65188e-06   1.04777e-06
+	//2  p1           3.99959e+01   1.55280e-01   9.25748e-05  -5.88385e-05
+	//3  p2           4.38820e+02   3.09842e+00   3.09842e+00   3.72791e-05
 	//fit_keffbeam_stop_mc
-   	//1  p0           4.15248e+02   2.24060e-01   1.38021e-05  -4.12830e-06
-   	//2  p1           3.72018e+01   1.58229e-01   1.60618e-04  -1.49393e-04
-   	//3  p2           4.75150e+02   3.44224e+00   3.44224e+00   3.04656e-05
+	//1  p0           4.15248e+02   2.24060e-01   1.38021e-05  -4.12830e-06
+	//2  p1           3.72018e+01   1.58229e-01   1.60618e-04  -1.49393e-04
+	//3  p2           4.75150e+02   3.44224e+00   3.44224e+00   3.04656e-05
+
+	//MisID:P Modeling (good fit for KE<300 MeV) -------------------------------------------------------------------------------------------------
+	double p0_data_misidp=14489;       double err_p0_data_misidp=381.785;
+	double p1_data_misidp=10.053;      double err_p1_data_misidp=0.00129971;
+	double p2_data_misidp=0.00319447;  double err_p2_data_misidp=7.24379e-05;
+	double p3_data_misidp=-22889.9;    double err_p3_data_misidp=30.1843;
+
+	double p0_mc_misidp=15109.6;       double err_p0_mc_misidp=502.325;
+	double p1_mc_misidp=9.99314;       double err_p1_mc_misidp=0.00785002;
+	double p2_mc_misidp=0.00393017;    double err_p2_mc_misidp=0.000127054;
+	double p3_mc_misidp=-21553;        double err_p3_mc_misidp=171.736;
+	TF1 * kerw_misidp = new TF1("kerw_misidp","([0]*ROOT::Math::lognormal_pdf(x,[1],[2],[3]))/([4]*ROOT::Math::lognormal_pdf(x,[5],[6],[7]))",0,800);
+	kerw_misidp->SetParameter(0, p0_data_misidp);
+	kerw_misidp->SetParameter(1, p1_data_misidp);
+	kerw_misidp->SetParameter(2, p2_data_misidp);
+	kerw_misidp->SetParameter(3, p3_data_misidp);
+
+	kerw_misidp->SetParameter(4, p0_mc_misidp);
+	kerw_misidp->SetParameter(5, p1_mc_misidp);
+	kerw_misidp->SetParameter(6, p2_mc_misidp);
+	kerw_misidp->SetParameter(7, p3_mc_misidp);
 
 	//unfolding config. -------------------------//
 	Unfold uf(nthinslices+2, -1, nthinslices+1);
@@ -318,9 +339,13 @@ void ProtonESliceDataAll::Loop() {
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_plus0.5.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_orig_minusw.5.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrw_kebeamff_edept_v09_39_01_All_ceil.root", name_thinslicewidth, nthinslices)); //output file name
+	SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrw_misidprw_kebeamff_edept_v09_39_01_All_ceil.root", name_thinslicewidth, nthinslices)); //output file name
+
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_edept_v09_39_01_All_sliceIDStudy.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_edept_v09_39_01_All_sliceIDStudy_KEff_1st.root", name_thinslicewidth, nthinslices)); //output file name
-	SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_edept_v09_39_01_All_sliceIDStudy.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_edept_v09_39_01_All_sliceIDStudy_ceil_plusone.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_edept_v09_39_01_All_sliceIDStudy_ceil_minusone.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_edept_v09_39_01_All_sliceIDStudy_plus0.5.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_minus0.5.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_plusONE.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01.root", name_thinslicewidth, nthinslices)); //output file name
@@ -566,8 +591,8 @@ void ProtonESliceDataAll::Loop() {
 
 			bool ok = fitter.FitFCN();
 			//if (!ok) {
-				//Error("line3Dfit","Line3D Fit failed");
-				//return 1;
+			//Error("line3Dfit","Line3D Fit failed");
+			//return 1;
 			//}
 			//cout<<"ck5"<<endl;
 
@@ -938,7 +963,7 @@ void ProtonESliceDataAll::Loop() {
 		double p_trklen=ke2p(ke_trklen);
 		//double ke_simide=0;
 		//for (int hk=0; hk<(int)primtrk_true_edept->size(); ++hk) { //loop over simIDE points
-			//ke_simide+=primtrk_true_edept->at(hk);
+		//ke_simide+=primtrk_true_edept->at(hk);
 		//} //loop over simIDE points
 
 		double KE_ff=0;
@@ -988,7 +1013,11 @@ void ProtonESliceDataAll::Loop() {
 
 		//if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=kerw->Eval(ke_ffbeam_MeV); //new bmrw (const E-loss) [use me]
 		//if (ke_ff>=mu_kemin&&ke_ff<=mu_kemax) mom_rw_minchi2=kerw->Eval(ke_ff); //new bmrw (using truth)
-		//if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=kerw_edept->Eval(ke_ffbeam_MeV); //new bmrw (edept E-loss)
+		if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=kerw_edept->Eval(ke_ffbeam_MeV); //new bmrw (edept E-loss)
+
+		//misid:p rw ----------------------------------------//
+		double misidp_rw=1;
+		if (kebb<=280.) misidp_rw=kerw_misidp->Eval(kebb);
 
 		//KEend ---------------------------------------------------------------------------//
 		//double KEend_true=0;
@@ -1494,14 +1523,15 @@ void ProtonESliceDataAll::Loop() {
 		//true_st_sliceID=int((Emax-KE_ff)/thinslicewidth+0.5);
 		//true_st_sliceID=int((Emax-KE_ff)/thinslicewidth+1);
 		//true_st_sliceID=int((Emax-KE_ff)/thinslicewidth);
-		//true_st_sliceID=int((Emax-KE_ff)/thinslicewidth+0.5);
+		true_st_sliceID=int((Emax-KE_ff)/thinslicewidth+0.5);
 		//true_st_sliceID=int(ceil((Emax-KE_ff)/thinslicewidth));
-		true_st_sliceID=int(ceil((Emax-KE_ff)/thinslicewidth));
+		//true_st_sliceID=int(ceil((Emax-KE_ff)/thinslicewidth));
 		//true_st_sliceID=int(ceil((Emax-KE_ff)/thinslicewidth-0.5));
 		//true_st_sliceID=int(ceil((Emax-KE_ff)/thinslicewidth+0.5));
 		//true_st_sliceID=int(ceil((Emax-KE_ff)/thinslicewidth)-1);
 		//true_st_sliceID=int(ceil((Emax-KE_ff)/thinslicewidth))-1;
-		//true_st_sliceID=int(ceil((Emax-KE_ff)/thinslicewidth))+1;
+		//true_st_sliceID=int(ceil((Emax-KE_ff)/thinslicewidth)+1);
+		//true_st_sliceID=int(ceil((Emax-KE_ff)/thinslicewidth)-1);
 		//true_st_sliceID=int(ceil((Emax-KE_ff)/thinslicewidth))+1;
 		//true_st_sliceID=int(ceil((Emax-KE_1st)/thinslicewidth));
 		//true_st_sliceID=int(ceil((Emax-KE_1st)/thinslicewidth)-1);
@@ -1544,9 +1574,11 @@ void ProtonESliceDataAll::Loop() {
 			//reco_st_sliceID=int((Emax-keff_reco)/thinslicewidth+1);
 			//reco_st_sliceID=int((Emax-keff_reco)/thinslicewidth+1);
 			//reco_st_sliceID=int((Emax-keff_reco)/thinslicewidth);
-			//reco_st_sliceID=int((Emax-KE_ff_reco)/thinslicewidth-0.5);
+			reco_st_sliceID=int((Emax-KE_ff_reco)/thinslicewidth-0.5);
 			//reco_st_sliceID=int((Emax-KE_ff_reco)/thinslicewidth+0.5);
-			reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth));
+			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth));
+			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth)+1);
+			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth)-1);
 			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth-0.5));
 			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth+0.5));
 			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth)-1);
@@ -1596,54 +1628,54 @@ void ProtonESliceDataAll::Loop() {
 		}
 
 		//if (isTestSample) { //if test sample 
-			h_truesliceid_all->Fill(true_sliceID, mom_rw_minchi2);
-			h_true_st_sliceid_all->Fill(true_st_sliceID, mom_rw_minchi2);
+		h_truesliceid_all->Fill(true_sliceID, mom_rw_minchi2);
+		h_true_st_sliceid_all->Fill(true_st_sliceID, mom_rw_minchi2);
 		//} //if test sample
 		//else { //if NOT test sample
-			uf.eff_den_Inc->Fill(true_sliceID, mom_rw_minchi2);
-			uf.eff_den_st_Inc->Fill(true_st_sliceID, mom_rw_minchi2);
-			//for (int ij=true_st_sliceID; ij<=true_sliceID; ++ij){
-			//if (true_sliceID < nthinslices && true_sliceID>=0){
-			//for (int ij=0; ij<=true_sliceID+1; ++ij){
-			for (int ij=0; ij<=nthinslices+1; ++ij) {
-				//if (ij<nthinslices) ++true_incidents[ij+1];
-				if (ij==(true_sliceID+1)) ++true_incidents[ij];
-				if (ij==(true_st_sliceID+1)) ++true_st_incidents[ij];
-			}
+		uf.eff_den_Inc->Fill(true_sliceID, mom_rw_minchi2);
+		uf.eff_den_st_Inc->Fill(true_st_sliceID, mom_rw_minchi2);
+		//for (int ij=true_st_sliceID; ij<=true_sliceID; ++ij){
+		//if (true_sliceID < nthinslices && true_sliceID>=0){
+		//for (int ij=0; ij<=true_sliceID+1; ++ij){
+		for (int ij=0; ij<=nthinslices+1; ++ij) {
+			//if (ij<nthinslices) ++true_incidents[ij+1];
+			if (ij==(true_sliceID+1)) ++true_incidents[ij];
+			if (ij==(true_st_sliceID+1)) ++true_st_incidents[ij];
+		}
 		//} //if NOT test sample
 		if (PassCuts_INC&&IsBeamMatch) { //if passing all basic cuts
 			//if (isTestSample) { //if test sample
-				h_recosliceid_cuts->Fill(reco_sliceID, mom_rw_minchi2); 
-				h_truesliceid_cuts->Fill(true_sliceID, mom_rw_minchi2);
+			h_recosliceid_cuts->Fill(reco_sliceID, mom_rw_minchi2); 
+			h_truesliceid_cuts->Fill(true_sliceID, mom_rw_minchi2);
 
-				h_reco_st_sliceid_cuts->Fill(reco_st_sliceID, mom_rw_minchi2); 
-				h_true_st_sliceid_cuts->Fill(true_st_sliceID, mom_rw_minchi2);
+			h_reco_st_sliceid_cuts->Fill(reco_st_sliceID, mom_rw_minchi2); 
+			h_true_st_sliceid_cuts->Fill(true_st_sliceID, mom_rw_minchi2);
 			//} //if test sample
 			//else{ //if NOT test sample
-				uf.eff_num_Inc->Fill(true_sliceID, mom_rw_minchi2);
-				uf.eff_num_st_Inc->Fill(true_st_sliceID, mom_rw_minchi2);
+			uf.eff_num_Inc->Fill(true_sliceID, mom_rw_minchi2);
+			uf.eff_num_st_Inc->Fill(true_st_sliceID, mom_rw_minchi2);
 
-				uf.pur_num_Inc->Fill(reco_sliceID, mom_rw_minchi2);
-				uf.pur_num_st_Inc->Fill(reco_st_sliceID, mom_rw_minchi2);
+			uf.pur_num_Inc->Fill(reco_sliceID, mom_rw_minchi2);
+			uf.pur_num_st_Inc->Fill(reco_st_sliceID, mom_rw_minchi2);
 
-				uf.response_SliceID_Inc.Fill(reco_sliceID, true_sliceID, mom_rw_minchi2);
-				uf.response_st_SliceID_Inc.Fill(reco_st_sliceID, true_st_sliceID, mom_rw_minchi2);
+			uf.response_SliceID_Inc.Fill(reco_sliceID, true_sliceID, mom_rw_minchi2);
+			uf.response_st_SliceID_Inc.Fill(reco_st_sliceID, true_st_sliceID, mom_rw_minchi2);
 
-				uf.res_Inc_reco->Fill(reco_sliceID, mom_rw_minchi2);
-				uf.res_st_Inc_reco->Fill(reco_st_sliceID, mom_rw_minchi2);
+			uf.res_Inc_reco->Fill(reco_sliceID, mom_rw_minchi2);
+			uf.res_st_Inc_reco->Fill(reco_st_sliceID, mom_rw_minchi2);
 
-				uf.res_Inc_truth->Fill(true_sliceID, mom_rw_minchi2);
-				uf.res_st_Inc_truth->Fill(true_st_sliceID, mom_rw_minchi2);
+			uf.res_Inc_truth->Fill(true_sliceID, mom_rw_minchi2);
+			uf.res_st_Inc_truth->Fill(true_st_sliceID, mom_rw_minchi2);
 			//} //if NOT test sample
 		} //if passing all basic cuts
 		else { //if NOT passing all cuts
 			//if (!isTestSample){
-				uf.response_SliceID_Inc.Miss(true_sliceID, mom_rw_minchi2);
-				uf.response_st_SliceID_Inc.Miss(true_st_sliceID, mom_rw_minchi2);
+			uf.response_SliceID_Inc.Miss(true_sliceID, mom_rw_minchi2);
+			uf.response_st_SliceID_Inc.Miss(true_st_sliceID, mom_rw_minchi2);
 
-				uf.res_Inc_truth->Fill(true_sliceID, mom_rw_minchi2);
-				uf.res_st_Inc_truth->Fill(true_st_sliceID, mom_rw_minchi2);
-				//std::cout<<true_sliceID<<std::endl;
+			uf.res_Inc_truth->Fill(true_sliceID, mom_rw_minchi2);
+			uf.res_st_Inc_truth->Fill(true_st_sliceID, mom_rw_minchi2);
+			//std::cout<<true_sliceID<<std::endl;
 			//}
 		} //if NOT passing all cuts
 
@@ -1653,160 +1685,160 @@ void ProtonESliceDataAll::Loop() {
 			if (IsBeamMatch) n_kinel++;
 
 			//if (isTestSample){
-				h_truesliceid_inelastic_all->Fill(true_sliceID, mom_rw_minchi2);
-				//if (true_sliceID<=0) {
-					//std::cout<<"WRONG WRONG!!:: true_sliceID of IsPureInEL="<<true_sliceID<<" | KEend_true="<<KEend_true<<" | is_beam_at_ff="<<is_beam_at_ff<<" | true_endz="<<true_endz<<std::endl;
-				//}
+			h_truesliceid_inelastic_all->Fill(true_sliceID, mom_rw_minchi2);
+			//if (true_sliceID<=0) {
+			//std::cout<<"WRONG WRONG!!:: true_sliceID of IsPureInEL="<<true_sliceID<<" | KEend_true="<<KEend_true<<" | is_beam_at_ff="<<is_beam_at_ff<<" | true_endz="<<true_endz<<std::endl;
+			//}
 			//}
 			//else{ //NOT test sample for unfolding
-				uf.eff_den_Int->Fill(true_sliceID, mom_rw_minchi2);
-				n_test_recoinel_sample++;
-				if (IsBeamMatch) n_kinel2++;
+			uf.eff_den_Int->Fill(true_sliceID, mom_rw_minchi2);
+			n_test_recoinel_sample++;
+			if (IsBeamMatch) n_kinel2++;
 			//} //NOT test sample for unfolding
 
 			if (PassCuts_INT&&IsBeamMatch) { //if pass reco inel cuts
 				//if (isTestSample){
-					h_recosliceid_inelastic_cuts->Fill(reco_sliceID, mom_rw_minchi2);
-					h_truesliceid_inelastic_cuts->Fill(true_sliceID, mom_rw_minchi2);
+				h_recosliceid_inelastic_cuts->Fill(reco_sliceID, mom_rw_minchi2);
+				h_truesliceid_inelastic_cuts->Fill(true_sliceID, mom_rw_minchi2);
 				//}
 				//else{
-					uf.eff_num_Int->Fill(true_sliceID, mom_rw_minchi2);
-					uf.pur_num_Int->Fill(reco_sliceID, mom_rw_minchi2);
-					uf.response_SliceID_Int.Fill(reco_sliceID, true_sliceID, mom_rw_minchi2);
+				uf.eff_num_Int->Fill(true_sliceID, mom_rw_minchi2);
+				uf.pur_num_Int->Fill(reco_sliceID, mom_rw_minchi2);
+				uf.response_SliceID_Int.Fill(reco_sliceID, true_sliceID, mom_rw_minchi2);
 
-					uf.res_Int_reco->Fill(reco_sliceID, mom_rw_minchi2);
-					uf.res_Int_truth->Fill(true_sliceID, mom_rw_minchi2);
+				uf.res_Int_reco->Fill(reco_sliceID, mom_rw_minchi2);
+				uf.res_Int_truth->Fill(true_sliceID, mom_rw_minchi2);
 				//}
 			} //if pass reco inel cuts
 			else{ //if NOT pass all basic cuts
 				//if (!isTestSample) { 
-					uf.response_SliceID_Int.Miss(true_sliceID, mom_rw_minchi2);
-					uf.res_Int_truth->Fill(true_sliceID, mom_rw_minchi2);
-					//uf.response_SliceID_Int.Miss(true_sliceID, mom_rw_minchi2);
+				uf.response_SliceID_Int.Miss(true_sliceID, mom_rw_minchi2);
+				uf.res_Int_truth->Fill(true_sliceID, mom_rw_minchi2);
+				//uf.response_SliceID_Int.Miss(true_sliceID, mom_rw_minchi2);
 				//}
 			} //if not pass all basic cuts
 		} //pure inel
 
 		if (PassCuts_INC) { //if pass all cuts
 			//if (isTestSample){ //if test sample
-				h_recosliceid_allevts_cuts->Fill(reco_sliceID, mom_rw_minchi2);
-				h_reco_st_sliceid_allevts_cuts->Fill(reco_st_sliceID, mom_rw_minchi2);
+			h_recosliceid_allevts_cuts->Fill(reco_sliceID, mom_rw_minchi2);
+			h_reco_st_sliceid_allevts_cuts->Fill(reco_st_sliceID, mom_rw_minchi2);
 
-				h_truesliceid_allevts_cuts->Fill(true_sliceID, mom_rw_minchi2);
-				h_true_st_sliceid_allevts_cuts->Fill(true_st_sliceID, mom_rw_minchi2);
+			h_truesliceid_allevts_cuts->Fill(true_sliceID, mom_rw_minchi2);
+			h_true_st_sliceid_allevts_cuts->Fill(true_st_sliceID, mom_rw_minchi2);
 
-				if (kinel) { 
-					h_recosliceid_allevts_cuts_inel->Fill(reco_sliceID, mom_rw_minchi2);
-					h_reco_st_sliceid_allevts_cuts_inel->Fill(reco_st_sliceID, mom_rw_minchi2);
+			if (kinel) { 
+				h_recosliceid_allevts_cuts_inel->Fill(reco_sliceID, mom_rw_minchi2);
+				h_reco_st_sliceid_allevts_cuts_inel->Fill(reco_st_sliceID, mom_rw_minchi2);
 
-					h_truesliceid_allevts_cuts_inel->Fill(true_sliceID, mom_rw_minchi2);
-					h_true_st_sliceid_allevts_cuts_inel->Fill(true_st_sliceID, mom_rw_minchi2);
-				}
-				if (kel) { 
-					h_recosliceid_allevts_cuts_el->Fill(reco_sliceID, mom_rw_minchi2);
-					h_reco_st_sliceid_allevts_cuts_el->Fill(reco_st_sliceID, mom_rw_minchi2);
+				h_truesliceid_allevts_cuts_inel->Fill(true_sliceID, mom_rw_minchi2);
+				h_true_st_sliceid_allevts_cuts_inel->Fill(true_st_sliceID, mom_rw_minchi2);
+			}
+			if (kel) { 
+				h_recosliceid_allevts_cuts_el->Fill(reco_sliceID, mom_rw_minchi2);
+				h_reco_st_sliceid_allevts_cuts_el->Fill(reco_st_sliceID, mom_rw_minchi2);
 
-					h_truesliceid_allevts_cuts_el->Fill(true_sliceID, mom_rw_minchi2);
-					h_true_st_sliceid_allevts_cuts_el->Fill(true_st_sliceID, mom_rw_minchi2);
-				}
-				if (kMIDcosmic) { 
-					h_recosliceid_allevts_cuts_midcosmic->Fill(reco_sliceID, mom_rw_minchi2);
-					h_reco_st_sliceid_allevts_cuts_midcosmic->Fill(reco_st_sliceID, mom_rw_minchi2);
+				h_truesliceid_allevts_cuts_el->Fill(true_sliceID, mom_rw_minchi2);
+				h_true_st_sliceid_allevts_cuts_el->Fill(true_st_sliceID, mom_rw_minchi2);
+			}
+			if (kMIDcosmic) { 
+				h_recosliceid_allevts_cuts_midcosmic->Fill(reco_sliceID, mom_rw_minchi2);
+				h_reco_st_sliceid_allevts_cuts_midcosmic->Fill(reco_st_sliceID, mom_rw_minchi2);
 
-					h_truesliceid_allevts_cuts_midcosmic->Fill(true_sliceID, mom_rw_minchi2);
-					h_true_st_sliceid_allevts_cuts_midcosmic->Fill(true_st_sliceID, mom_rw_minchi2);
-				}
-				if (kMIDpi) { 
-					h_recosliceid_allevts_cuts_midpi->Fill(reco_sliceID, mom_rw_minchi2);
-					h_reco_st_sliceid_allevts_cuts_midpi->Fill(reco_st_sliceID, mom_rw_minchi2);
+				h_truesliceid_allevts_cuts_midcosmic->Fill(true_sliceID, mom_rw_minchi2);
+				h_true_st_sliceid_allevts_cuts_midcosmic->Fill(true_st_sliceID, mom_rw_minchi2);
+			}
+			if (kMIDpi) { 
+				h_recosliceid_allevts_cuts_midpi->Fill(reco_sliceID, mom_rw_minchi2);
+				h_reco_st_sliceid_allevts_cuts_midpi->Fill(reco_st_sliceID, mom_rw_minchi2);
 
-					h_truesliceid_allevts_cuts_midpi->Fill(true_sliceID, mom_rw_minchi2);
-					h_true_st_sliceid_allevts_cuts_midpi->Fill(true_st_sliceID, mom_rw_minchi2);
-				}
-				if (kMIDp) { 
-					h_recosliceid_allevts_cuts_midp->Fill(reco_sliceID, mom_rw_minchi2);
-					h_reco_st_sliceid_allevts_cuts_midp->Fill(reco_st_sliceID, mom_rw_minchi2);
+				h_truesliceid_allevts_cuts_midpi->Fill(true_sliceID, mom_rw_minchi2);
+				h_true_st_sliceid_allevts_cuts_midpi->Fill(true_st_sliceID, mom_rw_minchi2);
+			}
+			if (kMIDp) { 
+				h_recosliceid_allevts_cuts_midp->Fill(reco_sliceID, mom_rw_minchi2*misidp_rw);
+				h_reco_st_sliceid_allevts_cuts_midp->Fill(reco_st_sliceID, mom_rw_minchi2);
 
-					h_truesliceid_allevts_cuts_midp->Fill(true_sliceID, mom_rw_minchi2);
-					h_true_st_sliceid_allevts_cuts_midp->Fill(true_st_sliceID, mom_rw_minchi2);
-				}
-				if (kMIDmu) { 
-					h_recosliceid_allevts_cuts_midmu->Fill(reco_sliceID, mom_rw_minchi2);
-					h_reco_st_sliceid_allevts_cuts_midmu->Fill(reco_st_sliceID, mom_rw_minchi2);
+				h_truesliceid_allevts_cuts_midp->Fill(true_sliceID, mom_rw_minchi2*misidp_rw);
+				h_true_st_sliceid_allevts_cuts_midp->Fill(true_st_sliceID, mom_rw_minchi2);
+			}
+			if (kMIDmu) { 
+				h_recosliceid_allevts_cuts_midmu->Fill(reco_sliceID, mom_rw_minchi2);
+				h_reco_st_sliceid_allevts_cuts_midmu->Fill(reco_st_sliceID, mom_rw_minchi2);
 
-					h_truesliceid_allevts_cuts_midmu->Fill(true_sliceID, mom_rw_minchi2);
-					h_true_st_sliceid_allevts_cuts_midmu->Fill(true_st_sliceID, mom_rw_minchi2);
-				}
-				if (kMIDeg) { 
-					h_recosliceid_allevts_cuts_mideg->Fill(reco_sliceID, mom_rw_minchi2);
-					h_reco_st_sliceid_allevts_cuts_mideg->Fill(reco_st_sliceID, mom_rw_minchi2);
+				h_truesliceid_allevts_cuts_midmu->Fill(true_sliceID, mom_rw_minchi2);
+				h_true_st_sliceid_allevts_cuts_midmu->Fill(true_st_sliceID, mom_rw_minchi2);
+			}
+			if (kMIDeg) { 
+				h_recosliceid_allevts_cuts_mideg->Fill(reco_sliceID, mom_rw_minchi2);
+				h_reco_st_sliceid_allevts_cuts_mideg->Fill(reco_st_sliceID, mom_rw_minchi2);
 
-					h_truesliceid_allevts_cuts_mideg->Fill(true_sliceID, mom_rw_minchi2);
-					h_true_st_sliceid_allevts_cuts_mideg->Fill(true_st_sliceID, mom_rw_minchi2);
-				}
-				if (kMIDother) { 
-					h_recosliceid_allevts_cuts_midother->Fill(reco_sliceID, mom_rw_minchi2);
-					h_reco_st_sliceid_allevts_cuts_midother->Fill(reco_st_sliceID, mom_rw_minchi2);
+				h_truesliceid_allevts_cuts_mideg->Fill(true_sliceID, mom_rw_minchi2);
+				h_true_st_sliceid_allevts_cuts_mideg->Fill(true_st_sliceID, mom_rw_minchi2);
+			}
+			if (kMIDother) { 
+				h_recosliceid_allevts_cuts_midother->Fill(reco_sliceID, mom_rw_minchi2);
+				h_reco_st_sliceid_allevts_cuts_midother->Fill(reco_st_sliceID, mom_rw_minchi2);
 
-					h_truesliceid_allevts_cuts_midother->Fill(reco_sliceID, mom_rw_minchi2);
-					h_true_st_sliceid_allevts_cuts_midother->Fill(reco_st_sliceID, mom_rw_minchi2);
-				}
+				h_truesliceid_allevts_cuts_midother->Fill(reco_sliceID, mom_rw_minchi2);
+				h_true_st_sliceid_allevts_cuts_midother->Fill(reco_st_sliceID, mom_rw_minchi2);
+			}
 			//} //if test sample
 			//else { //if NOT test sample
-				uf.pur_den->Fill(reco_sliceID, mom_rw_minchi2);
-				uf.pur_den_Inc->Fill(reco_sliceID, mom_rw_minchi2);
-				uf.pur_den_st_Inc->Fill(reco_st_sliceID, mom_rw_minchi2);
+			uf.pur_den->Fill(reco_sliceID, mom_rw_minchi2);
+			uf.pur_den_Inc->Fill(reco_sliceID, mom_rw_minchi2);
+			uf.pur_den_st_Inc->Fill(reco_st_sliceID, mom_rw_minchi2);
 			//} //if NOT test sample
 		} //if pass all cuts
 
 		if (PassCuts_INT) { //if pass reco inel cut
 			//if (isTestSample){ //if test sample
-				h_recosliceid_recoinelastic_cuts->Fill(reco_sliceID, mom_rw_minchi2);
-				h_truesliceid_recoinelastic_cuts->Fill(true_sliceID, mom_rw_minchi2);
-				if (kinel) { 
-					h_recosliceid_recoinelastic_cuts_inel->Fill(reco_sliceID, mom_rw_minchi2);
-					h_truesliceid_recoinelastic_cuts_inel->Fill(true_sliceID, mom_rw_minchi2);
-				}
-				if (kel) { 
-					h_recosliceid_recoinelastic_cuts_el->Fill(reco_sliceID, mom_rw_minchi2);
-					h_truesliceid_recoinelastic_cuts_el->Fill(true_sliceID, mom_rw_minchi2);
-				}
-				if (kMIDcosmic) { 
-					h_recosliceid_recoinelastic_cuts_midcosmic->Fill(reco_sliceID, mom_rw_minchi2);
-					h_truesliceid_recoinelastic_cuts_midcosmic->Fill(true_sliceID, mom_rw_minchi2);
-				}
-				if (kMIDpi) { 
-					h_recosliceid_recoinelastic_cuts_midpi->Fill(reco_sliceID, mom_rw_minchi2);
-					h_truesliceid_recoinelastic_cuts_midpi->Fill(true_sliceID, mom_rw_minchi2);
-				}
-				if (kMIDp) { 
-					h_recosliceid_recoinelastic_cuts_midp->Fill(reco_sliceID, mom_rw_minchi2);
-					h_truesliceid_recoinelastic_cuts_midp->Fill(true_sliceID, mom_rw_minchi2);
-				}
-				if (kMIDmu) { 
-					h_recosliceid_recoinelastic_cuts_midmu->Fill(reco_sliceID, mom_rw_minchi2);
-					h_truesliceid_recoinelastic_cuts_midmu->Fill(true_sliceID, mom_rw_minchi2);
-				}
-				if (kMIDeg) { 
-					h_recosliceid_recoinelastic_cuts_mideg->Fill(reco_sliceID, mom_rw_minchi2);
-					h_truesliceid_recoinelastic_cuts_mideg->Fill(true_sliceID, mom_rw_minchi2);
-				}
-				if (kMIDother) { 
-					h_recosliceid_recoinelastic_cuts_midother->Fill(reco_sliceID, mom_rw_minchi2);
-					h_truesliceid_recoinelastic_cuts_midother->Fill(true_sliceID, mom_rw_minchi2);
-				}
+			h_recosliceid_recoinelastic_cuts->Fill(reco_sliceID, mom_rw_minchi2);
+			h_truesliceid_recoinelastic_cuts->Fill(true_sliceID, mom_rw_minchi2);
+			if (kinel) { 
+				h_recosliceid_recoinelastic_cuts_inel->Fill(reco_sliceID, mom_rw_minchi2);
+				h_truesliceid_recoinelastic_cuts_inel->Fill(true_sliceID, mom_rw_minchi2);
+			}
+			if (kel) { 
+				h_recosliceid_recoinelastic_cuts_el->Fill(reco_sliceID, mom_rw_minchi2);
+				h_truesliceid_recoinelastic_cuts_el->Fill(true_sliceID, mom_rw_minchi2);
+			}
+			if (kMIDcosmic) { 
+				h_recosliceid_recoinelastic_cuts_midcosmic->Fill(reco_sliceID, mom_rw_minchi2);
+				h_truesliceid_recoinelastic_cuts_midcosmic->Fill(true_sliceID, mom_rw_minchi2);
+			}
+			if (kMIDpi) { 
+				h_recosliceid_recoinelastic_cuts_midpi->Fill(reco_sliceID, mom_rw_minchi2);
+				h_truesliceid_recoinelastic_cuts_midpi->Fill(true_sliceID, mom_rw_minchi2);
+			}
+			if (kMIDp) { 
+				h_recosliceid_recoinelastic_cuts_midp->Fill(reco_sliceID, mom_rw_minchi2*misidp_rw);
+				h_truesliceid_recoinelastic_cuts_midp->Fill(true_sliceID, mom_rw_minchi2*misidp_rw);
+			}
+			if (kMIDmu) { 
+				h_recosliceid_recoinelastic_cuts_midmu->Fill(reco_sliceID, mom_rw_minchi2);
+				h_truesliceid_recoinelastic_cuts_midmu->Fill(true_sliceID, mom_rw_minchi2);
+			}
+			if (kMIDeg) { 
+				h_recosliceid_recoinelastic_cuts_mideg->Fill(reco_sliceID, mom_rw_minchi2);
+				h_truesliceid_recoinelastic_cuts_mideg->Fill(true_sliceID, mom_rw_minchi2);
+			}
+			if (kMIDother) { 
+				h_recosliceid_recoinelastic_cuts_midother->Fill(reco_sliceID, mom_rw_minchi2);
+				h_truesliceid_recoinelastic_cuts_midother->Fill(true_sliceID, mom_rw_minchi2);
+			}
 			//} //if test sample
 			//else { //if NOT test sample
-				uf.pur_den_Int->Fill(reco_sliceID, mom_rw_minchi2);
+			uf.pur_den_Int->Fill(reco_sliceID, mom_rw_minchi2);
 			//} //if NOT test sample
 		} //if pass reco inel cut
 
 		//reco/truth KEs
 		if (IsPureInEL) { //is pure inelastic
 			//if (!isTestSample){ //if validation sample
-				if (true_sliceID < nthinslices && true_sliceID>=0){
-					++true_interactions[true_sliceID+1];
-				}
+			if (true_sliceID < nthinslices && true_sliceID>=0){
+				++true_interactions[true_sliceID+1];
+			}
 			//} //if validation sample
 
 			//reco ke
@@ -2024,19 +2056,19 @@ void ProtonESliceDataAll::Loop() {
 			//end_time
 			auto t_end = std::chrono::high_resolution_clock::now();
 
-    			// floating-point duration: no duration_cast needed
-    			std::chrono::duration<double, std::milli> fp_ms = t_st - t_end;
- 
-    			// integral duration: requires duration_cast
-    			auto int_ms = std::chrono::duration_cast<std::chrono::milliseconds>(t_end - t_st);
- 
-    			// converting integral duration to integral duration of shorter divisible time unit:
-    			// no duration_cast needed
-    			std::chrono::duration<long, std::micro> int_usec = int_ms;
- 
-    			std::cout << "\n\nf() took " << fp_ms.count() << " ms, "
-              		<< "or " << int_ms.count() << " whole milliseconds "
-              		<< "(which is " << int_usec.count() << " whole microseconds)" << std::endl;
+			// floating-point duration: no duration_cast needed
+			std::chrono::duration<double, std::milli> fp_ms = t_st - t_end;
+
+			// integral duration: requires duration_cast
+			auto int_ms = std::chrono::duration_cast<std::chrono::milliseconds>(t_end - t_st);
+
+			// converting integral duration to integral duration of shorter divisible time unit:
+			// no duration_cast needed
+			std::chrono::duration<long, std::micro> int_usec = int_ms;
+
+			std::cout << "\n\nf() took " << fp_ms.count() << " ms, "
+				<< "or " << int_ms.count() << " whole milliseconds "
+				<< "(which is " << int_usec.count() << " whole microseconds)" << std::endl;
 			std::cout<<"\n Execution time:"<<(int_ms.count()/1000.)/60.<<" (min.)"<<std::endl;
 
 

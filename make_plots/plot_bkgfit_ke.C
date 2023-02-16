@@ -461,6 +461,20 @@ void plot_bkgfit_ke() {
 	misidp_shape_mc->SetLineStyle(2);
 	misidp_shape_mc->Draw("same");
 
+	for (int k=0; k<4; ++k) { 
+		double p_data=misidp_shape_data->GetParameter(k);
+		double err_p_data=misidp_shape_data->GetParError(k); 
+		cout<<"double p"<<k<<"_data_misidp="<<p_data<<";"<<endl;
+		cout<<"double err_p"<<k<<"_data_misidp="<<err_p_data<<";"<<endl;
+	}
+
+	for (int k=0; k<4; ++k) { 
+		double p_mc=misidp_shape_mc->GetParameter(k);
+		double err_p_mc=misidp_shape_mc->GetParError(k); 
+		cout<<"double p"<<k<<"_mc_misidp="<<p_mc<<";"<<endl;
+		cout<<"double err_p"<<k<<"_mc_misidp="<<err_p_mc<<";"<<endl;
+	}
+
 
 	TLegend *leg = new TLegend(0.2,0.65,0.8,0.9);
 	leg->SetFillStyle(0);
