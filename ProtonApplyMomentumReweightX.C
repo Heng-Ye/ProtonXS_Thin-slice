@@ -245,6 +245,27 @@ void ProtonApplyMomentumReweight::Loop() {
 	//double mu_kemax=mu_nom_mc+6.*sg_nom_mc;
 	//------------------------------------------------------------------------//
 
+	//MisID:P Modeling (good fit for KE<300 MeV) -------------------------------------------------------------------------------------------------
+	double p0_data_misidp=14489;       double err_p0_data_misidp=381.785;
+	double p1_data_misidp=10.053;      double err_p1_data_misidp=0.00129971;
+	double p2_data_misidp=0.00319447;  double err_p2_data_misidp=7.24379e-05;
+	double p3_data_misidp=-22889.9;    double err_p3_data_misidp=30.1843;
+
+	double p0_mc_misidp=15109.6;       double err_p0_mc_misidp=502.325;
+	double p1_mc_misidp=9.99314;       double err_p1_mc_misidp=0.00785002;
+	double p2_mc_misidp=0.00393017;    double err_p2_mc_misidp=0.000127054;
+	double p3_mc_misidp=-21553;        double err_p3_mc_misidp=171.736;
+	TF1 * kerw_misidp = new TF1("kerw_misidp","([0]*ROOT::Math::lognormal_pdf(x,[1],[2],[3]))/([4]*ROOT::Math::lognormal_pdf(x,[5],[6],[7]))",0,800);
+	kerw_misidp->SetParameter(0, p0_data_misidp);
+	kerw_misidp->SetParameter(1, p1_data_misidp);
+	kerw_misidp->SetParameter(2, p2_data_misidp);
+	kerw_misidp->SetParameter(3, p3_data_misidp);
+
+	kerw_misidp->SetParameter(4, p0_mc_misidp);
+	kerw_misidp->SetParameter(5, p1_mc_misidp);
+	kerw_misidp->SetParameter(6, p2_mc_misidp);
+	kerw_misidp->SetParameter(7, p3_mc_misidp);
+
 	//momentum cut range	
 	double mu_min=1007.1482-3.*60.703307;
 	double mu_max=1007.1482+3.*60.703307;
@@ -1216,6 +1237,10 @@ void ProtonApplyMomentumReweight::Loop() {
 			if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=kerw_edept->Eval(ke_ffbeam_MeV); //new bmrw (edept E-loss)
 			//if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=kerw_1->Eval(ke_ff); //kerw1 (edept E-loss)
 			//if ((mom_beam_spec*1000.)>=mu_min&&(mom_beam_spec*1000.)<=mu_max) mom_rw_minchi2=kerw->Eval(ke_ffbeam_MeV); //new bmrw (const E-loss)
+
+			double misidp_rw=1;
+			if (kebb<=280.) misidp_rw=kerw_misidp->Eval(kebb);
+
 				Fill1DWHist(h1d_keffbeam_misidp, ke_ffbeam_MeV, mom_rw_minchi2);
 				Fill1DWHist(h1d_kend_bb_misidp, kebb, mom_rw_minchi2);
 
@@ -1237,7 +1262,7 @@ void ProtonApplyMomentumReweight::Loop() {
 				}
 				if (kMIDp) {
 					Fill1DWHist(h1d_keffbeam_misidp_midp,ke_ffbeam_MeV, mom_rw_minchi2);
-					Fill1DWHist(h1d_kend_bb_misidp_midp, kebb, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_bb_misidp_midp, kebb, mom_rw_minchi2*misidp_rw);
 				}
 				if (kMIDmu) { 
 					Fill1DWHist(h1d_keffbeam_misidp_midmu, ke_ffbeam_MeV, mom_rw_minchi2);
@@ -1266,6 +1291,8 @@ void ProtonApplyMomentumReweight::Loop() {
 			//if (ke_ff>=mu_kemin&&ke_ff<=mu_kemax) mom_rw_minchi2=kerw->Eval(ke_ff); //new bmrw (using truth)
 			//if (ke_ffbeam_MeV>=mu_kemin&&ke_ffbeam_MeV<=mu_kemax) mom_rw_minchi2=kerw->Eval(ke_ffbeam_MeV); //new bmrw (KEHY)
 			//std::cout<<"ke_beam_spec_MeV:"<<ke_beam_spec_MeV<<" ke_ffbeam_MeV:"<<ke_ffbeam_MeV<<" mom_rw_minchi2:"<<mom_rw_minchi2<<std::endl;
+			double misidp_rw=1;
+			if (kebb<=280.) misidp_rw=kerw_misidp->Eval(kebb);
 
 			//h1d_keffbeam_el_noxy->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
 			//Fill1DWHist(h1d_keffbeam_el_noxy, ke_ffbeam_MeV, mom_rw_minchi2);
@@ -1422,8 +1449,8 @@ void ProtonApplyMomentumReweight::Loop() {
 					//h1d_kend_calo_el_midp->Fill(kecalo, mom_rw_minchi2);
 					//h1d_kend_bb_el_midp->Fill(kebb, mom_rw_minchi2);
 					Fill1DWHist(h1d_keffbeam_el_midp,ke_ffbeam_MeV, mom_rw_minchi2);
-					Fill1DWHist(h1d_kend_calo_el_midp, kecalo, mom_rw_minchi2);
-					Fill1DWHist(h1d_kend_bb_el_midp, kebb, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_calo_el_midp, kecalo, misidp_rw*mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_bb_el_midp, kebb, misidp_rw*mom_rw_minchi2);
 				}
 				if (kMIDmu) { 
 					//h1d_keffbeam_el_midmu->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
@@ -1612,8 +1639,8 @@ void ProtonApplyMomentumReweight::Loop() {
 					//h1d_kend_calo_inel_midp->Fill(kecalo, mom_rw_minchi2);
 					//h1d_kend_bb_inel_midp->Fill(kebb, mom_rw_minchi2);
 					Fill1DWHist(h1d_keffbeam_inel_midp,ke_ffbeam_MeV, mom_rw_minchi2);
-					Fill1DWHist(h1d_kend_calo_inel_midp,kecalo, mom_rw_minchi2);
-					Fill1DWHist(h1d_kend_bb_inel_midp, kebb, mom_rw_minchi2);
+					Fill1DWHist(h1d_kend_calo_inel_midp,kecalo, mom_rw_minchi2*misidp_rw);
+					Fill1DWHist(h1d_kend_bb_inel_midp, kebb, mom_rw_minchi2*misidp_rw);
 				}
 				if (kMIDmu) { 
 					//h1d_keffbeam_inel_midmu->Fill(ke_ffbeam_MeV, mom_rw_minchi2);
@@ -1702,7 +1729,8 @@ void ProtonApplyMomentumReweight::Loop() {
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kebeamff_bkg.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_edepteloss.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrwfftruth_edepteloss.root","RECREATE");
-   	TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_edepteloss.root","RECREATE");
+   	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_edepteloss.root","RECREATE");
+   	TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_misidprw_edepteloss.root","RECREATE");
    	
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_bmrw_by_kebeamff_v09_39_01.root","RECREATE");
    	//TFile *fout = new TFile("mc_proton_beamxy_beammom_nobmrw_AllTrue_v09_39_01.root","RECREATE");
