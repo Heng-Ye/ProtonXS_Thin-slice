@@ -1558,6 +1558,7 @@ void ProtonESliceDataAll::Loop() {
 		//if (range_true < 30) true_sliceID=-1; 
 		if (true_sliceID >= nthinslices||KE_true<0) true_sliceID = nthinslices;
 		if (true_st_sliceID>true_sliceID) {
+			std::cout<<"\ntrue_stz:"<<true_stz<<" true_endz:"<<true_endz<<" KE_ff:"<<KE_ff<<" KE_1st:"<<KE_1st<<" KEend_true:"<<KEend_true<<" | true_st_sliceID:"<<true_st_sliceID<<" true_sliceID:"<<true_sliceID<<std::endl;
 			true_st_sliceID=-1;
 			true_sliceID=-1;
 		} 
@@ -1601,20 +1602,20 @@ void ProtonESliceDataAll::Loop() {
 			if (reco_st_sliceID<0) reco_st_sliceID=-1; //KE higher than Emax
 			if (reco_endz < 0) reco_st_sliceID = -1; //testing
 			if (reco_st_sliceID >= nthinslices||KE_ff_reco<0) reco_st_sliceID = nthinslices;
-			if (reco_st_sliceID>reco_sliceID) {
-				reco_st_sliceID=-1;
-				reco_sliceID=-1;
-			} 
 
 			//double KE_reco=BB.KEAtLength(keff_reco, range_reco);
 			//reco_sliceID = int((Emax-KEend_reco)/thinslicewidth);
 			reco_sliceID = int(floor((Emax-KEend_reco)/thinslicewidth));
 
 			if (reco_sliceID < 0) reco_sliceID = -1;
-			//if (range_reco<30) reco_sliceID=-1;
-			//if (reco_endz<0) reco_sliceID = -1;
 			if (reco_endz<0) reco_sliceID = -1;
 			if (reco_sliceID >= nthinslices||KEend_reco<0) reco_sliceID = nthinslices;
+			if (reco_st_sliceID>reco_sliceID) {
+				std::cout<<"\nreco_stz:"<<reco_stz<<" reco_endz:"<<reco_endz<<" KE_ff_reco:"<<KE_ff_reco<<" KEend_reco:"<<KEend_reco<<" reco_st_sliceID:"<<reco_st_sliceID<<" reco_sliceID:"<<reco_sliceID<<std::endl;
+				reco_st_sliceID=-1;
+				reco_sliceID=-1;
+			}
+ 
 			//if (reco_st_sliceID==reco_sliceID) break; //HY added
 
 			if (IsBQ&&IsRecoInEL) {
