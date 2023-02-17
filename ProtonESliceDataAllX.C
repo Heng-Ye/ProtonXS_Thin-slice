@@ -1543,27 +1543,30 @@ void ProtonESliceDataAll::Loop() {
 		//true_st_sliceID++;
 		//if (range_true >= 30) true_st_sliceID=int((Emax-KE_ff30)/thinslicewidth);
 		//if (range_true < 30) true_st_sliceID=-1; 
-		if (true_st_sliceID<0) true_st_sliceID=-1; //KE higher than Emax
-		//if (true_endz < 0) true_st_sliceID=-1; //original setting 
-		if (true_endz < 0) true_st_sliceID=-1; //testing
-		if (true_st_sliceID >= nthinslices||KE_ff<0) true_st_sliceID = nthinslices;
+		if (true_st_sliceID<0) true_st_sliceID=-1; //KE higher than Emax, put it to over-flow bin
+		if (true_endz < 0) true_st_sliceID=-1; //Upstream-interaction, won't be involved in XS measurement since not entering TPC, put it to the over-flow/(or un-physical) bin
+						       //Note. XS measurement starts from ID=0, ID=-1 will not be considered in the XS measurement
+						       //p.s. ID=-1 serves as over-flow bin and un-physical bin
+		if (true_st_sliceID >= nthinslices) true_st_sliceID = nthinslices;
 
 		//double KE_true=BB.KEAtLength(KE_ff, range_true);
 		double KE_true=KEend_true;
 		//true_sliceID = int((Emax-KE_true)/thinslicewidth);
 		true_sliceID = int(floor((Emax-KE_true)/thinslicewidth));
-		if (true_sliceID < 0) true_sliceID = -1;
-		//if (true_endz < 0) true_sliceID = -1; //hy added
-		if (true_endz < 0) true_sliceID = -1; //testing
-		//if (range_true < 30) true_sliceID=-1; 
+		if (true_sliceID < 0) true_sliceID = -1; //KE higher than Emax, put it to over-flow bin
+		if (true_endz < 0) true_sliceID = -1; //Upstream-interaction
 		if (true_sliceID >= nthinslices||KE_true<0) true_sliceID = nthinslices;
-		if (true_st_sliceID>true_sliceID) {
-			std::cout<<"\ntrue_stz:"<<true_stz<<" true_endz:"<<true_endz<<" KE_ff:"<<KE_ff<<" KE_1st:"<<KE_1st<<" KEend_true:"<<KEend_true<<" | true_st_sliceID:"<<true_st_sliceID<<" true_sliceID:"<<true_sliceID<<std::endl;
+
+		//if (true_st_sliceID==true_sliceID) {
+			//std::cout<<"\n[same ID!] true_stz:"<<true_stz<<" true_endz:"<<true_endz<<" KE_ff:"<<KE_ff<<" KE_1st:"<<KE_1st<<" KEend_true:"<<KEend_true<<" | true_st_sliceID:"<<true_st_sliceID<<" true_sliceID:"<<true_sliceID<<std::endl;
+		//}
+		if (true_st_sliceID>true_sliceID) { //incomplete charge deposition
+			//The case happens when the track length is very short, if true_st_sliceID>true_sliceID, treat this case as unphysical, discard this type of measurement
+			//if true_st_sliceID==true_sliceID for short tracks, physical and will be considered in the XS measurement
+			//std::cout<<"\ntrue_stz:"<<true_stz<<" true_endz:"<<true_endz<<" KE_ff:"<<KE_ff<<" KE_1st:"<<KE_1st<<" KEend_true:"<<KEend_true<<" | true_st_sliceID:"<<true_st_sliceID<<" true_sliceID:"<<true_sliceID<<std::endl;
 			true_st_sliceID=-1;
 			true_sliceID=-1;
-		} 
-
-		//if (true_st_sliceID==true_sliceID) break; //HY added for test	
+		} //incomplete charge deposition 
 
 		//evt selection cuts
 		bool PassCuts_INT=false; //all bq cut+reco inel cut
@@ -1578,30 +1581,15 @@ void ProtonESliceDataAll::Loop() {
 			//double keff_reco=ke_beam_spec_MeV-mean_Eloss_upstream;
 			//double keff_reco=KE_ff_reco;
 			//double KE_reco30=BB.KEAtLength(keff_reco, 30.);
-			//reco_st_sliceID=int((Emax-keff_reco)/thinslicewidth+1);
-			//reco_st_sliceID=int((Emax-keff_reco)/thinslicewidth+1);
-			//reco_st_sliceID=int((Emax-keff_reco)/thinslicewidth);
-			//reco_st_sliceID=int((Emax-KE_ff_reco)/thinslicewidth-0.5);
 			//reco_st_sliceID=int((Emax-KE_ff_reco)/thinslicewidth+0.5);
 			reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth));
-			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth)+1);
-			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth)-1);
-			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth-0.5));
-			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth+0.5));
-			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth)-1);
-			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth))-1;
-			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth))-1;
-			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth))+1;
-			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth)-1);
-			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth)+1);
-			//reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth));
 			//--reco_st_sliceID;
 			//reco_st_sliceID++;
 			//if (range_reco>=30.) reco_st_sliceID=int((Emax-KE_reco30)/thinslicewidth);
 			//if (range_reco<30) reco_st_sliceID=-1;
 			if (reco_st_sliceID<0) reco_st_sliceID=-1; //KE higher than Emax
-			if (reco_endz < 0) reco_st_sliceID = -1; //testing
-			if (reco_st_sliceID >= nthinslices||KE_ff_reco<0) reco_st_sliceID = nthinslices;
+			if (reco_endz < 0) reco_st_sliceID = -1; //un-physical
+			if (reco_st_sliceID >= nthinslices) reco_st_sliceID = nthinslices;
 
 			//double KE_reco=BB.KEAtLength(keff_reco, range_reco);
 			//reco_sliceID = int((Emax-KEend_reco)/thinslicewidth);
@@ -1610,14 +1598,15 @@ void ProtonESliceDataAll::Loop() {
 			if (reco_sliceID < 0) reco_sliceID = -1;
 			if (reco_endz<0) reco_sliceID = -1;
 			if (reco_sliceID >= nthinslices||KEend_reco<0) reco_sliceID = nthinslices;
-			if (reco_st_sliceID>reco_sliceID) {
-				std::cout<<"\nreco_stz:"<<reco_stz<<" reco_endz:"<<reco_endz<<" KE_ff_reco:"<<KE_ff_reco<<" KEend_reco:"<<KEend_reco<<" reco_st_sliceID:"<<reco_st_sliceID<<" reco_sliceID:"<<reco_sliceID<<std::endl;
+			//if (reco_st_sliceID==reco_sliceID) {
+				//std::cout<<"\n[sameID!]reco_stz:"<<reco_stz<<" reco_endz:"<<reco_endz<<" KE_ff_reco:"<<KE_ff_reco<<" KEend_reco:"<<KEend_reco<<" reco_st_sliceID:"<<reco_st_sliceID<<" reco_sliceID:"<<reco_sliceID<<std::endl;
+			//}
+			if (reco_st_sliceID>reco_sliceID) { //incomplete charge deposition
+				//std::cout<<"\nreco_stz:"<<reco_stz<<" reco_endz:"<<reco_endz<<" KE_ff_reco:"<<KE_ff_reco<<" KEend_reco:"<<KEend_reco<<" reco_st_sliceID:"<<reco_st_sliceID<<" reco_sliceID:"<<reco_sliceID<<std::endl;
 				reco_st_sliceID=-1;
 				reco_sliceID=-1;
-			}
+			} //incomplete charge deposition
  
-			//if (reco_st_sliceID==reco_sliceID) break; //HY added
-
 			if (IsBQ&&IsRecoInEL) {
 				PassCuts_INT=true; //for INT 
 			}
