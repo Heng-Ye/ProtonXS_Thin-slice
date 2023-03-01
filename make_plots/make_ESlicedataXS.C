@@ -367,19 +367,33 @@ void make_ESlicedataXS() {
 	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_30slcs_fakedata17_ceil.root");
 
 	//fake data:sliceID study
-	TString outpath="./plots_XS_SliceID_Study_plus0.5_keff_30slices/";
-        TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_nobmrw_kebeamff_edept_v09_39_01_All_sliceIDStudy_plus0.5.root";
-        TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_nobmrw_kebeamff_edept_v09_39_01_All_sliceIDStudy_plus0.5.root"; //for reco
-        TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_nobmrw_kebeamff_edept_v09_39_01_All_sliceIDStudy_plus0.5.root"; //for truth and response matrix
-	TString fout=fout_path+Form("xs_Eslice_dE20MeV_30slcs_fakedata18_ceil.root");
+	//TString outpath="./plots_XS_SliceID_Study_plus0.5_keff_30slices/";
+        //TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_nobmrw_kebeamff_edept_v09_39_01_All_sliceIDStudy_plus0.5.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_nobmrw_kebeamff_edept_v09_39_01_All_sliceIDStudy_plus0.5.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_nobmrw_kebeamff_edept_v09_39_01_All_sliceIDStudy_plus0.5.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_30slcs_fakedata18_ceil.root");
 
 	//fake data:sliceID study
-	TString outpath="./plots_XS_SliceID_Study_ceil_ignoreincompleteslice_keff_30slices/";
-        TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_ceil_ignoreincompleteSlice.root";
-        TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_ceil_ignoreincompleteSlice.root"; //for reco
-        TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_ceil_ignoreincompleteSlice.root"; //for truth and response matrix
-	TString fout=fout_path+Form("xs_Eslice_dE20MeV_30slcs_fakedata19_ceil_ignoreincompleteslices.root");
+	//TString outpath="./plots_XS_SliceID_Study_ceil_ignoreincompleteslice_keff_30slices/";
+        //TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_ceil_ignoreincompleteSlice.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_ceil_ignoreincompleteSlice.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_ceil_ignoreincompleteSlice.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_30slcs_fakedata19_ceil_ignoreincompleteslices.root");
 
+
+	//fake data:sliceID study
+	//TString outpath="./plots_XS_SliceID_Study_ceil_ignoreincompleteslice_keff_30slices/";
+        //TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_halfsample_ceil_ignoreincompleteSlice.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_halfsample_ceil_ignoreincompleteSlice.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_halfsample_ceil_ignoreincompleteSlice.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_30slcs_fakedata19_ceil_ignoreincompleteslices.root");
+
+	//fake data:sliceID study
+	//TString outpath="./plots_XS_SliceID_Study_ceil_ignoreincompleteslice_nobeammomcut_keff_30slices/";
+        //TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_nobmrw_nobeammomcut_kebeamff_v09_39_01_All_SliceIDStudy_halfsample_ceil_ignoreincompleteSlice.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_nobmrw_nobeammomcut_kebeamff_v09_39_01_All_SliceIDStudy_halfsample_ceil_ignoreincompleteSlice.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_nobmrw_nobeammomcut_kebeamff_v09_39_01_All_SliceIDStudy_halfsample_ceil_ignoreincompleteSlice.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_30slcs_fakedata20_ceil_ignoreincompleteslices_nobeammomcut.root");
 
 	//E-dept E-loss upstream (center): something fishy here
 	//TString outpath="./plots_XS_Eslice_bmrwkebeamff_edept_newslcid/";
@@ -388,12 +402,12 @@ void make_ESlicedataXS() {
         //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_kebeamff_edept_v09_39_01_All_ceil.root"; //for truth and response matrix
 	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_data_edept_newslcid.root");
 
-	//E-dept E-loss upstream (center)
-	//TString outpath="./plots_XS_Eslice_bmrwkebeamff_misidprw_edept_newslcid/";
-        //TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS_newslcid_Edept/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01_newslcid_edept.root";
-        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_misidprw_kebeamff_edept_v09_39_01_All_ceil.root"; //for reco
-        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrw_misidprw_kebeamff_edept_v09_39_01_All_ceil.root"; //for truth and response matrix
-	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_data_misidprw_edept_newslcid.root");
+	//E-dept E-loss upstream (center) --------------------------------------------------------------------------------------------------------------------------//
+	TString outpath="./plots_XS_Eslice_bmrwkebeamff_edept_newslcid/";
+        TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS_newslcid_Edept/prod4a_Eslice_dE20MeV_30slcs_beamxy_runAll_v09_39_01_newslcid_edept.root";
+        TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_bmrw_kebeamff_edept_v09_39_01_All.root"; //for reco
+        TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_bmrw_kebeamff_edept_v09_39_01_All.root"; //for truth and response matrix
+	TString fout=fout_path+Form("xs_Eslice_dE20MeV_30slcs_data_edept_newslcid.root");
 
 
 
@@ -986,9 +1000,7 @@ void make_ESlicedataXS() {
     		true_int[i] = mc_truesliceID_inel->GetBinContent(i+2);
     		err_true_int[i] = mc_truesliceID_inel->GetBinError(i+2);
 
-		//Test --------------------------------------------------------------------
-/*
-		//same xs result as default 
+		//new treatment for INC ---------------------------------------------------- 
     		for (int j=0; j<=i; ++j){
       			true_inc[i]+=mc_true_st_sliceID_all->GetBinContent(j+2);
       			err_true_inc[i]+=pow(mc_true_st_sliceID_all->GetBinError(j+2),2);
@@ -998,9 +1010,10 @@ void make_ESlicedataXS() {
       			true_inc[i]-=mc_truesliceID_all->GetBinContent(j+2);
       			err_true_inc[i]+=pow(mc_truesliceID_all->GetBinError(j+2),2);
     		}
-*/
 		//--------------------------------------------------------------------------
 
+/*
+ 		//do NOT use the old definition, bias at high KE
     		for (int j=i; j<=nthinslices; ++j){
       			true_inc[i]+=mc_truesliceID_all->GetBinContent(j+2);
       			err_true_inc[i]+=pow(mc_truesliceID_all->GetBinError(j+2),2);
@@ -1009,6 +1022,7 @@ void make_ESlicedataXS() {
       			true_inc[i]-=mc_true_st_sliceID_all->GetBinContent(j+2);
       			err_true_inc[i]+=pow(mc_true_st_sliceID_all->GetBinError(j+2),2);
     		}
+*/
 
     		err_true_inc[i] = sqrt(err_true_inc[i]);
 
@@ -1042,6 +1056,21 @@ void make_ESlicedataXS() {
 		reco_int[i]=data_int_uf->GetBinContent(i+2);
 		err_reco_int[i]=data_int_uf->GetBinError(i+2);
 
+		//New way to calculate INC -------------------------------------------------
+    		for (int j=0; j<=i; ++j){
+      			reco_inc[i]+=data_st_inc_uf->GetBinContent(j+2);
+      			err_reco_inc[i]+=pow(data_st_inc_uf->GetBinError(j+2),2);
+    		}
+
+    		for (int j=0; j<=i-1; ++j){
+      			reco_inc[i]-=data_inc_uf->GetBinContent(j+2);
+      			err_reco_inc[i]+=pow(data_inc_uf->GetBinError(j+2),2);
+    		}
+		//--------------------------------------------------------------------------
+
+
+/*
+ 		//do NOT use the old way to calculate INC, bias at high KE! -------
 		//inc[all]
     		for (int j=i; j<=nthinslices; ++j){
       			reco_inc[i]+=data_inc_uf->GetBinContent(j+2);
@@ -1051,6 +1080,9 @@ void make_ESlicedataXS() {
       			reco_inc[i]-=data_st_inc_uf->GetBinContent(j+2);
       			err_reco_inc[i]+=pow(data_st_inc_uf->GetBinError(j+2),2);
     		}
+*/
+
+		std::cout<<"sliceid["<<i<<"]="<<sliceid[i]<<" reco_inc["<<i<<"]="<<reco_inc[i]<<std::endl;
     		err_reco_inc[i] = sqrt(err_reco_inc[i]);
 
 		//reco xs
@@ -1928,7 +1960,7 @@ void make_ESlicedataXS() {
         TGraph *total_inel_KE = (TGraph*)f_xs.Get("inel_KE");
 
 	//Neutrino Gen
-        TFile f_other("/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/mcdata/sce/MC_PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1/xs_thinslice/make_plots/model_prediction_screen_grab/model_pred_screengrab.root");
+        TFile f_other("/dune/app/users/hyliao/WORK/analysis/protodune/proton/analysis/mcdata/sce/MC_PDSPProd4a_MC_1GeV_reco1_sce_datadriven_v1/xs_thinslice/make_plots/model_prediction/model_pred.root");
         TGraph *xs_GENIE_ha2018 = (TGraph*)f_other.Get("xs_GENIE_ha2018");
         TGraph *xs_NEUT_2019 = (TGraph*)f_other.Get("xs_NEUT_2019");
         TGraph *xs_NuWRO_2019 = (TGraph*)f_other.Get("xs_NuWRO_2019");
@@ -1958,7 +1990,8 @@ void make_ESlicedataXS() {
         //float ymax=1200;
         float ymax=1400;
         //float xmax=600;
-        float xmax=200;
+        //float xmax=200;
+        float xmax=420;
         //float xmax=400;
         //float xmax=460;
         //float xmax=620;
@@ -1971,13 +2004,13 @@ void make_ESlicedataXS() {
         f2d_xs->Draw("");
 
         total_inel_KE->SetLineColor(2);
-        total_inel_KE->Draw("c same");
+        total_inel_KE->Draw("l same");
 
-	xs_GENIE_ha2018->Draw("c same");
-	xs_NEUT_2019->Draw("c same");
-	xs_GENIE_INCL_pp->Draw("c same");
-	xs_GENIE_hN2018->Draw("c same");
-	xs_NuWRO_2019->Draw("c same");
+	xs_GENIE_ha2018->Draw("l same");
+	xs_NEUT_2019->Draw("l same");
+	xs_GENIE_INCL_pp->Draw("l same");
+	xs_GENIE_hN2018->Draw("l same");
+	xs_NuWRO_2019->Draw("l same");
 
 
         gr_truexs->SetLineWidth(2);
