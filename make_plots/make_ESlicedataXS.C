@@ -403,12 +403,18 @@ void make_ESlicedataXS() {
 	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_40slcs_data_edept_newslcid.root");
 
 	//E-dept E-loss upstream (center) --------------------------------------------------------------------------------------------------------------------------//
-	TString outpath="./plots_XS_Eslice_bmrwkebeamff_edept_newslcid/";
-        TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS_newslcid_Edept/prod4a_Eslice_dE20MeV_30slcs_beamxy_runAll_v09_39_01_newslcid_edept.root";
-        TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_bmrw_kebeamff_edept_v09_39_01_All.root"; //for reco
-        TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_bmrw_kebeamff_edept_v09_39_01_All.root"; //for truth and response matrix
-	TString fout=fout_path+Form("xs_Eslice_dE20MeV_30slcs_data_edept_newslcid.root");
+	//TString outpath="./plots_XS_Eslice_bmrwkebeamff_edept_newslcid/";
+        //TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS_newslcid_Edept/prod4a_Eslice_dE20MeV_30slcs_beamxy_runAll_v09_39_01_newslcid_edept.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_bmrw_kebeamff_edept_v09_39_01_All.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_bmrw_kebeamff_edept_v09_39_01_All.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_30slcs_data_edept_newslcid.root");
 
+	//E-dept E-loss upstream (misidprw) --------------------------------------------------------------------------------------------------------------------------//
+	TString outpath="./plots_XS_Eslice_bmrwkebeamff_edept_misidprw_newslcid/";
+        TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS_newslcid_Edept/prod4a_Eslice_dE20MeV_30slcs_beamxy_runAll_v09_39_01_newslcid_edept.root";
+        TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_bmrw_kebeamff_edept_misidprw_v09_39_01_All.root"; //for reco
+        TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_bmrw_kebeamff_edept_misidprw_v09_39_01_All.root"; //for truth and response matrix
+	TString fout=fout_path+Form("xs_Eslice_dE20MeV_30slcs_data_edept_misidprw_newslcid.root");
 
 
 
