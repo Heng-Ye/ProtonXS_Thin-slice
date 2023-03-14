@@ -16,6 +16,7 @@ class Unfold {
   RooUnfoldResponse response_SliceID_Int;  //Interaction
   RooUnfoldResponse response_SliceID_Inc;  //Incident
   RooUnfoldResponse response_st_SliceID_Inc;  //Incident(start sliceID)
+  RooUnfoldResponse response_SliceID_2D;   //2D response matrix for INC: INC, INC_ST
 
   //RooUnfoldResponse response_SliceID_shape_Int;  //Interaction [by shape]
   //RooUnfoldResponse response_SliceID_shape_Inc;  //Incident [by shape]
@@ -62,11 +63,13 @@ Unfold::Unfold(int nb, double xlo, double xhi)
   : response_SliceID_Int(nb, xlo, xhi)
   , response_SliceID_Inc(nb, xlo, xhi)
   , response_st_SliceID_Inc(nb, xlo, xhi)
+  , response_SliceID_2D(nb, xlo, xhi, nb, xlo, xhi)
 {
 
   response_SliceID_Int.UseOverflow(false);
   response_SliceID_Inc.UseOverflow(false);
   response_st_SliceID_Inc.UseOverflow(false);
+  response_SliceID_2D.UseOverflow(false);
 
   eff_num_Int = new TH1D("eff_num_Int", "eff_num_Int", nb, xlo, xhi);
   eff_den_Int = new TH1D("eff_den_Int", "eff_den_Int", nb, xlo, xhi);
@@ -174,6 +177,9 @@ void Unfold::SaveHistograms(){
   response_SliceID_Inc.Write("response_SliceID_Inc");
 
   response_st_SliceID_Inc.Write("response_st_SliceID_Inc");
+
+  response_SliceID_2D.Write("response_SliceID_2D");
+
 
   //response_SliceID_shape_Inc.Write("response_SliceID_shape_Inc");	
   //response_SliceID_shape_Int.Write("response_SliceID_shape_Int");	

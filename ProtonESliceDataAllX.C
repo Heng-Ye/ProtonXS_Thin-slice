@@ -338,7 +338,8 @@ void ProtonESliceDataAll::Loop() {
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_minusONE.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_ceil_ignoreincompleteSlice.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_halfsample_ceil_ignoreincompleteSlice.root", name_thinslicewidth, nthinslices)); //output file name
-	SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_nobeammomcut_kebeamff_v09_39_01_All_SliceIDStudy_halfsample_ceil_ignoreincompleteSlice.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_ceil_ignoreincompleteSlice.root", name_thinslicewidth, nthinslices)); //output file name
+	SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_Halfsample_SliceIDStudy_ceil_ignoreincompleteSlice_2dunfold.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrw_kebeamff_edept_v09_39_01_All.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrw_kebeamff_edept_misidprw_v09_39_01_All.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_plus0.5.root", name_thinslicewidth, nthinslices)); //output file name
@@ -1515,33 +1516,28 @@ void ProtonESliceDataAll::Loop() {
 			} //loop over true hits
 		} //if true container not empty
 
-		//Thin-slice method ------------------------------------------------------------------------------------------------------------//
-		//true slice ID
-		//true_sliceID = int(true_endz/thinslicewidth);
-		//true_sliceID = int(range_true/thinslicewidth); //HY:Make sure size of true_trk_len vector is !0, otherwise lost truth info
-		//cout<<"true_endz:"<<true_endz<<"  true_sliceID:"<<true_sliceID<<endl;
-		//cout<<"primtrk_range_true->empty():"<<primtrk_range_true->empty()
-		// <<" primtrk_range->empty():"<<primtrk_range->empty()<<endl;
-
-		//start slideID
+		//E-slice method ------------------------------------------------------------------------------------------------------------//
+		//true start slice ID
 		//true_st_sliceID=int((Emax-KE_ff)/thinslicewidth+0.5);
 		true_st_sliceID=int(ceil((Emax-KE_ff)/thinslicewidth));
-		//true_st_sliceID=int(ceil((Emax-KE_ff)/thinslicewidth+0.5));
-		//if (range_true >= 30) true_st_sliceID=int((Emax-KE_ff30)/thinslicewidth);
-		//if (range_true < 30) true_st_sliceID=-1; 
-		if (true_st_sliceID<0) true_st_sliceID=-1; //KE higher than Emax, put it to over-flow bin
-		if (true_endz < 0) true_st_sliceID=-1; //Upstream-interaction, won't be involved in XS measurement since not entering TPC, put it to the over-flow/(or un-physical) bin
-						       //Note. XS measurement starts from ID=0, ID=-1 will not be considered in the XS measurement
-						       //p.s. ID=-1 serves as over-flow bin and un-physical bin
+		if (true_st_sliceID<0) true_st_sliceID=0; //KE higher than Emax, put it to over-flow bin
 		if (true_st_sliceID >= nthinslices) true_st_sliceID = nthinslices;
 
 		//double KE_true=BB.KEAtLength(KE_ff, range_true);
-		double KE_true=KEend_true;
 		//true_sliceID = int((Emax-KE_true)/thinslicewidth);
+		double KE_true=KEend_true;
 		true_sliceID = int(floor((Emax-KE_true)/thinslicewidth));
-		if (true_sliceID < 0) true_sliceID = -1; //KE higher than Emax, put it to over-flow bin
-		if (true_endz < 0) true_sliceID = -1; //Upstream-interaction
-		if (true_sliceID >= nthinslices||KE_true<0) true_sliceID = nthinslices;
+		if (true_sliceID < 0) true_sliceID = 0; //KE higher than Emax, put it to over-flow bin
+		//if (true_sliceID >= nthinslices||KE_true<0) true_sliceID = nthinslices;
+		if (true_sliceID >= nthinslices) true_sliceID = nthinslices;
+
+		if (true_endz < 0) { //Upstream-interaction, won't be involved in XS measurement since not entering TPC, put it to the over-flow/(or un-physical) bin
+			//true_st_sliceID=-1;
+			//true_sliceID = -1;
+		       	//Note. XS measurement starts from ID=0, ID=-1 will not be considered in the XS measurement
+			//p.s. ID=-1 serves as over-flow bin and un-physical bin
+		}
+
 
 		//if (true_st_sliceID==true_sliceID) {
 			//std::cout<<"\n[same ID!] true_stz:"<<true_stz<<" true_endz:"<<true_endz<<" KE_ff:"<<KE_ff<<" KE_1st:"<<KE_1st<<" KEend_true:"<<KEend_true<<" | true_st_sliceID:"<<true_st_sliceID<<" true_sliceID:"<<true_sliceID<<std::endl;
@@ -1570,7 +1566,7 @@ void ProtonESliceDataAll::Loop() {
 			//if (range_reco>=30.) reco_st_sliceID=int((Emax-KE_reco30)/thinslicewidth);
 			//if (range_reco<30) reco_st_sliceID=-1;
 			reco_st_sliceID=int(ceil((Emax-KE_ff_reco)/thinslicewidth));
-			if (reco_st_sliceID<0) reco_st_sliceID=-1; //KE higher than Emax
+			if (reco_st_sliceID<0) reco_st_sliceID=0; //KE higher than Emax
 			if (reco_st_sliceID > nthinslices) reco_st_sliceID = nthinslices;
 			//if (reco_endz < 0) reco_st_sliceID = -1; //un-physical
 
@@ -1578,7 +1574,7 @@ void ProtonESliceDataAll::Loop() {
 			//reco_sliceID = int((Emax-KEend_reco)/thinslicewidth);
 			reco_sliceID = int(floor((Emax-KEend_reco)/thinslicewidth));
 			if (reco_sliceID >= nthinslices||KEend_reco<0) reco_sliceID = nthinslices;
-			if (reco_sliceID < 0) reco_sliceID = -1;
+			if (reco_sliceID < 0) reco_sliceID = 0;
 			//if (reco_endz<0) reco_sliceID = -1;
 
 			if (reco_st_sliceID>reco_sliceID) { //incomplete charge deposition
@@ -1640,6 +1636,7 @@ void ProtonESliceDataAll::Loop() {
 
 			uf.response_SliceID_Inc.Fill(reco_sliceID, true_sliceID, mom_rw_minchi2);
 			uf.response_st_SliceID_Inc.Fill(reco_st_sliceID, true_st_sliceID, mom_rw_minchi2);
+			uf.response_SliceID_2D.Fill(reco_st_sliceID, reco_sliceID, true_st_sliceID, true_sliceID, mom_rw_minchi2);
 
 			uf.res_Inc_reco->Fill(reco_sliceID, mom_rw_minchi2);
 			uf.res_st_Inc_reco->Fill(reco_st_sliceID, mom_rw_minchi2);
@@ -1652,6 +1649,7 @@ void ProtonESliceDataAll::Loop() {
 			//if (!isTestSample){
 			uf.response_SliceID_Inc.Miss(true_sliceID, mom_rw_minchi2);
 			uf.response_st_SliceID_Inc.Miss(true_st_sliceID, mom_rw_minchi2);
+			uf.response_SliceID_2D.Miss(reco_st_sliceID, reco_sliceID, true_st_sliceID, true_sliceID, mom_rw_minchi2);
 
 			uf.res_Inc_truth->Fill(true_sliceID, mom_rw_minchi2);
 			uf.res_st_Inc_truth->Fill(true_st_sliceID, mom_rw_minchi2);
@@ -1703,65 +1701,83 @@ void ProtonESliceDataAll::Loop() {
 			//if (isTestSample){ //if test sample
 			h_recosliceid_allevts_cuts->Fill(reco_sliceID, mom_rw_minchi2);
 			h_reco_st_sliceid_allevts_cuts->Fill(reco_st_sliceID, mom_rw_minchi2);
+			h2d_recosliceid_allevts_cuts->Fill(reco_st_sliceID, reco_sliceID, mom_rw_minchi2);
 
 			h_truesliceid_allevts_cuts->Fill(true_sliceID, mom_rw_minchi2);
 			h_true_st_sliceid_allevts_cuts->Fill(true_st_sliceID, mom_rw_minchi2);
+			h2d_truesliceid_allevts_cuts->Fill(true_st_sliceID, true_sliceID, mom_rw_minchi2);
 
 			if (kinel) { 
 				h_recosliceid_allevts_cuts_inel->Fill(reco_sliceID, mom_rw_minchi2);
 				h_reco_st_sliceid_allevts_cuts_inel->Fill(reco_st_sliceID, mom_rw_minchi2);
+				h2d_recosliceid_allevts_cuts_inel->Fill(reco_st_sliceID, reco_sliceID, mom_rw_minchi2);
 
 				h_truesliceid_allevts_cuts_inel->Fill(true_sliceID, mom_rw_minchi2);
 				h_true_st_sliceid_allevts_cuts_inel->Fill(true_st_sliceID, mom_rw_minchi2);
+				h2d_truesliceid_allevts_cuts_inel->Fill(true_st_sliceID, true_sliceID, mom_rw_minchi2);
 			}
 			if (kel) { 
 				h_recosliceid_allevts_cuts_el->Fill(reco_sliceID, mom_rw_minchi2);
 				h_reco_st_sliceid_allevts_cuts_el->Fill(reco_st_sliceID, mom_rw_minchi2);
+				h2d_recosliceid_allevts_cuts_el->Fill(reco_st_sliceID, reco_sliceID, mom_rw_minchi2);
 
 				h_truesliceid_allevts_cuts_el->Fill(true_sliceID, mom_rw_minchi2);
 				h_true_st_sliceid_allevts_cuts_el->Fill(true_st_sliceID, mom_rw_minchi2);
+				h2d_truesliceid_allevts_cuts_el->Fill(true_st_sliceID, true_sliceID, mom_rw_minchi2);
 			}
 			if (kMIDcosmic) { 
 				h_recosliceid_allevts_cuts_midcosmic->Fill(reco_sliceID, mom_rw_minchi2);
 				h_reco_st_sliceid_allevts_cuts_midcosmic->Fill(reco_st_sliceID, mom_rw_minchi2);
+				h2d_recosliceid_allevts_cuts_midcosmic->Fill(reco_st_sliceID, reco_sliceID, mom_rw_minchi2);
 
 				h_truesliceid_allevts_cuts_midcosmic->Fill(true_sliceID, mom_rw_minchi2);
 				h_true_st_sliceid_allevts_cuts_midcosmic->Fill(true_st_sliceID, mom_rw_minchi2);
+				h2d_truesliceid_allevts_cuts_midcosmic->Fill(true_st_sliceID, true_sliceID, mom_rw_minchi2);
 			}
 			if (kMIDpi) { 
 				h_recosliceid_allevts_cuts_midpi->Fill(reco_sliceID, mom_rw_minchi2);
 				h_reco_st_sliceid_allevts_cuts_midpi->Fill(reco_st_sliceID, mom_rw_minchi2);
+				h2d_recosliceid_allevts_cuts_midpi->Fill(reco_st_sliceID, reco_sliceID, mom_rw_minchi2);
 
 				h_truesliceid_allevts_cuts_midpi->Fill(true_sliceID, mom_rw_minchi2);
 				h_true_st_sliceid_allevts_cuts_midpi->Fill(true_st_sliceID, mom_rw_minchi2);
+				h2d_truesliceid_allevts_cuts_midpi->Fill(true_st_sliceID, true_sliceID, mom_rw_minchi2);
 			}
 			if (kMIDp) { 
 				h_recosliceid_allevts_cuts_midp->Fill(reco_sliceID, mom_rw_minchi2*misidp_rw);
 				h_reco_st_sliceid_allevts_cuts_midp->Fill(reco_st_sliceID, mom_rw_minchi2);
+				h2d_recosliceid_allevts_cuts_midp->Fill(reco_st_sliceID, reco_sliceID, mom_rw_minchi2);
 
 				h_truesliceid_allevts_cuts_midp->Fill(true_sliceID, mom_rw_minchi2*misidp_rw);
 				h_true_st_sliceid_allevts_cuts_midp->Fill(true_st_sliceID, mom_rw_minchi2);
+				h2d_truesliceid_allevts_cuts_midp->Fill(true_st_sliceID, true_sliceID, mom_rw_minchi2);
 			}
 			if (kMIDmu) { 
 				h_recosliceid_allevts_cuts_midmu->Fill(reco_sliceID, mom_rw_minchi2);
 				h_reco_st_sliceid_allevts_cuts_midmu->Fill(reco_st_sliceID, mom_rw_minchi2);
+				h2d_recosliceid_allevts_cuts_midmu->Fill(reco_st_sliceID, reco_sliceID, mom_rw_minchi2);
 
 				h_truesliceid_allevts_cuts_midmu->Fill(true_sliceID, mom_rw_minchi2);
 				h_true_st_sliceid_allevts_cuts_midmu->Fill(true_st_sliceID, mom_rw_minchi2);
+				h2d_truesliceid_allevts_cuts_midmu->Fill(true_st_sliceID, true_sliceID, mom_rw_minchi2);
 			}
 			if (kMIDeg) { 
 				h_recosliceid_allevts_cuts_mideg->Fill(reco_sliceID, mom_rw_minchi2);
 				h_reco_st_sliceid_allevts_cuts_mideg->Fill(reco_st_sliceID, mom_rw_minchi2);
+				h2d_recosliceid_allevts_cuts_mideg->Fill(reco_st_sliceID, reco_sliceID, mom_rw_minchi2);
 
 				h_truesliceid_allevts_cuts_mideg->Fill(true_sliceID, mom_rw_minchi2);
 				h_true_st_sliceid_allevts_cuts_mideg->Fill(true_st_sliceID, mom_rw_minchi2);
+				h2d_truesliceid_allevts_cuts_mideg->Fill(true_st_sliceID, true_sliceID, mom_rw_minchi2);
 			}
 			if (kMIDother) { 
 				h_recosliceid_allevts_cuts_midother->Fill(reco_sliceID, mom_rw_minchi2);
 				h_reco_st_sliceid_allevts_cuts_midother->Fill(reco_st_sliceID, mom_rw_minchi2);
+				h2d_recosliceid_allevts_cuts_midother->Fill(reco_st_sliceID, reco_sliceID, mom_rw_minchi2);
 
 				h_truesliceid_allevts_cuts_midother->Fill(reco_sliceID, mom_rw_minchi2);
 				h_true_st_sliceid_allevts_cuts_midother->Fill(reco_st_sliceID, mom_rw_minchi2);
+				h2d_truesliceid_allevts_cuts_midother->Fill(true_st_sliceID, true_sliceID, mom_rw_minchi2);
 			}
 			//} //if test sample
 			//else { //if NOT test sample
