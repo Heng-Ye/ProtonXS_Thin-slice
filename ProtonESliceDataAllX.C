@@ -1649,7 +1649,7 @@ void ProtonESliceDataAll::Loop() {
 			//if (!isTestSample){
 			uf.response_SliceID_Inc.Miss(true_sliceID, mom_rw_minchi2);
 			uf.response_st_SliceID_Inc.Miss(true_st_sliceID, mom_rw_minchi2);
-			uf.response_SliceID_2D.Miss(reco_st_sliceID, reco_sliceID, true_st_sliceID, true_sliceID, mom_rw_minchi2);
+			uf.response_SliceID_2D.Miss(true_st_sliceID, true_sliceID, mom_rw_minchi2);
 
 			uf.res_Inc_truth->Fill(true_sliceID, mom_rw_minchi2);
 			uf.res_st_Inc_truth->Fill(true_st_sliceID, mom_rw_minchi2);
