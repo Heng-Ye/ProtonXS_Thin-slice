@@ -293,8 +293,14 @@ void ProtonESliceDataAll::Loop() {
 	kerw_misidp->SetParameter(6, p2_mc_misidp);
 	kerw_misidp->SetParameter(7, p3_mc_misidp);
 
-	//unfolding config. -------------------------//
-	Unfold uf(nthinslices+2, -1, nthinslices+1);
+	//unfolding config. ---------------------------------------------------------------------------------------------------//
+	//Unfold uf(nthinslices+2, -1, nthinslices+1);
+	
+	//2d unfolding
+	TH2D* h2d_reco = new TH2D("h2d_reco","h2d_reco", nthinslices+2, -1, nthinslices+1, nthinslices+2, -1, nthinslices+1);
+	TH2D* h2d_true = new TH2D("h2d_true","h2d_true", nthinslices+2, -1, nthinslices+1, nthinslices+2, -1, nthinslices+1);
+  	Unfold uf(h2d_reco, h2d_true);
+	//---------------------------------------------------------------------------------------------------------------------//
 
 	//ThinSlice config. ---------------------------------------------------------------------------------------------------//
 	//SetOutputFileName(Form("prod4areco2_mc_ThinSliceE_dE%dMeV_%dslcs_nobmrw_plus0.5.root", name_thinslicewidth, nthinslices)); //output file name

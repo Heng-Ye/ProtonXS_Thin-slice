@@ -16,7 +16,7 @@ class Unfold {
   RooUnfoldResponse response_SliceID_Int;  //Interaction
   RooUnfoldResponse response_SliceID_Inc;  //Incident
   RooUnfoldResponse response_st_SliceID_Inc;  //Incident(start sliceID)
-  RooUnfoldResponse response_SliceID_2D;   //2D response matrix for INC: INC, INC_ST
+  RooUnfoldResponse response_SliceID_2D;   //2D response matrix for INC: INC_ST(x-axis), INC_Int(y-axis)
 
   //RooUnfoldResponse response_SliceID_shape_Int;  //Interaction [by shape]
   //RooUnfoldResponse response_SliceID_shape_Inc;  //Incident [by shape]
@@ -59,11 +59,12 @@ class Unfold {
 };
 
 
-Unfold::Unfold(int nb, double xlo, double xhi)
+//Unfold::Unfold(int nb, double xlo, double xhi)
+Unfold::Unfold(int nb, double xlo, double xhi, TH2D* h2d_reco, TH2D* h2d_true)
   : response_SliceID_Int(nb, xlo, xhi)
   , response_SliceID_Inc(nb, xlo, xhi)
   , response_st_SliceID_Inc(nb, xlo, xhi)
-  , response_SliceID_2D(nb, xlo, xhi, nb, xlo, xhi)
+  , response_SliceID_2D(h2d_reco, h2d_true)
 {
 
   response_SliceID_Int.UseOverflow(false);
