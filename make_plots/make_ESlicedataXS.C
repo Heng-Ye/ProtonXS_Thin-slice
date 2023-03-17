@@ -410,11 +410,41 @@ void make_ESlicedataXS() {
 	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_30slcs_data_edept_newslcid.root");
 
 	//E-dept E-loss upstream (misidprw) --------------------------------------------------------------------------------------------------------------------------//
-	TString outpath="./plots_XS_Eslice_bmrwkebeamff_edept_misidprw_newslcid/";
-        TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS_newslcid_Edept/prod4a_Eslice_dE20MeV_30slcs_beamxy_runAll_v09_39_01_newslcid_edept.root";
-        TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_bmrw_kebeamff_edept_misidprw_v09_39_01_All.root"; //for reco
-        TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_bmrw_kebeamff_edept_misidprw_v09_39_01_All.root"; //for truth and response matrix
-	TString fout=fout_path+Form("xs_Eslice_dE20MeV_30slcs_data_edept_misidprw_newslcid.root");
+	//TString outpath="./plots_XS_Eslice_bmrwkebeamff_edept_misidprw_newslcid/";
+        //TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS_newslcid_Edept/prod4a_Eslice_dE20MeV_30slcs_beamxy_runAll_v09_39_01_newslcid_edept.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_bmrw_kebeamff_edept_misidprw_v09_39_01_All.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_bmrw_kebeamff_edept_misidprw_v09_39_01_All.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_30slcs_data_edept_misidprw_newslcid.root");
+
+	//E-dept E-loss upstream (nobmrw) --------------------------------------------------------------------------------------------------------------------------//
+	//TString outpath="./plots_XS_Eslice_nobmrwkebeamff_edept_old/";
+        //TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_nobmrw_kebeamff_v09_39_01_Halfsample_SliceIDStudy_ceil_ignoreincompleteSlice.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_nobmrw_kebeamff_v09_39_01_Halfsample_SliceIDStudy_ceil_ignoreincompleteSlice.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_nobmrw_kebeamff_v09_39_01_Halfsample_SliceIDStudy_ceil_ignoreincompleteSlice.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_30slcs_0.5mc_edept_nobmrw_newslcid.root");
+
+
+	//E-dept E-loss upstream (nobmrw) --------------------------------------------------------------------------------------------------------------------------//
+	//TString outpath="./plots_XS_Eslice_nobmrwkebeamff_edept_2dunfold/";
+	//TString outpath="./plots_XS_Eslice_nobmrwkebeamff_edept_2dunfold_oldcalc/";
+	//TString outpath="./plots_XS_Eslice_nobmrwkebeamff_edept_1dunfold_oldcalc/";
+	//TString outpath="./plots_XS_Eslice_nobmrwkebeamff_edept_1dunfold_newcalc/";
+        //TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_nobmrw_kebeamff_v09_39_01_ceil_ignoreincompleteSlice_2dunfold.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_nobmrw_kebeamff_v09_39_01_ceil_ignoreincompleteSlice_2dunfold.root"; //for reco
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_nobmrw_kebeamff_v09_39_01_ceil_ignoreincompleteSlice_2dunfold.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_30slcs_0.5mc_edept_nobmrw_newslcid_1dunfold_old.root");
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_30slcs_0.5mc_edept_nobmrw_newslcid_1dunfold_new.root");
+
+
+
+
+	//E-dept E-loss upstream (bmrw) ---------------------------------------------------------------------------------------------------------------------------------------//
+	TString outpath="./plots_XS_Eslice_bmrwkebeamff_edept_2dunfold_newcalc/";
+        TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS_newslcid_Edept_2dunfold/prod4a_Eslice_dE20MeV_30slcs_beamxy_runAll_v09_39_01_newslcid_edept.root";
+        TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_bmrw_kebeamff_v09_39_01_ceil_ignoreincompleteSlice_2dunfold.root"; //for reco
+        TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_bmrw_kebeamff_v09_39_01_ceil_ignoreincompleteSlice_2dunfold.root"; //for truth and response matrix
+	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_30slcs_0.5mc_edept_nobmrw_newslcid_1dunfold_old.root");
+	TString fout=fout_path+Form("xs_Eslice_dE20MeV_30slcs_edept_nobmrw_newslcid_2dunfold.root");
 
 
 
@@ -433,6 +463,8 @@ void make_ESlicedataXS() {
 	//reco string pre-fix --------------------------------------//
 	TString str_inc=Form("h_recosliceid_allevts_cuts");
 	TString str_st_inc=Form("h_reco_st_sliceid_allevts_cuts");
+	TString str_2d_inc=Form("h2d_recosliceid_allevts_cuts");
+
 	TString str_int=Form("h_recosliceid_recoinelastic_cuts");
 
         //plot style --------------------------------------------------------------------//
@@ -447,7 +479,7 @@ void make_ESlicedataXS() {
 	TFile *f_data = TFile::Open(fdata.Data());
 	TH1D *data_inc=(TH1D*)f_data->Get(str_inc.Data()); //recosliceID after beam quality cuts
 	TH1D *data_st_inc=(TH1D*)f_data->Get(str_st_inc.Data()); //reco_st_sliceID after beam quality cuts
-	//TH1D *data_int=(TH1D*)f_data->Get("h_recosliceid_inelastic_cuts"); //h_recosliceid_inelastic_cuts
+	TH2D *data2d_inc=(TH2D*)f_data->Get(str_2d_inc.Data()); //reco_st_sliceID vs recosliceID after beam quality cuts
 	TH1D *data_int=(TH1D*)f_data->Get(str_int.Data()); //h_recosliceid_inelastic_cuts
 	data_inc->SetName("data_inc");	
 	data_st_inc->SetName("data_st_inc");	
@@ -493,6 +525,18 @@ void make_ESlicedataXS() {
 	TH1D* mc_st_inc_midmu=(TH1D*)f_mc->Get(Form("%s_midmu",str_st_inc.Data()));
 	TH1D* mc_st_inc_mideg=(TH1D*)f_mc->Get(Form("%s_mideg",str_st_inc.Data()));
 	TH1D* mc_st_inc_midother=(TH1D*)f_mc->Get(Form("%s_midother",str_st_inc.Data()));
+
+	//inc_2d
+	TH2D* mc2d_inc_all=(TH2D*)f_mc->Get(Form("%s",str_2d_inc.Data()));
+	TH2D* mc2d_inc_inel=(TH2D*)f_mc->Get(Form("%s_inel",str_2d_inc.Data()));
+	TH2D* mc2d_inc_el=(TH2D*)f_mc->Get(Form("%s_el",str_2d_inc.Data()));
+	TH2D* mc2d_inc_midcosmic=(TH2D*)f_mc->Get(Form("%s_midcosmic",str_2d_inc.Data()));
+	TH2D* mc2d_inc_midpi=(TH2D*)f_mc->Get(Form("%s_midpi",str_2d_inc.Data()));
+	TH2D* mc2d_inc_midp=(TH2D*)f_mc->Get(Form("%s_midp",str_2d_inc.Data()));
+	TH2D* mc2d_inc_midmu=(TH2D*)f_mc->Get(Form("%s_midmu",str_2d_inc.Data()));
+	TH2D* mc2d_inc_mideg=(TH2D*)f_mc->Get(Form("%s_mideg",str_2d_inc.Data()));
+	TH2D* mc2d_inc_midother=(TH2D*)f_mc->Get(Form("%s_midother",str_2d_inc.Data()));
+
 	
 	mc_inc_inel->SetFillColor(2); mc_inc_inel->SetLineColor(2);
 	//mc_inc_el->SetFillColor(4); mc_inc_el->SetLineColor(4);
@@ -563,6 +607,31 @@ void make_ESlicedataXS() {
 	mc_st_inc_midmu->Scale(norm_mc_st_inc);
 	mc_st_inc_mideg->Scale(norm_mc_st_inc);
 	mc_st_inc_midother->Scale(norm_mc_st_inc);
+
+	//2d_inc
+	int n_mc2d_inc_inel=mc2d_inc_inel->Integral();
+	int n_mc2d_inc_el=mc2d_inc_el->Integral();
+	int n_mc2d_inc_midcosmic=mc2d_inc_midcosmic->Integral();
+	int n_mc2d_inc_midpi=mc2d_inc_midpi->Integral();
+	int n_mc2d_inc_midp=mc2d_inc_midp->Integral();
+	int n_mc2d_inc_midmu=mc2d_inc_midmu->Integral();
+	int n_mc2d_inc_mideg=mc2d_inc_mideg->Integral();
+	int n_mc2d_inc_midother=mc2d_inc_midother->Integral();
+	int n_mc2d_inc=n_mc2d_inc_inel+n_mc2d_inc_el+n_mc2d_inc_midcosmic+n_mc2d_inc_midpi+n_mc2d_inc_midp+n_mc2d_inc_midmu+n_mc2d_inc_mideg+n_mc2d_inc_midother;
+
+	double norm_mc2d_inc=(double)data2d_inc->Integral()/(double)n_mc2d_inc;
+	//double norm_mc2d_inc=(double)data2d_inc->Integral()/(double)mc2d_inc_all->Integral();
+	mc2d_inc_inel->Scale(norm_mc2d_inc);
+	mc2d_inc_el->Scale(norm_mc2d_inc);
+	mc2d_inc_midcosmic->Scale(norm_mc2d_inc);
+	mc2d_inc_midpi->Scale(norm_mc2d_inc);
+	mc2d_inc_midp->Scale(norm_mc2d_inc);
+	mc2d_inc_midmu->Scale(norm_mc2d_inc);
+	mc2d_inc_mideg->Scale(norm_mc2d_inc);
+	mc2d_inc_midother->Scale(norm_mc2d_inc);
+	mc2d_inc_all->Scale(norm_mc2d_inc);
+	
+
 
 
 	THStack* hs_inc=new THStack("hs_inc","");
@@ -672,7 +741,8 @@ void make_ESlicedataXS() {
 	TH1D *eff_int=(TH1D* )f_mc->Get("eff_Int"); //int
 
 	//bkg subtraction ----------------------------------------------------------------------------------------------------------------//
-	TH1D* data_inc_bkgfree=(TH1D *)data_inc->Clone("data_inc_bkgfree"); data_inc_bkgfree->SetName("data_inc_bkgfree");	
+	TH1D* data_inc_bkgfree=(TH1D *)data_inc->Clone("data_inc_bkgfree"); data_inc_bkgfree->SetName("data_inc_bkgfree");
+	TH2D* data2d_inc_bkgfree=(TH2D *)data2d_inc->Clone("data2d_inc_bkgfree"); data2d_inc_bkgfree->SetName("data2d_inc_bkgfree");
 	TH1D* data_st_inc_bkgfree=(TH1D *)data_st_inc->Clone("data_st_inc_bkgfree"); data_st_inc_bkgfree->SetName("data_st_inc_bkgfree");	
 	TH1D* data_int_bkgfree=(TH1D *)data_int->Clone("data_int_bkgfree"); data_int_bkgfree->SetName("data_int_bkgfree");	
 
@@ -713,6 +783,7 @@ void make_ESlicedataXS() {
 
 	//inc
 	data_inc_bkgfree->Add(mc_inc_midp, scal_misidp);
+	data2d_inc_bkgfree->Add(mc2d_inc_midp, scal_misidp);
 	//data_inc_bkgfree->Add(mc_inc_el, -1);
 	//data_inc_bkgfree->Add(mc_inc_midcosmic, -1);
 	//data_inc_bkgfree->Add(mc_inc_midpi, -1);
@@ -741,6 +812,8 @@ void make_ESlicedataXS() {
 	//response matrix from mc
 	//Response matrix as a 2D-histogram: (x,y)=(measured,truth)
 	RooUnfoldResponse *res_inc=(RooUnfoldResponse*)f_mc_valid->Get("response_SliceID_Inc"); res_inc->SetName("res_inc");
+	RooUnfoldResponse *res2d_inc=(RooUnfoldResponse*)f_mc_valid->Get("response_SliceID_2D"); res2d_inc->SetName("res2d_inc");
+
 	RooUnfoldResponse *res_st_inc=(RooUnfoldResponse*)f_mc_valid->Get("response_st_SliceID_Inc"); res_st_inc->SetName("res_st_inc");
 
 	//Response using shape
@@ -758,6 +831,7 @@ void make_ESlicedataXS() {
 	//int n_iteration=4;
 	int n_iteration=4;
 	RooUnfoldBayes uf_inc (res_inc, data_inc_bkgfree, n_iteration); //inc
+	RooUnfoldBayes uf2d_inc (res2d_inc, data2d_inc_bkgfree, n_iteration); //inc_2d
 	RooUnfoldBayes uf_st_inc (res_st_inc, data_st_inc_bkgfree, n_iteration); //inc
 
 	//std::cout<<"GetIterations:"<<uf_inc.GetIterations()<<std::endl;
@@ -778,12 +852,23 @@ void make_ESlicedataXS() {
 	//unfolding
   	TH1D *data_inc_uf;
   	TH1D *data_st_inc_uf;
+  	TH2D *data2d_inc_uf; //2d
+  	TH1D *data1d_inc_uf; //2d->1d
+  	TH1D *data1d_st_inc_uf; //2d->1d
+
   	TH1D *data_int_uf;
 	data_inc_uf=(TH1D* )uf_inc.Hreco();
 	data_st_inc_uf=(TH1D* )uf_st_inc.Hreco();
+	data2d_inc_uf=(TH2D*)uf2d_inc.Hreco();
+	data1d_inc_uf=(TH1D*)data2d_inc_uf->ProjectionY();
+	data1d_st_inc_uf=(TH1D*)data2d_inc_uf->ProjectionX();	
+
   	data_int_uf=(TH1D *)uf_int.Hreco();
 	data_inc_uf->SetNameTitle("data_inc_uf", "Unfolded incident protons; Slice ID; Events");
 	data_st_inc_uf->SetNameTitle("data_st_inc_uf", "Unfolded incident protons; Start Slice ID; Events");
+	data2d_inc_uf->SetNameTitle("data2d_inc_uf", "Unfolded incident protons; Start Slice ID; Slice ID; Events");
+	data1d_inc_uf->SetNameTitle("data1d_inc_uf", "Unfolded incident protons; Slice ID; Events");
+	data1d_st_inc_uf->SetNameTitle("data1d_st_inc_uf", "Unfolded incident protons; Start Slice ID; Events");
 	data_int_uf->SetNameTitle("data_int_uf", "Unfolded interacting protons; Slice ID; Events");
 	//unfold.IncludeSystematics(2); // Default 1, propagates both statistical+systematics, =2 no errors included.
 
@@ -881,7 +966,6 @@ void make_ESlicedataXS() {
     		}
   	}
 
-
 	TCanvas *c_corr_inc=new TCanvas(Form("c_corr_inc"),"",900, 600);
   	corr_inc->SetTitle("Correlation Matrix of Incident Protons; Reco Slice ID; True Slice ID");
 	corr_inc->Draw("colz");
@@ -896,13 +980,6 @@ void make_ESlicedataXS() {
   	corr_int->SetTitle("Correlation Matrix of Inelastic Scattering Proton Candidates; Reco Slice ID; True Slice ID");
 	corr_int->Draw("colz");
 	c_corr_int->Print(Form("%sCorr_int.eps",outpath.Data()));
-
-
-
-
-
-
-
 
 	//draw slideID to KE conversion map ----------------------------------------//
 	TCanvas *c_map=new TCanvas(Form("c_map"),"",900, 600);
@@ -1006,7 +1083,7 @@ void make_ESlicedataXS() {
     		true_int[i] = mc_truesliceID_inel->GetBinContent(i+2);
     		err_true_int[i] = mc_truesliceID_inel->GetBinError(i+2);
 
-		//new treatment for INC ---------------------------------------------------- 
+		//new treatment for INC ----------------------------------------------------
     		for (int j=0; j<=i; ++j){
       			true_inc[i]+=mc_true_st_sliceID_all->GetBinContent(j+2);
       			err_true_inc[i]+=pow(mc_true_st_sliceID_all->GetBinError(j+2),2);
@@ -1018,8 +1095,9 @@ void make_ESlicedataXS() {
     		}
 		//--------------------------------------------------------------------------
 
-/*
- 		//do NOT use the old definition, bias at high KE
+
+ 		//do NOT use the old definition, bias at high KE ---------------------------
+ 		/*	
     		for (int j=i; j<=nthinslices; ++j){
       			true_inc[i]+=mc_truesliceID_all->GetBinContent(j+2);
       			err_true_inc[i]+=pow(mc_truesliceID_all->GetBinError(j+2),2);
@@ -1028,7 +1106,8 @@ void make_ESlicedataXS() {
       			true_inc[i]-=mc_true_st_sliceID_all->GetBinContent(j+2);
       			err_true_inc[i]+=pow(mc_true_st_sliceID_all->GetBinError(j+2),2);
     		}
-*/
+		*/
+		//--------------------------------------------------------------------------
 
     		err_true_inc[i] = sqrt(err_true_inc[i]);
 
@@ -1063,30 +1142,51 @@ void make_ESlicedataXS() {
 		err_reco_int[i]=data_int_uf->GetBinError(i+2);
 
 		//New way to calculate INC -------------------------------------------------
-    		for (int j=0; j<=i; ++j){
-      			reco_inc[i]+=data_st_inc_uf->GetBinContent(j+2);
-      			err_reco_inc[i]+=pow(data_st_inc_uf->GetBinError(j+2),2);
+    		for (int j=0; j<=i; ++j) {
+			//1d unfolding
+      			//reco_inc[i]+=data_st_inc_uf->GetBinContent(j+2);
+      			//err_reco_inc[i]+=pow(data_st_inc_uf->GetBinError(j+2),2);
+
+      			//2d unfolding
+      			reco_inc[i]+=data1d_st_inc_uf->GetBinContent(j+2); //2d->1d
+      			err_reco_inc[i]+=pow(data1d_st_inc_uf->GetBinError(j+2),2); //2d->1d
     		}
 
     		for (int j=0; j<=i-1; ++j){
-      			reco_inc[i]-=data_inc_uf->GetBinContent(j+2);
-      			err_reco_inc[i]+=pow(data_inc_uf->GetBinError(j+2),2);
+			//1d unfolding
+      			//reco_inc[i]-=data_inc_uf->GetBinContent(j+2);
+      			//err_reco_inc[i]+=pow(data_inc_uf->GetBinError(j+2),2);
+
+      			//2d unfolding
+      			reco_inc[i]-=data1d_inc_uf->GetBinContent(j+2);
+      			err_reco_inc[i]+=pow(data1d_inc_uf->GetBinError(j+2),2);
     		}
 		//--------------------------------------------------------------------------
 
 
-/*
  		//do NOT use the old way to calculate INC, bias at high KE! -------
+/*
 		//inc[all]
     		for (int j=i; j<=nthinslices; ++j){
-      			reco_inc[i]+=data_inc_uf->GetBinContent(j+2);
-      			err_reco_inc[i]+=pow(data_inc_uf->GetBinError(j+2),2);
+			//1d unfolding
+      			//reco_inc[i]+=data_inc_uf->GetBinContent(j+2);
+      			//err_reco_inc[i]+=pow(data_inc_uf->GetBinError(j+2),2);
+
+      			//2d unfolding
+      			reco_inc[i]+=data1d_inc_uf->GetBinContent(j+2);
+      			err_reco_inc[i]+=pow(data1d_inc_uf->GetBinError(j+2),2);
     		}
     		for (int j=i+1; j<=nthinslices; ++j){
-      			reco_inc[i]-=data_st_inc_uf->GetBinContent(j+2);
-      			err_reco_inc[i]+=pow(data_st_inc_uf->GetBinError(j+2),2);
+			//1d unfolding
+      			//reco_inc[i]-=data_st_inc_uf->GetBinContent(j+2);
+      			//err_reco_inc[i]+=pow(data_st_inc_uf->GetBinError(j+2),2);
+
+      			//2d unfolding
+      			reco_inc[i]-=data1d_st_inc_uf->GetBinContent(j+2);
+      			err_reco_inc[i]+=pow(data1d_st_inc_uf->GetBinError(j+2),2);
     		}
 */
+		//------------------------------------------------------------------
 
 		std::cout<<"sliceid["<<i<<"]="<<sliceid[i]<<" reco_inc["<<i<<"]="<<reco_inc[i]<<std::endl;
     		err_reco_inc[i] = sqrt(err_reco_inc[i]);
@@ -1994,7 +2094,7 @@ void make_ESlicedataXS() {
 	c_xs->cd(1);
 
         //float ymax=1200;
-        float ymax=1400;
+        float ymax=1500;
         //float xmax=600;
         //float xmax=200;
         float xmax=420;
