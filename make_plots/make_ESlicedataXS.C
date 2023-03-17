@@ -93,7 +93,8 @@ void make_ESlicedataXS() {
 
         //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_bmrwkebeamff_v09_39_01.root";
 	//TString fout_path="./xs_files/";
-	TString fout_path="./xs_files_newslcid/"; //folder path to save reconstructed xs files
+	//TString fout_path="./xs_files_newslcid/"; //folder path to save reconstructed xs files
+	TString fout_path="./xs_files_newslcid_2dunfold/"; //folder path to save reconstructed xs files
 
 	//TString outpath="./plots_XS_Eslice_bmrwkebeamff_sys/";
         //TString fdata="/dune/data2/users/hyliao/protonana/v09_39_01/XS/prod4a_Eslice_dE20MeV_40slcs_beamxy_runAll_v09_39_01.root";
@@ -444,7 +445,7 @@ void make_ESlicedataXS() {
         TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_bmrw_kebeamff_v09_39_01_ceil_ignoreincompleteSlice_2dunfold.root"; //for reco
         TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_bmrw_kebeamff_v09_39_01_ceil_ignoreincompleteSlice_2dunfold.root"; //for truth and response matrix
 	//TString fout=fout_path+Form("xs_Eslice_dE20MeV_30slcs_0.5mc_edept_nobmrw_newslcid_1dunfold_old.root");
-	TString fout=fout_path+Form("xs_Eslice_dE20MeV_30slcs_edept_nobmrw_newslcid_2dunfold.root");
+	TString fout=fout_path+Form("xs_Eslice_dE20MeV_30slcs_edept_bmrw_newslcid_2dunfold.root");
 
 
 
