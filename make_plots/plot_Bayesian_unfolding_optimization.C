@@ -41,6 +41,12 @@
 #include <fstream>
 #include <string>
 
+#include "../headers/BetheBloch.h"
+#include "../headers/ESliceParams.h"
+#include "../headers/BasicParameters.h"
+#include "../headers/BasicFunctions.h"
+
+
 using namespace std;
 using namespace ROOT::Math;
 
@@ -50,14 +56,22 @@ void plot_Bayesian_unfolding_optimization() {
 
 	//load data
 	TString outpath="./plots_Bayesian_Lcurve/";
-        TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_test_only.root";
-        TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_test_only.root";
-        TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_valid_only.root";
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_test_only.root";
+        //TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_test_only.root";
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_valid_only.root";
 
+        //TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All.root";
+        //TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All.root";
+        //TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_40slcs_beamxy_nobmrw_kebeamff_v09_39_01_All.root";
+	
+        TString fmc="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_nobmrw_kebeamff_v09_39_01_ceil_ignoreincompleteSlice_2dunfold.root";
+        TString fdata="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_nobmrw_kebeamff_v09_39_01_ceil_ignoreincompleteSlice_2dunfold.root";
+        TString fmc_valid="../prod4areco2_mc_ESliceE_dE20MeV_30slcs_beamxy_nobmrw_kebeamff_v09_39_01_ceil_ignoreincompleteSlice_2dunfold.root";
 	
 	//reco string pre-fix --------------------------------------//
 	TString str_inc=Form("h_recosliceid_allevts_cuts");
 	TString str_st_inc=Form("h_reco_st_sliceid_allevts_cuts");
+	TString str_2d_inc=Form("h2d_recosliceid_allevts_cuts");
 	TString str_int=Form("h_recosliceid_recoinelastic_cuts");
 
 	//true string pre-fix -----------------------------------------//
@@ -73,11 +87,11 @@ void plot_Bayesian_unfolding_optimization() {
         gStyle->SetTitleAlign(23);
         gStyle->SetOptStat(0);
 
-	//read data ------------------------------------------------------------------------------------------//
+	//read data -------------------------------------------------------------------------------------------------------//
 	TFile *f_data = TFile::Open(fdata.Data());
 	TH1D *data_inc=(TH1D*)f_data->Get(str_inc.Data()); //recosliceID after beam quality cuts
 	TH1D *data_st_inc=(TH1D*)f_data->Get(str_st_inc.Data()); //reco_st_sliceID after beam quality cuts
-	//TH1D *data_int=(TH1D*)f_data->Get("h_recosliceid_inelastic_cuts"); //h_recosliceid_inelastic_cuts
+	TH2D *data2d_inc=(TH2D*)f_data->Get(str_2d_inc.Data()); //reco_st_sliceID vs recosliceID after beam quality cuts
 	TH1D *data_int=(TH1D*)f_data->Get(str_int.Data()); //h_recosliceid_inelastic_cuts
 	data_inc->SetName("data_inc");	
 	data_st_inc->SetName("data_st_inc");	
@@ -122,6 +136,17 @@ void plot_Bayesian_unfolding_optimization() {
 	TH1D* mc_st_inc_midmu=(TH1D*)f_mc->Get(Form("%s_midmu",str_st_inc.Data()));
 	TH1D* mc_st_inc_mideg=(TH1D*)f_mc->Get(Form("%s_mideg",str_st_inc.Data()));
 	TH1D* mc_st_inc_midother=(TH1D*)f_mc->Get(Form("%s_midother",str_st_inc.Data()));
+
+	//inc_2d
+	TH2D* mc2d_inc_all=(TH2D*)f_mc->Get(Form("%s",str_2d_inc.Data()));
+	TH2D* mc2d_inc_inel=(TH2D*)f_mc->Get(Form("%s_inel",str_2d_inc.Data()));
+	TH2D* mc2d_inc_el=(TH2D*)f_mc->Get(Form("%s_el",str_2d_inc.Data()));
+	TH2D* mc2d_inc_midcosmic=(TH2D*)f_mc->Get(Form("%s_midcosmic",str_2d_inc.Data()));
+	TH2D* mc2d_inc_midpi=(TH2D*)f_mc->Get(Form("%s_midpi",str_2d_inc.Data()));
+	TH2D* mc2d_inc_midp=(TH2D*)f_mc->Get(Form("%s_midp",str_2d_inc.Data()));
+	TH2D* mc2d_inc_midmu=(TH2D*)f_mc->Get(Form("%s_midmu",str_2d_inc.Data()));
+	TH2D* mc2d_inc_mideg=(TH2D*)f_mc->Get(Form("%s_mideg",str_2d_inc.Data()));
+	TH2D* mc2d_inc_midother=(TH2D*)f_mc->Get(Form("%s_midother",str_2d_inc.Data()));
 
 	//int
 	TH1D* mc_int_all=(TH1D*)f_mc->Get(Form("%s",str_int.Data()));
@@ -202,6 +227,29 @@ void plot_Bayesian_unfolding_optimization() {
 	mc_st_inc_mideg->Scale(norm_mc_st_inc);
 	mc_st_inc_midother->Scale(norm_mc_st_inc);
 
+	//2d_inc
+	int n_mc2d_inc_inel=mc2d_inc_inel->Integral();
+	int n_mc2d_inc_el=mc2d_inc_el->Integral();
+	int n_mc2d_inc_midcosmic=mc2d_inc_midcosmic->Integral();
+	int n_mc2d_inc_midpi=mc2d_inc_midpi->Integral();
+	int n_mc2d_inc_midp=mc2d_inc_midp->Integral();
+	int n_mc2d_inc_midmu=mc2d_inc_midmu->Integral();
+	int n_mc2d_inc_mideg=mc2d_inc_mideg->Integral();
+	int n_mc2d_inc_midother=mc2d_inc_midother->Integral();
+	int n_mc2d_inc=n_mc2d_inc_inel+n_mc2d_inc_el+n_mc2d_inc_midcosmic+n_mc2d_inc_midpi+n_mc2d_inc_midp+n_mc2d_inc_midmu+n_mc2d_inc_mideg+n_mc2d_inc_midother;
+
+	double norm_mc2d_inc=(double)data2d_inc->Integral()/(double)n_mc2d_inc;
+	//double norm_mc2d_inc=(double)data2d_inc->Integral()/(double)mc2d_inc_all->Integral();
+	mc2d_inc_inel->Scale(norm_mc2d_inc);
+	mc2d_inc_el->Scale(norm_mc2d_inc);
+	mc2d_inc_midcosmic->Scale(norm_mc2d_inc);
+	mc2d_inc_midpi->Scale(norm_mc2d_inc);
+	mc2d_inc_midp->Scale(norm_mc2d_inc);
+	mc2d_inc_midmu->Scale(norm_mc2d_inc);
+	mc2d_inc_mideg->Scale(norm_mc2d_inc);
+	mc2d_inc_midother->Scale(norm_mc2d_inc);
+	mc2d_inc_all->Scale(norm_mc2d_inc);
+
 
 	mc_int_inel->SetFillColor(2); mc_int_inel->SetLineColor(2);
 	//mc_int_el->SetFillColor(4); mc_int_el->SetLineColor(4);
@@ -240,7 +288,8 @@ void plot_Bayesian_unfolding_optimization() {
 	//bkg subtraction ---------------------------------------------------------------------------------------------------------------//
 	//data
 	TH1D* data_inc_bkgfree=(TH1D *)data_inc->Clone("data_inc_bkgfree"); data_inc_bkgfree->SetName("data_inc_bkgfree");	
-	TH1D* data_st_inc_bkgfree=(TH1D *)data_st_inc->Clone("data_st_inc_bkgfree"); data_st_inc_bkgfree->SetName("data_st_inc_bkgfree");	
+	TH1D* data_st_inc_bkgfree=(TH1D *)data_st_inc->Clone("data_st_inc_bkgfree"); data_st_inc_bkgfree->SetName("data_st_inc_bkgfree");
+	TH2D* data2d_inc_bkgfree=(TH2D *)data2d_inc->Clone("data2d_inc_bkgfree"); data2d_inc_bkgfree->SetName("data2d_inc_bkgfree");	
 	TH1D* data_int_bkgfree=(TH1D *)data_int->Clone("data_int_bkgfree"); data_int_bkgfree->SetName("data_int_bkgfree");	
 
 	double scal_fact_misidp=-1;
@@ -254,6 +303,7 @@ void plot_Bayesian_unfolding_optimization() {
 	//data_inc_bkgfree->Multiply(pur_inc);
 	//data_inc_bkgfree->Add(mc_inc_midp, scal_fact_misidp);
 	data_st_inc_bkgfree->Add(mc_st_inc_midp, scal_fact_misidp);
+	data2d_inc_bkgfree->Add(mc2d_inc_midp, scal_fact_misidp);
 
 	//
 	//Note: Numerical value of errorbar after subtraction is correct, i.e. (s-b)+-sqrt(s+b)	
@@ -275,21 +325,240 @@ void plot_Bayesian_unfolding_optimization() {
 	//Response matrix as a 2D-histogram: (x,y)=(measured,truth)
 	RooUnfoldResponse *res_inc=(RooUnfoldResponse*)f_mc_valid->Get("response_SliceID_Inc"); res_inc->SetName("res_inc");
 	RooUnfoldResponse *res_st_inc=(RooUnfoldResponse*)f_mc_valid->Get("response_st_SliceID_Inc"); res_st_inc->SetName("res_st_inc");
+	RooUnfoldResponse *res2d_inc=(RooUnfoldResponse*)f_mc_valid->Get("response_SliceID_2D"); res2d_inc->SetName("res2d_inc");
 	RooUnfoldResponse *res_int=(RooUnfoldResponse*)f_mc_valid->Get("response_SliceID_Int"); res_int->SetName("res_int");
 
-	//Bayesian Unfolding
-	RooUnfoldBayes uf_inc (res_inc, data_inc_bkgfree, 50); //inc
-	RooUnfoldBayes uf_st_inc (res_st_inc, data_st_inc_bkgfree, 50); //st_inc
-	RooUnfoldBayes uf_int (res_int, data_int_bkgfree, 50); //int
+
+	//Some constants ----------------------------------------------//
+	double xs_const=MAr/(Density*NA*thinslicewidth)*1e27;
+	//[0]KE estimation
+	BetheBloch BB(2212);
+  	double KE[nthinslices] = {0};
+	double err_KE[nthinslices] = {0};
+  	double dEdx[nthinslices] = {0};
+
+	bool KE_selection[nthinslices] = {0};
+	double KE_thr=420;
+	int NDF=0;
+        for (int i = 0; i<nthinslices; ++i) {
+    		KE[i]=Emax-((double)i+0.5)*thinslicewidth; //av_KE
+		//KE[i]=true_incE[i]->GetMean();
+		err_KE[i]=(double)thinslicewidth/2.;
+		dEdx[i]=BB.meandEdx(KE[i]); // MeV/cm
+		
+		cout<<"["<<i<<"] KE="<<KE[i]<<endl;
+
+		if (KE[i]<KE_thr) {
+			KE_selection[i]=1;
+			NDF++;
+		}
+		else {
+			KE_selection[i]=0;
+		}
+        }
+	//-------------------------------------------------------------//
+
+	//true xs --------------------------------------
+	double sliceid[nthinslices] = {0};	
+	double true_inc[nthinslices]={0};
+	double true_int[nthinslices]={0};
+	double err_true_inc[nthinslices]={0};
+	double err_true_int[nthinslices]={0};
+	double true_xs[nthinslices] = {0};
+	double err_true_xs[nthinslices] = {0};
+	vector<double> vec_true_xs;
+	vector<double> vec_err_true_xs;
+	vector<double> vec_ke;
+  	for (int i = 0; i<nthinslices; ++i){
+		sliceid[i]=i+.5;
+
+		//TRUE ------------------------------------------------------------------------------------------
+		//[1a]true inc/int from truth sliceID dists.
+    		true_int[i] = mc_truesliceID_inel->GetBinContent(i+2);
+    		err_true_int[i] = mc_truesliceID_inel->GetBinError(i+2);
+
+		//new treatment for INC ----------------------------------------------------
+    		for (int j=0; j<=i; ++j){
+      			true_inc[i]+=mc_true_st_sliceID_all->GetBinContent(j+2);
+      			err_true_inc[i]+=pow(mc_true_st_sliceID_all->GetBinError(j+2),2);
+    		}
+
+    		for (int j=0; j<=i-1; ++j){
+      			true_inc[i]-=mc_truesliceID_all->GetBinContent(j+2);
+      			err_true_inc[i]+=pow(mc_truesliceID_all->GetBinError(j+2),2);
+    		}
+		//--------------------------------------------------------------------------
+
+    		err_true_inc[i] = sqrt(err_true_inc[i]);
+
+		true_xs[i]=xs_const*dEdx[i]*log(true_inc[i]/(true_inc[i]-true_int[i]));
+		err_true_xs[i]=xs_const*dEdx[i]*sqrt(true_int[i]+pow(true_int[i],2)/true_inc[i])/true_inc[i];
+
+		//for chi2 calc -----------------------------------
+		if (KE_selection[i]==1) {
+			vec_true_xs.push_back(true_xs[i]);
+			vec_err_true_xs.push_back(err_true_xs[i]);
+			vec_ke.push_back(KE[i]);
+		}
+	}	
+
+	//Bayesian Unfolding ------------------------------------------------------------------
+	int n_iteration=4;
+
+	RooUnfoldBayes uf_inc (res_inc, data_inc_bkgfree, n_iteration); //inc
+	RooUnfoldBayes uf_st_inc (res_st_inc, data_st_inc_bkgfree, n_iteration); //st_inc
+	RooUnfoldBayes uf2d_inc (res2d_inc, data2d_inc_bkgfree, n_iteration); //inc_2d
+	RooUnfoldBayes uf_int (res_int, data_int_bkgfree, n_iteration); //int
 
 	//unfolding
   	TH1D *data_inc_uf;
   	TH1D *data_st_inc_uf;
+
+  	TH2D *data2d_inc_uf; //2d
+  	TH1D *data1d_inc_uf; //2d->1d
+  	TH1D *data1d_st_inc_uf; //2d->1d
+
   	TH1D *data_int_uf;
+
 	data_inc_uf=(TH1D* )uf_inc.Hreco();
 	data_st_inc_uf=(TH1D* )uf_st_inc.Hreco();
+	data2d_inc_uf=(TH2D*)uf2d_inc.Hreco();
+	data1d_inc_uf=(TH1D*)data2d_inc_uf->ProjectionY();
+	data1d_st_inc_uf=(TH1D*)data2d_inc_uf->ProjectionX();
   	data_int_uf=(TH1D *)uf_int.Hreco();
 
+	//chi^2 calculation ------------------------
+	double chi2_each=0;
+
+	double reco_inc[nthinslices] = {0};
+	double reco_int[nthinslices] = {0};
+	double err_reco_inc[nthinslices] = {0};
+	double err_reco_int[nthinslices] = {0};
+	double reco_xs[nthinslices] = {0};
+	double err_reco_xs[nthinslices] = {0};
+
+	vector<double> vec_reco_xs;
+	vector<double> vec_err_reco_xs;
+
+  	for (int i = 0; i<nthinslices; ++i) {
+		//RECO -------------------------------------------------------------------------------------------
+		reco_int[i]=data_int_uf->GetBinContent(i+2);
+		err_reco_int[i]=data_int_uf->GetBinError(i+2);
+
+		//New way to calculate INC -------------------------------------------------
+    		for (int j=0; j<=i; ++j) {
+      			//2d unfolding
+      			reco_inc[i]+=data1d_st_inc_uf->GetBinContent(j+2); //2d->1d
+      			err_reco_inc[i]+=pow(data1d_st_inc_uf->GetBinError(j+2),2); //2d->1d
+    		}
+
+    		for (int j=0; j<=i-1; ++j){
+      			//2d unfolding
+      			reco_inc[i]-=data1d_inc_uf->GetBinContent(j+2);
+      			err_reco_inc[i]+=pow(data1d_inc_uf->GetBinError(j+2),2);
+    		}
+		//--------------------------------------------------------------------------
+
+ 		//do NOT use the old way to calculate INC, bias at high KE! --------------------------------------------------------------------------------------------------
+		std::cout<<"sliceid["<<i<<"]="<<sliceid[i]<<" reco_inc["<<i<<"]="<<reco_inc[i]<<"KE["<<i<<"]="<<KE[i]<<" KE_selection["<<i<<"]="<<KE_selection[i]<<std::endl;
+    		err_reco_inc[i] = sqrt(err_reco_inc[i]);
+
+		//reco xs
+		reco_xs[i]=xs_const*dEdx[i]*log(reco_inc[i]/(reco_inc[i]-reco_int[i]));
+		err_reco_xs[i]=xs_const*dEdx[i]*sqrt(reco_int[i]+pow(reco_int[i],2)/reco_inc[i])/reco_inc[i];
+
+		//for chi2 calc -----------------------------------
+		if (KE_selection[i]==1) {
+			vec_reco_xs.push_back(reco_xs[i]);
+			vec_err_reco_xs.push_back(err_reco_xs[i]);
+		}
+
+  	}
+
+	chi2_each=neyman_chi2_data_mc(vec_reco_xs, vec_err_reco_xs, vec_true_xs, vec_err_true_xs);
+	std::cout<<"chi2:"<<chi2_each<<std::endl;
+
+	//show results ------------------------------------------------------
+        TCanvas *c_all = new TCanvas("c_all", "c_all", 900, 600);
+	c_all->Divide(1,1);
+	c_all->cd(1);
+
+
+
+
+
+/*
+	//show results ------------------------------------------------------
+        TCanvas *c_all = new TCanvas("c_all", "c_all", 900, 1400);
+	c_all->Divide(1,3);
+	c_all->cd(1);
+	mc_truesliceID_inel->SetLineColor(2);
+	mc_truesliceID_inel->SetMarkerColor(2);
+	data_int_uf->SetMarkerStyle(20);
+	data_int_uf->Draw("ep ");
+	mc_truesliceID_inel->Draw("hist same");
+	
+	c_all->cd(2);
+	mc_truesliceID_all->SetLineColor(2);
+	mc_truesliceID_all->SetMarkerColor(2);
+	data1d_inc_uf->SetMarkerStyle(20);
+	data1d_inc_uf->Draw("ep");
+	mc_truesliceID_all->Draw("hist same");
+
+	c_all->cd(3);
+	mc_true_st_sliceID_all->SetLineColor(2);
+	mc_true_st_sliceID_all->SetMarkerColor(2);
+	data1d_st_inc_uf->SetMarkerStyle(20);
+	data1d_st_inc_uf->Draw("ep");
+	mc_true_st_sliceID_all->Draw("hist same");
+
+
+	cout<<"mc_truesliceID_inel:"<<mc_truesliceID_inel->Integral()<<endl;
+	cout<<"mc_true_st_sliceID_all:"<<mc_true_st_sliceID_all->Integral()<<endl;
+	cout<<"mc_truesliceID_all:"<<mc_truesliceID_all->Integral()<<endl;
+
+*/
+
+
+
+/*
+	data1d_inc_uf->SetLineColor(1);
+	mc_truesliceID_all->SetLineColor(3);
+	mc_truesliceID_all->SetMarkerColor(3);
+	mc_truesliceID_all->Draw("hist");
+	data1d_inc_uf->Draw("hist same");
+	
+*/
+
+
+	//TH1D *mc_truesliceID_inel=(TH1D *)f_mc->Get("h_truesliceid_inelastic_all"); //IsPureInEL
+	//TH1D *mc_truesliceID_all=(TH1D *)f_mc->Get("h_truesliceid_all"); //all protons
+	//TH1D *mc_true_st_sliceID_all=(TH1D *)f_mc->Get("h_true_st_sliceid_all"); //all protons
+
+
+
+
+
+
+
+
+
+
+
+	//c_inc->cd(1)->SetLogy();
+	//TH2D *f2d_inc=new TH2D("f2d_inc",Form(""), 31, 10, 41, 600, 0, 60000);
+	//TH2D *f2d_inc=new TH2D("f2d_inc",Form(""), 42, -1, 41, 100, 0, 10000);
+	//f2d_inc->SetTitle("Incident Histogram; SliceID; Counts");
+	//f2d_inc->Draw();
+	//data_inc_bkgfree->Draw("ep same");
+	//mc_truesliceID_all->Draw("hist same")
+
+
+
+
+
+
+/*
 	//apply cut for normalization purpose -----------------//
 	mc_truesliceID_all->GetXaxis()->SetRangeUser(1,42);
 	data_inc_bkgfree->GetXaxis()->SetRangeUser(1,42);
@@ -350,7 +619,7 @@ void plot_Bayesian_unfolding_optimization() {
 	//calculate chi^2
 	//plot L-curve: chi^2 vs spiky-ness (# of iterations)
 
-
+*/
 
 
 
