@@ -349,7 +349,7 @@ void ProtonESliceDataAll::Loop() {
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_SliceIDStudy_ceil_ignoreincompleteSlice_2dunfold.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrw_kebeamff_v09_39_01_ceil_ignoreincompleteSlice_2dunfold.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_ceil_ignoreincompleteSlice_2dunfold.root", name_thinslicewidth, nthinslices)); //output file name
-	SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_ceil_ignoreincompleteSlice_3dunfold.root", name_thinslicewidth, nthinslices)); //output file name
+	SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_ceil_ignoreincompleteSlice_2dunfold_tmp.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrw_kebeamff_edept_v09_39_01_All.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrw_kebeamff_edept_misidprw_v09_39_01_All.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_All_SliceIDStudy_plus0.5.root", name_thinslicewidth, nthinslices)); //output file name
@@ -1669,7 +1669,6 @@ void ProtonESliceDataAll::Loop() {
 			uf.response_SliceID_Inc.Fill(reco_sliceID, true_sliceID, mom_rw_minchi2);
 			uf.response_st_SliceID_Inc.Fill(reco_st_sliceID, true_st_sliceID, mom_rw_minchi2);
 			uf.response_SliceID_2D.Fill(reco_st_sliceID, reco_sliceID, true_st_sliceID, true_sliceID, mom_rw_minchi2);
-			uf.response_SliceID_3D.Fill(reco_st_sliceID, reco_sliceID, reco_int_sliceID, true_st_sliceID, true_sliceID, true_int_sliceID, mom_rw_minchi2);
 
 			uf.res_Inc_reco->Fill(reco_sliceID, mom_rw_minchi2);
 			uf.res_st_Inc_reco->Fill(reco_st_sliceID, mom_rw_minchi2);
@@ -1683,7 +1682,6 @@ void ProtonESliceDataAll::Loop() {
 			uf.response_SliceID_Inc.Miss(true_sliceID, mom_rw_minchi2);
 			uf.response_st_SliceID_Inc.Miss(true_st_sliceID, mom_rw_minchi2);
 			uf.response_SliceID_2D.Miss(true_st_sliceID, true_sliceID, mom_rw_minchi2);
-			uf.response_SliceID_3D.Miss(true_st_sliceID, true_sliceID, true_int_sliceID, mom_rw_minchi2);
 
 			uf.res_Inc_truth->Fill(true_sliceID, mom_rw_minchi2);
 			uf.res_st_Inc_truth->Fill(true_st_sliceID, mom_rw_minchi2);
@@ -1736,100 +1734,82 @@ void ProtonESliceDataAll::Loop() {
 			h_recosliceid_allevts_cuts->Fill(reco_sliceID, mom_rw_minchi2);
 			h_reco_st_sliceid_allevts_cuts->Fill(reco_st_sliceID, mom_rw_minchi2);
 			h2d_recosliceid_allevts_cuts->Fill(reco_st_sliceID, reco_sliceID, mom_rw_minchi2);
-			h3d_recosliceid_allevts_cuts->Fill(reco_st_sliceID, reco_sliceID, reco_int_sliceID, mom_rw_minchi2);
 
 			h_truesliceid_allevts_cuts->Fill(true_sliceID, mom_rw_minchi2);
 			h_true_st_sliceid_allevts_cuts->Fill(true_st_sliceID, mom_rw_minchi2);
 			h2d_truesliceid_allevts_cuts->Fill(true_st_sliceID, true_sliceID, mom_rw_minchi2);
-			h3d_truesliceid_allevts_cuts->Fill(true_st_sliceID, true_sliceID, true_int_sliceID, mom_rw_minchi2);
 
 			if (kinel) { 
 				h_recosliceid_allevts_cuts_inel->Fill(reco_sliceID, mom_rw_minchi2);
 				h_reco_st_sliceid_allevts_cuts_inel->Fill(reco_st_sliceID, mom_rw_minchi2);
 				h2d_recosliceid_allevts_cuts_inel->Fill(reco_st_sliceID, reco_sliceID, mom_rw_minchi2);
-				h3d_recosliceid_allevts_cuts_inel->Fill(reco_st_sliceID, reco_sliceID, reco_int_sliceID, mom_rw_minchi2);
 
 				h_truesliceid_allevts_cuts_inel->Fill(true_sliceID, mom_rw_minchi2);
 				h_true_st_sliceid_allevts_cuts_inel->Fill(true_st_sliceID, mom_rw_minchi2);
 				h2d_truesliceid_allevts_cuts_inel->Fill(true_st_sliceID, true_sliceID, mom_rw_minchi2);
-				h3d_truesliceid_allevts_cuts_inel->Fill(true_st_sliceID, true_sliceID, true_int_sliceID, mom_rw_minchi2);
 			}
 			if (kel) { 
 				h_recosliceid_allevts_cuts_el->Fill(reco_sliceID, mom_rw_minchi2);
 				h_reco_st_sliceid_allevts_cuts_el->Fill(reco_st_sliceID, mom_rw_minchi2);
 				h2d_recosliceid_allevts_cuts_el->Fill(reco_st_sliceID, reco_sliceID, mom_rw_minchi2);
-				h3d_recosliceid_allevts_cuts_el->Fill(reco_st_sliceID, reco_sliceID, reco_int_sliceID, mom_rw_minchi2);
 
 				h_truesliceid_allevts_cuts_el->Fill(true_sliceID, mom_rw_minchi2);
 				h_true_st_sliceid_allevts_cuts_el->Fill(true_st_sliceID, mom_rw_minchi2);
 				h2d_truesliceid_allevts_cuts_el->Fill(true_st_sliceID, true_sliceID, mom_rw_minchi2);
-				h3d_truesliceid_allevts_cuts_el->Fill(true_st_sliceID, true_sliceID, true_int_sliceID, mom_rw_minchi2);
 			}
 			if (kMIDcosmic) { 
 				h_recosliceid_allevts_cuts_midcosmic->Fill(reco_sliceID, mom_rw_minchi2);
 				h_reco_st_sliceid_allevts_cuts_midcosmic->Fill(reco_st_sliceID, mom_rw_minchi2);
 				h2d_recosliceid_allevts_cuts_midcosmic->Fill(reco_st_sliceID, reco_sliceID, mom_rw_minchi2);
-				h3d_recosliceid_allevts_cuts_midcosmic->Fill(reco_st_sliceID, reco_sliceID, reco_int_sliceID, mom_rw_minchi2);
 
 				h_truesliceid_allevts_cuts_midcosmic->Fill(true_sliceID, mom_rw_minchi2);
 				h_true_st_sliceid_allevts_cuts_midcosmic->Fill(true_st_sliceID, mom_rw_minchi2);
 				h2d_truesliceid_allevts_cuts_midcosmic->Fill(true_st_sliceID, true_sliceID, mom_rw_minchi2);
-				h3d_truesliceid_allevts_cuts_midcosmic->Fill(true_st_sliceID, true_sliceID, true_int_sliceID, mom_rw_minchi2);
 			}
 			if (kMIDpi) { 
 				h_recosliceid_allevts_cuts_midpi->Fill(reco_sliceID, mom_rw_minchi2);
 				h_reco_st_sliceid_allevts_cuts_midpi->Fill(reco_st_sliceID, mom_rw_minchi2);
 				h2d_recosliceid_allevts_cuts_midpi->Fill(reco_st_sliceID, reco_sliceID, mom_rw_minchi2);
-				h3d_recosliceid_allevts_cuts_midpi->Fill(reco_st_sliceID, reco_sliceID, reco_int_sliceID, mom_rw_minchi2);
 
 				h_truesliceid_allevts_cuts_midpi->Fill(true_sliceID, mom_rw_minchi2);
 				h_true_st_sliceid_allevts_cuts_midpi->Fill(true_st_sliceID, mom_rw_minchi2);
 				h2d_truesliceid_allevts_cuts_midpi->Fill(true_st_sliceID, true_sliceID, mom_rw_minchi2);
-				h3d_truesliceid_allevts_cuts_midpi->Fill(true_st_sliceID, true_sliceID, true_int_sliceID, mom_rw_minchi2);
 			}
 			if (kMIDp) { 
 				h_recosliceid_allevts_cuts_midp->Fill(reco_sliceID, mom_rw_minchi2*misidp_rw);
 				h_reco_st_sliceid_allevts_cuts_midp->Fill(reco_st_sliceID, mom_rw_minchi2);
 				h2d_recosliceid_allevts_cuts_midp->Fill(reco_st_sliceID, reco_sliceID, mom_rw_minchi2);
-				h3d_recosliceid_allevts_cuts_midp->Fill(reco_st_sliceID, reco_sliceID, reco_int_sliceID, mom_rw_minchi2);
 
 				h_truesliceid_allevts_cuts_midp->Fill(true_sliceID, mom_rw_minchi2*misidp_rw);
 				h_true_st_sliceid_allevts_cuts_midp->Fill(true_st_sliceID, mom_rw_minchi2);
 				h2d_truesliceid_allevts_cuts_midp->Fill(true_st_sliceID, true_sliceID, mom_rw_minchi2);
-				h3d_truesliceid_allevts_cuts_midp->Fill(true_st_sliceID, true_sliceID, true_int_sliceID, mom_rw_minchi2);
 			}
 			if (kMIDmu) { 
 				h_recosliceid_allevts_cuts_midmu->Fill(reco_sliceID, mom_rw_minchi2);
 				h_reco_st_sliceid_allevts_cuts_midmu->Fill(reco_st_sliceID, mom_rw_minchi2);
 				h2d_recosliceid_allevts_cuts_midmu->Fill(reco_st_sliceID, reco_sliceID, mom_rw_minchi2);
-				h3d_recosliceid_allevts_cuts_midmu->Fill(reco_st_sliceID, reco_sliceID, reco_int_sliceID, mom_rw_minchi2);
 
 				h_truesliceid_allevts_cuts_midmu->Fill(true_sliceID, mom_rw_minchi2);
 				h_true_st_sliceid_allevts_cuts_midmu->Fill(true_st_sliceID, mom_rw_minchi2);
 				h2d_truesliceid_allevts_cuts_midmu->Fill(true_st_sliceID, true_sliceID, mom_rw_minchi2);
-				h3d_truesliceid_allevts_cuts_midmu->Fill(true_st_sliceID, true_sliceID, true_int_sliceID, mom_rw_minchi2);
 			}
 			if (kMIDeg) { 
 				h_recosliceid_allevts_cuts_mideg->Fill(reco_sliceID, mom_rw_minchi2);
 				h_reco_st_sliceid_allevts_cuts_mideg->Fill(reco_st_sliceID, mom_rw_minchi2);
 				h2d_recosliceid_allevts_cuts_mideg->Fill(reco_st_sliceID, reco_sliceID, mom_rw_minchi2);
-				h3d_recosliceid_allevts_cuts_mideg->Fill(reco_st_sliceID, reco_sliceID, reco_int_sliceID, mom_rw_minchi2);
 
 				h_truesliceid_allevts_cuts_mideg->Fill(true_sliceID, mom_rw_minchi2);
 				h_true_st_sliceid_allevts_cuts_mideg->Fill(true_st_sliceID, mom_rw_minchi2);
 				h2d_truesliceid_allevts_cuts_mideg->Fill(true_st_sliceID, true_sliceID, mom_rw_minchi2);
-				h3d_truesliceid_allevts_cuts_mideg->Fill(true_st_sliceID, true_sliceID, true_int_sliceID, mom_rw_minchi2);
 			}
 			if (kMIDother) { 
 				h_recosliceid_allevts_cuts_midother->Fill(reco_sliceID, mom_rw_minchi2);
 				h_reco_st_sliceid_allevts_cuts_midother->Fill(reco_st_sliceID, mom_rw_minchi2);
 				h2d_recosliceid_allevts_cuts_midother->Fill(reco_st_sliceID, reco_sliceID, mom_rw_minchi2);
-				h3d_recosliceid_allevts_cuts_midother->Fill(reco_st_sliceID, reco_sliceID, reco_int_sliceID, mom_rw_minchi2);
 
 				h_truesliceid_allevts_cuts_midother->Fill(reco_sliceID, mom_rw_minchi2);
 				h_true_st_sliceid_allevts_cuts_midother->Fill(reco_st_sliceID, mom_rw_minchi2);
 				h2d_truesliceid_allevts_cuts_midother->Fill(true_st_sliceID, true_sliceID, mom_rw_minchi2);
-				h3d_truesliceid_allevts_cuts_midother->Fill(true_st_sliceID, true_sliceID, true_int_sliceID, mom_rw_minchi2);
 			}
 			//} //if test sample
 			//else { //if NOT test sample
