@@ -11,7 +11,7 @@ class Unfold {
   
  public:
 
-  Unfold(int nb, double xlo, double xhi);
+  Unfold(int nb, double xlo, double xhi, TH2D* h2d_reco, TH2D* h2d_true);
 
   RooUnfoldResponse response_SliceID_Int;  //Interaction
   RooUnfoldResponse response_SliceID_Inc;  //Incident

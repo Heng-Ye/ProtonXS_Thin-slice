@@ -129,6 +129,28 @@ TH2D *h2d_truesliceid_allevts_cuts_midmu;
 TH2D *h2d_truesliceid_allevts_cuts_mideg;
 TH2D *h2d_truesliceid_allevts_cuts_midother;
 
+//reco inc_3D (st, end, int)
+TH3D *h3d_recosliceid_allevts_cuts;
+TH3D *h3d_recosliceid_allevts_cuts_inel;
+TH3D *h3d_recosliceid_allevts_cuts_el;
+TH3D *h3d_recosliceid_allevts_cuts_midcosmic;
+TH3D *h3d_recosliceid_allevts_cuts_midpi;
+TH3D *h3d_recosliceid_allevts_cuts_midp;
+TH3D *h3d_recosliceid_allevts_cuts_midmu;
+TH3D *h3d_recosliceid_allevts_cuts_mideg;
+TH3D *h3d_recosliceid_allevts_cuts_midother;
+
+//true inc_3D (st, end, int)
+TH3D *h3d_truesliceid_allevts_cuts;
+TH3D *h3d_truesliceid_allevts_cuts_inel;
+TH3D *h3d_truesliceid_allevts_cuts_el;
+TH3D *h3d_truesliceid_allevts_cuts_midcosmic;
+TH3D *h3d_truesliceid_allevts_cuts_midpi;
+TH3D *h3d_truesliceid_allevts_cuts_midp;
+TH3D *h3d_truesliceid_allevts_cuts_midmu;
+TH3D *h3d_truesliceid_allevts_cuts_mideg;
+TH3D *h3d_truesliceid_allevts_cuts_midother;
+
 
 
 double true_incidents[nthinslices+2];
@@ -605,6 +627,17 @@ void BookHistograms() { //BookHistograms
 	h2d_recosliceid_allevts_cuts_midother = new TH2D("h2d_recosliceid_allevts_cuts_midother","h2d_recosliceid_allevts_cuts_midother; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
 
 
+	h3d_recosliceid_allevts_cuts = new TH3D("h3d_recosliceid_allevts_cuts","h3d_recosliceid_allevts_cuts; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
+	h3d_recosliceid_allevts_cuts_inel = new TH3D("h3d_recosliceid_allevts_cuts_inel","h3d_recosliceid_allevts_cuts_inel; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
+	h3d_recosliceid_allevts_cuts_el = new TH3D("h3d_recosliceid_allevts_cuts_el","h3d_recosliceid_allevts_cuts_el; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
+	h3d_recosliceid_allevts_cuts_midcosmic = new TH3D("h3d_recosliceid_allevts_cuts_midcosmic","h3d_recosliceid_allevts_cuts_midcosmic; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
+	h3d_recosliceid_allevts_cuts_midpi = new TH3D("h3d_recosliceid_allevts_cuts_midpi","h3d_recosliceid_allevts_cuts_midpi; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
+	h3d_recosliceid_allevts_cuts_midp = new TH3D("h3d_recosliceid_allevts_cuts_midp","h3d_recosliceid_allevts_cuts_midp; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
+	h3d_recosliceid_allevts_cuts_midmu = new TH3D("h3d_recosliceid_allevts_cuts_midmu","h3d_recosliceid_allevts_cuts_midmu; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
+	h3d_recosliceid_allevts_cuts_mideg = new TH3D("h3d_recosliceid_allevts_cuts_mideg","h3d_recosliceid_allevts_cuts_mideg; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
+	h3d_recosliceid_allevts_cuts_midother = new TH3D("h3d_recosliceid_allevts_cuts_midother","h3d_recosliceid_allevts_cuts_midother; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
+
+
 	h2d_truesliceid_allevts_cuts = new TH2D("h2d_truesliceid_allevts_cuts","h2d_truesliceid_allevts_cuts; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
 	h2d_truesliceid_allevts_cuts_inel = new TH2D("h2d_truesliceid_allevts_cuts_inel","h2d_truesliceid_allevts_cuts_inel; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
 	h2d_truesliceid_allevts_cuts_el = new TH2D("h2d_truesliceid_allevts_cuts_el","h2d_truesliceid_allevts_cuts_el; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
@@ -614,6 +647,20 @@ void BookHistograms() { //BookHistograms
 	h2d_truesliceid_allevts_cuts_midmu = new TH2D("h2d_truesliceid_allevts_cuts_midmu","h2d_truesliceid_allevts_cuts_midmu; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
 	h2d_truesliceid_allevts_cuts_mideg = new TH2D("h2d_truesliceid_allevts_cuts_mideg","h2d_truesliceid_allevts_cuts_mideg; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
 	h2d_truesliceid_allevts_cuts_midother = new TH2D("h2d_truesliceid_allevts_cuts_midother","h2d_truesliceid_allevts_cuts_midother; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
+
+
+	h3d_truesliceid_allevts_cuts = new TH3D("h3d_truesliceid_allevts_cuts","h3d_truesliceid_allevts_cuts; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
+	h3d_truesliceid_allevts_cuts_inel = new TH3D("h3d_truesliceid_allevts_cuts_inel","h3d_truesliceid_allevts_cuts_inel; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
+	h3d_truesliceid_allevts_cuts_el = new TH3D("h3d_truesliceid_allevts_cuts_el","h3d_truesliceid_allevts_cuts_el; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
+	h3d_truesliceid_allevts_cuts_midcosmic = new TH3D("h3d_truesliceid_allevts_cuts_midcosmic","h3d_truesliceid_allevts_cuts_midcosmic; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
+	h3d_truesliceid_allevts_cuts_midpi = new TH3D("h3d_truesliceid_allevts_cuts_midpi","h3d_truesliceid_allevts_cuts_midpi; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
+	h3d_truesliceid_allevts_cuts_midp = new TH3D("h3d_truesliceid_allevts_cuts_midp","h3d_truesliceid_allevts_cuts_midp; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
+	h3d_truesliceid_allevts_cuts_midmu = new TH3D("h3d_truesliceid_allevts_cuts_midmu","h3d_truesliceid_allevts_cuts_midmu; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
+	h3d_truesliceid_allevts_cuts_mideg = new TH3D("h3d_truesliceid_allevts_cuts_mideg","h3d_truesliceid_allevts_cuts_mideg; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
+	h3d_truesliceid_allevts_cuts_midother = new TH3D("h3d_truesliceid_allevts_cuts_midother","h3d_truesliceid_allevts_cuts_midother; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
+
+
+
 
 	h_truesliceid_all->Sumw2();
 	h_true_st_sliceid_all->Sumw2();
@@ -653,6 +700,16 @@ void BookHistograms() { //BookHistograms
 	h2d_recosliceid_allevts_cuts_mideg->Sumw2();
 	h2d_recosliceid_allevts_cuts_midother->Sumw2();
 
+	h3d_recosliceid_allevts_cuts->Sumw2();
+	h3d_recosliceid_allevts_cuts_inel->Sumw2();
+	h3d_recosliceid_allevts_cuts_el->Sumw2();
+	h3d_recosliceid_allevts_cuts_midcosmic->Sumw2();
+	h3d_recosliceid_allevts_cuts_midpi->Sumw2();
+	h3d_recosliceid_allevts_cuts_midp->Sumw2();
+	h3d_recosliceid_allevts_cuts_midmu->Sumw2();
+	h3d_recosliceid_allevts_cuts_mideg->Sumw2();
+	h3d_recosliceid_allevts_cuts_midother->Sumw2();
+
 
 	h2d_truesliceid_allevts_cuts->Sumw2();
 	h2d_truesliceid_allevts_cuts_inel->Sumw2();
@@ -664,6 +721,16 @@ void BookHistograms() { //BookHistograms
 	h2d_truesliceid_allevts_cuts_mideg->Sumw2();
 	h2d_truesliceid_allevts_cuts_midother->Sumw2();
 
+
+	h3d_truesliceid_allevts_cuts->Sumw2();
+	h3d_truesliceid_allevts_cuts_inel->Sumw2();
+	h3d_truesliceid_allevts_cuts_el->Sumw2();
+	h3d_truesliceid_allevts_cuts_midcosmic->Sumw2();
+	h3d_truesliceid_allevts_cuts_midpi->Sumw2();
+	h3d_truesliceid_allevts_cuts_midp->Sumw2();
+	h3d_truesliceid_allevts_cuts_midmu->Sumw2();
+	h3d_truesliceid_allevts_cuts_mideg->Sumw2();
+	h3d_truesliceid_allevts_cuts_midother->Sumw2();
 
 
 	h_reco_st_sliceid_allevts_cuts->Sumw2();
