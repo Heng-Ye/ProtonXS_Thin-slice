@@ -11,12 +11,14 @@ class Unfold {
   
  public:
 
-  Unfold(int nb, double xlo, double xhi, TH2D* h2d_reco, TH2D* h2d_true);
+  //Unfold(int nb, double xlo, double xhi, TH2D* h2d_reco, TH2D* h2d_true);
+  Unfold(int nb, double xlo, double xhi, TH2D* h2d_reco, TH2D* h2d_true, TH2D* h2d_reco2, TH2D* h2d_true2);
 
   RooUnfoldResponse response_SliceID_Int;  //Interaction
   RooUnfoldResponse response_SliceID_Inc;  //Incident
   RooUnfoldResponse response_st_SliceID_Inc;  //Incident(start sliceID)
   RooUnfoldResponse response_SliceID_2D;   //2D response matrix for INC: INC_ST(x-axis), INC_Int(y-axis)
+  RooUnfoldResponse response_SliceID_Int_2D;  //2D response matrix for INT: INC_Int(x-axis), INT(y-axis)
 
   //RooUnfoldResponse response_SliceID_shape_Int;  //Interaction [by shape]
   //RooUnfoldResponse response_SliceID_shape_Inc;  //Incident [by shape]
@@ -60,17 +62,20 @@ class Unfold {
 
 
 //Unfold::Unfold(int nb, double xlo, double xhi)
-Unfold::Unfold(int nb, double xlo, double xhi, TH2D* h2d_reco, TH2D* h2d_true)
+//Unfold::Unfold(int nb, double xlo, double xhi, TH2D* h2d_reco, TH2D* h2d_true)
+Unfold::Unfold(int nb, double xlo, double xhi, TH2D* h2d_reco, TH2D* h2d_true, TH2D* h2d_reco2, TH2D* h2d_true2)
   : response_SliceID_Int(nb, xlo, xhi)
   , response_SliceID_Inc(nb, xlo, xhi)
   , response_st_SliceID_Inc(nb, xlo, xhi)
   , response_SliceID_2D(h2d_reco, h2d_true)
+  , response_SliceID_Int_2D(h2d_reco2, h2d_true2)
 {
 
   response_SliceID_Int.UseOverflow(false);
   response_SliceID_Inc.UseOverflow(false);
   response_st_SliceID_Inc.UseOverflow(false);
   response_SliceID_2D.UseOverflow(false);
+  response_SliceID_Int_2D.UseOverflow(false);
 
   eff_num_Int = new TH1D("eff_num_Int", "eff_num_Int", nb, xlo, xhi);
   eff_den_Int = new TH1D("eff_den_Int", "eff_den_Int", nb, xlo, xhi);
@@ -87,6 +92,13 @@ Unfold::Unfold(int nb, double xlo, double xhi, TH2D* h2d_reco, TH2D* h2d_true)
   pur_den_st_Inc = new TH1D("pur_den_st_Inc", "pur_den_st_Inc", nb, xlo, xhi);
   pur_den_Int = new TH1D("pur_den_Int", "pur_den_Int", nb, xlo, xhi);
 
+  res_Inc_reco = new TH1D("res_Inc_reco", "res_Inc_reco", nb, xlo, xhi);
+  res_st_Inc_reco = new TH1D("res_st_Inc_reco", "res_st_Inc_reco", nb, xlo, xhi);
+  res_Inc_truth = new TH1D("res_Inc_truth", "res_Inc_truth", nb, xlo, xhi);	
+  res_st_Inc_truth = new TH1D("res_st_Inc_truth", "res_st_Inc_truth", nb, xlo, xhi);	
+  res_Int_reco = new TH1D("res_Int_reco", "res_Int_reco", nb, xlo, xhi);
+  res_Int_truth = new TH1D("res_Int_truth", "res_Int_truth", nb, xlo, xhi);	
+
   eff_num_Int->Sumw2();
   eff_den_Int->Sumw2();
   eff_num_Inc->Sumw2();
@@ -101,15 +113,6 @@ Unfold::Unfold(int nb, double xlo, double xhi, TH2D* h2d_reco, TH2D* h2d_true)
   pur_den_st_Inc->Sumw2();
   pur_den_Int->Sumw2();
 
-
-
-  res_Inc_reco = new TH1D("res_Inc_reco", "res_Inc_reco", nb, xlo, xhi);
-  res_st_Inc_reco = new TH1D("res_st_Inc_reco", "res_st_Inc_reco", nb, xlo, xhi);
-  res_Inc_truth = new TH1D("res_Inc_truth", "res_Inc_truth", nb, xlo, xhi);	
-  res_st_Inc_truth = new TH1D("res_st_Inc_truth", "res_st_Inc_truth", nb, xlo, xhi);	
-  res_Int_reco = new TH1D("res_Int_reco", "res_Int_reco", nb, xlo, xhi);
-  res_Int_truth = new TH1D("res_Int_truth", "res_Int_truth", nb, xlo, xhi);	
-
   res_Inc_reco->Sumw2();
   res_st_Inc_reco->Sumw2();
   res_Inc_truth->Sumw2();
@@ -121,6 +124,13 @@ Unfold::Unfold(int nb, double xlo, double xhi, TH2D* h2d_reco, TH2D* h2d_true)
 }  
 
 void Unfold::SaveHistograms(){
+
+  response_SliceID_Int.Write("response_SliceID_Int");
+  response_SliceID_Inc.Write("response_SliceID_Inc");
+  response_st_SliceID_Inc.Write("response_st_SliceID_Inc");
+
+  response_SliceID_2D.Write("response_SliceID_2D");
+  response_SliceID_Int_2D.Write("response_SliceID_Int_2D");
 
   eff_num_Int->Write("eff_num_Int");
   eff_den_Int->Write("eff_den_Int");
@@ -135,7 +145,6 @@ void Unfold::SaveHistograms(){
   pur_den_Inc->Write("pur_den_Inc");
   pur_den_st_Inc->Write("pur_den_st_Inc");
   pur_den_Int->Write("pur_den_Int");
-
 
   eff_Int = (TH1D*)eff_num_Int->Clone("eff_Int");
   eff_Int->Divide(eff_den_Int);
@@ -171,19 +180,6 @@ void Unfold::SaveHistograms(){
   //hinc->SetTitle("All Protons; Reco Slice ID; True Slice ID");
   //hinc->Write("response_SliceID_Inc");
 
-  //response_SliceID_Int.SetName("response_SliceID_Int");
-  response_SliceID_Int.Write("response_SliceID_Int");
-
-  //response_SliceID_Inc.SetName("response_SliceID_Inc");
-  response_SliceID_Inc.Write("response_SliceID_Inc");
-
-  response_st_SliceID_Inc.Write("response_st_SliceID_Inc");
-
-  response_SliceID_2D.Write("response_SliceID_2D");
-
-
-  //response_SliceID_shape_Inc.Write("response_SliceID_shape_Inc");	
-  //response_SliceID_shape_Int.Write("response_SliceID_shape_Int");	
 
   res_Inc_reco->Write("res_Inc_reco");
   res_st_Inc_reco->Write("res_st_Inc_reco");
@@ -191,7 +187,6 @@ void Unfold::SaveHistograms(){
   res_st_Inc_truth->Write("res_st_Inc_truth");
   res_Int_reco->Write("res_Int_reco");
   res_Int_truth->Write("res_Int_truth");	
-
 
 }
 

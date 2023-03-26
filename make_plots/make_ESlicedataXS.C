@@ -494,15 +494,15 @@ void make_ESlicedataXS() {
 	TFile *f_mc = TFile::Open(fmc.Data());
 
 	//get truth inc & int
-	TFile *f_mc_valid = TFile::Open(fmc_valid.Data());	
-	TH1D *mc_true_incidents=(TH1D *)f_mc_valid->Get("h_true_incidents");
-	TH1D *mc_true_st_incidents=(TH1D *)f_mc_valid->Get("h_true_st_incidents");
-	TH1D *mc_true_interactions=(TH1D *)f_mc_valid->Get("h_true_interactions");
+	TFile *f_mc_valid = TFile::Open(fmc_valid.Data());
+	//TH1D *mc_true_incidents=(TH1D *)f_mc_valid->Get("h_true_incidents");
+	//TH1D *mc_true_st_incidents=(TH1D *)f_mc_valid->Get("h_true_st_incidents");
+	//TH1D *mc_true_interactions=(TH1D *)f_mc_valid->Get("h_true_interactions");
 
 	//get truesliceID of int &inc
-	TH1D *mc_truesliceID_inel=(TH1D *)f_mc_valid->Get("h_truesliceid_inelastic_all"); //IsPureInEL
 	TH1D *mc_truesliceID_all=(TH1D *)f_mc_valid->Get("h_truesliceid_all"); //all protons
 	TH1D *mc_true_st_sliceID_all=(TH1D *)f_mc_valid->Get("h_true_st_sliceid_all"); //all protons
+	TH1D *mc_truesliceID_inel=(TH1D *)f_mc_valid->Get("h_truesliceid_inelastic_all"); //IsPureInEL
 
 	//get mc reco slice IDs
 	//inc
@@ -1674,8 +1674,8 @@ void make_ESlicedataXS() {
 	TH2D *f2d_inc5=new TH2D("f2d_inc5",Form("%s",""),nthinslices+1,0,nthinslices+1,10,0,150000);
 	f2d_inc5->SetTitle("All protons; True SliceID; Events");
 	f2d_inc5->Draw();
-	mc_true_incidents->SetLineColor(2);
-	mc_true_incidents->Draw("same");
+	//mc_true_incidents->SetLineColor(2);
+	//mc_true_incidents->Draw("same");
 	gr_reco_inc->Draw("ep same");
 	c_inc5->Print(Form("%sincident_inc.eps",outpath.Data()));
 
