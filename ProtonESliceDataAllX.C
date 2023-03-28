@@ -1182,18 +1182,18 @@ void ProtonESliceDataAll::Loop() {
 				reco_sliceID=-1;
 			} //incomplete charge deposition
  
-			//for 3d unfolding ----------------------------------//
+			//for 3d/2x2d unfolding ---------//
 			reco_int_sliceID=reco_sliceID;
-			if (!IsRecoInEL) { //if NOT pass RecoInel selection
-				reco_int_sliceID=-1;
-			} //if NOT pass RecoInel selection
-			//---------------------------------------------------//
+			//------------------------------//
 
 			if (IsBQ&&IsRecoInEL) {
 				PassCuts_INT=true; //for INT 
 			}
 			if (IsBQ) {
 				PassCuts_INC=true; //for INC
+				if (!IsRecoInEL) { //if NOT pass RecoInel selection
+					reco_int_sliceID=-1; //for 3d/2x2d unfolding
+				} //if NOT pass RecoInel selection
 			}
 
 			//double this_calo_MeV=0;
