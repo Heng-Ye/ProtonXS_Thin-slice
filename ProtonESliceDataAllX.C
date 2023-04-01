@@ -875,7 +875,7 @@ void ProtonESliceDataAll::Loop() {
 		double kebb=-9999.; kebb=BB.KEAtLength(ke_ffbeam_MeV, range_reco);
 
 		//double KE_ff_reco=ke_ffbeam_MeV; //KE_ff_reco exactly at TPC FF
-		double KE_ff_reco=BB.KEAtLength(ke_ffbeam_MeV, reco_trklen_accum[0]); //KE_ff_reco for the 1st hit
+		double KE_ff_reco=BB.KEAtLength(ke_ffbeam_MeV, reco_trklen_accum.at(0)); //KE_ff_reco for the 1st hit
 		double KEend_reco=kebb;
 
 		//bmrw ------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
