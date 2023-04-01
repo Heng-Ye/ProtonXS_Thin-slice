@@ -291,11 +291,9 @@ void ProtonESliceDataAll::Loop() {
 	BetheBloch BB;
 	BB.SetPdgCode(pdg);
 
-	std::cout<<"Debug pass..."<<std::endl;
 	//book histograms --//
 	BookHistograms();
 
-	std::cout<<"Debug pass2..."<<std::endl;
 	//dump txt files
 	//ofstream myfile;
 	//myfile.open ("true_ke_gt_800MeV.txt");
