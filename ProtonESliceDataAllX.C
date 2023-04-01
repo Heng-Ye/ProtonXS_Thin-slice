@@ -716,7 +716,6 @@ void ProtonESliceDataAll::Loop() {
 		double wid_reco_max=-9999;
 		double range_reco=-999;
 		vector<double> reco_trklen_accum;
-		reco_trklen_accum.reserve(primtrk_hitz->size());
 		double reco_calo_MeV=0;
 		double kereco_range=0;
 		double kereco_range2=0;
@@ -761,7 +760,8 @@ void ProtonESliceDataAll::Loop() {
 					range_reco += sqrt( pow(primtrk_hitx->at(h)-primtrk_hitx->at(h-1), 2)+
 							pow(primtrk_hity->at(h)-primtrk_hity->at(h-1), 2)+
 							pow(primtrk_hitz->at(h)-primtrk_hitz->at(h-1), 2) );
-					reco_trklen_accum[h] = range_reco;
+					//reco_trklen_accum[h] = range_reco;
+					reco_trklen_accum.push_back(range_reco);
 				}
 
 				reco_calo_MeV+=cali_dedx*pitch;
@@ -875,7 +875,9 @@ void ProtonESliceDataAll::Loop() {
 		double kebb=-9999.; kebb=BB.KEAtLength(ke_ffbeam_MeV, range_reco);
 
 		double KE_ff_reco=ke_ffbeam_MeV; //KE_ff_reco exactly at TPC FF [default]
-		if (IsCaloSize) KE_ff_reco=BB.KEAtLength(ke_ffbeam_MeV, reco_trklen_accum.at(0)); //KE_ff_reco for the 1st hit [if size of hits !=0]
+		if (reco_trklen_accum.size()>0) { 
+			KE_ff_reco=BB.KEAtLength(ke_ffbeam_MeV, reco_trklen_accum.at(0)); //KE_ff_reco for the 1st hit [if size of hits !=0]
+		}
 		double KEend_reco=kebb;
 
 		//bmrw ------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
