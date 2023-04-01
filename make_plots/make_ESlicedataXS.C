@@ -475,9 +475,12 @@ void make_ESlicedataXS() {
 
 	//read data ----------------------------------------------------------------------------------------------------------------//
 	TFile *f_data = TFile::Open(fdata.Data());
-	TH1D *data_inc=(TH1D*)f_data->Get(str_inc.Data()); //recosliceID after beam quality cuts
-	TH1D *data_st_inc=(TH1D*)f_data->Get(str_st_inc.Data()); //reco_st_sliceID after beam quality cuts
 	TH2D *data2d_inc=(TH2D*)f_data->Get(str_2d_inc.Data()); //reco_st_sliceID vs recosliceID after beam quality cuts
+	//TH1D *data_inc=(TH1D*)f_data->Get(str_inc.Data()); //recosliceID after beam quality cuts
+	//TH1D *data_st_inc=(TH1D*)f_data->Get(str_st_inc.Data()); //reco_st_sliceID after beam quality cuts
+	TH1D *data_inc=data2d_inc->ProjectionY(); //recosliceID after beam quality cuts
+	TH1D *data_st_inc=data2d_inc->ProjectionX(); //reco_st_sliceID after beam quality cuts
+
 	TH1D *data_int=(TH1D*)f_data->Get(str_int.Data()); //h_recosliceid_inelastic_cuts
 	TH2D *data2d_int=(TH2D*)f_data->Get(str_2d_int.Data()); //x=reco_sliceID, y=reco_int_sliceID
 	data_inc->SetName("data_inc");	
@@ -505,6 +508,40 @@ void make_ESlicedataXS() {
 	TH1D *mc_truesliceID_inel=(TH1D *)f_mc_valid->Get("h_truesliceid_inelastic_all"); //IsPureInEL
 
 	//get mc reco slice IDs
+	//inc_2d
+	TH2D* mc2d_inc_all=(TH2D*)f_mc->Get(Form("%s",str_2d_inc.Data()));
+	TH2D* mc2d_inc_inel=(TH2D*)f_mc->Get(Form("%s_inel",str_2d_inc.Data()));
+	TH2D* mc2d_inc_el=(TH2D*)f_mc->Get(Form("%s_el",str_2d_inc.Data()));
+	TH2D* mc2d_inc_midcosmic=(TH2D*)f_mc->Get(Form("%s_midcosmic",str_2d_inc.Data()));
+	TH2D* mc2d_inc_midpi=(TH2D*)f_mc->Get(Form("%s_midpi",str_2d_inc.Data()));
+	TH2D* mc2d_inc_midp=(TH2D*)f_mc->Get(Form("%s_midp",str_2d_inc.Data()));
+	TH2D* mc2d_inc_midmu=(TH2D*)f_mc->Get(Form("%s_midmu",str_2d_inc.Data()));
+	TH2D* mc2d_inc_mideg=(TH2D*)f_mc->Get(Form("%s_mideg",str_2d_inc.Data()));
+	TH2D* mc2d_inc_midother=(TH2D*)f_mc->Get(Form("%s_midother",str_2d_inc.Data()));
+
+	//inc
+	TH1D* mc_inc_all=mc2d_inc_all->ProjectionY();
+	TH1D* mc_inc_inel=mc2d_inc_inel->ProjectionY();
+	TH1D* mc_inc_el=mc2d_inc_el->ProjectionY();
+	TH1D* mc_inc_midcosmic=mc2d_inc_midcosmic->ProjectionY();
+	TH1D* mc_inc_midpi=mc2d_inc_midpi->ProjectionY();
+	TH1D* mc_inc_midp=mc2d_inc_midp->ProjectionY();
+	TH1D* mc_inc_midmu=mc2d_inc_midmu->ProjectionY();
+	TH1D* mc_inc_mideg=mc2d_inc_mideg->ProjectionY();
+	TH1D* mc_inc_midother=mc2d_inc_midother->ProjectionY();
+
+	//inc_st
+	TH1D* mc_st_inc_all=mc2d_inc_all->ProjectionX();
+	TH1D* mc_st_inc_inel=mc2d_inc_inel->ProjectionX();
+	TH1D* mc_st_inc_el=mc2d_inc_el->ProjectionX();
+	TH1D* mc_st_inc_midcosmic=mc2d_inc_midcosmic->ProjectionX();
+	TH1D* mc_st_inc_midpi=mc2d_inc_midpi->ProjectionX();
+	TH1D* mc_st_inc_midp=mc2d_inc_midp->ProjectionX();
+	TH1D* mc_st_inc_midmu=mc2d_inc_midmu->ProjectionX();
+	TH1D* mc_st_inc_mideg=mc2d_inc_mideg->ProjectionX();
+	TH1D* mc_st_inc_midother=mc2d_inc_midother->ProjectionX();
+
+/*
 	//inc
 	TH1D* mc_inc_all=(TH1D*)f_mc->Get(Form("%s",str_inc.Data()));
 	TH1D* mc_inc_inel=(TH1D*)f_mc->Get(Form("%s_inel",str_inc.Data()));
@@ -526,18 +563,7 @@ void make_ESlicedataXS() {
 	TH1D* mc_st_inc_midmu=(TH1D*)f_mc->Get(Form("%s_midmu",str_st_inc.Data()));
 	TH1D* mc_st_inc_mideg=(TH1D*)f_mc->Get(Form("%s_mideg",str_st_inc.Data()));
 	TH1D* mc_st_inc_midother=(TH1D*)f_mc->Get(Form("%s_midother",str_st_inc.Data()));
-
-	//inc_2d
-	TH2D* mc2d_inc_all=(TH2D*)f_mc->Get(Form("%s",str_2d_inc.Data()));
-	TH2D* mc2d_inc_inel=(TH2D*)f_mc->Get(Form("%s_inel",str_2d_inc.Data()));
-	TH2D* mc2d_inc_el=(TH2D*)f_mc->Get(Form("%s_el",str_2d_inc.Data()));
-	TH2D* mc2d_inc_midcosmic=(TH2D*)f_mc->Get(Form("%s_midcosmic",str_2d_inc.Data()));
-	TH2D* mc2d_inc_midpi=(TH2D*)f_mc->Get(Form("%s_midpi",str_2d_inc.Data()));
-	TH2D* mc2d_inc_midp=(TH2D*)f_mc->Get(Form("%s_midp",str_2d_inc.Data()));
-	TH2D* mc2d_inc_midmu=(TH2D*)f_mc->Get(Form("%s_midmu",str_2d_inc.Data()));
-	TH2D* mc2d_inc_mideg=(TH2D*)f_mc->Get(Form("%s_mideg",str_2d_inc.Data()));
-	TH2D* mc2d_inc_midother=(TH2D*)f_mc->Get(Form("%s_midother",str_2d_inc.Data()));
-
+*/
 
 	//int_2d
 	TH2D* mc2d_int_all=(TH2D*)f_mc->Get(Form("%s",str_2d_int.Data()));
@@ -659,7 +685,6 @@ void make_ESlicedataXS() {
 	int n_mc2d_int=n_mc2d_int_inel+n_mc2d_int_el+n_mc2d_int_midcosmic+n_mc2d_int_midpi+n_mc2d_int_midp+n_mc2d_int_midmu+n_mc2d_int_mideg+n_mc2d_int_midother;
 
 	double norm_mc2d_int=(double)data2d_int->Integral()/(double)n_mc2d_int;
-	//double norm_mc2d_int=(double)data2d_inc->Integral()/(double)mc2d_int_all->Integral();
 	mc2d_int_inel->Scale(norm_mc2d_int);
 	mc2d_int_el->Scale(norm_mc2d_int);
 	mc2d_int_midcosmic->Scale(norm_mc2d_int);
@@ -911,7 +936,7 @@ void make_ESlicedataXS() {
 
   	data_int_uf=(TH1D *)uf_int.Hreco();
 	data2d_int_uf=(TH2D*)uf2d_int.Hreco();
-	data1d_int_uf=(TH1D*)data2d_int_uf->ProjectionX();
+	data1d_int_uf=(TH1D*)data2d_int_uf->ProjectionY();
 
 	data_inc_uf->SetNameTitle("data_inc_uf", "Unfolded incident protons; Slice ID; Events");
 	data_st_inc_uf->SetNameTitle("data_st_inc_uf", "Unfolded incident protons; Start Slice ID; Events");
@@ -1076,7 +1101,7 @@ void make_ESlicedataXS() {
 
 
 	//get KEs from MC --------------------------------------------------------//
-	double slcid[nthinslices] = {0};
+/*
 	TH1D *reco_incE[nthinslices];
 	TH1D *true_incE[nthinslices];
 	double avg_recoincE[nthinslices] = {0};
@@ -1091,8 +1116,6 @@ void make_ESlicedataXS() {
 
 	cout<<"nthinslices:"<<nthinslices<<endl;
         for (int i = 0; i<nthinslices; ++i){
-                slcid[i]=i+.5;
-
 		reco_incE[i]=(TH1D* )f_mc->Get(Form("reco_incE_%d",i));
 		true_incE[i]=(TH1D* )f_mc->Get(Form("true_incE_%d",i));
 
@@ -1108,6 +1131,7 @@ void make_ESlicedataXS() {
 
 		//cout<<"avg_recoincE["<<i<<"]:"<<avg_recoincE[i]<<endl;
         }
+*/
 	
 	//Calc XS ----------------------------------------------------------------------------------------------------------------------------//
 	double xs_const=MAr/(Density*NA*thinslicewidth)*1e27;
@@ -1115,10 +1139,12 @@ void make_ESlicedataXS() {
 
 	//[0]KE estimation
 	BetheBloch BB(2212);
+	double slcid[nthinslices] = {0};
   	double KE[nthinslices] = {0};
 	double err_KE[nthinslices] = {0};
   	double dEdx[nthinslices] = {0};
         for (int i = 0; i<nthinslices; ++i) {
+                slcid[i]=i+.5;
     		KE[i]=Emax-((double)i+0.5)*thinslicewidth; //av_KE
 		//KE[i]=true_incE[i]->GetMean();
 		err_KE[i]=(double)thinslicewidth/2.;
@@ -1270,12 +1296,12 @@ void make_ESlicedataXS() {
   	TGraphErrors *gr_reco_inc = new TGraphErrors(nthinslices, slcid, reco_inc, err_sliceid, err_reco_inc);
   	TGraphErrors *gr_reco_int = new TGraphErrors(nthinslices, slcid, reco_int, err_sliceid, err_reco_int);
 
-  	TGraphErrors *gr_sliceid_recoincE = new TGraphErrors(nthinslices, slcid, avg_recoincE, err_sliceid, err_recoincE);
-  	TGraphErrors *gr_sliceid_trueincE = new TGraphErrors(nthinslices, slcid, avg_trueincE, err_sliceid, err_trueincE);
-	TGraphErrors *gr_sliceid_recotrueincE = new TGraphErrors(nthinslices, &(slcid[0]), &(reco_trueincE[0]), 0, &(err_reco_trueincE[0]));
+  	//TGraphErrors *gr_sliceid_recoincE = new TGraphErrors(nthinslices, slcid, avg_recoincE, err_sliceid, err_recoincE);
+  	//TGraphErrors *gr_sliceid_trueincE = new TGraphErrors(nthinslices, slcid, avg_trueincE, err_sliceid, err_trueincE);
+	//TGraphErrors *gr_sliceid_recotrueincE = new TGraphErrors(nthinslices, &(slcid[0]), &(reco_trueincE[0]), 0, &(err_reco_trueincE[0]));
 
-  	TGraphErrors *gr_slcid_trueE = new TGraphErrors(nthinslices, &sliceid[0], &avg_trueincE[0], &zero[0], &rms_trueincE[0]);
-  	TGraphErrors *gr_slcid_recoE = new TGraphErrors(nthinslices, &sliceid[0], &avg_recoincE[0], &zero[0], &rms_recoincE[0]);
+  	//TGraphErrors *gr_slcid_trueE = new TGraphErrors(nthinslices, &sliceid[0], &avg_trueincE[0], &zero[0], &rms_trueincE[0]);
+  	//TGraphErrors *gr_slcid_recoE = new TGraphErrors(nthinslices, &sliceid[0], &avg_recoincE[0], &zero[0], &rms_recoincE[0]);
 
 	gr_reco_inc->SetNameTitle("gr_reco_inc", "; SliceID; Events");
 	gr_reco_int->SetNameTitle("gr_reco_int", "; ; ");
@@ -1283,17 +1309,18 @@ void make_ESlicedataXS() {
   	gr_truexs->SetNameTitle("gr_truexs", "; Energy (MeV); Cross-section [mb]");
   	gr_recoxs->SetNameTitle("gr_recoxs", "; Energy (MeV); Cross-section [mb]");
 
-	gr_sliceid_recoincE->SetNameTitle("gr_sliceid_recoincE; SliceID; Proton Kinetic Energy [MeV]");
-	gr_sliceid_trueincE->SetNameTitle("gr_sliceid_trueincE; SliceID; Proton Kinetic Energy [MeV]");
+	//gr_sliceid_recoincE->SetNameTitle("gr_sliceid_recoincE; SliceID; Proton Kinetic Energy [MeV]");
+	//gr_sliceid_trueincE->SetNameTitle("gr_sliceid_trueincE; SliceID; Proton Kinetic Energy [MeV]");
 
-	gr_sliceid_recotrueincE->SetNameTitle("gr_sliceid_recotrueincE; SliceID; Reco KE - True KE [MeV]");
+	//gr_sliceid_recotrueincE->SetNameTitle("gr_sliceid_recotrueincE; SliceID; Reco KE - True KE [MeV]");
 
-	gr_slcid_trueE->SetNameTitle("gr_slcid_trueE; Slice ID; Proton Kinetic Energy [MeV]");
-        gr_slcid_recoE->SetNameTitle("gr_slcid_recoE; Slice ID; Proton Kinetic Energy [MeV]");
+	//gr_slcid_trueE->SetNameTitle("gr_slcid_trueE; Slice ID; Proton Kinetic Energy [MeV]");
+        //gr_slcid_recoE->SetNameTitle("gr_slcid_recoE; Slice ID; Proton Kinetic Energy [MeV]");
 
 
 	//All protons ---------------------------------------------------------------------//
 	//[0]sliceID vs KE	
+/*
 	TCanvas *c_slcid_ke=new TCanvas(Form("c_slcid_ke"),"",900, 600);
 	gStyle->SetTitleX(0.5); 
 	gStyle->SetTitleAlign(23); 
@@ -1319,7 +1346,7 @@ void make_ESlicedataXS() {
 	leg_slcid_ke->AddEntry(gr_slcid_recoE, "Reco","ep");
         leg_slcid_ke->Draw();
 	c_slcid_ke->Print(Form("%sslc_vs_KE.eps",outpath.Data()));
-
+*/
 
 
 	//[0]data with mc components (start slice) --------------------------------------------------------------------//
@@ -1966,6 +1993,7 @@ void make_ESlicedataXS() {
 	c_inct->Print(Form("%sreco_inc_int.eps",outpath.Data()));
 
 	//sliceID vs KE
+/*
 	gStyle->SetEndErrorSize(0);
 	TCanvas *c_id_ke=new TCanvas(Form("c_id_ke"),"",900, 600);
         gStyle->SetPadRightMargin(0.0);
@@ -1974,9 +2002,9 @@ void make_ESlicedataXS() {
 	c_id_ke->Divide(1,1);
 	c_id_ke->cd(1);
 
-	gr_sliceid_recoincE->SetMarkerColor(2);
-	gr_sliceid_recoincE->SetLineColor(2);
-	gr_sliceid_trueincE->SetMarkerColor(1);
+	//gr_sliceid_recoincE->SetMarkerColor(2);
+	//gr_sliceid_recoincE->SetLineColor(2);
+	//gr_sliceid_trueincE->SetMarkerColor(1);
 	
         //TH2D *f2d_id_ke=new TH2D("f2d_id_ke","",21,0,21,500,50,500);	
         TH2D *f2d_id_ke=new TH2D("f2d_id_ke","",nthinslices+1,0,nthinslices+1,500,50,500);	
@@ -1991,7 +2019,9 @@ void make_ESlicedataXS() {
         leg_idke->AddEntry(gr_sliceid_recoincE, "KE Reco", "pe");
         leg_idke->Draw();
 	c_id_ke->Print(Form("%strue_recoKE_sliceID.eps",outpath.Data()));
+*/
 
+/*
 	//reco KE - true KE ----------------------------------------------//
         gStyle->SetPadRightMargin(0.0);
  	gStyle->SetPadLeftMargin(0.16);
@@ -2008,7 +2038,7 @@ void make_ESlicedataXS() {
 	gr_sliceid_recotrueincE->SetLineColor(2);
 	gr_sliceid_recotrueincE->Draw("p same");
 	c_dke->Print(Form("%sdKE_sliceID.eps",outpath.Data()));
-	
+*/	
 
 /*
 	//demo KE 

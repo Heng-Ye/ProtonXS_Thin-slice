@@ -1172,7 +1172,8 @@ void ProtonESliceDataAll::Loop() {
 			//double KE_reco=BB.KEAtLength(keff_reco, range_reco);
 			//reco_sliceID = int((Emax-KEend_reco)/thinslicewidth);
 			reco_sliceID = int(floor((Emax-KEend_reco)/thinslicewidth));
-			if (reco_sliceID >= nthinslices||KEend_reco<0) reco_sliceID = nthinslices;
+			//if (reco_sliceID >= nthinslices||KEend_reco<0) reco_sliceID = nthinslices;
+			if (reco_sliceID >= nthinslices) reco_sliceID = nthinslices;
 			if (reco_sliceID < 0) reco_sliceID = 0;
 			//if (reco_endz<0) reco_sliceID = -1;
 
