@@ -284,7 +284,9 @@ void ProtonESliceDataAll::Loop() {
 	//ThinSlice config. --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrw_kebeamff_v09_39_01_ceil_ignoreincompleteSlice_2dunfold.root", name_thinslicewidth, nthinslices)); //output file name
 	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_ceil_ignoreincompleteSlice_2dunfold.root", name_thinslicewidth, nthinslices)); //output file name
-	SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_ceil_ignoreincompleteSlice_2x2dunfold.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_nobmrw_kebeamff_v09_39_01_ceil_ignoreincompleteSlice_2x2dunfold.root", name_thinslicewidth, nthinslices)); //output file name
+	//SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_beamxy_bmrw_kebeamff_v09_39_01_ceil_ignoreincompleteSlice_2dunfold_constEloss.root", name_thinslicewidth, nthinslices)); //output file name
+	SetOutputFileName(Form("prod4areco2_mc_ESliceE_dE%dMeV_%dslcs_nobeamxy_bmrw_kebeamff_v09_39_01_ceil_ignoreincompleteSlice_2dunfold_constEloss.root", name_thinslicewidth, nthinslices)); //output file name
 	//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 	//Basic configure ------//
@@ -858,8 +860,8 @@ void ProtonESliceDataAll::Loop() {
 		//KEend_reco=KE_ff_reco-reco_calo_MeV;
 
 		double slope_kff_keffbeamR=0.859605;
-		//double ke_ffbeam_MeV=(ke_beam_spec_MeV-Eloss_mc_hy_stop)*R_fit_hy; //const E-loss with correction (R_fit_hy is essentially one)
-		double ke_ffbeam_MeV=ke_beam_spec_MeV-(p0_edept_stop+p1_edept_stop*ke_beam_spec_MeV+p2_edept_stop*pow(ke_beam_spec_MeV,2)); //E-dept E-loss (latest version!)
+		double ke_ffbeam_MeV=(ke_beam_spec_MeV-Eloss_mc_hy_stop)*R_fit_hy; //const E-loss with correction (R_fit_hy is essentially one)
+		//double ke_ffbeam_MeV=ke_beam_spec_MeV-(p0_edept_stop+p1_edept_stop*ke_beam_spec_MeV+p2_edept_stop*pow(ke_beam_spec_MeV,2)); //E-dept E-loss (latest version!)
 		//double ke_ffbeam_MeV=ke_ff; //KEff(truth)
 
 		//Hypothetical length -------------------------------------------------------------------------------------//
@@ -873,9 +875,9 @@ void ProtonESliceDataAll::Loop() {
 		double kebb=-9999.; kebb=BB.KEAtLength(ke_ffbeam_MeV, range_reco);
 
 		double KE_ff_reco=ke_ffbeam_MeV; //KE_ff_reco exactly at TPC FF [default]
-		if (reco_trklen_accum.size()>0) { 
-			KE_ff_reco=BB.KEAtLength(ke_ffbeam_MeV, reco_trklen_accum.at(0)); //KE_ff_reco for the 1st hit [if size of hits !=0]
-		}
+		//if (reco_trklen_accum.size()>0) { 
+			//KE_ff_reco=BB.KEAtLength(ke_ffbeam_MeV, reco_trklen_accum.at(0)); //KE_ff_reco for the 1st hit [if size of hits !=0]
+		//}
 		double KEend_reco=kebb;
 
 		//bmrw ------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
