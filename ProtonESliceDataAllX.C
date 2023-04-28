@@ -1421,15 +1421,12 @@ void ProtonESliceDataAll::Loop() {
 			}
 
 			//if (isTestSample) { //if test sample
-			cout<<"\ncheck_0"<<endl;
 			h_truesliceid_all->Fill(true_sliceID, mom_rw_minchi2);
 			h_true_st_sliceid_all->Fill(true_st_sliceID, mom_rw_minchi2);
 			//} //if test sample
 			//else { //if NOT test sample
-			cout<<"\ncheck_0_1"<<endl;
 			uf.eff_den_Inc->Fill(true_sliceID, mom_rw_minchi2);
 			uf.eff_den_st_Inc->Fill(true_st_sliceID, mom_rw_minchi2);
-			cout<<"\ncheck_0_2"<<endl;
 			//for (int ij=true_st_sliceID; ij<=true_sliceID; ++ij){
 			//if (true_sliceID < nthinslices && true_sliceID>=0){
 			//for (int ij=0; ij<=true_sliceID+1; ++ij){
