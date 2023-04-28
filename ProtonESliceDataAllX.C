@@ -1614,7 +1614,6 @@ void ProtonESliceDataAll::Loop() {
 				uf.pur_den_st_Inc->Fill(reco_st_sliceID, mom_rw_minchi2);
 				//} //if NOT test sample
 			} //if pass all cuts
-			cout<<"check_1"<<endl;
 
 			if (PassCuts_INT) { //if pass reco inel cut
 				//if (isTestSample){ //if test sample
