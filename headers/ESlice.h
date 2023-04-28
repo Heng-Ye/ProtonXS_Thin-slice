@@ -155,6 +155,16 @@ void BookHistograms() { //BookHistograms
 	//std::cout<<"Debug pass [Book1]..."<<std::endl;
 
 	//XS histograms -------------------------------------------------------------------------------------------------------------------------------------------------------//
+	h_truesliceid_all = new TH1D("h_truesliceid_all","h_truesliceid_all;True SliceID", p::true_nbins, p::true_bins);
+	h_true_st_sliceid_all = new TH1D("h_true_st_sliceid_all","h_true_st_sliceid_all;True Start SliceID", p::true_nbins, p::true_bins);
+	h_truesliceid_inelastic_all = new TH1D("h_truesliceid_inelastic_all","h_truesliceid_inelastic_all;True SliceID", p::true_nbins, p::true_bins);
+
+
+	h_truesliceid_cuts = new TH1D("h_truesliceid_cuts","h_truesliceid_cuts;True SliceID", p::true_nbins, p::true_bins);
+	h_true_st_sliceid_cuts = new TH1D("h_true_st_sliceid_cuts","h_true_st_sliceid_cuts;True Start SliceID", p::true_nbins, p::true_bins);
+	h_truesliceid_inelastic_cuts = new TH1D("h_truesliceid_inelastic_cuts","h_truesliceid_inelastic_cuts;True SliceID", p::true_nbins, p::true_bins);
+
+/*
 	h_truesliceid_all = new TH1D("h_truesliceid_all","h_truesliceid_all;True SliceID", nthinslices + 2, -1, nthinslices + 1);
 	h_true_st_sliceid_all = new TH1D("h_true_st_sliceid_all","h_true_st_sliceid_all;True Start SliceID", nthinslices + 2, -1, nthinslices + 1);
 	h_truesliceid_inelastic_all = new TH1D("h_truesliceid_inelastic_all","h_truesliceid_inelastic_all;True SliceID", nthinslices + 2, -1, nthinslices + 1);
@@ -163,6 +173,7 @@ void BookHistograms() { //BookHistograms
 	h_truesliceid_cuts = new TH1D("h_truesliceid_cuts","h_truesliceid_cuts;True SliceID", nthinslices + 2, -1, nthinslices + 1);
 	h_true_st_sliceid_cuts = new TH1D("h_true_st_sliceid_cuts","h_true_st_sliceid_cuts;True Start SliceID", nthinslices + 2, -1, nthinslices + 1);
 	h_truesliceid_inelastic_cuts = new TH1D("h_truesliceid_inelastic_cuts","h_truesliceid_inelastic_cuts;True SliceID", nthinslices + 2, -1, nthinslices + 1);
+*/
 
 /*
 	h_recosliceid_allevts_cuts = new TH1D("h_recosliceid_allevts_cuts","h_recosliceid_allevts_cuts;True SliceID", nthinslices + 2, -1, nthinslices + 1);
@@ -208,6 +219,7 @@ void BookHistograms() { //BookHistograms
 	h_true_st_sliceid_allevts_cuts_midother = new TH1D("h_true_st_sliceid_allevts_cuts_midother","h_true_st_sliceid_allevts_cuts_midother;True SliceID", nthinslices + 2, -1, nthinslices + 1);
 */
 
+/*
 	h_recosliceid_cuts = new TH1D("h_recosliceid_cuts","h_recosliceid_cuts;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
 	h_reco_st_sliceid_cuts = new TH1D("h_reco_st_sliceid_cuts","h_reco_st_sliceid_cuts;Reco Start SliceID", nthinslices + 2, -1, nthinslices + 1);
 	h_recosliceid_inelastic_cuts = new TH1D("h_recosliceid_inelastic_cuts","h_recosliceid_inelastic_cuts;Reco SliceID", nthinslices + 2, -1, nthinslices + 1);
@@ -252,7 +264,6 @@ void BookHistograms() { //BookHistograms
 	h2d_recosliceid_allevts_cuts_mideg = new TH2D("h2d_recosliceid_allevts_cuts_mideg","h2d_recosliceid_allevts_cuts_mideg; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
 	h2d_recosliceid_allevts_cuts_midother = new TH2D("h2d_recosliceid_allevts_cuts_midother","h2d_recosliceid_allevts_cuts_midother; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
 
-
 	h2d_truesliceid_allevts_cuts = new TH2D("h2d_truesliceid_allevts_cuts","h2d_truesliceid_allevts_cuts; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
 	h2d_truesliceid_allevts_cuts_inel = new TH2D("h2d_truesliceid_allevts_cuts_inel","h2d_truesliceid_allevts_cuts_inel; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
 	h2d_truesliceid_allevts_cuts_el = new TH2D("h2d_truesliceid_allevts_cuts_el","h2d_truesliceid_allevts_cuts_el; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
@@ -262,6 +273,62 @@ void BookHistograms() { //BookHistograms
 	h2d_truesliceid_allevts_cuts_midmu = new TH2D("h2d_truesliceid_allevts_cuts_midmu","h2d_truesliceid_allevts_cuts_midmu; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
 	h2d_truesliceid_allevts_cuts_mideg = new TH2D("h2d_truesliceid_allevts_cuts_mideg","h2d_truesliceid_allevts_cuts_mideg; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
 	h2d_truesliceid_allevts_cuts_midother = new TH2D("h2d_truesliceid_allevts_cuts_midother","h2d_truesliceid_allevts_cuts_midother; StartID; EndID", nthinslices + 2, -1, nthinslices + 1, nthinslices + 2, -1, nthinslices + 1);
+*/
+
+	h_recosliceid_cuts = new TH1D("h_recosliceid_cuts","h_recosliceid_cuts;Reco SliceID", p::reco_nbins, p::reco_bins);
+	h_reco_st_sliceid_cuts = new TH1D("h_reco_st_sliceid_cuts","h_reco_st_sliceid_cuts;Reco Start SliceID", p::reco_nbins, p::reco_bins);
+	h_recosliceid_inelastic_cuts = new TH1D("h_recosliceid_inelastic_cuts","h_recosliceid_inelastic_cuts;Reco SliceID", p::reco_nbins, p::reco_bins);
+
+	h_recosliceid_recoinelastic_cuts = new TH1D("h_recosliceid_recoinelastic_cuts","h_recosliceid_recoinelastic_cuts;Reco SliceID", p::reco_nbins, p::reco_bins);
+	h_recosliceid_recoinelastic_cuts_inel = new TH1D("h_recosliceid_recoinelastic_cuts_inel","h_recosliceid_recoinelastic_cuts_inel;Reco SliceID", p::reco_nbins, p::reco_bins);
+	h_recosliceid_recoinelastic_cuts_el = new TH1D("h_recosliceid_recoinelastic_cuts_el","h_recosliceid_recoinelastic_cuts_el;Reco SliceID", p::reco_nbins, p::reco_bins);
+	h_recosliceid_recoinelastic_cuts_midcosmic = new TH1D("h_recosliceid_recoinelastic_cuts_midcosmic","h_recosliceid_recoinelastic_cuts_midcosmic;Reco SliceID", p::reco_nbins, p::reco_bins);
+	h_recosliceid_recoinelastic_cuts_midpi = new TH1D("h_recosliceid_recoinelastic_cuts_midpi","h_recosliceid_recoinelastic_cuts_midpi;Reco SliceID", p::reco_nbins, p::reco_bins);
+	h_recosliceid_recoinelastic_cuts_midp = new TH1D("h_recosliceid_recoinelastic_cuts_midp","h_recosliceid_recoinelastic_cuts_midp;Reco SliceID", p::reco_nbins, p::reco_bins);
+	h_recosliceid_recoinelastic_cuts_midmu = new TH1D("h_recosliceid_recoinelastic_cuts_midmu","h_recosliceid_recoinelastic_cuts_midmu;Reco SliceID", p::reco_nbins, p::reco_bins);
+	h_recosliceid_recoinelastic_cuts_mideg = new TH1D("h_recosliceid_recoinelastic_cuts_mideg","h_recosliceid_recoinelastic_cuts_mideg;Reco SliceID", p::reco_nbins, p::reco_bins);
+	h_recosliceid_recoinelastic_cuts_midother = new TH1D("h_recosliceid_recoinelastic_cuts_midother","h_recosliceid_recoinelastic_cuts_midother;Reco SliceID", p::reco_nbins, p::reco_bins);
+
+	h2d_recosliceid_recoinelastic_cuts = new TH2D("h2d_recosliceid_recoinelastic_cuts","h2d_recosliceid_recoinelastic_cuts; Reco SliceID", p::reco_nbins, p::reco_bins, p::reco_nbins, p::reco_bins);
+	h2d_recosliceid_recoinelastic_cuts_el = new TH2D("h2d_recosliceid_recoinelastic_cuts_el","h2d_recosliceid_recoinelastic_cuts_el;Reco SliceID", p::reco_nbins, p::reco_bins, p::reco_nbins, p::reco_bins);
+	h2d_recosliceid_recoinelastic_cuts_midp = new TH2D("h2d_recosliceid_recoinelastic_cuts_midp","h2d_recosliceid_recoinelastic_cuts_midp;Reco SliceID", p::reco_nbins, p::reco_bins, p::reco_nbins, p::reco_bins);
+	h2d_recosliceid_recoinelastic_cuts_inel = new TH2D("h2d_recosliceid_recoinelastic_cuts_inel","h2d_recosliceid_recoinelastic_cuts_inel;Reco SliceID", p::reco_nbins, p::reco_bins, p::reco_nbins, p::reco_bins);
+	h2d_recosliceid_recoinelastic_cuts_midcosmic = new TH2D("h2d_recosliceid_recoinelastic_cuts_midcosmic","h2d_recosliceid_recoinelastic_cuts_midcosmic;Reco SliceID", p::reco_nbins, p::reco_bins, p::reco_nbins, p::reco_bins);
+	h2d_recosliceid_recoinelastic_cuts_midpi = new TH2D("h2d_recosliceid_recoinelastic_cuts_midpi","h2d_recosliceid_recoinelastic_cuts_midpi;Reco SliceID", p::reco_nbins, p::reco_bins, p::reco_nbins, p::reco_bins);
+	h2d_recosliceid_recoinelastic_cuts_midmu = new TH2D("h2d_recosliceid_recoinelastic_cuts_midmu","h2d_recosliceid_recoinelastic_cuts_midmu;Reco SliceID", p::reco_nbins, p::reco_bins, p::reco_nbins, p::reco_bins);
+	h2d_recosliceid_recoinelastic_cuts_mideg = new TH2D("h2d_recosliceid_recoinelastic_cuts_mideg","h2d_recosliceid_recoinelastic_cuts_mideg;Reco SliceID", p::reco_nbins, p::reco_bins, p::reco_nbins, p::reco_bins);
+	h2d_recosliceid_recoinelastic_cuts_midother = new TH2D("h2d_recosliceid_recoinelastic_cuts_midother","h2d_recosliceid_recoinelastic_cuts_midother;Reco SliceID", p::reco_nbins, p::reco_bins, p::reco_nbins, p::reco_bins);
+
+	h_truesliceid_recoinelastic_cuts = new TH1D("h_truesliceid_recoinelastic_cuts","h_truesliceid_recoinelastic_cuts;True SliceID", p::true_nbins, p::true_bins);
+	h_truesliceid_recoinelastic_cuts_inel = new TH1D("h_truesliceid_recoinelastic_cuts_inel","h_truesliceid_recoinelastic_cuts_inel;True SliceID", p::true_nbins, p::true_bins);
+	h_truesliceid_recoinelastic_cuts_el = new TH1D("h_truesliceid_recoinelastic_cuts_el","h_truesliceid_recoinelastic_cuts_el;True SliceID", p::true_nbins, p::true_bins);
+	h_truesliceid_recoinelastic_cuts_midcosmic = new TH1D("h_truesliceid_recoinelastic_cuts_midcosmic","h_truesliceid_recoinelastic_cuts_midcosmic;True SliceID", p::true_nbins, p::true_bins);
+	h_truesliceid_recoinelastic_cuts_midpi = new TH1D("h_truesliceid_recoinelastic_cuts_midpi","h_truesliceid_recoinelastic_cuts_midpi;True SliceID", p::true_nbins, p::true_bins);
+	h_truesliceid_recoinelastic_cuts_midp = new TH1D("h_truesliceid_recoinelastic_cuts_midp","h_truesliceid_recoinelastic_cuts_midp;True SliceID", p::true_nbins, p::true_bins);
+	h_truesliceid_recoinelastic_cuts_midmu = new TH1D("h_truesliceid_recoinelastic_cuts_midmu","h_truesliceid_recoinelastic_cuts_midmu;True SliceID", p::true_nbins, p::true_bins);
+	h_truesliceid_recoinelastic_cuts_mideg = new TH1D("h_truesliceid_recoinelastic_cuts_mideg","h_truesliceid_recoinelastic_cuts_mideg;True SliceID", p::true_nbins, p::true_bins);
+	h_truesliceid_recoinelastic_cuts_midother = new TH1D("h_truesliceid_recoinelastic_cuts_midother","h_truesliceid_recoinelastic_cuts_midother;True SliceID", p::true_nbins, p::true_bins);
+
+	h2d_recosliceid_allevts_cuts = new TH2D("h2d_recosliceid_allevts_cuts","h2d_recosliceid_allevts_cuts; StartID; EndID", p::reco_nbins, p::reco_bins, p::reco_nbins, p::reco_bins);
+	h2d_recosliceid_allevts_cuts_el = new TH2D("h2d_recosliceid_allevts_cuts_el","h2d_recosliceid_allevts_cuts_el; StartID; EndID", p::reco_nbins, p::reco_bins, p::reco_nbins, p::reco_bins);
+	h2d_recosliceid_allevts_cuts_midp = new TH2D("h2d_recosliceid_allevts_cuts_midp","h2d_recosliceid_allevts_cuts_midp; StartID; EndID", p::reco_nbins, p::reco_bins, p::reco_nbins, p::reco_bins);
+	h2d_recosliceid_allevts_cuts_inel = new TH2D("h2d_recosliceid_allevts_cuts_inel","h2d_recosliceid_allevts_cuts_inel; StartID; EndID", p::reco_nbins, p::reco_bins, p::reco_nbins, p::reco_bins);
+	h2d_recosliceid_allevts_cuts_midcosmic = new TH2D("h2d_recosliceid_allevts_cuts_midcosmic","h2d_recosliceid_allevts_cuts_midcosmic; StartID; EndID", p::reco_nbins, p::reco_bins, p::reco_nbins, p::reco_bins);
+	h2d_recosliceid_allevts_cuts_midpi = new TH2D("h2d_recosliceid_allevts_cuts_midpi","h2d_recosliceid_allevts_cuts_midpi; StartID; EndID", p::reco_nbins, p::reco_bins, p::reco_nbins, p::reco_bins);
+	h2d_recosliceid_allevts_cuts_midmu = new TH2D("h2d_recosliceid_allevts_cuts_midmu","h2d_recosliceid_allevts_cuts_midmu; StartID; EndID", p::reco_nbins, p::reco_bins, p::reco_nbins, p::reco_bins);
+	h2d_recosliceid_allevts_cuts_mideg = new TH2D("h2d_recosliceid_allevts_cuts_mideg","h2d_recosliceid_allevts_cuts_mideg; StartID; EndID", p::reco_nbins, p::reco_bins, p::reco_nbins, p::reco_bins);
+	h2d_recosliceid_allevts_cuts_midother = new TH2D("h2d_recosliceid_allevts_cuts_midother","h2d_recosliceid_allevts_cuts_midother; StartID; EndID", p::reco_nbins, p::reco_bins, p::reco_nbins, p::reco_bins);
+
+	h2d_truesliceid_allevts_cuts = new TH2D("h2d_truesliceid_allevts_cuts","h2d_truesliceid_allevts_cuts; StartID; EndID", p::true_nbins, p::true_bins, p::true_nbins, p::true_bins);
+	h2d_truesliceid_allevts_cuts_inel = new TH2D("h2d_truesliceid_allevts_cuts_inel","h2d_truesliceid_allevts_cuts_inel; StartID; EndID", p::true_nbins, p::true_bins, p::true_nbins, p::true_bins);
+	h2d_truesliceid_allevts_cuts_el = new TH2D("h2d_truesliceid_allevts_cuts_el","h2d_truesliceid_allevts_cuts_el; StartID; EndID", p::true_nbins, p::true_bins, p::true_nbins, p::true_bins);
+	h2d_truesliceid_allevts_cuts_midcosmic = new TH2D("h2d_truesliceid_allevts_cuts_midcosmic","h2d_truesliceid_allevts_cuts_midcosmic; StartID; EndID", p::true_nbins, p::true_bins, p::true_nbins, p::true_bins);
+	h2d_truesliceid_allevts_cuts_midpi = new TH2D("h2d_truesliceid_allevts_cuts_midpi","h2d_truesliceid_allevts_cuts_midpi; StartID; EndID", p::true_nbins, p::true_bins, p::true_nbins, p::true_bins);
+	h2d_truesliceid_allevts_cuts_midp = new TH2D("h2d_truesliceid_allevts_cuts_midp","h2d_truesliceid_allevts_cuts_midp; StartID; EndID", p::true_nbins, p::true_bins, p::true_nbins, p::true_bins);
+	h2d_truesliceid_allevts_cuts_midmu = new TH2D("h2d_truesliceid_allevts_cuts_midmu","h2d_truesliceid_allevts_cuts_midmu; StartID; EndID", p::true_nbins, p::true_bins, p::true_nbins, p::true_bins);
+	h2d_truesliceid_allevts_cuts_mideg = new TH2D("h2d_truesliceid_allevts_cuts_mideg","h2d_truesliceid_allevts_cuts_mideg; StartID; EndID", p::true_nbins, p::true_bins, p::true_nbins, p::true_bins);
+	h2d_truesliceid_allevts_cuts_midother = new TH2D("h2d_truesliceid_allevts_cuts_midother","h2d_truesliceid_allevts_cuts_midother; StartID; EndID", p::true_nbins, p::true_bins, p::true_nbins, p::true_bins);
+
 
 	h_truesliceid_all->Sumw2();
 	h_true_st_sliceid_all->Sumw2();

@@ -5,6 +5,8 @@ R__LOAD_LIBRARY(libRooUnfold.so) //load share lib
 #include "RooUnfold.h"
 #include "RooUnfoldResponse.h"
 #include "RooUnfoldBayes.h"
+#include "TH2D.h"
+
 //#include "RooUnfoldSvd.h"
 
 class Unfold {
@@ -12,7 +14,8 @@ class Unfold {
  public:
 
   //Unfold(int nb, double xlo, double xhi, TH2D* h2d_reco, TH2D* h2d_true);
-  Unfold(int nb, double xlo, double xhi, TH2D* h2d_reco, TH2D* h2d_true, TH2D* h2d_reco2, TH2D* h2d_true2);
+  //Unfold(int nb, double xlo, double xhi, TH2D* h2d_reco, TH2D* h2d_true, TH2D* h2d_reco2, TH2D* h2d_true2);
+  Unfold(TH2D* h2d_reco, TH2D* h2d_true, TH2D* h2d_reco2, TH2D* h2d_true2);
 
   RooUnfoldResponse response_SliceID_Int;  //Interaction
   RooUnfoldResponse response_SliceID_Inc;  //Incident
@@ -63,10 +66,11 @@ class Unfold {
 
 //Unfold::Unfold(int nb, double xlo, double xhi)
 //Unfold::Unfold(int nb, double xlo, double xhi, TH2D* h2d_reco, TH2D* h2d_true)
-Unfold::Unfold(int nb, double xlo, double xhi, TH2D* h2d_reco, TH2D* h2d_true, TH2D* h2d_reco2, TH2D* h2d_true2)
-  : response_SliceID_Int(nb, xlo, xhi)
-  , response_SliceID_Inc(nb, xlo, xhi)
-  , response_st_SliceID_Inc(nb, xlo, xhi)
+//Unfold::Unfold(int nb, double xlo, double xhi, TH2D* h2d_reco, TH2D* h2d_true, TH2D* h2d_reco2, TH2D* h2d_true2)
+Unfold::Unfold(TH2D* h2d_reco, TH2D* h2d_true, TH2D* h2d_reco2, TH2D* h2d_true2)
+  : response_SliceID_Int(h2d_reco->ProjectionX(), h2d_true->ProjectionX())
+  , response_SliceID_Inc(h2d_reco->ProjectionX(), h2d_true->ProjectionX())
+  , response_st_SliceID_Inc(h2d_reco->ProjectionX(), h2d_true->ProjectionX())
   , response_SliceID_2D(h2d_reco, h2d_true)
   , response_SliceID_Int_2D(h2d_reco2, h2d_true2)
 {
@@ -77,6 +81,10 @@ Unfold::Unfold(int nb, double xlo, double xhi, TH2D* h2d_reco, TH2D* h2d_true, T
   response_SliceID_2D.UseOverflow(false);
   response_SliceID_Int_2D.UseOverflow(false);
 
+/*
+  //: response_SliceID_Int(nb, xlo, xhi)
+  //, response_SliceID_Inc(nb, xlo, xhi)
+  //, response_st_SliceID_Inc(nb, xlo, xhi)
   eff_num_Int = new TH1D("eff_num_Int", "eff_num_Int", nb, xlo, xhi);
   eff_den_Int = new TH1D("eff_den_Int", "eff_den_Int", nb, xlo, xhi);
   eff_num_Inc = new TH1D("eff_num_Inc", "eff_num_Inc", nb, xlo, xhi);
@@ -98,6 +106,33 @@ Unfold::Unfold(int nb, double xlo, double xhi, TH2D* h2d_reco, TH2D* h2d_true, T
   res_st_Inc_truth = new TH1D("res_st_Inc_truth", "res_st_Inc_truth", nb, xlo, xhi);	
   res_Int_reco = new TH1D("res_Int_reco", "res_Int_reco", nb, xlo, xhi);
   res_Int_truth = new TH1D("res_Int_truth", "res_Int_truth", nb, xlo, xhi);	
+*/
+
+  eff_num_Int = new TH1D("eff_num_Int", "eff_num_Int", p::true_nbins, p::true_bins);
+  eff_den_Int = new TH1D("eff_den_Int", "eff_den_Int", p::true_nbins, p::true_bins);
+  eff_num_Inc = new TH1D("eff_num_Inc", "eff_num_Inc", p::true_nbins, p::true_bins);
+  eff_den_Inc = new TH1D("eff_den_Inc", "eff_den_Inc", p::true_nbins, p::true_bins);
+
+  eff_num_st_Inc = new TH1D("eff_num_st_Inc", "eff_num_st_Inc", p::true_nbins, p::true_bins);
+  eff_den_st_Inc = new TH1D("eff_den_st_Inc", "eff_den_st_Inc", p::true_nbins, p::true_bins);
+  pur_num_Int = new TH1D("pur_num_Int", "pur_num_Int", p::true_nbins, p::true_bins);
+  pur_num_Inc = new TH1D("pur_num_Inc", "pur_num_Inc", p::true_nbins, p::true_bins);
+  pur_num_st_Inc = new TH1D("pur_num_st_Inc", "pur_num_st_Inc", p::true_nbins, p::true_bins);
+  pur_den     = new TH1D("pur_den",     "pur_den",     p::true_nbins, p::true_bins);
+  pur_den_Inc = new TH1D("pur_den_Inc", "pur_den_Inc", p::true_nbins, p::true_bins);
+  pur_den_st_Inc = new TH1D("pur_den_st_Inc", "pur_den_st_Inc", p::true_nbins, p::true_bins);
+  pur_den_Int = new TH1D("pur_den_Int", "pur_den_Int", p::true_nbins, p::true_bins);
+
+  res_Inc_reco = new TH1D("res_Inc_reco", "res_Inc_reco", p::true_nbins, p::true_bins);
+  res_st_Inc_reco = new TH1D("res_st_Inc_reco", "res_st_Inc_reco", p::true_nbins, p::true_bins);
+  res_Inc_truth = new TH1D("res_Inc_truth", "res_Inc_truth", p::true_nbins, p::true_bins);	
+  res_st_Inc_truth = new TH1D("res_st_Inc_truth", "res_st_Inc_truth", p::true_nbins, p::true_bins);	
+  res_Int_reco = new TH1D("res_Int_reco", "res_Int_reco", p::true_nbins, p::true_bins);
+  res_Int_truth = new TH1D("res_Int_truth", "res_Int_truth", p::true_nbins, p::true_bins);	
+
+
+
+
 
   eff_num_Int->Sumw2();
   eff_den_Int->Sumw2();
