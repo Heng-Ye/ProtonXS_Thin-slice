@@ -1423,12 +1423,19 @@ void ProtonESliceDataAll::Loop() {
 			//if (isTestSample) { //if test sample
 			h_truesliceid_all->Fill(true_sliceID, mom_rw_minchi2);
 			h_true_st_sliceid_all->Fill(true_st_sliceID, mom_rw_minchi2);
+			h_true_2d_sliceid_all->Fill(true_st_sliceID, true_sliceID, mom_rw_minchi2);
 			//} //if test sample
 			//else { //if NOT test sample
 			uf.eff_den_Inc->Fill(true_sliceID, mom_rw_minchi2);
 			uf.eff_den_st_Inc->Fill(true_st_sliceID, mom_rw_minchi2);
 			//for (int ij=true_st_sliceID; ij<=true_sliceID; ++ij){
 			//if (true_sliceID < nthinslices && true_sliceID>=0){
+			for (int ij=true_st_sliceID; ij>=true_st_sliceID; --ij) {
+				true_incidents->Fill(ij, mom_rw_minchi2);
+			}
+			true_interactions->Fill(true_sliceID, mom_rw_minchi2);
+
+
 			//for (int ij=0; ij<=true_sliceID+1; ++ij){
 			//for (int ij=0; ij<=nthinslices+1; ++ij) {
 			//if (ij<nthinslices) ++true_incidents[ij+1];

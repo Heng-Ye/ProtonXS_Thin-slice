@@ -22,7 +22,9 @@ void SaveHistograms();
 //XS histograms ----------------------//
 TH1D *h_truesliceid_all;
 TH1D *h_true_st_sliceid_all;
+TH2D *h_true_2d_sliceid_all;
 TH1D *h_truesliceid_inelastic_all;
+TH1D *true_incidents;
 
 TH1D *h_truesliceid_cuts;
 TH1D *h_true_st_sliceid_cuts;
@@ -157,7 +159,9 @@ void BookHistograms() { //BookHistograms
 	//XS histograms -------------------------------------------------------------------------------------------------------------------------------------------------------//
 	h_truesliceid_all = new TH1D("h_truesliceid_all","h_truesliceid_all;True SliceID", p::true_nbins, p::true_bins);
 	h_true_st_sliceid_all = new TH1D("h_true_st_sliceid_all","h_true_st_sliceid_all;True Start SliceID", p::true_nbins, p::true_bins);
+	h_true_2d_sliceid_all = new TH2D("h_true_2d_sliceid_all","True Start SliceID;True SliceID", p::true_nbins, p::true_bins, p::true_nbins, p::true_bins);
 	h_truesliceid_inelastic_all = new TH1D("h_truesliceid_inelastic_all","h_truesliceid_inelastic_all;True SliceID", p::true_nbins, p::true_bins);
+	true_incidents = new TH1D("true_incidents","True INC SliceID; Counts", p::true_nbins, p::true_bins);
 
 
 	h_truesliceid_cuts = new TH1D("h_truesliceid_cuts","h_truesliceid_cuts;True SliceID", p::true_nbins, p::true_bins);
@@ -332,6 +336,8 @@ void BookHistograms() { //BookHistograms
 
 	h_truesliceid_all->Sumw2();
 	h_true_st_sliceid_all->Sumw2();
+	h_true_2d_sliceid_all->Sumw2();
+	true_incidents->Sumw2();
 
 	h_truesliceid_cuts->Sumw2();
 	h_true_st_sliceid_cuts->Sumw2();
